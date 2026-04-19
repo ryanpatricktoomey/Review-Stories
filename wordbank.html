@@ -7,53 +7,101 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
-        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; padding-bottom: 50px; }
         .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .hide-eng .eng { color: transparent; user-select: none; }
-        .hide-kor .kor { color: transparent; user-select: none; }
+        .tab-active { border-bottom: 2px solid var(--teal); color: var(--teal); }
     </style>
 </head>
 <body class="p-6 md:p-12">
     <div class="max-w-2xl mx-auto space-y-6">
-        <h1 class="text-3xl font-bold text-white flex items-center gap-3">
-            <a href="index.html" class="text-sm text-slate-400 hover:text-white">← Back</a>
-            <span>My Word Bank</span>
+        <h1 class="text-3xl font-bold text-white flex items-center justify-between">
+            My Word Bank
+            <a href="index.html" class="text-sm bg-slate-800 px-4 py-2 rounded-lg hover:bg-slate-700">← Back</a>
         </h1>
-        
-        <div class="flex gap-2">
-            <button onclick="toggleMode('hide-eng')" class="bg-teal-600 px-4 py-2 rounded-lg text-sm font-bold">Hide English</button>
-            <button onclick="toggleMode('hide-kor')" class="bg-amber-600 px-4 py-2 rounded-lg text-sm font-bold">Hide Korean</button>
-            <button onclick="clearAll()" class="ml-auto bg-red-900/50 text-red-200 px-4 py-2 rounded-lg text-sm">Clear All</button>
+
+        <div class="flex gap-4 border-b border-white/10 pb-2">
+            <button onclick="switchTab('list')" id="btn-list" class="tab-active py-2">List</button>
+            <button onclick="switchTab('flash')" id="btn-flash" class="py-2">Flashcards</button>
+            <button onclick="switchTab('quiz')" id="btn-quiz" class="py-2">Quiz</button>
         </div>
 
-        <div id="wordList" class="glass rounded-3xl overflow-hidden shadow-xl"></div>
+        <div id="section-list" class="space-y-4"></div>
+        
+        <div id="section-flash" class="hidden glass p-8 rounded-3xl text-center space-y-6">
+            <div id="flashcard" class="text-3xl font-bold min-h-[100px] flex items-center justify-center">Click Start</div>
+            <div class="flex gap-4 justify-center">
+                <button onclick="prevCard()" class="bg-slate-700 px-6 py-2 rounded-xl">Prev</button>
+                <button onclick="speakCurrent()" class="bg-teal-600 px-6 py-2 rounded-xl">🔊 Hear</button>
+                <button onclick="nextCard()" class="bg-slate-700 px-6 py-2 rounded-xl">Next</button>
+            </div>
+        </div>
+
+        <div id="section-quiz" class="hidden glass p-8 rounded-3xl space-y-6">
+            <div id="quiz-question" class="text-2xl font-bold text-center mb-6"></div>
+            <div id="quiz-options" class="grid grid-cols-1 gap-3"></div>
+        </div>
     </div>
 
     <script>
-        function loadWords() {
-            const list = JSON.parse(localStorage.getItem('myWordBank') || '[]');
-            const container = document.getElementById('wordList');
-            container.innerHTML = list.length === 0 ? '<p class="p-8 text-slate-500 text-center">No words saved yet.</p>' : '';
-            list.forEach((item, index) => {
-                container.innerHTML += `
-                    <div class="flex items-center justify-between p-4 border-b border-white/5 hover:bg-slate-700/30">
-                        <div>
-                            <p class="eng text-lg font-bold text-teal-400">${item.eng}</p>
-                            <p class="kor text-sm text-slate-400">${item.kor}</p>
-                        </div>
-                        <button onclick="deleteWord(${index})" class="text-red-500 hover:text-red-400 px-3">✕</button>
-                    </div>`;
+        let bank = JSON.parse(localStorage.getItem('myWordBank') || '[]');
+        let currentCard = 0;
+
+        function switchTab(tab) {
+            document.querySelectorAll('[id^="section-"]').forEach(s => s.classList.add('hidden'));
+            document.querySelectorAll('[id^="btn-"]').forEach(b => b.classList.remove('tab-active'));
+            document.getElementById('section-' + tab).classList.remove('hidden');
+            document.getElementById('btn-' + tab).classList.add('tab-active');
+            if(tab === 'flash') showCard();
+            if(tab === 'quiz') startQuiz();
+        }
+
+        // --- LIST VIEW ---
+        function loadList() {
+            const container = document.getElementById('section-list');
+            container.innerHTML = bank.length === 0 ? '<p class="text-slate-500 text-center">No words yet.</p>' : '';
+            bank.forEach((item, i) => {
+                container.innerHTML += `<div class="glass p-4 rounded-xl flex justify-between"><div><p class="text-teal-400 font-bold">${item.eng}</p><p class="text-sm">${item.kor}</p></div><button onclick="del(${i})" class="text-red-500">✕</button></div>`;
             });
         }
-        function deleteWord(index) {
-            let list = JSON.parse(localStorage.getItem('myWordBank') || '[]');
-            list.splice(index, 1);
-            localStorage.setItem('myWordBank', JSON.stringify(list));
-            loadWords();
+
+        // --- FLASHCARD ---
+        function showCard() {
+            document.getElementById('flashcard').innerText = bank[currentCard].eng + "\n\n" + bank[currentCard].kor;
         }
-        function clearAll() { if(confirm('Clear all words?')) { localStorage.removeItem('myWordBank'); loadWords(); } }
-        function toggleMode(cls) { document.body.classList.toggle(cls); }
-        loadWords();
+        function nextCard() { currentCard = (currentCard + 1) % bank.length; showCard(); }
+        function prevCard() { currentCard = (currentCard - 1 + bank.length) % bank.length; showCard(); }
+        function speakCurrent() {
+            const msg = new SpeechSynthesisUtterance(bank[currentCard].eng);
+            msg.lang = 'en-US';
+            window.speechSynthesis.speak(msg);
+        }
+
+        // --- QUIZ ---
+        function startQuiz() {
+            if(bank.length < 3) { document.getElementById('quiz-question').innerText = "Add more words to quiz!"; return; }
+            const correctIdx = Math.floor(Math.random() * bank.length);
+            const correct = bank[correctIdx];
+            let options = [correct.kor];
+            while(options.length < 4) {
+                let rand = bank[Math.floor(Math.random() * bank.length)].kor;
+                if(!options.includes(rand)) options.push(rand);
+            }
+            options.sort(() => Math.random() - 0.5);
+            
+            document.getElementById('quiz-question').innerText = correct.eng;
+            const container = document.getElementById('quiz-options');
+            container.innerHTML = '';
+            options.forEach(opt => {
+                container.innerHTML += `<button onclick="check('${opt}', '${correct.kor}')" class="bg-slate-700 hover:bg-slate-600 p-4 rounded-xl">${opt}</button>`;
+            });
+        }
+        function check(sel, corr) {
+            alert(sel === corr ? "Correct! 🎉" : "Try again!");
+            if(sel === corr) startQuiz();
+        }
+
+        function del(i) { bank.splice(i, 1); localStorage.setItem('myWordBank', JSON.stringify(bank)); loadList(); }
+        loadList();
     </script>
 </body>
 </html>

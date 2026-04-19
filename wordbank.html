@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Word Bank</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .hide-eng .eng { color: transparent; user-select: none; }
+        .hide-kor .kor { color: transparent; user-select: none; }
+    </style>
+</head>
+<body class="p-6 md:p-12">
+    <div class="max-w-2xl mx-auto space-y-6">
+        <h1 class="text-3xl font-bold text-white flex items-center gap-3">
+            <a href="index.html" class="text-sm text-slate-400 hover:text-white">← Back</a>
+            <span>My Word Bank</span>
+        </h1>
+        
+        <div class="flex gap-2">
+            <button onclick="toggleMode('hide-eng')" class="bg-teal-600 px-4 py-2 rounded-lg text-sm font-bold">Hide English</button>
+            <button onclick="toggleMode('hide-kor')" class="bg-amber-600 px-4 py-2 rounded-lg text-sm font-bold">Hide Korean</button>
+            <button onclick="clearAll()" class="ml-auto bg-red-900/50 text-red-200 px-4 py-2 rounded-lg text-sm">Clear All</button>
+        </div>
+
+        <div id="wordList" class="glass rounded-3xl overflow-hidden shadow-xl"></div>
+    </div>
+
+    <script>
+        function loadWords() {
+            const list = JSON.parse(localStorage.getItem('myWordBank') || '[]');
+            const container = document.getElementById('wordList');
+            container.innerHTML = list.length === 0 ? '<p class="p-8 text-slate-500 text-center">No words saved yet.</p>' : '';
+            list.forEach((item, index) => {
+                container.innerHTML += `
+                    <div class="flex items-center justify-between p-4 border-b border-white/5 hover:bg-slate-700/30">
+                        <div>
+                            <p class="eng text-lg font-bold text-teal-400">${item.eng}</p>
+                            <p class="kor text-sm text-slate-400">${item.kor}</p>
+                        </div>
+                        <button onclick="deleteWord(${index})" class="text-red-500 hover:text-red-400 px-3">✕</button>
+                    </div>`;
+            });
+        }
+        function deleteWord(index) {
+            let list = JSON.parse(localStorage.getItem('myWordBank') || '[]');
+            list.splice(index, 1);
+            localStorage.setItem('myWordBank', JSON.stringify(list));
+            loadWords();
+        }
+        function clearAll() { if(confirm('Clear all words?')) { localStorage.removeItem('myWordBank'); loadWords(); } }
+        function toggleMode(cls) { document.body.classList.toggle(cls); }
+        loadWords();
+    </script>
+</body>
+</html>

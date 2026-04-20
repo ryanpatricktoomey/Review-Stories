@@ -44,7 +44,7 @@
     function injectStyles() {
         const style = document.createElement('style');
         style.textContent = `
-            #chat-section { max-width: 56rem; margin: 2rem auto 0; padding: 0 1rem 3rem; }
+            #chat-section { width: 100%; }
             #chat-messages { height: 300px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding: 1rem; scroll-behavior: smooth; }
             #chat-messages::-webkit-scrollbar { width: 4px; }
             #chat-messages::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
@@ -95,7 +95,12 @@
                 </div>
             </div>
         `;
-        document.body.appendChild(section);
+        const quizBtn = document.getElementById('quizBtn');
+        if (quizBtn) {
+            quizBtn.parentElement.insertAdjacentElement('afterend', section);
+        } else {
+            document.body.appendChild(section);
+        }
 
         document.getElementById('chat-signin-btn').onclick = () => {
             const provider = new firebase.auth.GoogleAuthProvider();

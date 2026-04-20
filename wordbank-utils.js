@@ -22,19 +22,20 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
     document.head.appendChild(style);
 
-    // Find all mystery cells which denote expression rows
-    const cells = document.querySelectorAll('.mystery-cell');
+    // Find expression rows by looking at tables
+    const rows = document.querySelectorAll('table tr');
     
     // Get existing word bank from localStorage
     const wordBank = JSON.parse(localStorage.getItem('wordBank') || '[]');
     const savedWords = new Set(wordBank.map(item => item.en.toLowerCase()));
 
-    cells.forEach(koreanCell => {
-        const row = koreanCell.parentElement;
-        // The English word is usually in the first cell of the row
-        const englishCell = row.cells[0];
-        
-        if (englishCell && koreanCell) {
+    rows.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        // Expression rows should have exactly 2 cells (English and Korean) before our button is added
+        if (cells.length === 2) {
+            const englishCell = cells[0];
+            const koreanCell = cells[1];
+            
             const english = englishCell.innerText.trim();
             const korean = koreanCell.innerText.trim();
 

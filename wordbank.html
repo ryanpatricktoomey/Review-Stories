@@ -18,12 +18,9 @@
         .mask-en .word-en:active, .mask-ko .word-ko:active { color: inherit !important; background: transparent; }
 
         /* Flashcard Specifics */
-        .flashcard-container { perspective: 1000px; width: 100%; max-width: 500px; margin: 0 auto; }
-        .flashcard { width: 100%; height: 300px; position: relative; transition: transform 0.6s; transform-style: preserve-3d; cursor: pointer; border-radius: 1.5rem; }
-        .flashcard.flipped { transform: rotateX(180deg); }
-        .flashcard-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; text-align: center; border-radius: 1.5rem; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5); }
-        .flashcard-front { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border: 2px solid rgba(20, 184, 166, 0.3); }
-        .flashcard-back { background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%); color: #fff; transform: rotateX(180deg); border: 2px solid rgba(20, 184, 166, 0.5); }
+        .flashcard-container { width: 100%; max-width: 500px; margin: 0 auto; }
+        .flashcard { width: 100%; min-height: 250px; background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border: 2px solid rgba(20, 184, 166, 0.3); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; text-align: center; border-radius: 1.5rem; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5); cursor: pointer; transition: transform 0.2s; }
+        .flashcard:active { transform: scale(0.98); }
         
         .tab-btn.active { background: var(--teal); color: #0f172a; }
     </style>
@@ -82,13 +79,10 @@
             
             <div class="flashcard-container">
                 <div class="flashcard" id="flashcard" onclick="flipCard()">
-                    <div class="flashcard-front">
-                        <h3 class="text-3xl font-bold text-teal-400 mb-6" id="flash-en">Word</h3>
-                        <p class="text-sm text-slate-400">Tap to reveal meaning</p>
-                    </div>
-                    <div class="flashcard-back">
-                        <h3 class="text-2xl font-bold mb-4" id="flash-ko">의미</h3>
-                        <p class="text-sm text-teal-100 opacity-80">Tap to hide</p>
+                    <h3 class="text-3xl font-bold text-teal-400 mb-2" id="flash-en">Word</h3>
+                    <p class="text-sm text-slate-400" id="flash-hint">Tap to reveal meaning</p>
+                    <div id="flash-ko-container" class="hidden mt-6 pt-6 border-t border-white/10 w-full">
+                        <h3 class="text-2xl font-bold text-white" id="flash-ko">의미</h3>
                     </div>
                 </div>
             </div>
@@ -145,6 +139,7 @@
         // Audio state
         let mediaRecorder;
         let audioChunks = [];
+        let globalAudioStream = null;
 
         document.addEventListener('DOMContentLoaded', () => {
             loadWordBank();
@@ -237,23 +232,30 @@
 
         function updateFlashcardUI() {
             if (wordBank.length === 0) return;
-            const card = document.getElementById('flashcard');
-            card.classList.remove('flipped');
             
-            setTimeout(() => {
-                const word = wordBank[cardIndex];
-                document.getElementById('flash-en').innerText = word.en;
-                document.getElementById('flash-ko').innerText = word.ko;
-                document.getElementById('flash-counter').innerText = `${cardIndex + 1} / ${wordBank.length}`;
-                
-                // Reset audio
-                document.getElementById('playback-container').classList.add('hidden');
-                document.getElementById('user-audio').src = '';
-            }, 150); // wait for flip animation to reset if it was flipped
+            const word = wordBank[cardIndex];
+            document.getElementById('flash-en').innerText = word.en;
+            document.getElementById('flash-ko').innerText = word.ko;
+            document.getElementById('flash-counter').innerText = `${cardIndex + 1} / ${wordBank.length}`;
+            
+            document.getElementById('flash-ko-container').classList.add('hidden');
+            document.getElementById('flash-hint').innerText = "Tap to reveal meaning";
+            
+            // Reset audio
+            document.getElementById('playback-container').classList.add('hidden');
+            document.getElementById('user-audio').src = '';
         }
 
         function flipCard() {
-            document.getElementById('flashcard').classList.toggle('flipped');
+            const container = document.getElementById('flash-ko-container');
+            const hint = document.getElementById('flash-hint');
+            if (container.classList.contains('hidden')) {
+                container.classList.remove('hidden');
+                hint.innerText = "Tap to hide meaning";
+            } else {
+                container.classList.add('hidden');
+                hint.innerText = "Tap to reveal meaning";
+            }
         }
 
         function nextCard() {
@@ -278,8 +280,10 @@
         async function toggleRecord() {
             if (!mediaRecorder || mediaRecorder.state === 'inactive') {
                 try {
-                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                    mediaRecorder = new MediaRecorder(stream);
+                    if (!globalAudioStream) {
+                        globalAudioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    }
+                    mediaRecorder = new MediaRecorder(globalAudioStream);
                     audioChunks = [];
                     
                     mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
@@ -289,9 +293,6 @@
                         const audioPlayer = document.getElementById('user-audio');
                         audioPlayer.src = audioUrl;
                         document.getElementById('playback-container').classList.remove('hidden');
-                        
-                        // Stop tracks to release mic
-                        stream.getTracks().forEach(track => track.stop());
                     };
                     
                     mediaRecorder.start();

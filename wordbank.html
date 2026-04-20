@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
     <script>
-        // Force external browser if opened inside KakaoTalk
         if (navigator.userAgent.match(/KAKAOTALK/i)) {
             location.href = 'kakaotalk://web/openExternal?url=' + encodeURIComponent(location.href);
         }
@@ -12,37 +11,61 @@
     <title>My Word Bank</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     <style>
         :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
         body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 60px; }
         .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
         .hidden { display: none !important; }
-        
-        /* List Mode Specifics */
         .mask-en .word-en { color: transparent !important; user-select: none; background: rgba(255,255,255,0.1); border-radius: 4px; }
         .mask-ko .word-ko { color: transparent !important; user-select: none; background: rgba(255,255,255,0.1); border-radius: 4px; }
         .mask-en .word-en:active, .mask-ko .word-ko:active { color: inherit !important; background: transparent; }
-
-        /* Flashcard Specifics */
         .flashcard-container { width: 100%; max-width: 500px; margin: 0 auto; }
         .flashcard { width: 100%; min-height: 250px; background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border: 2px solid rgba(20, 184, 166, 0.3); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; text-align: center; border-radius: 1.5rem; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5); cursor: pointer; transition: transform 0.2s; }
         .flashcard:active { transform: scale(0.98); }
-        
         .tab-btn.active { background: var(--teal); color: #0f172a; }
     </style>
 </head>
 <body class="p-4 md:p-8">
-    <div class="max-w-4xl mx-auto space-y-8">
+
+    <!-- LOADING SCREEN -->
+    <div id="loading-screen" class="flex items-center justify-center min-h-screen">
+        <div class="text-center">
+            <div class="text-5xl mb-4">💾</div>
+            <p class="text-slate-400">Loading...</p>
+        </div>
+    </div>
+
+    <!-- SIGN-IN SCREEN -->
+    <div id="signin-screen" class="hidden flex items-center justify-center min-h-screen">
+        <div class="glass rounded-3xl p-10 text-center max-w-sm w-full space-y-6">
+            <span class="text-6xl block">💾</span>
+            <h1 class="text-2xl font-extrabold text-white">My Word Bank</h1>
+            <p class="text-slate-400 text-sm">Sign in once to keep your words saved forever across all devices.</p>
+            <button onclick="signIn()" class="w-full bg-white text-slate-900 font-bold py-3 px-6 rounded-2xl flex items-center justify-center gap-3 hover:bg-slate-100 transition-all active:scale-95 shadow-lg">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5">
+                Sign in with Google
+            </button>
+        </div>
+    </div>
+
+    <!-- MAIN APP -->
+    <div id="app" class="hidden max-w-4xl mx-auto space-y-8">
         <header class="flex flex-col items-center space-y-4">
             <div class="w-full flex justify-between items-center">
                 <a href="index.html" class="text-teal-400 hover:text-teal-300 font-bold">← Back Home</a>
+                <button onclick="signOut()" class="text-sm text-slate-400 hover:text-slate-300 transition-colors">Sign Out</button>
+            </div>
+            <div class="w-full flex justify-end">
                 <span class="text-sm text-slate-400 font-bold" id="word-count">0 words</span>
             </div>
             <div class="flex items-center gap-3">
                 <span class="text-4xl">💾</span>
                 <h1 class="text-3xl md:text-4xl font-extrabold text-white">My Word Bank</h1>
             </div>
-            
+
             <div class="glass rounded-full p-1 flex w-full max-w-md mt-6">
                 <button onclick="switchTab('list')" id="tab-list" class="tab-btn active flex-1 py-2 px-4 rounded-full font-bold text-sm transition-colors">List</button>
                 <button onclick="switchTab('flash')" id="tab-flash" class="tab-btn flex-1 py-2 px-4 rounded-full font-bold text-sm transition-colors text-slate-300 hover:text-white">Cards</button>
@@ -68,9 +91,7 @@
             </div>
             <div class="overflow-x-auto">
                 <table class="w-full text-left" id="word-table">
-                    <tbody class="divide-y divide-white/5" id="word-list-body">
-                        <!-- Words injected here -->
-                    </tbody>
+                    <tbody class="divide-y divide-white/5" id="word-list-body"></tbody>
                 </table>
             </div>
         </section>
@@ -82,7 +103,6 @@
                 <span id="flash-counter" class="text-slate-400 font-bold">1 / 10</span>
                 <button onclick="nextCard()" class="text-3xl text-teal-400 hover:text-teal-300 active:scale-90 transition-transform">➡️</button>
             </div>
-            
             <div class="flashcard-container">
                 <div class="flashcard" id="flashcard" onclick="flipCard()">
                     <h3 class="text-3xl font-bold text-teal-400 mb-2" id="flash-en">Word</h3>
@@ -92,7 +112,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="flex justify-center gap-4 mt-6">
                 <button onclick="playAudio()" class="bg-slate-800 hover:bg-slate-700 text-white px-6 py-3 rounded-2xl font-bold border border-white/10 shadow-lg active:scale-95 transition-all flex items-center gap-2">
                     <span>🔊</span> Listen
@@ -111,20 +130,15 @@
             <div class="flex justify-between items-center mb-8 border-b border-white/10 pb-4">
                 <h2 class="text-xl font-bold text-amber-400">Quiz Mode</h2>
                 <div class="bg-slate-900 px-4 py-2 rounded-xl border border-white/10">
-                    <span class="text-sm text-slate-400 uppercase tracking-widest font-bold">Score:</span> 
+                    <span class="text-sm text-slate-400 uppercase tracking-widest font-bold">Score:</span>
                     <span class="text-lg font-black text-teal-400 ml-2" id="quiz-score">0</span>
                 </div>
             </div>
-            
             <div class="text-center mb-10">
                 <p class="text-slate-400 mb-2">What does this mean?</p>
                 <h3 class="text-4xl font-extrabold text-white" id="quiz-word">Word</h3>
             </div>
-            
-            <div class="grid grid-cols-1 gap-3" id="quiz-options">
-                <!-- Options injected here -->
-            </div>
-            
+            <div class="grid grid-cols-1 gap-3" id="quiz-options"></div>
             <div class="mt-8 text-center hidden" id="quiz-next-container">
                 <button onclick="nextQuiz()" class="bg-teal-500 hover:bg-teal-400 text-slate-900 px-8 py-3 rounded-xl font-black w-full shadow-lg active:scale-95 transition-all">Next Question ➡️</button>
             </div>
@@ -132,37 +146,90 @@
     </div>
 
     <script>
+        firebase.initializeApp({
+            apiKey: "AIzaSyAdBI_1FG1JnY-NAopcx6YnApNq7l7OcKA",
+            authDomain: "review-stories-f251f.firebaseapp.com",
+            projectId: "review-stories-f251f",
+            storageBucket: "review-stories-f251f.firebasestorage.app",
+            messagingSenderId: "974755614972",
+            appId: "1:974755614972:web:3e21c5c7ccdfa5f9824779"
+        });
+
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
         let wordBank = [];
         let currentTab = 'list';
-        
-        // Flashcard state
         let cardIndex = 0;
-        
-        // Quiz state
         let quizScore = 0;
         let currentQuizWord = null;
-
-        // Audio state
         let mediaRecorder;
         let audioChunks = [];
         let globalAudioStream = null;
+        let currentUser = null;
 
-        document.addEventListener('DOMContentLoaded', () => {
-            loadWordBank();
+        auth.onAuthStateChanged(async user => {
+            document.getElementById('loading-screen').classList.add('hidden');
+            if (user) {
+                currentUser = user;
+                document.getElementById('signin-screen').classList.add('hidden');
+                document.getElementById('app').classList.remove('hidden');
+                await loadWordBank();
+            } else {
+                currentUser = null;
+                document.getElementById('signin-screen').classList.remove('hidden');
+                document.getElementById('app').classList.add('hidden');
+            }
         });
 
-        function loadWordBank() {
-            wordBank = JSON.parse(localStorage.getItem('wordBank') || '[]');
+        function signIn() {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            auth.signInWithPopup(provider).catch(err => alert("Sign in failed: " + err.message));
+        }
+
+        function signOut() {
+            auth.signOut();
+        }
+
+        async function loadWordBank() {
+            try {
+                const doc = await db.collection('users').doc(currentUser.uid).get();
+                wordBank = doc.exists ? (doc.data().words || []) : [];
+            } catch (e) {
+                wordBank = [];
+            }
+
+            // Sync any words saved from lesson pages via localStorage
+            const local = JSON.parse(localStorage.getItem('wordBank') || '[]');
+            if (local.length > 0) {
+                local.forEach(item => {
+                    if (!wordBank.some(w => w.en.toLowerCase() === item.en.toLowerCase())) {
+                        wordBank.push(item);
+                    }
+                });
+                localStorage.removeItem('wordBank');
+                await saveWordBank();
+            }
+
+            renderApp();
+        }
+
+        async function saveWordBank() {
+            if (!currentUser) return;
+            await db.collection('users').doc(currentUser.uid).set({ words: wordBank });
             document.getElementById('word-count').innerText = `${wordBank.length} words`;
-            
+        }
+
+        function renderApp() {
+            document.getElementById('word-count').innerText = `${wordBank.length} words`;
             if (wordBank.length === 0) {
                 document.getElementById('empty-state').classList.remove('hidden');
                 document.getElementById('view-list').classList.add('hidden');
-                return;
+            } else {
+                document.getElementById('empty-state').classList.add('hidden');
+                document.getElementById('view-list').classList.remove('hidden');
+                renderList();
             }
-            
-            document.getElementById('empty-state').classList.add('hidden');
-            renderList();
         }
 
         // --- TAB LOGIC ---
@@ -172,19 +239,15 @@
                 alert("You need at least 4 words in your Word Bank to play the quiz!");
                 return;
             }
-            
             ['list', 'flash', 'quiz'].forEach(t => {
                 document.getElementById(`tab-${t}`).classList.remove('active', 'text-slate-300');
                 document.getElementById(`tab-${t}`).classList.add('text-slate-300');
                 document.getElementById(`view-${t}`).classList.add('hidden');
             });
-            
             document.getElementById(`tab-${tab}`).classList.add('active');
             document.getElementById(`tab-${tab}`).classList.remove('text-slate-300');
             document.getElementById(`view-${tab}`).classList.remove('hidden');
-            
             currentTab = tab;
-            
             if (tab === 'flash') initFlashcards();
             if (tab === 'quiz') startQuiz();
         }
@@ -193,7 +256,6 @@
         function renderList() {
             const tbody = document.getElementById('word-list-body');
             tbody.innerHTML = '';
-            
             wordBank.forEach((item, index) => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
@@ -207,16 +269,15 @@
             });
         }
 
-        function deleteWord(index) {
+        async function deleteWord(index) {
             if (confirm('Remove this word from your Word Bank?')) {
                 wordBank.splice(index, 1);
-                localStorage.setItem('wordBank', JSON.stringify(wordBank));
-                loadWordBank();
+                await saveWordBank();
+                renderApp();
             }
         }
 
-        let maskEn = false;
-        let maskKo = false;
+        let maskEn = false, maskKo = false;
         function toggleMask(lang) {
             const table = document.getElementById('word-table');
             if (lang === 'en') {
@@ -231,23 +292,16 @@
         }
 
         // --- MODE 2: FLASHCARDS ---
-        function initFlashcards() {
-            cardIndex = 0;
-            updateFlashcardUI();
-        }
+        function initFlashcards() { cardIndex = 0; updateFlashcardUI(); }
 
         function updateFlashcardUI() {
             if (wordBank.length === 0) return;
-            
             const word = wordBank[cardIndex];
             document.getElementById('flash-en').innerText = word.en;
             document.getElementById('flash-ko').innerText = word.ko;
             document.getElementById('flash-counter').innerText = `${cardIndex + 1} / ${wordBank.length}`;
-            
             document.getElementById('flash-ko-container').classList.add('hidden');
             document.getElementById('flash-hint').innerText = "Tap to reveal meaning";
-            
-            // Reset audio
             document.getElementById('playback-container').classList.add('hidden');
             document.getElementById('user-audio').src = '';
         }
@@ -264,50 +318,34 @@
             }
         }
 
-        function nextCard() {
-            cardIndex = (cardIndex + 1) % wordBank.length;
-            updateFlashcardUI();
-        }
-
-        function prevCard() {
-            cardIndex = (cardIndex - 1 + wordBank.length) % wordBank.length;
-            updateFlashcardUI();
-        }
+        function nextCard() { cardIndex = (cardIndex + 1) % wordBank.length; updateFlashcardUI(); }
+        function prevCard() { cardIndex = (cardIndex - 1 + wordBank.length) % wordBank.length; updateFlashcardUI(); }
 
         function playAudio() {
             if (wordBank.length === 0) return;
-            const word = wordBank[cardIndex].en;
-            const utterance = new SpeechSynthesisUtterance(word);
-            utterance.lang = 'en-US';
-            utterance.rate = 0.9;
+            const utterance = new SpeechSynthesisUtterance(wordBank[cardIndex].en);
+            utterance.lang = 'en-US'; utterance.rate = 0.9;
             window.speechSynthesis.speak(utterance);
         }
 
         async function toggleRecord() {
             if (!mediaRecorder || mediaRecorder.state === 'inactive') {
                 try {
-                    if (!globalAudioStream) {
-                        globalAudioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                    }
+                    if (!globalAudioStream) globalAudioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
                     mediaRecorder = new MediaRecorder(globalAudioStream);
                     audioChunks = [];
-                    
                     mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
                     mediaRecorder.onstop = () => {
                         const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-                        const audioUrl = URL.createObjectURL(audioBlob);
                         const audioPlayer = document.getElementById('user-audio');
-                        audioPlayer.src = audioUrl;
+                        audioPlayer.src = URL.createObjectURL(audioBlob);
                         document.getElementById('playback-container').classList.remove('hidden');
                     };
-                    
                     mediaRecorder.start();
                     document.getElementById('record-icon').innerText = '🔴';
                     document.getElementById('record-text').innerText = 'Stop';
                     document.getElementById('record-btn').classList.add('bg-red-600', 'animate-pulse');
-                } catch (err) {
-                    alert("Microphone access denied or not available.");
-                }
+                } catch (err) { alert("Microphone access denied or not available."); }
             } else {
                 mediaRecorder.stop();
                 document.getElementById('record-icon').innerText = '🎤';
@@ -317,35 +355,21 @@
         }
 
         // --- MODE 3: QUIZ ---
-        function startQuiz() {
-            quizScore = 0;
-            document.getElementById('quiz-score').innerText = quizScore;
-            nextQuiz();
-        }
+        function startQuiz() { quizScore = 0; document.getElementById('quiz-score').innerText = 0; nextQuiz(); }
 
         function nextQuiz() {
             document.getElementById('quiz-next-container').classList.add('hidden');
             const optionsContainer = document.getElementById('quiz-options');
             optionsContainer.innerHTML = '';
-            
-            // Pick a random correct word
             const correctIndex = Math.floor(Math.random() * wordBank.length);
             currentQuizWord = wordBank[correctIndex];
-            
             document.getElementById('quiz-word').innerText = currentQuizWord.en;
-            
-            // Pick 3 random incorrect options
             let options = [currentQuizWord];
             let pool = [...wordBank];
-            pool.splice(correctIndex, 1); // remove correct answer from pool
-            
-            // Shuffle pool and take first 3
+            pool.splice(correctIndex, 1);
             pool.sort(() => 0.5 - Math.random());
             options.push(...pool.slice(0, 3));
-            
-            // Shuffle options
             options.sort(() => 0.5 - Math.random());
-            
             options.forEach(opt => {
                 const btn = document.createElement('button');
                 btn.className = "bg-slate-800 hover:bg-slate-700 text-slate-200 p-4 rounded-xl font-medium border border-white/5 transition-colors text-left";
@@ -356,23 +380,17 @@
         }
 
         function handleQuizAnswer(selectedKo, correctKo, btn, container) {
-            // Disable all buttons
             Array.from(container.children).forEach(b => {
                 b.onclick = null;
                 b.classList.remove('hover:bg-slate-700');
-                if (b.innerText === correctKo) {
-                    b.classList.add('bg-teal-600/50', 'border-teal-500');
-                } else if (b === btn && selectedKo !== correctKo) {
-                    b.classList.add('bg-red-900/50', 'border-red-500');
-                }
+                if (b.innerText === correctKo) b.classList.add('bg-teal-600/50', 'border-teal-500');
+                else if (b === btn && selectedKo !== correctKo) b.classList.add('bg-red-900/50', 'border-red-500');
             });
-            
             if (selectedKo === correctKo) {
                 quizScore++;
                 document.getElementById('quiz-score').innerText = quizScore;
                 confetti({ particleCount: 50, spread: 60, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
             }
-            
             document.getElementById('quiz-next-container').classList.remove('hidden');
         }
     </script>

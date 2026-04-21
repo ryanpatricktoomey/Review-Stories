@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Apron Strings</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🥐</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Apron Strings</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">do some busywork</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">의미 없는 잡일을 좀 하다 / 생색용 잡무를 하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">minimum wage</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">최저임금</td></tr>
+                <tr><td class="p-4"><b class="text-white">freshly-baked</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">갓 구운</td></tr>
+                <tr><td class="p-4"><b class="text-white">living wage</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">생활임금</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-2xl p-6 border border-white/5"><h3 class="text-amber-500 font-bold mb-2">busywork</h3><p class="text-sm text-slate-300">꼭 필요하지 않은데 그냥 바쁘게 보이려고 하거나 시간 때우기용으로 하는 잡일을 뜻해요.</p></div>
+            <div class="glass rounded-2xl p-6 border border-white/5"><h3 class="text-amber-500 font-bold mb-2">living wage</h3><p class="text-sm text-slate-300">법으로 정한 minimum wage보다 의미가 더 커요. 실제로 기본적인 생활이 가능한 수준의 임금을 뜻해요.</p></div>
+            <div class="glass rounded-2xl p-6 border border-white/5"><h3 class="text-amber-500 font-bold mb-2">freshly-baked</h3><p class="text-sm text-slate-300">빵에만 쓰는 건 아니고, “방금 막 만들어진” 느낌을 주는 표현이에요.</p></div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">My worst part-time job was at a bakery that looked charming from the outside and smelled like heaven on the inside. This is how they get you.</p>
+                <p class="mb-6">The front window was always full of <b class="highlight quiz-target" data-ans="freshly-baked" data-kor="갓 구운">freshly-baked</b> croissants and glossy fruit tarts, and people would stop on the sidewalk just to stare. It gave the place an air of decency. You assumed that anyone selling something so pretty must also be decent. That was my first mistake.</p>
+                <p class="mb-6">My boss, Mr. Han, believed in suffering as a management style. On my first day, he handed me an apron, pointed at a sink full of sticky trays, and told me to <b class="highlight quiz-target" data-ans="do some busywork" data-kor="의미 없는 잡일을 좀 하다">do some busywork</b> until he “figured out where to put me.” That phrase turned out to mean everything no one else wanted to do. I wiped tables that were already clean. I folded boxes nobody used. I carried flour from one shelf to another and then, later, back again. It was like being employed by a very petty ghost.</p>
+                <p class="mb-6">For this, I was paid <b class="highlight quiz-target" data-ans="minimum wage" data-kor="최저임금">minimum wage</b>, which Mr. Han spoke about as if it were a personal favor. If I took too long in the bathroom, he acted as though I were stealing from his children. If I leaned for even a second, he appeared beside me and asked whether I thought I was on vacation.</p>
+                <p class="mb-6">One afternoon, a customer asked if all the workers got free bread at the end of the day. I laughed, because I thought she was joking. Mr. Han answered for me. He said, “No. Then they’d have no reason to work hard.” The customer looked embarrassed. I looked homicidal.</p>
+                <p class="mb-6">The final insult came on payday. My check was short. Not by a clerical, easily forgiven amount. By enough to notice. When I asked about it, Mr. Han said he had deducted money for “training inefficiency,” which is not a legal phrase, though he said it with confidence. Then he launched into one of his little speeches about how young people didn’t understand the difference between <b class="highlight quiz-target" data-ans="minimum wage" data-kor="최저임금">minimum wage</b> and a <b class="highlight quiz-target" data-ans="living wage" data-kor="생활임금">living wage</b>. According to him, if I wanted a <b class="highlight quiz-target" data-ans="living wage" data-kor="생활임금">living wage</b>, I should become the kind of person who deserved one.</p>
+                <p class="mb-6">That night, I stayed late to close. Alone.</p>
+                <p class="mb-6">The bakery had a huge custom cake order for the next morning, already boxed, labeled, and waiting in the walk-in fridge. Very elegant. Very expensive. Written on top in flawless icing: “Happy 70th Birthday, Mother.”</p>
+                <p class="mb-6">I did not destroy it. I’m not a maniac.</p>
+                <p class="mb-6">I just changed one word.</p>
+                <p class="mb-6">The next morning, before my shift even started, my phone exploded. Mr. Han called six times. Then he texted: WHAT DID YOU DO</p>
+                <p class="mb-6">What I had done was turn “Mother” into “Moth.” It was subtle. Beautiful, even. Still technically readable, just suddenly much less loving.</p>
+                <p class="mb-6">I never went back. He still owed me forty-three dollars.</p>
+                <p class="mb-6">Honestly, it was worth it.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">내가 해본 최악의 아르바이트는 겉에서 보면 사랑스러워 보이고, 안에 들어가면 천국 냄새가 나는 한 빵집이었다. 바로 이런 식으로 사람을 낚는 거다.</p>
+                <p class="mb-6">앞 유리창에는 늘 <b class="highlight">갓 구운</b> 크루아상과 반짝이는 과일 타르트가 가득했고, 사람들은 인도에 멈춰 서서 그것들을 바라보곤 했다. 그 가게는 괜히 점잖아 보였다. 그렇게 예쁜 걸 파는 사람은 분명 괜찮은 사람일 거라고 생각하게 된다. 그게 내 첫 번째 실수였다.</p>
+                <p class="mb-6">내 사장 한 씨는 고통을 경영 방식이라고 믿는 사람이었다. 첫날 그는 앞치마를 하나 건네주고 끈적한 쟁반이 가득한 싱크대를 가리키며 자기가 “날 어디에 둘지 생각할 동안” <b class="highlight">의미 없는 잡일을 좀 하다</b>라고 했다. 알고 보니 그 말은 아무도 하기 싫어하는 일을 다 하라는 뜻이었다. 이미 깨끗한 테이블을 또 닦았다. 아무도 쓰지 않는 상자를 접었다. 밀가루 포대를 한 선반에서 다른 선반으로 옮겼다가, 나중에는 다시 원래 자리로 옮겼다. 마치 아주 쪼잔한 유령 밑에서 일하는 기분이었다.</p>
+                <p class="mb-6">그 대가로 내가 받은 건 <b class="highlight">최저임금</b>이었다. 그런데 한 씨는 그걸 마치 개인적인 은혜처럼 말했다. 내가 화장실에서 조금만 오래 있으면 자기 자식들한테서 돈을 훔친 것처럼 굴었다. 내가 잠깐이라도 기대기만 하면 바로 옆에 나타나 내가 휴가라도 온 줄 아느냐고 물었다.</p>
+                <p class="mb-6">어느 오후, 한 손님이 직원들은 하루 끝나고 남은 빵을 공짜로 받느냐고 물었다. 나는 그게 농담인 줄 알고 웃었다. 하지만 한 씨가 내 대신 대답했다. “아니요. 그러면 열심히 일할 이유가 없잖아요.” 손님은 민망해 보였다. 나는 살짝 살의가 생겼다.</p>
+                <p class="mb-6">마지막 모욕은 월급날에 왔다. 내 급여가 적게 들어와 있었다. 단순한 실수라고 넘어갈 수 있는 정도가 아니라, 누가 봐도 눈에 띄는 금액만큼. 내가 이유를 묻자 한 씨는 “교육 비효율” 비용을 뺐다고 했다. 물론 그런 표현은 법적인 말이 아니다. 하지만 그는 아주 자신 있게 말했다. 그리고는 요즘 젊은 사람들은 <b class="highlight">최저임금</b>과 <b class="highlight">생활임금</b>의 차이도 모른다고 훈계하기 시작했다. 그의 말에 따르면 내가 <b class="highlight">생활임금</b>을 원한다면, 먼저 그걸 받을 자격이 있는 사람이 되어야 했다.</p>
+                <p class="mb-6">그날 밤 나는 마감 때문에 늦게까지 남아 있었다. 혼자서.</p>
+                <p class="mb-6">그 빵집에는 다음 날 아침 나갈 맞춤 케이크 주문이 하나 있었는데, 이미 상자에 담겨 라벨까지 붙은 채 냉장고 안에 들어 있었다. 아주 우아했고, 아주 비쌌다. 위에는 완벽한 아이싱 글씨로 이렇게 적혀 있었다. “Happy 70th Birthday, Mother.”</p>
+                <p class="mb-6">나는 그걸 망가뜨리진 않았다. 나는 미치광이는 아니니까.</p>
+                <p class="mb-6">그냥 단어 하나만 바꿨다.</p>
+                <p class="mb-6">다음 날 아침, 출근도 하기 전에 내 휴대폰이 난리가 났다. 한 씨는 여섯 번이나 전화했다. 그리고 문자를 보냈다. “대체 무슨 짓을 한 거야”</p>
+                <p class="mb-6">내가 한 일은 “Mother”를 “Moth”로 바꿔놓은 것이었다. 미묘했다. 어쩌면 아름답기까지 했다. 여전히 읽히긴 했지만, 갑자기 훨씬 덜 사랑스러워졌을 뿐이다.</p>
+                <p class="mb-6">나는 다시는 그곳에 가지 않았다. 그는 아직도 내 돈 43달러를 떼먹은 상태다.</p>
+                <p class="mb-6">그래도 솔직히, 그만한 값어치는 있었다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "4211020.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

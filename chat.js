@@ -73,7 +73,9 @@
                     <span id="chat-user-badge" style="display:none; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;"></span>
                 </div>
 
-                <div id="chat-messages"></div>
+                <div id="chat-messages">
+                    <p id="chat-loading" style="color: #475569; font-size: 0.75rem; text-align: center; padding: 2rem 0; margin: 0;">Loading chat...</p>
+                </div>
 
                 <div id="chat-signin-area" style="display:none; padding: 1rem; text-align: center; border-top: 1px solid rgba(255,255,255,0.05);">
                     <p style="color: #94a3b8; font-size: 0.8rem; margin-bottom: 0.75rem;">Sign in to join the chat</p>
@@ -135,6 +137,8 @@
         const container = document.getElementById('chat-messages');
         const atBottom = container.scrollHeight - container.scrollTop <= container.clientHeight + 60;
 
+        const loader = document.getElementById('chat-loading');
+        if (loader) loader.remove();
         container.innerHTML = '';
         docs.forEach(doc => {
             const msg = doc.data();
@@ -196,15 +200,12 @@
         subscribeToMessages();
     }
 
-    function initChat() {
+    function initFirebase() {
         if (!firebase.apps.length) {
             firebase.initializeApp(FIREBASE_CONFIG);
         }
         auth = firebase.auth();
         db = firebase.firestore();
-
-        injectStyles();
-        injectHTML();
 
         auth.onAuthStateChanged(user => {
             if (user) onSignedIn(user);
@@ -229,9 +230,13 @@
         'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js'
     ];
 
+    // Inject UI immediately so the box appears with the page
+    injectStyles();
+    injectHTML();
+
     if (typeof firebase !== 'undefined' && firebase.apps !== undefined) {
-        initChat();
+        initFirebase();
     } else {
-        loadSequential(FB_SCRIPTS, 0, initChat);
+        loadSequential(FB_SCRIPTS, 0, initFirebase);
     }
 })();

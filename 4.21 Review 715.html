@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>Review Note | The Apron Strings</title>
+    <title>Review Note | The Car Wash Gospel</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
@@ -59,52 +59,66 @@
                 <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
             </div>
             <table class="w-full text-left"><tbody class="divide-y divide-white/5">
-                <tr><td class="p-4"><b class="text-white">do some busywork</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">의미 없는 잡일을 좀 하다 / 생색용 잡무를 하다</td></tr>
-                <tr><td class="p-4"><b class="text-white">minimum wage</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">최저임금</td></tr>
-                <tr><td class="p-4"><b class="text-white">freshly-baked</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">갓 구운</td></tr>
-                <tr><td class="p-4"><b class="text-white">living wage</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">생활임금</td></tr>
+                <tr><td class="p-4"><b class="text-white">cushy</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">편하고 수월한 / 꿀 같은</td></tr>
+                <tr><td class="p-4"><b class="text-white">they always supported me</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그들은 항상 나를 지지해줬다</td></tr>
+                <tr><td class="p-4"><b class="text-white">find a way</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">방법을 찾다</td></tr>
+                <tr><td class="p-4"><b class="text-white">except for</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">~을 제외하고</td></tr>
+                <tr><td class="p-4"><b class="text-white">time is flying</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">시간이 정말 빨리 간다</td></tr>
+                <tr><td class="p-4"><b class="text-white">windshield</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">앞유리</td></tr>
+                <tr><td class="p-4"><b class="text-white">on my feet all day</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">하루 종일 서서 일하는</td></tr>
+                <tr><td class="p-4"><b class="text-white">in the red</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">적자인 / 돈이 부족한</td></tr>
+                <tr><td class="p-4"><b class="text-white">went out of business</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">폐업했다 / 문을 닫았다</td></tr>
             </tbody></table>
         </section>
 
         <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="glass rounded-2xl p-6 border border-white/5"><h3 class="text-amber-500 font-bold mb-2">busywork</h3><p class="text-sm text-slate-300">꼭 필요하지 않은데 그냥 바쁘게 보이려고 하거나 시간 때우기용으로 하는 잡일을 뜻해요.</p></div>
-            <div class="glass rounded-2xl p-6 border border-white/5"><h3 class="text-amber-500 font-bold mb-2">living wage</h3><p class="text-sm text-slate-300">법으로 정한 minimum wage보다 의미가 더 커요. 실제로 기본적인 생활이 가능한 수준의 임금을 뜻해요.</p></div>
-            <div class="glass rounded-2xl p-6 border border-white/5"><h3 class="text-amber-500 font-bold mb-2">freshly-baked</h3><p class="text-sm text-slate-300">빵에만 쓰는 건 아니고, “방금 막 만들어진” 느낌을 주는 표현이에요.</p></div>
+            <div class="glass p-4 rounded-xl text-sm text-slate-300"><strong class="text-teal-400">cushy:</strong> 편하고 쉬운, 소위 “꿀 같은” 일을 말해요.</div>
+            <div class="glass p-4 rounded-xl text-sm text-slate-300"><strong class="text-teal-400">find a way:</strong> 문제를 해결할 방법을 마련하라는 뜻으로 자주 써요.</div>
+            <div class="glass p-4 rounded-xl text-sm text-slate-300"><strong class="text-teal-400">in the red:</strong> 적자 상태이거나 재정적으로 마이너스인 상태예요.</div>
+            <div class="glass p-4 rounded-xl text-sm text-slate-300"><strong class="text-teal-400">went out of business:</strong> 가게나 회사가 완전히 문을 닫았다는 뜻이에요.</div>
         </section>
 
         <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
             <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
-                <p class="mb-6">My worst part-time job was at a bakery that looked charming from the outside and smelled like heaven on the inside. This is how they get you.</p>
-                <p class="mb-6">The front window was always full of <b class="highlight quiz-target" data-ans="freshly-baked" data-kor="갓 구운">freshly-baked</b> croissants and glossy fruit tarts, and people would stop on the sidewalk just to stare. It gave the place an air of decency. You assumed that anyone selling something so pretty must also be decent. That was my first mistake.</p>
-                <p class="mb-6">My boss, Mr. Han, believed in suffering as a management style. On my first day, he handed me an apron, pointed at a sink full of sticky trays, and told me to <b class="highlight quiz-target" data-ans="do some busywork" data-kor="의미 없는 잡일을 좀 하다">do some busywork</b> until he “figured out where to put me.” That phrase turned out to mean everything no one else wanted to do. I wiped tables that were already clean. I folded boxes nobody used. I carried flour from one shelf to another and then, later, back again. It was like being employed by a very petty ghost.</p>
-                <p class="mb-6">For this, I was paid <b class="highlight quiz-target" data-ans="minimum wage" data-kor="최저임금">minimum wage</b>, which Mr. Han spoke about as if it were a personal favor. If I took too long in the bathroom, he acted as though I were stealing from his children. If I leaned for even a second, he appeared beside me and asked whether I thought I was on vacation.</p>
-                <p class="mb-6">One afternoon, a customer asked if all the workers got free bread at the end of the day. I laughed, because I thought she was joking. Mr. Han answered for me. He said, “No. Then they’d have no reason to work hard.” The customer looked embarrassed. I looked homicidal.</p>
-                <p class="mb-6">The final insult came on payday. My check was short. Not by a clerical, easily forgiven amount. By enough to notice. When I asked about it, Mr. Han said he had deducted money for “training inefficiency,” which is not a legal phrase, though he said it with confidence. Then he launched into one of his little speeches about how young people didn’t understand the difference between <b class="highlight quiz-target" data-ans="minimum wage" data-kor="최저임금">minimum wage</b> and a <b class="highlight quiz-target" data-ans="living wage" data-kor="생활임금">living wage</b>. According to him, if I wanted a <b class="highlight quiz-target" data-ans="living wage" data-kor="생활임금">living wage</b>, I should become the kind of person who deserved one.</p>
-                <p class="mb-6">That night, I stayed late to close. Alone.</p>
-                <p class="mb-6">The bakery had a huge custom cake order for the next morning, already boxed, labeled, and waiting in the walk-in fridge. Very elegant. Very expensive. Written on top in flawless icing: “Happy 70th Birthday, Mother.”</p>
-                <p class="mb-6">I did not destroy it. I’m not a maniac.</p>
-                <p class="mb-6">I just changed one word.</p>
-                <p class="mb-6">The next morning, before my shift even started, my phone exploded. Mr. Han called six times. Then he texted: WHAT DID YOU DO</p>
-                <p class="mb-6">What I had done was turn “Mother” into “Moth.” It was subtle. Beautiful, even. Still technically readable, just suddenly much less loving.</p>
-                <p class="mb-6">I never went back. He still owed me forty-three dollars.</p>
-                <p class="mb-6">Honestly, it was worth it.</p>
+                <p class="mb-6">My worst part-time job was at a hand car wash owned by a man named Victor, who spoke like a motivational poster that had started drinking. He told me the job would be <b class="highlight quiz-target" data-ans="cushy" data-kor="편하고 수월한">cushy</b>. He said all I had to do was smile, rinse cars, and enjoy the sunshine.</p>
+                <p class="mb-6">In reality, I was <b class="highlight quiz-target" data-ans="on my feet all day" data-kor="하루 종일 서서 일하는">on my feet all day</b>, breathing soap fumes and listening to Victor explain why he couldn’t possibly pay us properly because the business was always <b class="highlight quiz-target" data-ans="in the red" data-kor="적자인">in the red</b>. He loved saying that. We were <b class="highlight quiz-target" data-ans="in the red" data-kor="적자인">in the red</b>. Supplies were expensive. Customers were cheap. Life was unfair. And yet Victor still managed to buy himself new sunglasses every month, the kind that made him look like a divorced magician.</p>
+                <p class="mb-6">Any time something went wrong, he’d clap his hands and say, “Come on. <b class="highlight quiz-target" data-ans="find a way" data-kor="방법을 찾다">Find a way</b>.” The hose broke? <b class="highlight quiz-target" data-ans="find a way" data-kor="방법을 찾다">Find a way</b>. The vacuum died? <b class="highlight quiz-target" data-ans="find a way" data-kor="방법을 찾다">Find a way</b>. A customer screamed because his cup holder was still damp? <b class="highlight quiz-target" data-ans="find a way" data-kor="방법을 찾다">Find a way</b>. The only problem he never found a way to solve was payroll.</p>
+                <p class="mb-6">He shaved hours off my time sheet twice. The second time, when I confronted him, he leaned back in his office chair and gave me a speech about hard work, personal responsibility, and all the other virtues he liked in people he was underpaying. Then he told me I was lucky to have the job.</p>
+                <p class="mb-6">That was the moment I stopped arguing.</p>
+                <p class="mb-6">Victor had one real weakness, <b class="highlight quiz-target" data-ans="except for" data-kor="~을 제외하고">except for</b> greed, which was too obvious to count. He was obsessed with online reviews. He read them constantly. He quoted the good ones out loud. He blamed us for the bad ones. He had a little sign by the register asking customers to leave five stars “for our family business,” which was rich, considering he treated the staff like captured enemies.</p>
+                <p class="mb-6">So I started keeping records.</p>
+                <p class="mb-6">Photos of the time sheet before and after he edited it. Texts where he told me to clock out and keep working. Voice notes where he explained that overtime was “for people with office jobs.” Then I waited.</p>
+                <p class="mb-6"><b class="highlight quiz-target" data-ans="time is flying" data-kor="시간이 정말 빨리 간다">Time is flying</b>, which is what happens when you are plotting with a calm heart.</p>
+                <p class="mb-6">One Saturday, the place was packed. Cars lined up around the block. Victor strutted around in mirrored sunglasses, barking at everybody. In the middle of the rush, a customer came storming out because his SUV still had streaks across the <b class="highlight quiz-target" data-ans="windshield" data-kor="앞유리">windshield</b>. Victor pointed at me and started yelling in front of everyone.</p>
+                <p class="mb-6">That was when I printed every record I had and taped them to the front window.</p>
+                <p class="mb-6">Wage theft. Edited hours. Unpaid labor. Threats.</p>
+                <p class="mb-6">Customers standing in line read everything. One man took pictures. Two workers walked off. A woman in a Lexus asked Victor if he was serious, then drove away without paying for the wash.</p>
+                <p class="mb-6">By Monday, the labor board had called. By Friday, half the staff had filed complaints.</p>
+                <p class="mb-6">Three months later, the place <b class="highlight quiz-target" data-ans="went out of business" data-kor="폐업했다">went out of business</b>.</p>
+                <p class="mb-6">Victor said the economy killed him.</p>
+                <p class="mb-6">I prefer a more exact phrase.</p>
+                <p class="mb-6">We found a way.</p>
             </div>
             <hr class="border-white/10">
             <div class="text-slate-400 italic leading-relaxed space-y-6">
-                <p class="mb-6">내가 해본 최악의 아르바이트는 겉에서 보면 사랑스러워 보이고, 안에 들어가면 천국 냄새가 나는 한 빵집이었다. 바로 이런 식으로 사람을 낚는 거다.</p>
-                <p class="mb-6">앞 유리창에는 늘 <b class="highlight">갓 구운</b> 크루아상과 반짝이는 과일 타르트가 가득했고, 사람들은 인도에 멈춰 서서 그것들을 바라보곤 했다. 그 가게는 괜히 점잖아 보였다. 그렇게 예쁜 걸 파는 사람은 분명 괜찮은 사람일 거라고 생각하게 된다. 그게 내 첫 번째 실수였다.</p>
-                <p class="mb-6">내 사장 한 씨는 고통을 경영 방식이라고 믿는 사람이었다. 첫날 그는 앞치마를 하나 건네주고 끈적한 쟁반이 가득한 싱크대를 가리키며 자기가 “날 어디에 둘지 생각할 동안” <b class="highlight">의미 없는 잡일을 좀 하다</b>라고 했다. 알고 보니 그 말은 아무도 하기 싫어하는 일을 다 하라는 뜻이었다. 이미 깨끗한 테이블을 또 닦았다. 아무도 쓰지 않는 상자를 접었다. 밀가루 포대를 한 선반에서 다른 선반으로 옮겼다가, 나중에는 다시 원래 자리로 옮겼다. 마치 아주 쪼잔한 유령 밑에서 일하는 기분이었다.</p>
-                <p class="mb-6">그 대가로 내가 받은 건 <b class="highlight">최저임금</b>이었다. 그런데 한 씨는 그걸 마치 개인적인 은혜처럼 말했다. 내가 화장실에서 조금만 오래 있으면 자기 자식들한테서 돈을 훔친 것처럼 굴었다. 내가 잠깐이라도 기대기만 하면 바로 옆에 나타나 내가 휴가라도 온 줄 아느냐고 물었다.</p>
-                <p class="mb-6">어느 오후, 한 손님이 직원들은 하루 끝나고 남은 빵을 공짜로 받느냐고 물었다. 나는 그게 농담인 줄 알고 웃었다. 하지만 한 씨가 내 대신 대답했다. “아니요. 그러면 열심히 일할 이유가 없잖아요.” 손님은 민망해 보였다. 나는 살짝 살의가 생겼다.</p>
-                <p class="mb-6">마지막 모욕은 월급날에 왔다. 내 급여가 적게 들어와 있었다. 단순한 실수라고 넘어갈 수 있는 정도가 아니라, 누가 봐도 눈에 띄는 금액만큼. 내가 이유를 묻자 한 씨는 “교육 비효율” 비용을 뺐다고 했다. 물론 그런 표현은 법적인 말이 아니다. 하지만 그는 아주 자신 있게 말했다. 그리고는 요즘 젊은 사람들은 <b class="highlight">최저임금</b>과 <b class="highlight">생활임금</b>의 차이도 모른다고 훈계하기 시작했다. 그의 말에 따르면 내가 <b class="highlight">생활임금</b>을 원한다면, 먼저 그걸 받을 자격이 있는 사람이 되어야 했다.</p>
-                <p class="mb-6">그날 밤 나는 마감 때문에 늦게까지 남아 있었다. 혼자서.</p>
-                <p class="mb-6">그 빵집에는 다음 날 아침 나갈 맞춤 케이크 주문이 하나 있었는데, 이미 상자에 담겨 라벨까지 붙은 채 냉장고 안에 들어 있었다. 아주 우아했고, 아주 비쌌다. 위에는 완벽한 아이싱 글씨로 이렇게 적혀 있었다. “Happy 70th Birthday, Mother.”</p>
-                <p class="mb-6">나는 그걸 망가뜨리진 않았다. 나는 미치광이는 아니니까.</p>
-                <p class="mb-6">그냥 단어 하나만 바꿨다.</p>
-                <p class="mb-6">다음 날 아침, 출근도 하기 전에 내 휴대폰이 난리가 났다. 한 씨는 여섯 번이나 전화했다. 그리고 문자를 보냈다. “대체 무슨 짓을 한 거야”</p>
-                <p class="mb-6">내가 한 일은 “Mother”를 “Moth”로 바꿔놓은 것이었다. 미묘했다. 어쩌면 아름답기까지 했다. 여전히 읽히긴 했지만, 갑자기 훨씬 덜 사랑스러워졌을 뿐이다.</p>
-                <p class="mb-6">나는 다시는 그곳에 가지 않았다. 그는 아직도 내 돈 43달러를 떼먹은 상태다.</p>
-                <p class="mb-6">그래도 솔직히, 그만한 값어치는 있었다.</p>
+                <p>내가 해본 최악의 아르바이트는 빅터라는 남자가 운영하는 손세차장에서 한 일이었다. 그는 술 마신 동기부여 포스터처럼 말하는 사람이었다. 그는 이 일이 꽤 <b class="highlight">편하고 수월한</b> 일일 거라고 했다. 그냥 웃으면서 차를 헹구고 햇빛을 즐기면 된다고 했다.</p>
+                <p>실제로는 나는 <b class="highlight">하루 종일 서서 일했고</b>, 비누 냄새를 들이마시며 왜 제대로 월급을 줄 수 없는지에 대한 빅터의 설명을 들어야 했다. 가게는 늘 <b class="highlight">적자 상태</b>라고 했다. 그는 그 말을 정말 좋아했다. 가게는 적자고, 물건값은 비싸고, 손님은 인색하고, 인생은 불공평하다는 식이었다. 그런데도 그는 매달 새 선글라스를 샀다. 이혼한 마술사처럼 보이게 만드는 종류의 선글라스였다.</p>
+                <p>뭔가 잘못될 때마다 그는 손뼉을 치며 “자, <b class="highlight">방법을 찾아</b>”라고 말했다. 호스가 고장 나도 <b class="highlight">방법을 찾아라</b>. 청소기가 멈춰도 <b class="highlight">방법을 찾아라</b>. 컵홀더가 아직 젖어 있다고 손님이 소리 질러도 <b class="highlight">방법을 찾아라</b>. 그가 끝내 방법을 찾지 못한 유일한 문제는 임금 지급이었다.</p>
+                <p>그는 내 근무 시간을 두 번이나 깎았다. 두 번째로 그랬을 때 내가 따지자, 그는 사무실 의자에 기대앉아 근면함, 개인의 책임감, 그리고 자기가 늘 돈을 적게 주는 사람들에게서 좋아하는 온갖 미덕에 대해 설교했다. 그리고는 내가 이 일이라도 있는 걸 다행으로 생각해야 한다고 말했다.</p>
+                <p>그 순간 나는 더는 말다툼하지 않기로 했다.</p>
+                <p>빅터에게는 진짜 약점이 하나 있었는데, 탐욕은 너무 뻔하니 <b class="highlight">~을 제외하고</b> 말하자면, 온라인 리뷰에 집착한다는 점이었다. 그는 리뷰를 늘 읽었다. 좋은 리뷰는 큰 소리로 읽었고, 나쁜 리뷰는 전부 직원 탓으로 돌렸다. 계산대 옆에는 “우리 가족 사업을 위해” 별점 다섯 개를 남겨 달라는 작은 안내문도 붙어 있었다. 직원을 포로처럼 부려 먹는 사람이 하기에 참 대단한 말이었다.</p>
+                <p>그래서 나는 기록을 모으기 시작했다.</p>
+                <p>수정 전후의 근무표 사진. 퇴근 처리하고 계속 일하라고 한 문자. 초과근무 수당은 “사무직에게나 있는 것”이라고 말한 음성 녹음. 그리고 기다렸다.</p>
+                <p>복수할 마음이 차분하면 <b class="highlight">시간이 정말 빨리 간다</b>.</p>
+                <p>어느 토요일, 세차장은 손님으로 꽉 찼다. 차들이 블록 끝까지 줄을 섰다. 빅터는 거울 선글라스를 쓰고 돌아다니며 모두에게 소리를 질렀다. 한 손님이 SUV <b class="highlight">앞유리</b>에 얼룩이 남아 있다며 씩씩거리며 나왔고, 빅터는 사람들 앞에서 나를 가리키며 소리쳤다.</p>
+                <p>바로 그때였다. 나는 준비해둔 모든 자료를 출력해서 가게 앞 유리에 붙였다.</p>
+                <p>임금 체불. 근무 시간 조작. 무급 노동. 협박.</p>
+                <p>줄 서 있던 손님들이 그걸 전부 읽었다. 어떤 남자는 사진을 찍었다. 직원 두 명은 바로 나가 버렸다. 렉서스를 탄 여자는 빅터에게 정말 이게 사실이냐고 묻고는 세차도 안 하고 그냥 돌아갔다.</p>
+                <p>월요일에는 노동청에서 연락이 왔다. 금요일에는 직원 절반이 신고를 넣었다.</p>
+                <p>세 달 뒤, 그 가게는 <b class="highlight">폐업했다</b>.</p>
+                <p>빅터는 경제가 자기를 죽였다고 말했다.</p>
+                <p>나는 더 정확한 표현을 선호한다.</p>
+                <p>우리가 방법을 찾은 것이다.</p>
             </div>
         </section>
 
@@ -163,7 +177,7 @@
             }
         }
 
-        document.getElementById('player').src = "421715.m4a";
+        document.getElementById('player').src = "421630.m4a";
     </script>
     <script src="wordbank-utils.js"></script>
     <script src="chat.js"></script>

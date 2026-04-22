@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | Under the Tent Light</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🍢</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">Under the Tent Light</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">keep an ear open for you</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">너를 위해 소식이 들리면 귀 기울여 볼게 / 알아봐 줄게</td></tr>
+                <tr><td class="p-4"><b class="text-white">greedy</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">욕심 많은 / 탐욕스러운</td></tr>
+                <tr><td class="p-4"><b class="text-white">petty</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">속 좁은 / 하찮은 일에 집착하는</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl text-sm text-slate-300"><b>keep an ear open for you:</b> 직역하면 “귀를 열어 두다”지만, 실제로는 “관련된 소식이 있는지 신경 써서 들어봐 줄게”라는 뜻이에요.</div>
+            <div class="glass p-5 rounded-2xl text-sm text-slate-300"><b>greedy:</b> 단순히 “많이 원하는” 정도가 아니라, 필요 이상으로 가지려는 부정적인 뉘앙스가 있어요.</div>
+            <div class="glass p-5 rounded-2xl text-sm text-slate-300"><b>petty:</b> 사소한 일에 집착하거나 속이 좁은 태도를 말할 때 자주 써요.</div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">When he broke up with me, I did not cry right away. That was the strangest part. I just sat there in the café, looking at his mouth moving, thinking that maybe I had missed one sentence before this one, some important sentence that would make the rest make sense.</p>
+                <p class="mb-6">But there was no missing sentence.</p>
+                <p class="mb-6">He said he had been unhappy for a while. He said he did not think we were right for each other anymore. He said it gently, almost kindly, and that somehow made it worse. I nodded like a polite stranger while something inside me quietly cracked.</p>
+                <p class="mb-6">On the subway home, I kept staring at my reflection in the dark window. I felt heat rising in my face, not from sadness at first, but from humiliation. I had really believed we were fine. I had gone on believing it right up to that afternoon. I felt stupid in a deep, private way, as if I had failed at something everyone else understood naturally.</p>
+                <p class="mb-6">My friend Jiyu called as soon as I texted her. I tried to sound normal, but she heard everything in the silence between my words. She told me to meet her outside Exit 3.</p>
+                <p class="mb-6">She was waiting there in a gray cardigan, already walking before I reached her. She led me to a pojangmacha tucked between a convenience store and a shuttered shop. Inside, the warm air smelled like frying oil and soup stock. The plastic walls trembled whenever the wind pushed against them.</p>
+                <p class="mb-6">Jiyu ordered soju, fish cake soup, and a plate of greasy kimchi pancakes. I said I was not hungry, so she pushed a pair of chopsticks into my hand and told me to stop talking nonsense.</p>
+                <p class="mb-6">Then I started talking. I told her I felt embarrassed, then angry for feeling embarrassed. I said maybe he had been <b class="highlight quiz-target" data-ans="petty" data-kor="속 좁은">petty</b>, storing up little complaints without ever saying them out loud. Then I got meaner. I said maybe he was just <b class="highlight quiz-target" data-ans="greedy" data-kor="욕심 많은">greedy</b>, wanting the comfort of love without the work of honesty.</p>
+                <p class="mb-6">Jiyu listened without interrupting. When I finally ran out of words, she poured me half a glass of soju.</p>
+                <p class="mb-6">“Maybe some of that is true,” she said. “But tonight, you do not have to solve his personality.”</p>
+                <p class="mb-6">I laughed a little at that, even though my eyes were burning.</p>
+                <p class="mb-6">She tore a pancake in half and placed the crispest piece on my plate. Then she said, very quietly, “You are not a fool. You trusted someone. That is different.”</p>
+                <p class="mb-6">Something in me softened.</p>
+                <p class="mb-6">On the way out, the night air felt colder and cleaner. At the corner, Jiyu touched my arm and said she would <b class="highlight quiz-target" data-ans="keep an ear open for you" data-kor="알아봐 줄게">keep an ear open for you</b> in case she heard about a good apartment, a new class, anything at all that might help me begin to feel like myself again.</p>
+                <p class="mb-6">I nodded. My heart still hurt, but it was no longer all darkness. There, under the weak streetlight, with the taste of soju and grease still warm in my mouth, I felt the smallest return of hope.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">그가 나에게 헤어지자고 했을 때, 나는 바로 울지 않았다. 그게 가장 이상한 부분이었다. 나는 그저 카페에 앉아 그의 입이 움직이는 것을 보면서, 어쩌면 그 전에 어떤 중요한 한 문장을 놓친 건 아닐까 생각했다. 그 한 문장만 있었으면 나머지 모든 것이 이해됐을 것 같았다.</p>
+                <p class="mb-6">하지만 놓친 문장은 없었다.</p>
+                <p class="mb-6">그는 한동안 행복하지 않았다고 말했다. 이제는 우리가 더 이상 서로에게 맞지 않는 것 같다고 말했다. 그는 부드럽게, 거의 친절하게 말했는데, 이상하게도 그게 더 아팠다. 나는 공손한 낯선 사람처럼 고개를 끄덕였고, 내 안에서는 무언가가 조용히 갈라지고 있었다.</p>
+                <p class="mb-6">집으로 가는 지하철 안에서 나는 어두운 창문에 비친 내 모습을 계속 바라보았다. 처음엔 슬픔보다 수치심 때문에 얼굴이 뜨거워졌다. 나는 정말 우리가 괜찮다고 믿고 있었다. 바로 그날 오후까지도 계속 그렇게 믿고 있었다. 나는 아주 깊고 사적인 방식으로 바보가 된 기분이었다. 마치 모두가 자연스럽게 아는 무언가를 나만 실패한 사람처럼 느껴졌다.</p>
+                <p class="mb-6">친구 지유는 내가 문자를 보내자마자 전화를 걸어왔다. 나는 괜찮은 척 말하려 했지만, 그녀는 내 말 사이의 침묵에서 모든 것을 알아들었다. 그녀는 3번 출구 밖으로 나오라고 했다.</p>
+                <p class="mb-6">회색 카디건을 입은 지유는 거기서 기다리고 있었고, 내가 도착하자마자 곧바로 걷기 시작했다. 그녀는 편의점과 문 닫은 가게 사이에 끼어 있는 포장마차로 나를 데려갔다. 안에는 튀김 기름 냄새와 국물 냄새가 따뜻하게 섞여 있었다. 바깥바람이 밀어올 때마다 비닐 벽이 가볍게 떨렸다.</p>
+                <p class="mb-6">지유는 소주와 어묵국, 그리고 기름진 김치전을 주문했다. 나는 배고프지 않다고 했지만, 그녀는 내 손에 젓가락을 쥐여 주며 헛소리하지 말라고 했다.</p>
+                <p class="mb-6">그러자 내가 말을 쏟아내기 시작했다. 창피하다고, 그리고 창피하다고 느끼는 나 자신에게 화가 난다고 말했다. 어쩌면 그는 아주 <b class="highlight">속 좁게</b>, 사소한 불만들을 차곡차곡 쌓아 두면서도 한 번도 입 밖으로 내지 않았던 건지도 모른다고 말했다. 그러다 나는 더 못되게 말하기 시작했다. 어쩌면 그는 그저 <b class="highlight">욕심이 많아서</b>, 사랑이 주는 편안함은 원하면서도 솔직해야 하는 수고는 하기 싫었던 걸지도 모른다고 말했다.</p>
+                <p class="mb-6">지유는 내 말을 끊지 않고 들어주었다. 내가 마침내 할 말을 다 쏟아냈을 때, 그녀는 내 잔에 소주를 반쯤 따라 주었다.</p>
+                <p class="mb-6">“그 말들 중 일부는 맞을 수도 있어,” 그녀가 말했다. “하지만 오늘 밤 네가 그의 성격을 다 분석할 필요는 없어.”</p>
+                <p class="mb-6">나는 눈이 화끈거리는 와중에도 조금 웃었다.</p>
+                <p class="mb-6">지유는 김치전을 반으로 찢어 가장 바삭한 조각을 내 접시에 올려 주었다. 그리고 아주 조용히 말했다.</p>
+                <p class="mb-6">“너는 바보가 아니야. 너는 누군가를 믿은 거야. 그건 다른 일이야.”</p>
+                <p class="mb-6">그 말에 내 안의 무언가가 조금 부드러워졌다.</p>
+                <p class="mb-6">밖으로 나왔을 때 밤공기는 더 차갑고 더 맑게 느껴졌다. 모퉁이에서 지유는 내 팔을 가볍게 건드리며, 괜찮은 집이나 새로운 수업 같은 것, 뭐든 내가 다시 나 자신을 찾는 데 도움이 될 만한 소식이 들리면 <b class="highlight">신경 써서 알아봐 줄게</b>라고 말했다.</p>
+                <p class="mb-6">나는 고개를 끄덕였다. 여전히 마음은 아팠지만, 더 이상 온통 어둠뿐은 아니었다. 희미한 가로등 아래에서, 입안에 남아 있는 소주와 기름진 음식의 따뜻한 맛과 함께, 나는 아주 작게나마 희망이 돌아오는 것을 느꼈다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "422715.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

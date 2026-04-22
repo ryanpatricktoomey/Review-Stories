@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | Greasy Food Under the Blue Tarp</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🍶</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">Greasy Food Under the Blue Tarp</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">coworker</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">직장 동료</td></tr>
+                <tr><td class="p-4"><b class="text-white">mixed them up</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그것들을 헷갈렸다 / 뒤섞었다</td></tr>
+                <tr><td class="p-4"><b class="text-white">put them in backwards</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">거꾸로 넣었다</td></tr>
+                <tr><td class="p-4"><b class="text-white">fickle</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">변덕스러운</td></tr>
+                <tr><td class="p-4"><b class="text-white">capricious</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">변덕스러운 / 종잡을 수 없는</td></tr>
+                <tr><td class="p-4"><b class="text-white">hold a grudge</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">원한을 품다 / 뒤끝이 있다</td></tr>
+                <tr><td class="p-4"><b class="text-white">have a grudge against</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">~에게 원한이 있다</td></tr>
+                <tr><td class="p-4"><b class="text-white">you'll get yours</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">너도 벌 받을 거야 / 너도 대가를 치를 거야</td></tr>
+                <tr><td class="p-4"><b class="text-white">had a disagreement</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">의견 충돌이 있었다 / 다툼이 있었다</td></tr>
+                <tr><td class="p-4"><b class="text-white">argued</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">말다툼했다 / 언쟁했다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl text-sm text-slate-300"><b>mixed them up:</b> 단순히 “섞었다”보다 “헷갈려서 잘못 구분했다”는 뜻으로 자주 써요.</div>
+            <div class="glass p-5 rounded-2xl text-sm text-slate-300"><b>put them in backwards:</b> 물건의 앞뒤를 반대로 넣었다는 뜻이에요. 일상적으로 많이 쓰여요.</div>
+            <div class="glass p-5 rounded-2xl text-sm text-slate-300"><b>fickle / capricious:</b> 둘 다 “변덕스러운”이지만, capricious가 더 문어적이고 조금 더 강한 느낌이에요.</div>
+            <div class="glass p-5 rounded-2xl text-sm text-slate-300"><b>hold a grudge:</b> 서운한 일을 오래 기억하며 뒤끝을 가지는 느낌이에요.</div>
+            <div class="glass p-5 rounded-2xl text-sm text-slate-300"><b>have a grudge against:</b> 특정 상대방에게 앙심이나 원한을 품고 있다는 뜻이에요.</div>
+            <div class="glass p-5 rounded-2xl text-sm text-slate-300"><b>you’ll get yours:</b> 직역보다 “언젠가 너도 대가를 치를 거야”라는 뉘앙스가 중요해요. 다소 차갑고 위협적으로 들릴 수 있어요.</div>
+            <div class="glass p-5 rounded-2xl text-sm text-slate-300"><b>had a disagreement:</b> 직접적으로 “싸웠다”보다 부드럽게 말하는 표현이에요.</div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">The day my boyfriend broke up with me, I was still answering emails at work as if nothing had happened. My screen was full of ordinary things. A message from a <b class="highlight quiz-target" data-ans="coworker" data-kor="직장 동료">coworker</b>. A calendar alert. A draft I had promised to finish before lunch. Everything looked the same, and that was what made it so strange.</p>
+                <p class="mb-6">The night before, he had sat across from me and said he did not want to do this anymore. His voice was calm. Too calm. I kept thinking there must be some mistake, that I had <b class="highlight quiz-target" data-ans="mixed them up" data-kor="그것들을 헷갈렸다">mixed them up</b>, the way people do with small things, like socks from the dryer or keys in a dark bag. Maybe I had <b class="highlight quiz-target" data-ans="put them in backwards" data-kor="거꾸로 넣었다">put them in backwards</b> somehow. Maybe I had been reading the whole relationship the wrong way.</p>
+                <p class="mb-6">What hurt was not only that he left. It was the stupid feeling afterward. I kept replaying our last few months, looking for signs. A pause in his texts. A flat look on his face. A tired smile. Had he always seemed so <b class="highlight quiz-target" data-ans="fickle" data-kor="변덕스러운">fickle</b>? Or was I only calling him that now because I was angry? Maybe <b class="highlight quiz-target" data-ans="capricious" data-kor="변덕스러운">capricious</b> was the better word. He had changed direction so suddenly that I felt seasick.</p>
+                <p class="mb-6">At seven, my friend Mina came to my office and did not ask whether I wanted to go out. She just took my bag from the chair and said, “Come on.”</p>
+                <p class="mb-6">She dragged me to a pojangmacha near the station, the kind with a blue plastic roof and fogged-up windows. The table was sticky. The air smelled like sesame oil, frying batter, and rain. Mina ordered soju, tteokbokki, and a plate of greasy pancakes.</p>
+                <p class="mb-6">At first I talked too fast. I said I was embarrassed. I said I felt humiliated that I had not seen it coming. I said maybe he had <b class="highlight quiz-target" data-ans="held a grudge" data-kor="원한을 품다">held a grudge</b> over things I did not even know about. Maybe he had <b class="highlight quiz-target" data-ans="had a grudge against" data-kor="~에게 원한이 있다">had a grudge against</b> me for being busy, or tired, or ordinary. Then, in an ugly voice I did not recognize as mine, I said, “Fine. He’ll get his.”</p>
+                <p class="mb-6">Mina poured me another shot and shook her head gently. “No,” she said. “You two <b class="highlight quiz-target" data-ans="had a disagreement" data-kor="의견 충돌이 있었다">had a disagreement</b> about what this relationship was, maybe. Maybe you even <b class="highlight quiz-target" data-ans="argued" data-kor="말다툼했다">argued</b> in ways you did not notice. But this is not proof that you are stupid. It only means he did not tell you the truth soon enough.”</p>
+                <p class="mb-6">I started crying then, not beautifully, just honestly. Mina pushed the pancakes closer to me and told me to eat while they were hot.</p>
+                <p class="mb-6">Later, under the weak yellow light, my face swollen and my heart still sore, I felt something loosen inside me. Not healing exactly. Just a small space where healing could begin. The night was still sad, but it no longer felt endless. Mina walked me home, and for the first time all day, I believed that my life was still mine.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">남자친구가 나에게 헤어지자고 한 날, 나는 아무 일도 없었던 것처럼 회사에서 여전히 이메일에 답장하고 있었다. 화면에는 평범한 것들만 가득했다. <b class="highlight">직장 동료</b>에게서 온 메시지. 일정 알림. 점심 전에 끝내겠다고 약속한 초안. 모든 것이 똑같아 보였고, 그래서 더 이상했다.</p>
+                <p class="mb-6">전날 밤, 그는 내 맞은편에 앉아 이제 그만하고 싶다고 말했다. 그의 목소리는 차분했다. 너무 차분했다. 나는 계속 무슨 착오가 있었던 게 아닐까 생각했다. 사람들이 사소한 것들을 <b class="highlight">헷갈리듯</b>, 예를 들면 건조기에서 나온 양말이나 어두운 가방 속 열쇠처럼, 내가 무언가를 <b class="highlight">헷갈린 건 아닐까</b>. 어쩌면 내가 무언가를 <b class="highlight">거꾸로 넣은 건 아닐까</b>. 어쩌면 나는 이 관계 전체를 완전히 다른 방향으로 읽고 있었던 건지도 몰랐다.</p>
+                <p class="mb-6">나를 아프게 한 건 그가 떠났다는 사실만이 아니었다. 그 뒤에 남은 바보 같은 기분이었다. 나는 지난 몇 달을 계속 되짚어 보며 신호를 찾았다. 문자에서의 잠깐의 멈춤. 무표정한 얼굴. 지친 미소. 그가 원래 그렇게 <b class="highlight">변덕스러운</b> 사람이었나? 아니면 내가 화가 나서 이제 와서 그렇게 부르는 걸까? 어쩌면 더 맞는 단어는 <b class="highlight">종잡을 수 없는</b>이었는지도 모른다. 그는 너무 갑자기 방향을 바꿨고, 나는 멀미가 나는 것 같았다.</p>
+                <p class="mb-6">일곱 시가 되자 친구 미나가 내 사무실로 왔고, 내가 나가고 싶은지 묻지도 않았다. 그냥 의자 위에 있던 내 가방을 집어 들고 말했다. “가자.”</p>
+                <p class="mb-6">미나는 나를 역 근처 포장마차로 데려갔다. 파란 비닐 지붕이 있고 창문이 김으로 뿌옇게 흐려진 그런 곳이었다. 테이블은 끈적거렸고, 공기에는 참기름 냄새와 튀김 냄새, 비 냄새가 섞여 있었다. 미나는 소주와 떡볶이, 그리고 기름진 전 한 접시를 주문했다.</p>
+                <p class="mb-6">처음에 나는 너무 빨리 말을 쏟아냈다. 창피하다고 말했다. 내가 그걸 예상하지 못했다는 사실이 너무 수치스럽다고 말했다. 어쩌면 그는 내가 모르는 일들 때문에 오래 <b class="highlight">원한을 품고</b> 있었는지도 모른다고 말했다. 어쩌면 내가 바쁘고, 피곤하고, 평범해서 나에게 <b class="highlight">앙심을 품고</b> 있었는지도 모른다고 말했다. 그러고는, 나조차 낯설게 느껴지는 못난 목소리로 말했다. “좋아. 언젠가 자기도 대가를 치를 거야.”</p>
+                <p class="mb-6">미나는 내 잔에 소주를 다시 따라 주고는 조용히 고개를 저었다. “아니,” 하고 그녀가 말했다. “너희 둘은 이 관계가 무엇인지에 대해 <b class="highlight">의견 충돌이 있었던</b> 걸지도 몰라. 어쩌면 너도 모르는 사이에 <b class="highlight">말다툼을 한</b> 방식이 있었을 수도 있고. 하지만 그게 네가 바보라는 증거는 아니야. 그건 단지 그가 진실을 충분히 일찍 말하지 않았다는 뜻일 뿐이야.”</p>
+                <p class="mb-6">그때 나는 울기 시작했다. 예쁘게 우는 게 아니라, 그냥 솔직하게 울었다. 미나는 전을 내 쪽으로 더 밀어 주며 따뜻할 때 먹으라고 했다.</p>
+                <p class="mb-6">나중에 희미한 노란 불빛 아래에서, 얼굴은 퉁퉁 붓고 마음은 여전히 아팠지만, 내 안에서 뭔가가 조금 느슨해지는 걸 느꼈다. 완전히 나아진 건 아니었다. 다만 회복이 시작될 수 있는 작은 공간이 생긴 느낌이었다. 그 밤은 여전히 슬펐지만, 더 이상 끝이 없게 느껴지지는 않았다. 미나는 나를 집까지 데려다주었고, 나는 그날 처음으로 내 삶이 여전히 내 것이라고 믿게 되었다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "422630.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

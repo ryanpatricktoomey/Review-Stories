@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | Dandelions by the Tent</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🌼</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">Dandelions by the Tent</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">dandelion</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">민들레</td></tr>
+                <tr><td class="p-4"><b class="text-white">weeds</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">잡초들</td></tr>
+                <tr><td class="p-4"><b class="text-white">plenty of fish in the sea</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">세상에 다른 사람 많아 / 좋은 사람은 많아</td></tr>
+                <tr><td class="p-4"><b class="text-white">you deserve better</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">넌 더 좋은 대우를 받을 자격이 있어 / 더 좋은 사람을 만날 자격이 있어</td></tr>
+                <tr><td class="p-4"><b class="text-white">it's complicated</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">복잡해 / 간단히 설명하기 어려워</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl text-sm text-slate-300"><b>plenty of fish in the sea:</b> 이별한 사람에게 “세상에 다른 사람 많아”라고 위로할 때 쓰는 아주 흔한 관용 표현이에요.</div>
+            <div class="glass p-5 rounded-2xl text-sm text-slate-300"><b>you deserve better:</b> 단순히 더 좋은 사람을 만나라는 뜻이 아니라, 지금 받은 대우보다 더 나은 사랑과 존중을 받을 가치가 있다는 뜻이에요.</div>
+            <div class="glass p-5 rounded-2xl text-sm text-slate-300"><b>it’s complicated:</b> 관계나 상황이 단순하지 않고, 한두 마디로 설명하기 어렵다는 뜻으로 자주 써요.</div>
+            <div class="glass p-5 rounded-2xl text-sm text-slate-300"><b>weeds:</b> 그냥 식물이 아니라, 보통 원하지 않는 잡초라는 뉘앙스가 있어요.</div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">The night he broke up with me, I kept thinking there had to be some explanation I had missed.</p>
+                <p class="mb-6">He sat across from me in a quiet café and spoke in that careful voice people use when they have already decided everything. I remember the steam lifting from his coffee. I remember the tiny scratch on the table near my hand. I remember nodding, even though I barely understood what I was agreeing to. Afterward, I walked out into the evening feeling hollow, like someone had quietly removed the center of my life and left the shape behind.</p>
+                <p class="mb-6">What hurt most was not only losing him. It was how stupid I felt. I had honestly thought we were fine. Not perfect, maybe, but fine. I kept replaying our last few weeks, searching for a sign, a warning, anything. Instead I found only ordinary moments. Grocery shopping. A movie on my couch. His sleepy voice on the phone. I had trusted those small things. That was what made me feel ashamed.</p>
+                <p class="mb-6">My friend Nari met me outside the station before I even had time to ask how she knew I needed her. She looked at my face, took my hand, and led me straight to a pojangmacha glowing under a row of streetlights. Inside, the air was warm and wet with steam. Someone was frying something in oil. A radio played softly in the corner. She ordered soju and a plate of greasy noodles and pancakes, then handed me a paper cup before I could protest.</p>
+                <p class="mb-6">At first I talked too quickly. Then I cried. Then I got angry at myself for crying.</p>
+                <p class="mb-6">Nari listened with her chin in her hand. When I said, for the fifth time, that I should have seen it coming, she shook her head.</p>
+                <p class="mb-6">“You are trying to turn this into a puzzle,” she said. “Maybe <b class="highlight quiz-target" data-ans="it's complicated" data-kor="복잡해">it's complicated</b>. Maybe he didn’t even understand his own feelings until it was too late.”</p>
+                <p class="mb-6">I stared down at the table. Outside the plastic window, a patch of <b class="highlight quiz-target" data-ans="dandelions" data-kor="민들레">dandelions</b> grew beside the curb, tangled in <b class="highlight quiz-target" data-ans="weeds" data-kor="잡초들">weeds</b> and dust.</p>
+                <p class="mb-6">Nari followed my eyes and smiled a little. “See that? People call some things flowers and some things weeds, but half the time they’re just growing where nobody expected them.”</p>
+                <p class="mb-6">I laughed, even though my face still hurt from crying.</p>
+                <p class="mb-6">A little later she said the line everyone says after a breakup: “There are <b class="highlight quiz-target" data-ans="plenty of fish in the sea" data-kor="세상에 다른 사람 많아">plenty of fish in the sea</b>.” Then she wrinkled her nose. “I hate that expression, actually.”</p>
+                <p class="mb-6">“Me too,” I said.</p>
+                <p class="mb-6">“But this part is true,” she said. “<b class="highlight quiz-target" data-ans="you deserve better" data-kor="넌 더 좋은 대우를 받을 자격이 있어">You deserve better</b>. Not because he’s a monster. Not because you need a grand lesson from this. Just because love should not leave you feeling foolish for trusting it.”</p>
+                <p class="mb-6">The words settled into me slowly, like warmth returning to cold hands.</p>
+                <p class="mb-6">When we left, the night was still cool and dark, and my heart still hurt. But something had shifted. I was not healed, not even close. Still, I felt less humiliated, less alone. The dandelions were still there by the curb, small and stubborn in the dirty edge of the city, and somehow that seemed enough for one night.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">그가 나와 헤어지자고 한 밤, 나는 내가 놓친 설명이 분명히 어딘가에 있었을 거라고 계속 생각했다.</p>
+                <p class="mb-6">그는 조용한 카페에서 내 맞은편에 앉아, 이미 모든 결정을 끝낸 사람들이 쓰는 그 신중한 목소리로 말했다. 나는 그의 커피에서 김이 올라오던 것을 기억한다. 내 손 근처 테이블에 있던 작은 흠집도 기억한다. 그리고 내가 거의 이해하지도 못한 채 고개를 끄덕였던 것도 기억한다. 그 후 밖으로 나왔을 때, 나는 텅 빈 기분이었다. 마치 누군가 내 삶의 중심을 조용히 들어내고 겉모양만 남겨 둔 것 같았다.</p>
+                <p class="mb-6">가장 아팠던 건 단지 그를 잃었다는 사실만이 아니었다. 내가 너무 바보 같다고 느껴졌다는 점이었다. 나는 정말 우리가 괜찮다고 생각했다. 완벽하진 않아도, 괜찮다고. 나는 지난 몇 주를 계속 되짚으며 신호나 경고, 뭐라도 찾으려 했다. 하지만 떠오르는 건 평범한 순간들뿐이었다. 함께 장을 보던 일. 내 소파에서 보던 영화. 전화기 너머로 들리던 그의 졸린 목소리. 나는 그런 작은 것들을 믿고 있었다. 바로 그 점이 나를 부끄럽게 만들었다.</p>
+                <p class="mb-6">친구 나리는 내가 도움이 필요하다는 말을 꺼낼 틈도 없이 역 앞에서 나를 만났다. 그녀는 내 얼굴을 보더니 내 손을 잡고 가로등 아래 환하게 빛나는 포장마차로 곧장 데려갔다. 안은 김으로 따뜻하고 축축했다. 누군가 기름에 뭔가를 튀기고 있었고, 구석에서는 라디오가 조용히 흘러나오고 있었다. 그녀는 소주와 기름진 면 요리, 전 한 접시를 주문하더니 내가 뭐라고 하기 전에 종이컵을 내 손에 쥐여 주었다.</p>
+                <p class="mb-6">처음에는 내가 너무 빨리 말했다. 그러다 울었다. 그러고는 운 자신에게 화를 냈다.</p>
+                <p class="mb-6">나리는 턱을 괸 채 내 말을 들어주었다. 내가 다섯 번째쯤 “내가 미리 알아봤어야 했는데”라고 말했을 때, 그녀는 고개를 저었다.</p>
+                <p class="mb-6">“너 지금 이걸 퍼즐처럼 풀려고 하고 있어,” 그녀가 말했다. “어쩌면 <b class="highlight">복잡한</b> 일이었을 수도 있어. 어쩌면 걔도 자기 감정을 너무 늦게야 알았는지도 모르지.”</p>
+                <p class="mb-6">나는 테이블을 내려다보았다. 비닐창 밖에는 길가 옆에 <b class="highlight">민들레</b> 몇 송이가 <b class="highlight">잡초들</b>과 먼지 사이에 엉켜 자라고 있었다.</p>
+                <p class="mb-6">나리는 내 시선을 따라가더니 조금 웃었다.</p>
+                <p class="mb-6">“저것 봐. 사람들은 어떤 건 꽃이라 하고 어떤 건 잡초라고 부르지만, 사실 절반쯤은 그냥 아무도 예상하지 못한 곳에서 자라고 있는 것뿐이야.”</p>
+                <p class="mb-6">나는 얼굴이 울어서 여전히 아팠지만 조금 웃었다.</p>
+                <p class="mb-6">조금 뒤에 그녀는 이별 후에 모두가 하는 말을 했다. “<b class="highlight">세상에 다른 사람 많아</b>.” 그러고는 코를 살짝 찡그렸다. “사실 나 이 표현 별로 안 좋아해.”</p>
+                <p class="mb-6">“나도,” 내가 말했다.</p>
+                <p class="mb-6">“그래도 이 부분은 맞아,” 그녀가 말했다. “<b class="highlight">넌 더 좋은 대우를 받을 자격이 있어</b>. 그가 아주 나쁜 사람이라서가 아니야. 이 일에서 거창한 교훈을 얻어야 해서도 아니고. 그냥 사랑이라는 게, 네가 그것을 믿었다는 이유로 바보처럼 느끼게 해서는 안 되기 때문이야.”</p>
+                <p class="mb-6">그 말은 차가운 손끝에 천천히 온기가 돌아오듯 내 안으로 천천히 스며들었다.</p>
+                <p class="mb-6">우리가 밖으로 나왔을 때 밤은 여전히 차갑고 어두웠고, 내 마음도 여전히 아팠지만 뭔가가 조금 달라져 있었다. 나는 치유된 것도 아니었고, 아직 한참 멀었다. 그래도 전보다는 덜 창피했고, 덜 외로웠다. 길가의 민들레들은 여전히 그 자리에 있었다. 도시의 더러운 가장자리에서 작고 끈질기게 버티고 있었고, 이상하게도 그걸로 그 밤은 충분한 것 같았다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "4221200.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | A Devotion to Seolleongtang</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🍲</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">A Devotion to Seolleongtang</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">latchkey kid</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">방과 후 집에 혼자 돌아와 지내는 아이</td></tr>
+                <tr><td class="p-4"><b class="text-white">bruise</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">멍, 타박상</td></tr>
+                <tr><td class="p-4"><b class="text-white">my stress melts away</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">내 스트레스가 사르르 녹아내린다</td></tr>
+                <tr><td class="p-4"><b class="text-white">slippery</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">미끄러운, 미끈하게 넘어가는</td></tr>
+                <tr><td class="p-4"><b class="text-white">hard to chew</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">씹기 어려운</td></tr>
+                <tr><td class="p-4"><b class="text-white">brew</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">우려내다, 양조하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">ferment</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">발효시키다, 발효하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">brewery</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">양조장</td></tr>
+                <tr><td class="p-4"><b class="text-white">winery</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">와이너리, 포도주 양조장</td></tr>
+                <tr><td class="p-4"><b class="text-white">mouthfeel</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">입안에서 느껴지는 질감, 구강감</td></tr>
+                <tr><td class="p-4"><b class="text-white">thick broth</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">진한 국물</td></tr>
+                <tr><td class="p-4"><b class="text-white">thin broth</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">묽은 국물</td></tr>
+                <tr><td class="p-4"><b class="text-white">hold the cilantro</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">고수는 빼 주세요</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-4 rounded-xl border border-white/10">
+                <h3 class="text-teal-400 font-bold mb-2">latchkey kid</h3>
+                <p class="text-sm text-slate-300">단순히 “열쇠를 가진 아이”가 아니라, 부모가 집에 없어서 혼자 집에 들어가 시간을 보내는 아이를 뜻해요.</p>
+            </div>
+            <div class="glass p-4 rounded-xl border border-white/10">
+                <h3 class="text-teal-400 font-bold mb-2">my stress melts away</h3>
+                <p class="text-sm text-slate-300">스트레스가 “녹아 없어진다”는 비유예요. 아주 자연스럽고 자주 쓰는 표현입니다.</p>
+            </div>
+            <div class="glass p-4 rounded-xl border border-white/10">
+                <h3 class="text-teal-400 font-bold mb-2">mouthfeel</h3>
+                <p class="text-sm text-slate-300">맛 자체보다 음식이 입안에서 어떻게 느껴지는지를 말할 때 쓰는 표현이에요.</p>
+            </div>
+            <div class="glass p-4 rounded-xl border border-white/10">
+                <h3 class="text-teal-400 font-bold mb-2">hold the cilantro</h3>
+                <p class="text-sm text-slate-300">식당에서 주문할 때 “고수는 넣지 말아 주세요”라는 뜻이에요. hold the ~는 “~는 빼 달라”는 뜻으로 많이 써요.</p>
+            </div>
+            <div class="glass p-4 rounded-xl border border-white/10">
+                <h3 class="text-teal-400 font-bold mb-2">brew / ferment</h3>
+                <p class="text-sm text-slate-300">둘 다 음식·음료 맥락에서 자주 나오지만 달라요. brew는 우려내거나 양조하는 과정이고, ferment는 미생물 작용으로 발효되는 과정이에요.</p>
+            </div>
+            <div class="glass p-4 rounded-xl border border-white/10">
+                <h3 class="text-teal-400 font-bold mb-2">thick broth / thin broth</h3>
+                <p class="text-sm text-slate-300">단순히 두껍고 얇다가 아니라, 국물의 농도와 질감을 말해요. 음식 묘사에서 매우 자연스러운 표현입니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">There are foods that impress, and there are foods that persuade. Seolleongtang belongs to the second category. It does not arrive with theatrical color or the bright vanity of garnish. In fact, one might even say <b class="highlight quiz-target" data-ans="hold the cilantro" data-kor="고수는 빼 주세요">hold the cilantro</b>, hold the flourish, hold anything that tries too hard. Seolleongtang asks to be approached with patience, because its beauty is pale, quiet, and cumulative. It does not shout. It gathers force.</p>
+                <p class="mb-6">The first marvel is the broth. A bad bowl is merely hot and white. A proper bowl has a <b class="highlight quiz-target" data-ans="thick broth" data-kor="진한 국물">thick broth</b> quality without heaviness, as though richness had learned good manners. It is not gluey, not greasy, not blunt. It coats the tongue with a gentle authority. Even when it looks modest, the <b class="highlight quiz-target" data-ans="mouthfeel" data-kor="입안에서 느껴지는 질감, 구강감">mouthfeel</b> tells another story: velvety, faintly sticky with collagen, almost luminous in the way it settles over the palate. A <b class="highlight quiz-target" data-ans="thin broth" data-kor="묽은 국물">thin broth</b> may have clarity, but seolleongtang should feel as though time itself has dissolved into the liquid.</p>
+                <p class="mb-6">And time, of course, is the whole point. Bones are left to <b class="highlight quiz-target" data-ans="brew" data-kor="우려내다, 양조하다">brew</b>, though that word is almost too delicate; they are boiled and boiled again until what seemed stubborn becomes generous. This is not exactly to <b class="highlight quiz-target" data-ans="ferment" data-kor="발효시키다, 발효하다">ferment</b>, though one is tempted to borrow the language of transformation. In a <b class="highlight quiz-target" data-ans="brewery" data-kor="양조장">brewery</b> or a <b class="highlight quiz-target" data-ans="winery" data-kor="와이너리, 포도주 양조장">winery</b>, patient change turns grain or grapes into something deeper than their origin. Seolleongtang performs a similar miracle by other means. It takes what is hard, plain, and resistant, and coaxes from it tenderness, cloudiness, grace.</p>
+                <p class="mb-6">Then there is the meat, sliced and waiting in the bowl. It must never be <b class="highlight quiz-target" data-ans="hard to chew" data-kor="씹기 어려운">hard to chew</b>. If it is, the spell is broken. Properly made, the beef has yielded completely, as though long simmering had talked it out of every last bit of toughness. Beside it come the green onions, the rice, the pepper, the salt—small acts of participation. You season your own destiny.</p>
+                <p class="mb-6">What I love most is that seolleongtang does not flatter the impatient eater. Its pleasures are incremental. A child raised on noise might miss them; an adult, or perhaps a former <b class="highlight quiz-target" data-ans="latchkey kid" data-kor="방과 후 집에 혼자 돌아와 지내는 아이">latchkey kid</b> who understands the dignity of a hot bowl waiting on the table, will not. After the first spoonful, <b class="highlight quiz-target" data-ans="my stress melts away" data-kor="내 스트레스가 사르르 녹아내린다">my stress melts away</b>. After the second, the day loses its sharp corners. Even the rice, turning a little <b class="highlight quiz-target" data-ans="slippery" data-kor="미끄러운, 미끈하게 넘어가는">slippery</b> in the soup, seems part of a grand design of comfort.</p>
+                <p class="mb-6">This is not food that dazzles like fire. It restores like weather. It does not strike the tongue like a <b class="highlight quiz-target" data-ans="bruise" data-kor="멍, 타박상">bruise</b>. It mends. And by the time the bowl is nearly empty, you are left with the strange, luxurious feeling that something inside you has been washed clean and made quiet. Seolleongtang, at its best, is not merely eaten. It is received.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">감탄하게 만드는 음식이 있고, 사람을 서서히 설득하는 음식이 있다. 설렁탕은 분명 후자에 속한다. 그것은 화려한 색이나 장식의 허영과 함께 등장하지 않는다. 사실 이렇게 말할 수도 있다. 고수는 빼 주세요, 장식도 빼고, 지나치게 애쓰는 모든 것도 빼 달라고. 설렁탕은 인내심을 가지고 다가가야 하는 음식이다. 그 아름다움은 희고, 조용하며, 조금씩 쌓여 간다. 그것은 외치지 않는다. 대신 힘을 모은다.</p>
+                <p class="mb-6">첫 번째 경이로움은 국물이다. 형편없는 한 그릇은 그저 뜨겁고 희기만 하다. 제대로 된 설렁탕은 무겁지 않으면서도 진한 국물의 성질을 지닌다. 마치 깊은 맛이 예의를 배운 것 같다. 끈적하게 탁하지도 않고, 기름지지도 않고, 둔탁하게도 않다. 그것은 혀를 부드러운 권위로 감싼다. 겉보기에는 수수해 보여도, 입안에서 느껴지는 질감은 전혀 다른 이야기를 들려준다. 벨벳 같고, 콜라겐 때문에 살짝 달라붙는 듯하며, 입천장 위에 내려앉는 방식마저 거의 빛나는 듯하다. 묽은 국물도 나름의 맑음을 가질 수 있겠지만, 설렁탕은 마치 시간이 그 자체로 녹아 국물이 된 것처럼 느껴져야 한다.</p>
+                <p class="mb-6">그리고 물론 그 핵심은 시간이다. 뼈는 우려진다고 말할 수 있겠지만, 그 단어는 거의 너무 섬세하다. 실제로는 몇 번이고 끓여지며, 완고해 보였던 것이 마침내 너그러워질 때까지 견뎌 낸다. 이것이 정확히 발효하다는 뜻은 아니지만, 변화의 언어를 빌리고 싶어질 때가 있다. 양조장이나 와이너리에서 인내 어린 변화가 곡물과 포도를 원래보다 더 깊은 어떤 것으로 바꾸듯, 설렁탕도 다른 방식으로 비슷한 기적을 이룬다. 단단하고, 평범하고, 좀처럼 뜻을 내주지 않던 것들로부터 부드러움과 뽀얀 빛과 품위를 이끌어 내는 것이다.</p>
+                <p class="mb-6">그리고 그릇 안에서 기다리고 있는 고기도 있다. 그것은 절대로 씹기 어려워서는 안 된다. 그렇게 되는 순간 마법은 깨진다. 제대로 만들어졌다면 고기는 완전히 순해져 있어야 한다. 오랜 시간 끓는 동안 마지막 남은 질김까지 설득당한 것처럼 말이다. 그 곁에는 파와 밥, 후추와 소금이 따라온다. 그것들은 모두 작은 참여의 행위다. 당신은 자기 운명을 스스로 간한다.</p>
+                <p class="mb-6">내가 설렁탕을 가장 사랑하는 이유는 그것이 조급한 사람을 기쁘게 하기 위해 아첨하지 않기 때문이다. 그 즐거움은 조금씩, 천천히 찾아온다. 소란 속에서 자란 아이는 그 맛을 놓칠지도 모른다. 하지만 어른이라면, 혹은 식탁 위에 기다리고 있는 뜨거운 한 그릇의 품위를 아는 어떤 방과 후 집에 혼자 돌아와 지내는 아이였다면, 결코 놓치지 않을 것이다. 첫 숟갈 뒤에는 내 스트레스가 사르르 녹아내린다. 두 번째 숟갈 뒤에는 하루의 날카로운 모서리들이 무뎌진다. 국물 속에서 조금 미끈하게 넘어가는 밥마저도, 위로라는 거대한 설계의 일부처럼 느껴진다.</p>
+                <p class="mb-6">이 음식은 불꽃처럼 혀를 현란하게 사로잡는 음식이 아니다. 그것은 날씨처럼 사람을 회복시킨다. 멍처럼 혀를 세게 치고 지나가지 않는다. 오히려 아물게 한다. 그리고 그릇이 거의 비었을 무렵이면, 몸속 어딘가가 깨끗이 씻기고 조용해졌다는 이상하고도 사치스러운 감각이 남는다. 최고의 설렁탕은 그저 먹는 음식이 아니다. 그것은 받아들이는 것이다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "423630.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

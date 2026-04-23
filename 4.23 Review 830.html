@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Strange Majesty of Sundae</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🐙</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Strange Majesty of Sundae</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">brownie</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">브라우니</td></tr>
+                <tr><td class="p-4"><b class="text-white">peach fuzz</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">복숭아의 솜털</td></tr>
+                <tr><td class="p-4"><b class="text-white">mushy</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">너무 무른, 흐물흐물한</td></tr>
+                <tr><td class="p-4"><b class="text-white">gets mushy</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">무르게 된다, 흐물흐물해진다</td></tr>
+                <tr><td class="p-4"><b class="text-white">omnivore</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">잡식동물, 잡식성인 사람</td></tr>
+                <tr><td class="p-4"><b class="text-white">carnivore</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">육식동물, 육식성인 사람</td></tr>
+                <tr><td class="p-4"><b class="text-white">herbivore</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">초식동물, 초식성인 사람</td></tr>
+                <tr><td class="p-4"><b class="text-white">blanched</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">데친</td></tr>
+                <tr><td class="p-4"><b class="text-white">cuttlefish</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">갑오징어</td></tr>
+                <tr><td class="p-4"><b class="text-white">mollusc</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">연체동물</td></tr>
+                <tr><td class="p-4"><b class="text-white">slippery</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">미끄러운, 미끈하게 넘어가는</td></tr>
+                <tr><td class="p-4"><b class="text-white">pork rind</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">돼지껍데기</td></tr>
+                <tr><td class="p-4"><b class="text-white">lean meat</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">살코기, 지방이 적은 고기</td></tr>
+                <tr><td class="p-4"><b class="text-white">fatty meat</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">지방이 많은 고기</td></tr>
+                <tr><td class="p-4"><b class="text-white">lean physique</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">군살 없는 체형, 마른 듯 탄탄한 몸</td></tr>
+                <tr><td class="p-4"><b class="text-white">in good shape</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">몸 상태가 좋은, 건강한 몸 상태의</td></tr>
+                <tr><td class="p-4"><b class="text-white">fit</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">건강한, 탄탄한, 몸이 좋은</td></tr>
+                <tr><td class="p-4"><b class="text-white">fishy</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">비린, 비린내가 나는</td></tr>
+                <tr><td class="p-4"><b class="text-white">gamey</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">짐승 특유의 누린내가 나는, 야생 고기 향이 강한</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-4 rounded-xl border border-white/10">
+                <h3 class="text-teal-400 font-bold mb-2">peach fuzz</h3>
+                <p class="text-sm text-slate-300">원래는 복숭아의 솜털이지만, 사람 얼굴의 아주 가는 솜털을 말할 때도 자주 써요.</p>
+            </div>
+            <div class="glass p-4 rounded-xl border border-white/10">
+                <h3 class="text-teal-400 font-bold mb-2">mushy / gets mushy</h3>
+                <p class="text-sm text-slate-300">음식이 단순히 부드러운 것이 아니라 너무 물러져서 식감이 무너지는 느낌이에요.</p>
+            </div>
+            <div class="glass p-4 rounded-xl border border-white/10">
+                <h3 class="text-teal-400 font-bold mb-2">omnivore / carnivore / herbivore</h3>
+                <p class="text-sm text-slate-300">동물 분류에도 쓰지만, 사람의 식습관을 가볍게 말할 때도 자주 써요.</p>
+            </div>
+            <div class="glass p-4 rounded-xl border border-white/10">
+                <h3 class="text-teal-400 font-bold mb-2">blanched</h3>
+                <p class="text-sm text-slate-300">완전히 익힌 것이 아니라 끓는 물에 아주 짧게 데친 상태를 말해요.</p>
+            </div>
+            <div class="glass p-4 rounded-xl border border-white/10">
+                <h3 class="text-teal-400 font-bold mb-2">mollusc</h3>
+                <p class="text-sm text-slate-300">일상회화에서는 조금 전문적이고 생물학적인 표현이에요. 조개, 굴, 오징어류 같은 연체동물을 넓게 가리킵니다.</p>
+            </div>
+            <div class="glass p-4 rounded-xl border border-white/10">
+                <h3 class="text-teal-400 font-bold mb-2">lean physique</h3>
+                <p class="text-sm text-slate-300">그냥 “마른 몸”이 아니라 불필요한 군살 없이 탄탄한 몸이라는 긍정적 뉘앙스가 있어요.</p>
+            </div>
+            <div class="glass p-4 rounded-xl border border-white/10">
+                <h3 class="text-teal-400 font-bold mb-2">in good shape / fit</h3>
+                <p class="text-sm text-slate-300">둘 다 건강하거나 몸 상태가 좋다는 뜻이지만, fit은 운동으로 다져진 건강한 느낌이 더 강해요.</p>
+            </div>
+            <div class="glass p-4 rounded-xl border border-white/10">
+                <h3 class="text-teal-400 font-bold mb-2">fishy / gamey</h3>
+                <p class="text-sm text-slate-300">둘 다 음식 향을 말하지만 달라요. fishy는 생선·해산물의 비린 향이고, gamey는 야생 고기나 진한 육향의 누린내를 말해요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">There are foods that ask to be loved for their prettiness, and there are foods that demand a larger kind of courage. Sundae belongs gloriously to the second category. It is not decorative. It does not flirt. It does not arrive trailing romance like a peach or a <b class="highlight quiz-target" data-ans="brownie" data-kor="브라우니">brownie</b> still warm from the oven. It comes to the table dark, dense, and serious, asking not whether you find it charming, but whether you have the appetite to understand it.</p>
+                <p class="mb-6">To the uninitiated, sundae can seem almost confrontational. Blood sausage, after all, sounds like the sort of thing only a hardened <b class="highlight quiz-target" data-ans="carnivore" data-kor="육식동물, 육식성인 사람">carnivore</b> would desire, while the squeamish <b class="highlight quiz-target" data-ans="herbivore" data-kor="초식동물, 초식성인 사람">herbivore</b> might retreat at once, and even the cheerful <b class="highlight quiz-target" data-ans="omnivore" data-kor="잡식동물, 잡식성인 사람">omnivore</b> may hesitate. Yet hesitation is often the enemy of revelation. A good sundae is one of the great arguments against culinary cowardice.</p>
+                <p class="mb-6">Its beauty lies first in its structure. The casing gives way with just enough resistance, and then the filling opens: glass noodles, seasonings, sometimes rice, sometimes greens, all held in that improbable union that makes one marvel at the thrift and intelligence of old kitchens. This is food made by people who understood that flavor is not the privilege of luxury. It is the reward of attention.</p>
+                <p class="mb-6">The texture is what seduces you completely. Poorly made sundae <b class="highlight quiz-target" data-ans="gets mushy" data-kor="무르게 된다, 흐물흐물해진다">gets mushy</b>, collapsing into a sad, formless softness. But proper sundae is never merely <b class="highlight quiz-target" data-ans="mushy" data-kor="너무 무른, 흐물흐물한">mushy</b>. It should have poise. The filling must remain tender but distinct, the noodles a little <b class="highlight quiz-target" data-ans="slippery" data-kor="미끄러운, 미끈하게 넘어가는">slippery</b>, the casing delicate rather than tough. Served with a little salt, or alongside a hot soup, it develops a gravity that is almost aristocratic.</p>
+                <p class="mb-6">And then come its companions, which are no less fascinating: slices of liver, bits of lung, perhaps some intestine, perhaps a little <b class="highlight quiz-target" data-ans="lean meat" data-kor="살코기, 지방이 적은 고기">lean meat</b>, perhaps a bite edged with the luxury of <b class="highlight quiz-target" data-ans="fatty meat" data-kor="지방이 많은 고기">fatty meat</b>. There may be vegetables, perhaps lightly <b class="highlight quiz-target" data-ans="blanched" data-kor="데친">blanched</b>, perhaps fresh, offered to brighten the plate. There may be a strip of <b class="highlight quiz-target" data-ans="pork rind" data-kor="돼지껍데기">pork rind</b>, with its faintly gelatinous insistence. This is not food for those who want all sensation edited out. It is food for people who understand that pleasure often lies close to strangeness.</p>
+                <p class="mb-6">Of course, the timid complain. They worry that offal will taste <b class="highlight quiz-target" data-ans="fishy" data-kor="비린, 비린내가 나는">fishy</b>, though it does not; or <b class="highlight quiz-target" data-ans="gamey" data-kor="짐승 특유의 누린내가 나는, 야생 고기 향이 강한">gamey</b>, though that is not quite right either. Sundae has its own interior weather: iron, spice, steam, and a richness that feels older than fashion. If one wanted to be scientific, one might say it appeals to the ancient eater in us, the part not yet trained to prefer sterile prettiness over substance. We are, after all, creatures of appetite, not saints of restraint.</p>
+                <p class="mb-6">One does not eat sundae to maintain a <b class="highlight quiz-target" data-ans="lean physique" data-kor="군살 없는 체형, 마른 듯 탄탄한 몸">lean physique</b>, nor because it proves one is especially <b class="highlight quiz-target" data-ans="fit" data-kor="건강한, 탄탄한, 몸이 좋은">fit</b> or perpetually <b class="highlight quiz-target" data-ans="in good shape" data-kor="몸 상태가 좋은, 건강한 몸 상태의">in good shape</b>. One eats it for the deeper reason: because now and then a dish reminds us that to be fully human is to hunger with curiosity. Sundae, in its strange majesty, does precisely that. It startles, then persuades, and at last it becomes impossible to imagine the table without it.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">예쁨으로 사랑받기를 바라는 음식이 있고, 더 큰 종류의 용기를 요구하는 음식이 있다. 순대는 당당하게도 후자에 속한다. 그것은 장식적이지 않다. 유혹하지도 않는다. 복숭아나 아직 따뜻한 브라우니처럼 낭만을 끌고 식탁에 오지도 않는다. 순대는 어둡고, 묵직하고, 진지한 모습으로 식탁에 놓이며, 당신이 그것을 사랑스럽게 여길지, 아니면 그것을 이해할 식욕이 있느냐고 묻는다.</p>
+                <p class="mb-6">처음 접하는 사람에게 순대는 거의 도전적으로 느껴질 수도 있다. 피로 만든 소시지라는 말은, 마치 아주 강단 있는 육식성인 사람만이 원할 음식처럼 들릴 수 있다. 소심한 초식성인 사람은 곧바로 물러날지도 모르고, 명랑한 잡식성인 사람조차 잠시 망설일 수 있다. 그러나 망설임은 종종 깨달음의 적이다. 잘 만든 순대는 음식 앞의 비겁함에 반대하는 가장 강력한 논증 중 하나다.</p>
+                <p class="mb-6">그 아름다움은 먼저 구조에 있다. 껍질은 적당한 저항감을 남긴 채 터지고, 그러면 속이 열린다. 당면, 양념, 때로는 쌀, 때로는 채소가 그 안에 들어 있는데, 그 뜻밖의 결합을 보면 옛 부엌의 절약과 지혜에 감탄하게 된다. 이것은 풍미가 사치의 특권이 아니라는 사실을 알던 사람들이 만든 음식이다. 풍미는 주의를 기울인 사람에게 주어지는 보상이다.</p>
+                <p class="mb-6">그리고 사람을 완전히 매혹시키는 것은 식감이다. 형편없이 만든 순대는 쉽게 흐물흐물해지며, 슬프고 형태 없는 부드러움으로 무너진다. 그러나 제대로 만든 순대는 결코 그저 너무 무른 음식이 아니다. 그것에는 균형이 있어야 한다. 속은 부드럽되 각각의 재료가 살아 있어야 하고, 당면은 약간 미끈하게 넘어가야 하며, 껍질은 질기지 않고 섬세해야 한다. 소금에 살짝 찍어 먹거나 뜨거운 국물과 함께 먹으면, 거의 귀족적인 무게감마저 생겨난다.</p>
+                <p class="mb-6">그리고 그 곁들임들도 못지않게 흥미롭다. 간 조각, 허파 조각, 어쩌면 약간의 창자, 약간의 살코기, 혹은 지방이 많은 고기의 사치스러운 가장자리를 머금은 한 점이 있을 수도 있다. 채소가 곁들여질 수도 있는데, 살짝 데친 것일 수도 있고, 신선한 것일 수도 있으며, 접시에 밝음을 더하기 위해 놓인다. 어쩌면 돼지껍데기 한 조각도 있을 수 있다. 희미하게 젤라틴 같은 존재감을 내는 그것 말이다. 이것은 모든 감각을 편집해 없애 버리길 원하는 사람을 위한 음식이 아니다. 즐거움이 종종 낯섦 가까이에 있다는 사실을 아는 사람들을 위한 음식이다.</p>
+                <p class="mb-6">물론 소심한 사람들은 불평한다. 내장 맛이 비릴까 걱정하지만 사실 그렇지 않고, 누린내가 날까 걱정하지만 그것도 꼭 맞는 표현은 아니다. 순대에는 그 자체의 내면적 기후가 있다. 철분의 풍미, 향신료, 김, 그리고 유행보다 더 오래된 듯한 깊은 풍요로움 말이다. 조금 학문적으로 말하자면, 순대는 우리 안의 오래된 먹는 존재를 자극한다고 할 수 있다. 겉만 말끔한 아름다움보다 실질을 중시하던 그 부분 말이다. 결국 우리는 욕망을 지닌 존재이지, 절제를 숭배하는 성인은 아니니까.</p>
+                <p class="mb-6">사람은 군살 없는 체형을 유지하려고 순대를 먹는 것이 아니고, 자신이 특히 탄탄하다거나 늘 몸 상태가 좋다는 것을 증명하려고 먹는 것도 아니다. 더 깊은 이유가 있다. 때때로 어떤 음식은, 인간답게 산다는 것이 곧 호기심을 품은 채 허기를 느끼는 일임을 상기시켜 주기 때문이다. 순대는 그 묘한 장엄함 속에서 정확히 그런 일을 해낸다. 처음에는 놀라게 하고, 설득하며, 마침내는 그 음식 없이는 식탁을 상상할 수 없게 만든다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "423830.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

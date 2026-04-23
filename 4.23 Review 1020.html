@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | In Praise of Naengmyeon</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🥣</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">In Praise of Naengmyeon</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">kinda disappointed</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">좀 실망한, 약간 실망한</td></tr>
+                <tr><td class="p-4"><b class="text-white">localization</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">현지화</td></tr>
+                <tr><td class="p-4"><b class="text-white">blanche</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">데치다</td></tr>
+                <tr><td class="p-4"><b class="text-white">ice cream float</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">아이스크림 플로트</td></tr>
+                <tr><td class="p-4"><b class="text-white">fudgy</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">퍼지처럼 진하고 촉촉한, 꾸덕한</td></tr>
+                <tr><td class="p-4"><b class="text-white">gross</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">역겨운, 징그러운, 별로인</td></tr>
+                <tr><td class="p-4"><b class="text-white">slimy</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">미끈미끈한, 점액질 같은</td></tr>
+                <tr><td class="p-4"><b class="text-white">didn't grow up</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">자라지 않았다 / 성장하지 않았다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-4 rounded-xl border border-white/10">
+                <h3 class="text-teal-400 font-bold mb-2">kinda disappointed</h3>
+                <p class="text-sm text-slate-300">kind of disappointed의 구어체예요. “좀 실망했어”처럼 가볍고 일상적으로 들립니다.</p>
+            </div>
+            <div class="glass p-4 rounded-xl border border-white/10">
+                <h3 class="text-teal-400 font-bold mb-2">localization</h3>
+                <p class="text-sm text-slate-300">단순 번역이 아니라, 어떤 음식이나 제품이 특정 지역의 입맛이나 문화에 맞게 바뀌는 것까지 포함하는 말이에요.</p>
+            </div>
+            <div class="glass p-4 rounded-xl border border-white/10">
+                <h3 class="text-teal-400 font-bold mb-2">blanche</h3>
+                <p class="text-sm text-slate-300">보통 요리에서는 blanch를 더 많이 써요. 뜻은 끓는 물에 짧게 데쳐 색과 식감을 살리는 것입니다.</p>
+            </div>
+            <div class="glass p-4 rounded-xl border border-white/10">
+                <h3 class="text-teal-400 font-bold mb-2">ice cream float</h3>
+                <p class="text-sm text-slate-300">음료 위에 아이스크림 한 스쿱을 띄운 디저트 음료예요.</p>
+            </div>
+            <div class="glass p-4 rounded-xl border border-white/10">
+                <h3 class="text-teal-400 font-bold mb-2">fudgy</h3>
+                <p class="text-sm text-slate-300">브라우니 같은 디저트가 케이크처럼 부스러지는 게 아니라 진하고 촉촉하고 꾸덕할 때 쓰는 표현이에요.</p>
+            </div>
+            <div class="glass p-4 rounded-xl border border-white/10">
+                <h3 class="text-teal-400 font-bold mb-2">gross</h3>
+                <p class="text-sm text-slate-300">단순히 “맛없다”보다 더 강해서, 역겹거나 정말 싫다는 느낌이 들어 있어요.</p>
+            </div>
+            <div class="glass p-4 rounded-xl border border-white/10">
+                <h3 class="text-teal-400 font-bold mb-2">slimy</h3>
+                <p class="text-sm text-slate-300">단순한 부드러움이 아니라, 미끈거리고 점액질처럼 느껴지는 불쾌한 식감을 말할 때 자주 써요.</p>
+            </div>
+            <div class="glass p-4 rounded-xl border border-white/10">
+                <h3 class="text-teal-400 font-bold mb-2">didn't grow up</h3>
+                <p class="text-sm text-slate-300">문자 그대로 “자라지 않았다”도 되지만, 문맥에 따라 “~을 먹으며 크지 않았다”처럼 어떤 환경적 경험이 없었다는 뜻으로 자주 쓰여요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">There are foods one loves immediately, and there are foods one must grow worthy of. Naengmyeon, that most elegant and uncompromising of Korean dishes, belongs to the second class. A child who <b class="highlight quiz-target" data-ans="didn't grow up" data-kor="자라지 않았다 / 성장하지 않았다">didn't grow up</b> with it might be, at first spoonful, a little startled, perhaps even <b class="highlight quiz-target" data-ans="kinda disappointed" data-kor="좀 실망한, 약간 실망한">kinda disappointed</b>. Where is the obvious comfort, the easy richness, the fat that persuades by force? Naengmyeon offers none of that. It offers something finer: discipline made delicious.</p>
+                <p class="mb-6">Its beauty begins with the broth, especially in mul naengmyeon. It should be so cold that it seems almost philosophical, a <b class="highlight quiz-target" data-ans="localization" data-kor="현지화">localization</b> of winter into a bowl. Coldness here is not an absence of flavor but a style of flavor, a way of making every note ring more clearly. The broth must be clean, brisk, faintly sweet, faintly tangy, touched by beef or dongchimi, and never muddled. A lesser soup might feel merely chilly. A great naengmyeon broth feels honed.</p>
+                <p class="mb-6">Then come the noodles, those dark, tensile strands made with buckwheat or starch, or some cunning alliance of the two. They are not here to flatter you. They resist a little. They ask the teeth to work. That resistance is part of the pleasure, just as a good mind is sharpened by argument. The noodles must never turn <b class="highlight quiz-target" data-ans="slimy" data-kor="미끈미끈한, 점액질 같은">slimy</b>, and heaven preserve us from a bowl in which they have sat too long and gone soft. That way lies disgrace. Naengmyeon is a dish that depends upon tension. Once the noodles lose it, the whole composition collapses.</p>
+                <p class="mb-6">Even the garnishes are precise. Slices of pear lend a delicate sweetness and a cool perfume. Cucumber may be lightly <b class="highlight quiz-target" data-ans="blanche" data-kor="데치다">blanche</b>d in some kitchens or simply cut fresh and thin, but in either case it offers crispness and relief. Half an egg, a few shreds of meat, perhaps mustard or vinegar added at the table: these are not ornaments but arguments, each one insisting on balance. Nothing is gratuitous.</p>
+                <p class="mb-6">This is why naengmyeon cannot be judged by the standards of heavier food. It is not an <b class="highlight quiz-target" data-ans="ice cream float" data-kor="아이스크림 플로트">ice cream float</b>, all froth and indulgence, nor a <b class="highlight quiz-target" data-ans="fudgy" data-kor="퍼지처럼 진하고 촉촉한, 꾸덕한">fudgy</b> dessert designed to make surrender easy. Its pleasures are austere, and for that reason they are lasting. The wrong eater will call it <b class="highlight quiz-target" data-ans="gross" data-kor="역겨운, 징그러운, 별로인">gross</b>, as though subtlety were some kind of insult. The right eater understands that a food can be severe and still be deeply sensual.</p>
+                <p class="mb-6">What makes naengmyeon so irresistible, finally, is that it refreshes without becoming thin, satisfies without becoming clumsy. It tastes of restraint, of clarity, of appetite refined rather than merely filled. One does not eat it in search of excess. One eats it to remember that desire can be sharpened by cold, by chew, by the exquisite shock of a bowl that refuses to coax and instead compels. Naengmyeon does not beg to be loved. It waits, immaculate and certain, for the eater to come up to its level.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">사람이 즉시 사랑하게 되는 음식이 있고, 스스로 그 음식을 사랑할 자격을 갖추어야 하는 음식이 있다. 그 가장 우아하고도 타협 없는 한국 음식인 냉면은 분명 후자에 속한다. 그것을 먹으며 자라지 않은 사람이라면 첫 숟갈에서 조금 놀라고, 어쩌면 좀 실망할지도 모른다. 뻔한 위안은 어디에 있고, 쉽게 사람을 설득하는 진한 풍미와 기름기는 어디에 있는가? 냉면은 그런 것을 주지 않는다. 대신 더 정교한 것을 준다. 절제가 맛이 된 형태를 말이다.</p>
+                <p class="mb-6">그 아름다움은, 특히 물냉면의 경우, 국물에서 시작된다. 그 국물은 거의 철학적일 만큼 차가워야 한다. 마치 겨울이 한 그릇 속으로 현지화된 것처럼. 여기서 차가움은 맛의 부재가 아니라, 하나의 맛의 방식이다. 모든 음이 더 또렷하게 울리도록 만드는 방식 말이다. 국물은 맑고, 날렵하고, 은은하게 달고, 은은하게 새콤하며, 소고기나 동치미의 기운을 품되 결코 흐려져서는 안 된다. 평범한 국물은 그저 차갑기만 할 수 있다. 그러나 훌륭한 냉면 국물은 벼려진 듯 느껴진다.</p>
+                <p class="mb-6">그리고 메밀이나 전분, 혹은 그 둘의 교묘한 결합으로 만들어진 어두운 면발이 등장한다. 이 면은 당신을 기쁘게 해 주기 위해 존재하지 않는다. 약간의 저항을 남긴다. 이빨이 일을 하도록 요구한다. 그 저항 자체가 즐거움의 일부다. 좋은 정신이 논쟁으로 날카로워지듯이 말이다. 면은 결코 미끈미끈해져서는 안 되며, 하물며 오래 불어 터져 축 늘어져 버린 그릇이라니, 그런 불행은 하늘이 막아야 한다. 그 길 끝에는 망신뿐이다. 냉면은 긴장감에 의지하는 음식이다. 면이 그 긴장을 잃는 순간, 전체 구성도 함께 무너진다.</p>
+                <p class="mb-6">고명조차도 정밀하다. 배 한 조각은 섬세한 단맛과 시원한 향을 더한다. 어떤 집에서는 오이를 살짝 데치기도 하고, 어떤 집에서는 그저 얇고 신선하게 썰어 올리기도 하지만, 어느 쪽이든 그것은 아삭함과 안도를 제공한다. 반쪽 달걀, 약간의 고기 고명, 식탁에서 더하는 겨자나 식초까지, 이 모든 것은 장식이 아니라 논리다. 각각이 균형을 주장하고 있다. 쓸데없는 것은 아무것도 없다.</p>
+                <p class="mb-6">이것이 바로 냉면이 더 묵직한 음식의 기준으로 판단되어서는 안 되는 이유다. 그것은 거품과 유혹으로 가득한 아이스크림 플로트도 아니고, 쉽게 항복하게 만드는 꾸덕한 디저트도 아니다. 냉면의 기쁨은 금욕적이며, 그래서 더 오래 남는다. 잘못된 먹는 이는 그것을 역겹다고 부를 것이다. 마치 섬세함이 무슨 모욕이라도 되는 양. 그러나 올바른 먹는 이는 안다. 어떤 음식은 엄격하면서도 깊이 관능적일 수 있다는 사실을.</p>
+                <p class="mb-6">결국 냉면을 이토록 거부할 수 없게 만드는 것은, 그것이 묽어지지 않으면서도 상쾌하고, 서투르게 무거워지지 않으면서도 만족스럽다는 점이다. 그것은 절제의 맛이고, 명료함의 맛이며, 단지 배를 채우는 것이 아니라 식욕을 세련되게 다듬는 맛이다. 사람은 과잉을 찾기 위해 냉면을 먹지 않는다. 차가움과 씹는 맛, 그리고 달래지 않고 오히려 사람을 단호하게 요구하는 한 그릇의 아름다운 충격 속에서, 욕망이 얼마나 날카로워질 수 있는지 기억하기 위해 먹는다. 냉면은 사랑받기를 애원하지 않는다. 그것은 흠잡을 데 없이 깨끗하고 확신에 찬 모습으로, 먹는 이가 자기 수준까지 올라오기를 기다린다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "4231020.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

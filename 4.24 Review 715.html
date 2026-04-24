@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Photograph on the Fridge</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🪞</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Photograph on the Fridge</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">bangs</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">앞머리</td></tr>
+                <tr><td class="p-4"><b class="text-white">it didn't suit me</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">나에게 어울리지 않았어요</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-6 rounded-2xl"><h3 class="text-amber-500 font-bold mb-2">bangs</h3><p class="text-sm text-slate-300">미국식 영어에서 “앞머리”를 뜻합니다. 영국식 영어에서는 보통 “fringe”라고 합니다.</p></div>
+            <div class="glass p-6 rounded-2xl"><h3 class="text-amber-500 font-bold mb-2">it didn't suit me</h3><p class="text-sm text-slate-300">옷, 머리 스타일, 색깔, 분위기 등이 나에게 잘 어울리지 않았다는 뜻입니다.</p></div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">When Nora was small, she and her father, Daniel, had a movie night every Friday.</p>
+                <p class="mb-6">They wore old socks, made popcorn in the same blue bowl, and sat under a blanket with yellow stars on it. Nora always chose the movie, but Daniel always pretended to complain. She knew he was pretending, and he knew she knew. That was part of it.</p>
+                <p class="mb-6">They also had a game they played during boring scenes. Nora would pause the movie and make Daniel guess what every character was thinking. His answers were always terrible, and hers were always strange and perfect.</p>
+                <p class="mb-6">For Daniel, those nights were not just movie nights. They were proof. Proof that his daughter still wanted him beside her. Proof that their little world was safe.</p>
+                <p class="mb-6">Then one Friday, Nora said, “I don’t really want to watch that anymore.”</p>
+                <p class="mb-6">Daniel stood in the kitchen with the popcorn bowl in his hands.</p>
+                <p class="mb-6">“Oh,” he said. “Sure. No problem.”</p>
+                <p class="mb-6">He said it like a man who had many problems but did not want to give one to his daughter.</p>
+                <p class="mb-6">After that, other things disappeared. She stopped asking him to play cards. She stopped laughing at the old jokes about the neighbor’s loud dog. She no longer wanted him to walk her all the way to school. She said she was too old for that now.</p>
+                <p class="mb-6">Daniel tried to understand. He knew children grew. He knew they were supposed to. But knowing a thing did not stop it from hurting.</p>
+                <p class="mb-6">One evening, he found an old photograph on the fridge. Nora was seven in the picture, smiling with short <b class="highlight quiz-target" data-ans="bangs" data-kor="앞머리">bangs</b> she had cut herself with craft scissors.</p>
+                <p class="mb-6">He laughed softly.</p>
+                <p class="mb-6">Nora came in and saw him looking at it.</p>
+                <p class="mb-6">“Oh no,” she said. “That hair.”</p>
+                <p class="mb-6">“You loved it for three days,” Daniel said.</p>
+                <p class="mb-6">“I did,” she said. “Then I realized <b class="highlight quiz-target" data-ans="it didn't suit me" data-kor="나에게 어울리지 않았어요">it didn't suit me</b>.”</p>
+                <p class="mb-6">Daniel nodded. He looked at the little girl in the picture and then at the taller girl standing beside him. For a moment, he missed both of them: the child she had been and the child she no longer was.</p>
+                <p class="mb-6">Nora opened the fridge and took out a carton of eggs.</p>
+                <p class="mb-6">“I’m making breakfast for dinner,” she said. “Do you want some?”</p>
+                <p class="mb-6">Daniel blinked. “You’re cooking?”</p>
+                <p class="mb-6">“I’m trying.”</p>
+                <p class="mb-6">He watched her crack an egg badly into a bowl. A piece of shell fell in.</p>
+                <p class="mb-6">Nora looked at him. “Don’t laugh.”</p>
+                <p class="mb-6">“I’m not laughing,” he said, though he was smiling.</p>
+                <p class="mb-6">She handed him a fork. “You can help.”</p>
+                <p class="mb-6">Daniel took it.</p>
+                <p class="mb-6">The old movie nights were gone. The blanket with yellow stars stayed folded in the closet.</p>
+                <p class="mb-6">But beside his daughter, in the bright kitchen, Daniel understood something small and important. She had not left him behind. She was simply inviting him somewhere new.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">노라가 어렸을 때, 그녀와 아버지 대니얼은 매주 금요일마다 영화의 밤을 보냈다.</p>
+                <p class="mb-6">둘은 낡은 양말을 신고, 같은 파란 그릇에 팝콘을 담고, 노란 별무늬가 있는 담요 아래에 앉았다. 영화는 늘 노라가 골랐지만, 대니얼은 항상 불평하는 척했다. 노라는 그가 일부러 그런다는 걸 알았고, 대니얼도 노라가 알고 있다는 걸 알았다. 그것마저도 그들의 전통의 일부였다.</p>
+                <p class="mb-6">둘은 지루한 장면이 나오면 하는 게임도 있었다. 노라는 영화를 멈추고, 등장인물들이 무슨 생각을 하고 있는지 대니얼에게 맞혀 보라고 했다. 그의 대답은 늘 형편없었고, 노라의 대답은 늘 이상하면서도 완벽했다.</p>
+                <p class="mb-6">대니얼에게 그 밤들은 단순한 영화 시간이 아니었다. 그것은 증거였다. 딸이 아직도 자기 옆에 있고 싶어 한다는 증거. 그들만의 작은 세상이 아직 안전하다는 증거였다.</p>
+                <p class="mb-6">그러던 어느 금요일, 노라가 말했다. “나 이제 그거 별로 보고 싶지 않아.”</p>
+                <p class="mb-6">대니얼은 팝콘 그릇을 손에 든 채 부엌에 서 있었다.</p>
+                <p class="mb-6">“아,” 그가 말했다. “그래. 괜찮아.”</p>
+                <p class="mb-6">그는 문제가 아주 많지만, 그중 하나도 딸에게 주고 싶지 않은 사람처럼 말했다.</p>
+                <p class="mb-6">그 후로 다른 것들도 사라졌다. 노라는 더 이상 카드놀이를 하자고 하지 않았다. 이웃집의 시끄러운 개에 대한 오래된 농담에도 더 이상 웃지 않았다. 학교까지 끝까지 데려다주는 것도 원하지 않았다. 이제 그런 걸 하기엔 너무 컸다고 말했다.</p>
+                <p class="mb-6">대니얼은 이해하려고 애썼다. 아이들은 자란다는 걸 알고 있었다. 그래야 한다는 것도 알고 있었다. 하지만 어떤 사실을 안다고 해서 그것이 아프지 않은 것은 아니었다.</p>
+                <p class="mb-6">어느 저녁, 그는 냉장고에 붙은 오래된 사진 한 장을 발견했다. 사진 속 노라는 일곱 살이었고, 공예용 가위로 직접 자른 짧은 <b class="highlight">앞머리</b>를 하고 웃고 있었다.</p>
+                <p class="mb-6">그는 조용히 웃었다.</p>
+                <p class="mb-6">노라가 들어와 그가 사진을 보고 있는 것을 보았다.</p>
+                <p class="mb-6">“아, 안 돼,” 그녀가 말했다. “저 머리.”</p>
+                <p class="mb-6">“너 그거 사흘 동안은 정말 좋아했어,” 대니얼이 말했다.</p>
+                <p class="mb-6">“맞아,” 그녀가 말했다. “그러다가 <b class="highlight">나한테 어울리지 않았다는 걸</b> 깨달았지.”</p>
+                <p class="mb-6">대니얼은 고개를 끄덕였다. 그는 사진 속 어린 여자아이를 보고, 그 옆에 서 있는 더 자란 여자아이를 바라보았다. 잠시 동안 그는 두 사람 모두가 그리웠다. 예전의 아이였던 그녀와, 이제 더 이상 아이가 아닌 그녀가.</p>
+                <p class="mb-6">노라는 냉장고를 열고 달걀 한 판을 꺼냈다.</p>
+                <p class="mb-6">“저녁으로 아침밥 만들 거야,” 그녀가 말했다. “아빠도 먹을래?”</p>
+                <p class="mb-6">대니얼은 눈을 깜박였다. “네가 요리를 한다고?”</p>
+                <p class="mb-6">“해보는 거야.”</p>
+                <p class="mb-6">그는 노라가 달걀을 서툴게 그릇에 깨뜨리는 것을 보았다. 달걀 껍데기 조각 하나가 안으로 떨어졌다.</p>
+                <p class="mb-6">노라가 그를 보았다. “웃지 마.”</p>
+                <p class="mb-6">“안 웃어,” 그가 말했다. 하지만 그는 미소 짓고 있었다.</p>
+                <p class="mb-6">그녀는 그에게 포크를 건넸다. “아빠가 도와줘도 돼.”</p>
+                <p class="mb-6">대니얼은 그것을 받았다.</p>
+                <p class="mb-6">예전의 영화의 밤은 사라졌다. 노란 별무늬 담요는 옷장 안에 접힌 채 남아 있었다.</p>
+                <p class="mb-6">하지만 밝은 부엌에서 딸 옆에 선 대니얼은 작지만 중요한 사실을 깨달았다. 그녀는 그를 뒤에 남겨 둔 것이 아니었다. 그저 그를 새로운 곳으로 초대하고 있었을 뿐이었다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "424715.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

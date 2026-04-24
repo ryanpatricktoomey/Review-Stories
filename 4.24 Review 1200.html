@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Morning Show</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">📻</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Morning Show</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">celebrity gossip</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">연예인 가십 / 연예계 소문</td></tr>
+                <tr><td class="p-4"><b class="text-white">pulled an all-nighter</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">밤을 새웠다</td></tr>
+                <tr><td class="p-4"><b class="text-white">fell out of it</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">자연스럽게 멀어졌다 / 더 이상 하지 않게 됐다</td></tr>
+                <tr><td class="p-4"><b class="text-white">drift apart</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">서서히 멀어지다</td></tr>
+                <tr><td class="p-4"><b class="text-white">don't have the bandwith for it</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그럴 정신적 여유가 없다 / 감당할 여력이 없다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-6 rounded-2xl"><h3 class="text-amber-500 font-bold mb-2">celebrity gossip</h3><p class="text-sm text-slate-300">연예인의 사생활이나 소문에 관한 이야기입니다. 가볍고 흥미 위주의 대화를 가리킬 때 많이 씁니다.</p></div>
+            <div class="glass p-6 rounded-2xl"><h3 class="text-amber-500 font-bold mb-2">pulled an all-nighter</h3><p class="text-sm text-slate-300">공부, 일, 게임, 영화 감상 등 때문에 잠을 자지 않고 밤을 새웠다는 뜻입니다.</p></div>
+            <div class="glass p-6 rounded-2xl"><h3 class="text-amber-500 font-bold mb-2">fell out of it</h3><p class="text-sm text-slate-300">어떤 취미나 습관에서 서서히 멀어졌다는 뜻입니다. “갑자기 그만뒀다”보다 자연스럽게 흥미가 줄어든 느낌입니다.</p></div>
+            <div class="glass p-6 rounded-2xl"><h3 class="text-amber-500 font-bold mb-2">drift apart</h3><p class="text-sm text-slate-300">관계가 싸움 때문에 끊어진 것이 아니라, 시간이 지나며 조금씩 멀어지는 상황을 말합니다.</p></div>
+            <div class="glass p-6 rounded-2xl"><h3 class="text-amber-500 font-bold mb-2">don't have the bandwith for it</h3><p class="text-sm text-slate-300">원래 bandwidth는 처리 용량을 뜻하지만, 일상에서는 “그걸 감당할 시간이나 정신적 여유가 없다”는 뜻으로 씁니다.</p></div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">When Emma was little, she and her father, David, had a Sunday morning tradition.</p>
+                <p class="mb-6">They made toast, sat on the kitchen floor, and listened to an old radio show about movies. Emma did not understand half the jokes, but she laughed because David laughed. After the show, they made up their own news. The toaster was getting married. The neighbor’s cat had become mayor. A spoon had disappeared under suspicious circumstances.</p>
+                <p class="mb-6">David loved those mornings more than he ever said. They were simple and foolish, and because of that, they felt safe.</p>
+                <p class="mb-6">As Emma got older, the stories changed. She became interested in singers and actors, and their Sunday talks filled with <b class="highlight quiz-target" data-ans="celebrity gossip" data-kor="연예인 가십">celebrity gossip</b>. David learned names he could not pronounce and pretended to be shocked by breakups between people he had never heard of. Emma would roll her eyes and explain everything carefully, as if he were a kind but very slow student.</p>
+                <p class="mb-6">Then she turned sixteen.</p>
+                <p class="mb-6">One Sunday, David put bread in the toaster and turned on the radio.</p>
+                <p class="mb-6">Emma came into the kitchen with tired eyes.</p>
+                <p class="mb-6">“Toast?” he asked.</p>
+                <p class="mb-6">She shook her head. “I <b class="highlight quiz-target" data-ans="pulled an all-nighter" data-kor="밤을 새웠다">pulled an all-nighter</b> finishing my project. I’m going back to bed.”</p>
+                <p class="mb-6">David nodded. “Of course.”</p>
+                <p class="mb-6">The next Sunday, she had plans with friends. The Sunday after that, she said the radio show was kind of boring now. She was not mean about it. She was almost gentle, which somehow made David feel worse.</p>
+                <p class="mb-6">“I guess I just <b class="highlight quiz-target" data-ans="fell out of it" data-kor="자연스럽게 멀어졌다">fell out of it</b>,” she said.</p>
+                <p class="mb-6">David smiled and said that made sense.</p>
+                <p class="mb-6">But it did not feel like sense to him. It felt like losing a language only the two of them had spoken. He kept making toast for a few weeks, then stopped. The radio stayed silent. The kitchen floor looked larger without them sitting on it.</p>
+                <p class="mb-6">He worried they would <b class="highlight quiz-target" data-ans="drift apart" data-kor="서서히 멀어지다">drift apart</b> completely. He worried that someday he would only know practical things about her: exam dates, dentist appointments, what time to pick her up.</p>
+                <p class="mb-6">One evening, he found Emma at the kitchen table, staring at her laptop.</p>
+                <p class="mb-6">“Everything okay?” he asked.</p>
+                <p class="mb-6">She rubbed her face. “I don’t know. College applications, school, friends. I <b class="highlight quiz-target" data-ans="don't have the bandwith for it" data-kor="그럴 정신적 여유가 없다">don't have the bandwith for it</b>.”</p>
+                <p class="mb-6">David sat across from her. “For what?”</p>
+                <p class="mb-6">“For being normal,” she said quietly.</p>
+                <p class="mb-6">He did not give advice. He made toast and put one slice beside her.</p>
+                <p class="mb-6">After a while, Emma took a bite.</p>
+                <p class="mb-6">Then she pointed at the toaster. “That thing still married?”</p>
+                <p class="mb-6">David looked at her.</p>
+                <p class="mb-6">“Separated,” he said. “But trying counseling.”</p>
+                <p class="mb-6">Emma laughed, tiredly but truly.</p>
+                <p class="mb-6">The old Sunday mornings were gone. But at the kitchen table, with crumbs between them, David felt a small door open.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">엠마가 어렸을 때, 그녀와 아버지 데이비드에게는 일요일 아침 전통이 있었다.</p>
+                <p class="mb-6">그들은 토스트를 만들고, 부엌 바닥에 앉아 영화에 관한 오래된 라디오 쇼를 들었다. 엠마는 농담의 절반도 이해하지 못했지만, 데이비드가 웃었기 때문에 함께 웃었다. 방송이 끝나면 둘은 자기들만의 뉴스를 만들어 냈다. 토스터가 결혼한다는 소식. 이웃집 고양이가 시장이 되었다는 소식. 숟가락 하나가 수상한 상황에서 사라졌다는 소식.</p>
+                <p class="mb-6">데이비드는 그 아침들을 말로 표현한 것보다 훨씬 더 사랑했다. 그것들은 단순하고 바보 같았고, 그래서 안전하게 느껴졌다.</p>
+                <p class="mb-6">엠마가 자라면서 이야기들도 달라졌다. 그녀는 가수와 배우들에게 관심을 갖게 되었고, 그들의 일요일 대화는 <b class="highlight">연예인 가십</b>으로 가득 찼다. 데이비드는 발음도 잘 못 하는 이름들을 배웠고, 한 번도 들어 본 적 없는 사람들의 결별 소식에 놀란 척했다. 그러면 엠마는 눈을 굴리며, 그가 친절하지만 아주 느린 학생이라도 되는 것처럼 모든 것을 차근차근 설명해 주었다.</p>
+                <p class="mb-6">그러다 그녀는 열여섯 살이 되었다.</p>
+                <p class="mb-6">어느 일요일, 데이비드는 빵을 토스터에 넣고 라디오를 켰다.</p>
+                <p class="mb-6">엠마가 피곤한 눈으로 부엌에 들어왔다.</p>
+                <p class="mb-6">“토스트 먹을래?” 그가 물었다.</p>
+                <p class="mb-6">그녀는 고개를 저었다. “프로젝트 끝내느라 <b class="highlight">밤을 새웠어</b>. 다시 잘래.”</p>
+                <p class="mb-6">데이비드는 고개를 끄덕였다. “그럼. 그래야지.”</p>
+                <p class="mb-6">그다음 일요일에는 친구들과 약속이 있었다. 그다음 일요일에는 라디오 쇼가 이제 좀 지루하다고 말했다. 그녀는 못되게 말하지 않았다. 오히려 거의 다정하게 말했고, 그래서 데이비드는 더 마음이 아팠다.</p>
+                <p class="mb-6">“그냥 내가 거기서 <b class="highlight">자연스럽게 멀어진 것 같아</b>,” 그녀가 말했다.</p>
+                <p class="mb-6">데이비드는 미소를 지으며 이해된다고 말했다.</p>
+                <p class="mb-6">하지만 그에게는 이해되는 일처럼 느껴지지 않았다. 그것은 둘만이 말하던 언어를 잃어버리는 것 같았다. 그는 몇 주 동안 계속 토스트를 만들다가, 결국 멈췄다. 라디오는 조용해졌다. 부엌 바닥은 둘이 앉아 있지 않으니 더 넓어 보였다.</p>
+                <p class="mb-6">그는 그들이 완전히 <b class="highlight">서서히 멀어질까</b> 봐 걱정했다. 언젠가 자신이 딸에 대해 아는 것이 시험 날짜, 치과 예약, 몇 시에 데리러 가야 하는지 같은 실용적인 것들뿐일까 봐 두려웠다.</p>
+                <p class="mb-6">어느 저녁, 그는 엠마가 부엌 식탁에 앉아 노트북을 바라보고 있는 것을 보았다.</p>
+                <p class="mb-6">“괜찮아?” 그가 물었다.</p>
+                <p class="mb-6">그녀는 얼굴을 문질렀다. “모르겠어. 대학 지원서, 학교, 친구들. 나 정말 <b class="highlight">그럴 정신적 여유가 없어</b>.”</p>
+                <p class="mb-6">데이비드는 그녀 맞은편에 앉았다. “뭘 할 여유가 없는데?”</p>
+                <p class="mb-6">“평범하게 지낼 여유,” 그녀가 조용히 말했다.</p>
+                <p class="mb-6">그는 조언하지 않았다. 토스트를 만들어 한 조각을 그녀 옆에 놓아주었다.</p>
+                <p class="mb-6">잠시 후, 엠마는 한 입 베어 물었다.</p>
+                <p class="mb-6">그러더니 토스터를 가리켰다. “쟤 아직도 결혼한 상태야?”</p>
+                <p class="mb-6">데이비드는 그녀를 바라보았다.</p>
+                <p class="mb-6">“별거 중이야,” 그가 말했다. “하지만 상담은 받아 보려고 한대.”</p>
+                <p class="mb-6">엠마가 웃었다. 피곤했지만 진짜 웃음이었다.</p>
+                <p class="mb-6">예전의 일요일 아침은 사라졌다. 하지만 부스러기가 놓인 식탁에서, 데이비드는 작은 문 하나가 열리는 것을 느꼈다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "4241200.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

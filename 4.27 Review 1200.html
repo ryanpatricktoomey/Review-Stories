@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Elevator and the Tiny Crisis of Self-Knowledge</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl"></span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Elevator and the Tiny Crisis of Self-Knowledge</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">pollen</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">꽃가루</td></tr>
+                <tr><td class="p-4"><b class="text-white">scales</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">체중계 / 저울 / 비늘</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-3xl p-6 border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold mb-2">scales</h3>
+                <p class="text-slate-300">문맥에 따라 뜻이 달라져요. 몸무게를 재는 “체중계,” 무게를 재는 “저울,” 또는 물고기나 뱀의 “비늘”이라는 뜻이 될 수 있어요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">I stepped into the elevator holding my gym bag, my iced tea, and a very private sense of betrayal.</p>
+                <p class="mb-6">The betrayal came from the bathroom <b class="highlight quiz-target" data-ans="scales" data-kor="체중계">scales</b> in my apartment. I had stepped on them that morning with hope in my heart and one sock halfway off my foot. I was not expecting a miracle. I was not expecting to become a completely new person before breakfast. I only wanted a kind number. A polite number. A number that understood I had eaten salad yesterday, even if the salad had come with fried chicken on top.</p>
+                <p class="mb-6">But the scales were cold and honest.</p>
+                <p class="mb-6">Too honest.</p>
+                <p class="mb-6">I told myself that numbers did not define me. Then I stepped on them again, because maybe the floor had been uneven. Then I moved them two centimeters to the left and tried again. The number changed by 0.1, which felt deeply disrespectful.</p>
+                <p class="mb-6">The elevator doors closed, and I pressed the lobby button. I was going outside for a short walk, because apparently fresh air and movement were good for people. Personally, I had doubts.</p>
+                <p class="mb-6">Then my nose began to itch.</p>
+                <p class="mb-6">Of course. The <b class="highlight quiz-target" data-ans="pollen" data-kor="꽃가루">pollen</b> had already found me. I was still inside the building, but somehow it had entered my life like an uninvited guest with excellent timing. My eyes watered. My throat felt strange. My nose prepared for drama.</p>
+                <p class="mb-6">I stared at my reflection in the elevator mirror. My gym outfit looked sporty, but not in a natural way. More like I had heard rumors about exercise and dressed for a meeting with it.</p>
+                <p class="mb-6">The elevator stopped on the fifteenth floor.</p>
+                <p class="mb-6">No one got in.</p>
+                <p class="mb-6">I took a slow breath. “Fine,” I whispered. “Let’s all stop for invisible people.”</p>
+                <p class="mb-6">The elevator continued down, and I checked my phone. My fitness app sent a cheerful notification: “You’re almost there!”</p>
+                <p class="mb-6">Almost where? Happiness? Health? A personality that did not negotiate with bathroom equipment?</p>
+                <p class="mb-6">The elevator stopped on the tenth floor, and a man got in carrying a tiny dog. The dog looked at me with calm judgment. I sneezed.</p>
+                <p class="mb-6">The man said, “Bless you.”</p>
+                <p class="mb-6">“Thank you,” I said, trying to sound like a woman who had control over her body, her allergies, and her relationship with the scales.</p>
+                <p class="mb-6">When the elevator reached the lobby, I stepped out bravely.</p>
+                <p class="mb-6">Then I remembered my iced tea had sugar in it.</p>
+                <p class="mb-6">I decided the walk could still count.</p>
+                <p class="mb-6">Emotionally.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">나는 운동 가방과 아이스티, 그리고 아주 개인적인 배신감을 들고 엘리베이터에 탔다.</p>
+                <p class="mb-6">그 배신감은 우리 집 욕실 <b class="highlight">체중계</b>에서 온 것이었다. 나는 그날 아침 마음속에 희망을 품고, 양말 한쪽이 발에서 반쯤 벗겨진 채 체중계에 올라섰다. 기적을 기대한 것은 아니었다. 아침 먹기 전에 완전히 새로운 사람이 되기를 기대한 것도 아니었다. 나는 그저 친절한 숫자를 원했다. 예의 바른 숫자. 어제 샐러드를 먹었다는 사실을 이해해 주는 숫자 말이다. 비록 그 샐러드 위에 프라이드치킨이 올라가 있었더라도.</p>
+                <p class="mb-6">하지만 체중계는 차갑고 정직했다.</p>
+                <p class="mb-6">너무 정직했다.</p>
+                <p class="mb-6">나는 숫자가 나를 정의하지 않는다고 스스로에게 말했다. 그러고 나서 다시 올라섰다. 혹시 바닥이 고르지 않았을 수도 있으니까. 그런 다음 체중계를 왼쪽으로 2센티미터 옮기고 다시 시도했다. 숫자는 0.1만 바뀌었고, 그것은 아주 무례하게 느껴졌다.</p>
+                <p class="mb-6">엘리베이터 문이 닫혔고, 나는 로비 버튼을 눌렀다. 나는 짧은 산책을 하러 밖에 나가는 길이었다. 신선한 공기와 움직임이 사람에게 좋다고들 하니까. 개인적으로는 의심스러웠다.</p>
+                <p class="mb-6">그때 코가 간지러워지기 시작했다.</p>
+                <p class="mb-6">물론이었다. <b class="highlight">꽃가루</b>가 이미 나를 찾아낸 것이다. 나는 아직 건물 안에 있었지만, 어쩐지 꽃가루는 타이밍 좋은 불청객처럼 내 삶에 들어와 있었다. 눈물이 고였다. 목이 이상했다. 코는 드라마를 준비하고 있었다.</p>
+                <p class="mb-6">나는 엘리베이터 거울 속 내 모습을 바라보았다. 내 운동복은 운동하는 사람처럼 보이긴 했다. 하지만 자연스럽지는 않았다. 운동이라는 것에 대한 소문을 듣고, 그것과 회의하러 가기 위해 옷을 입은 사람 같았다.</p>
+                <p class="mb-6">엘리베이터가 15층에서 멈췄다.</p>
+                <p class="mb-6">아무도 타지 않았다.</p>
+                <p class="mb-6">나는 천천히 숨을 쉬었다. “좋아,” 나는 속삭였다. “우리 모두 보이지 않는 사람들을 위해 멈추자.”</p>
+                <p class="mb-6">엘리베이터는 계속 내려갔고, 나는 휴대폰을 확인했다. 운동 앱에서 밝은 알림이 왔다. “거의 다 왔어요!”</p>
+                <p class="mb-6">어디에 거의 다 왔다는 걸까? 행복? 건강? 욕실 기구와 협상하지 않는 성격?</p>
+                <p class="mb-6">엘리베이터가 10층에서 멈췄고, 작은 강아지를 안은 남자가 탔다. 그 강아지는 차분하게 나를 판단하는 눈으로 바라보았다. 나는 재채기를 했다.</p>
+                <p class="mb-6">그 남자가 “Bless you”라고 말했다.</p>
+                <p class="mb-6">나는 내 몸과 알레르기, 그리고 체중계와의 관계를 통제하고 있는 여자처럼 들리려고 애쓰며 “감사합니다”라고 말했다.</p>
+                <p class="mb-6">엘리베이터가 로비에 도착했을 때, 나는 용감하게 내렸다.</p>
+                <p class="mb-6">그때 내 아이스티에 설탕이 들어 있다는 사실이 떠올랐다.</p>
+                <p class="mb-6">나는 산책이 그래도 인정될 수 있다고 결론 내렸다.</p>
+                <p class="mb-6">감정적으로는.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "4271200.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

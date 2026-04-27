@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Elevator of Modern Suffering</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🛗</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Elevator of Modern Suffering</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">pollen</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">꽃가루</td></tr>
+                <tr><td class="p-4"><b class="text-white">server</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">식당 직원 / 서버</td></tr>
+                <tr><td class="p-4"><b class="text-white">waiter</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">웨이터 / 남자 종업원</td></tr>
+                <tr><td class="p-4"><b class="text-white">waitress</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">웨이트리스 / 여자 종업원</td></tr>
+                <tr><td class="p-4"><b class="text-white">in-flight meal</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">기내식</td></tr>
+                <tr><td class="p-4"><b class="text-white">that's future me's problem</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그건 미래의 내가 해결할 문제야</td></tr>
+                <tr><td class="p-4"><b class="text-white">sell your future</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">미래를 팔아넘기다 / 미래를 희생하다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-3xl p-6 border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold mb-2">server / waiter / waitress</h3>
+                <p class="text-slate-300">server는 성별 구분 없는 식당 직원, waiter(남)/waitress(여)는 성별이 구분된 표현이에요. 요즘은 server를 더 자주 써요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold mb-2">in-flight meal</h3>
+                <p class="text-slate-300">비행기 내 식사를 말해요. "flight meal" 대신 보통 "in-flight meal"이라고 표현합니다.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold mb-2">that's future me's problem</h3>
+                <p class="text-slate-300">당장의 고민을 미래의 나에게 미루는 장난스러운 표현이에요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold mb-2">sell your future</h3>
+                <p class="text-slate-300">당장의 편안함을 위해 미래의 기회나 안정성을 희생한다는 뜻이에요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">I stepped into the elevator with sunglasses on my head, three shopping bags on my arm, and a sneeze waiting inside my nose like a tiny angry ghost.</p>
+                <p class="mb-6">It was not a big deal. I knew that. But the <b class="highlight quiz-target" data-ans="pollen" data-kor="꽃가루">pollen</b> outside had attacked me personally. I had walked from the café to my building for exactly forty seconds, and somehow my eyes were watering like I had just watched a sad movie about an old dog. I pressed the elevator button and whispered, “Be strong,” to myself, which felt dramatic but necessary.</p>
+                <p class="mb-6">The elevator doors closed, and I finally had peace.</p>
+                <p class="mb-6">Then my phone buzzed.</p>
+                <p class="mb-6">It was a message from my credit card app, reminding me how much I had spent on lunch. Honestly, rude. I had only ordered a salad, one iced latte, and a tiny cake that was called “mini” but cost the same as a small piece of furniture. The <b class="highlight quiz-target" data-ans="server" data-kor="식당 직원">server</b> had been so nice that I felt emotionally forced to tip well. Then the <b class="highlight quiz-target" data-ans="waiter" data-kor="웨이터">waiter</b> brought extra napkins, and the <b class="highlight quiz-target" data-ans="waitress" data-kor="웨이트리스">waitress</b> smiled when I said the cake looked cute. What was I supposed to do? Not reward kindness? I am not a monster.</p>
+                <p class="mb-6">The elevator stopped on the third floor.</p>
+                <p class="mb-6">No one got in.</p>
+                <p class="mb-6">I stared at the empty hallway and felt my soul leave my body. Why do elevators do this? Why do they stop for ghosts? I had places to be. Well, one place. My sofa. But still.</p>
+                <p class="mb-6">I looked at my shopping bags and remembered that I had bought a neck pillow for a flight I had not booked yet. I also bought a travel-size hand cream because it looked like something a calm woman would use after eating an <b class="highlight quiz-target" data-ans="in-flight meal" data-kor="기내식">in-flight meal</b>. I am not a calm woman, but I enjoy buying evidence that I might become one.</p>
+                <p class="mb-6">Then I remembered my savings goal.</p>
+                <p class="mb-6">I swallowed.</p>
+                <p class="mb-6">Maybe buying imaginary-vacation supplies was not wise. Maybe I was trying to <b class="highlight quiz-target" data-ans="sell your future" data-kor="미래를 팔아넘기다">sell your future</b> for a soft neck pillow and the dream of being relaxed at 30,000 feet. But then I told myself, “<b class="highlight quiz-target" data-ans="that's future me's problem" data-kor="그건 미래의 내가 해결할 문제야">that's future me's problem</b>,” and immediately felt better. Future me was probably more organized anyway. She could handle it. She might even own matching luggage.</p>
+                <p class="mb-6">The elevator stopped on the seventh floor.</p>
+                <p class="mb-6">A man stepped in, holding one perfect reusable water bottle. He looked healthy. Financially stable. Hydrated.</p>
+                <p class="mb-6">I sneezed.</p>
+                <p class="mb-6">He said, “Bless you.”</p>
+                <p class="mb-6">I said, “Thank you,” with great dignity, while my sunglasses slid down my nose.</p>
+                <p class="mb-6">When the elevator reached my floor, I stepped out bravely, carrying my bags and my poor decisions.</p>
+                <p class="mb-6">Then I realized I had left my iced latte in the lobby.</p>
+                <p class="mb-6">Honestly, that felt like a real tragedy.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">나는 머리 위에 선글라스를 얹고, 팔에는 쇼핑백 세 개를 걸고, 코 안에는 작은 화난 유령처럼 재채기 하나를 품은 채 엘리베이터에 탔다.</p>
+                <p class="mb-6">큰일은 아니었다. 나도 알고 있었다. 하지만 밖의 <b class="highlight">꽃가루</b>는 나를 개인적으로 공격했다. 카페에서 우리 건물까지 정확히 40초를 걸었을 뿐인데, 어쩐지 내 눈은 늙은 개가 나오는 슬픈 영화를 본 것처럼 눈물이 고이고 있었다. 나는 엘리베이터 버튼을 누르고 스스로에게 “강해지자”라고 속삭였다. 너무 극적이긴 했지만 필요했다.</p>
+                <p class="mb-6">엘리베이터 문이 닫혔고, 드디어 평화가 찾아왔다.</p>
+                <p class="mb-6">그때 휴대폰이 울렸다.</p>
+                <p class="mb-6">카드 앱에서 온 메시지였다. 내가 점심에 얼마나 썼는지 알려 주는 알림이었다. 솔직히 무례했다. 나는 샐러드 하나, 아이스 라테 하나, 그리고 “미니”라고 불렸지만 작은 가구 한 조각만큼 비싼 작은 케이크 하나를 주문했을 뿐이었다. <b class="highlight">식당 직원</b>이 너무 친절해서 나는 감정적으로 팁을 많이 줄 수밖에 없었다. 그러고 나서 <b class="highlight">웨이터</b>가 냅킨을 더 가져다주었고, <b class="highlight">웨이트리스</b>는 내가 케이크가 귀엽다고 말했을 때 미소를 지었다. 내가 어떻게 해야 했겠는가? 친절함에 보답하지 말았어야 했나? 나는 괴물이 아니다.</p>
+                <p class="mb-6">엘리베이터가 3층에서 멈췄다.</p>
+                <p class="mb-6">아무도 타지 않았다.</p>
+                <p class="mb-6">나는 텅 빈 복도를 바라보며 영혼이 몸을 떠나는 기분을 느꼈다. 엘리베이터는 왜 이러는 걸까? 왜 유령을 위해 멈추는 걸까? 나는 갈 곳이 있었다. 뭐, 한 곳이긴 했다. 내 소파. 그래도 갈 곳은 갈 곳이었다.</p>
+                <p class="mb-6">나는 쇼핑백들을 바라보다가 아직 예약하지도 않은 비행을 위해 목베개를 샀다는 사실을 떠올렸다. 여행용 핸드크림도 샀다. 기내식을 먹은 뒤 차분한 여자가 사용할 것처럼 생겼기 때문이다. 나는 차분한 여자는 아니지만, 언젠가 그런 사람이 될지도 모른다는 증거를 사는 건 좋아한다.</p>
+                <p class="mb-6">그때 저축 목표가 생각났다.</p>
+                <p class="mb-6">나는 침을 삼켰다.</p>
+                <p class="mb-6">어쩌면 상상 속 휴가용품을 사는 것은 현명하지 않았을지도 모른다. 어쩌면 나는 부드러운 목베개와 3만 피트 상공에서 여유로워지는 꿈을 위해 내 <b class="highlight">미래를 팔아넘기고</b> 있는지도 몰랐다. 하지만 나는 곧 “<b class="highlight">그건 미래의 내가 해결할 문제야</b>”라고 스스로에게 말했고, 즉시 기분이 나아졌다. 미래의 나는 아마 더 체계적일 것이다. 그녀는 감당할 수 있을 것이다. 심지어 세트로 맞춘 여행 가방도 가지고 있을지 모른다.</p>
+                <p class="mb-6">엘리베이터가 7층에서 멈췄다.</p>
+                <p class="mb-6">한 남자가 완벽한 재사용 물병 하나를 들고 들어왔다. 그는 건강해 보였다. 재정적으로 안정되어 보였다. 수분도 충분해 보였다.</p>
+                <p class="mb-6">나는 재채기를 했다.</p>
+                <p class="mb-6">그가 “Bless you”라고 말했다.</p>
+                <p class="mb-6">나는 선글라스가 코 아래로 미끄러지는 동안, 아주 품위 있게 “Thank you”라고 말했다.</p>
+                <p class="mb-6">엘리베이터가 내 층에 도착했을 때, 나는 쇼핑백과 형편없는 결정들을 들고 용감하게 내렸다.</p>
+                <p class="mb-6">그때 아이스 라테를 로비에 두고 왔다는 사실을 깨달았다.</p>
+                <p class="mb-6">솔직히, 그건 진짜 비극처럼 느껴졌다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "427715.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

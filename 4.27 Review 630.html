@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Elevator of Tiny Disasters</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🛗</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Elevator of Tiny Disasters</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">got on his nerves</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그의 신경을 건드렸다 / 짜증 나게 했다</td></tr>
+                <tr><td class="p-4"><b class="text-white">water pressure</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">수압</td></tr>
+                <tr><td class="p-4"><b class="text-white">shower head</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">샤워기 헤드</td></tr>
+                <tr><td class="p-4"><b class="text-white">hide your true feelings</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">속마음을 숨기다 / 진짜 감정을 감추다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-3xl p-6 border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold mb-2">got on his nerves</h3>
+                <p class="text-slate-300">“짜증 나게 했다”라는 뜻의 관용 표현이에요. 단순히 싫다는 것보다 계속 신경을 건드리는 느낌이 있어요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold mb-2">hide your true feelings</h3>
+                <p class="text-slate-300">감정을 겉으로 드러내지 않고 숨긴다는 뜻이에요. 짜증, 실망, 질투 같은 감정에도 사용할 수 있어요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">I stepped into the elevator with wet hair, one cold coffee, and the emotional strength of a tired spoon.</p>
+                <p class="mb-6">I was going down to the lobby because I had to leave for work. Technically, nothing terrible had happened yet. Technically, my life was fine. But emotionally, I had already suffered.</p>
+                <p class="mb-6">It had started in the shower. The <b class="highlight quiz-target" data-ans="water pressure" data-kor="수압">water pressure</b> was weak, like the water was falling out of the <b class="highlight quiz-target" data-ans="shower head" data-kor="샤워기 헤드">shower head</b> by accident. I stood there under three sad little streams, trying to rinse shampoo out of my hair while wondering if the building was punishing me for something.</p>
+                <p class="mb-6">Then the shower head turned slightly to the left and sprayed the wall.</p>
+                <p class="mb-6">The wall got a full spa treatment. I got betrayal.</p>
+                <p class="mb-6">I knew it was not a real problem. I knew people had actual difficulties in the world. Still, it <b class="highlight quiz-target" data-ans="got on his nerves" data-kor="그의 신경을 건드렸다">got on his nerves</b>. I had an important meeting that morning, and I needed my hair to look smooth and professional. Instead, it looked like it had made several poor decisions during the night.</p>
+                <p class="mb-6">The elevator doors closed slowly. I pressed the lobby button, even though it was already glowing. I know that does nothing, but sometimes I like to participate in my own suffering.</p>
+                <p class="mb-6">Then I saw myself in the mirror.</p>
+                <p class="mb-6">My blouse had one tiny coffee dot on it. I had not even taken a sip yet, so this felt deeply unfair. I stared at the dot. The dot stared back. It was small, but confident.</p>
+                <p class="mb-6">The elevator stopped on the ninth floor.</p>
+                <p class="mb-6">No one got in.</p>
+                <p class="mb-6">I took a slow breath. “Fine,” I whispered. “Let’s stop for invisible people.”</p>
+                <p class="mb-6">Then I remembered there was a security camera in the corner. I tried to <b class="highlight quiz-target" data-ans="hide your true feelings" data-kor="속마음을 숨기다">hide your true feelings</b> immediately. I smiled politely at the camera, which made everything worse. Now I looked like a woman pretending not to lose a war against plumbing, coffee, and modern architecture.</p>
+                <p class="mb-6">The elevator stopped on the seventh floor.</p>
+                <p class="mb-6">A man entered, holding six Coupang boxes. Six. He nodded and said, “Morning.”</p>
+                <p class="mb-6">“Morning,” I said brightly, while thinking, Why do your boxes need their own apartment?</p>
+                <p class="mb-6">We rode down in silence. My coffee cooled. My hair dried into a shape that no shampoo commercial would approve. The boxes pressed near my elbow like they were trying to network.</p>
+                <p class="mb-6">When the elevator finally reached the lobby, I stepped out with dignity.</p>
+                <p class="mb-6">Then I saw the rain outside.</p>
+                <p class="mb-6">My umbrella was upstairs, hanging calmly by my front door.</p>
+                <p class="mb-6">Of course it was.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">나는 젖은 머리와 차가운 커피 한 잔, 그리고 지친 숟가락 같은 정신력으로 엘리베이터에 탔다.</p>
+                <p class="mb-6">나는 출근해야 해서 로비로 내려가는 길이었다. 엄밀히 말하면 아직 끔찍한 일은 아무것도 일어나지 않았다. 엄밀히 말하면 내 삶은 괜찮았다. 하지만 감정적으로는 이미 충분히 고통받고 있었다.</p>
+                <p class="mb-6">문제는 샤워할 때부터 시작됐다. <b class="highlight">수압</b>이 너무 약해서, 물이 <b class="highlight">샤워기 헤드</b>에서 실수로 떨어지는 것 같았다. 나는 슬픈 물줄기 세 가닥 아래 서서 머리에서 샴푸를 헹구려고 애쓰며, 이 건물이 내가 무슨 잘못을 해서 벌을 주는 건가 생각했다.</p>
+                <p class="mb-6">그러다가 샤워기 헤드가 살짝 왼쪽으로 돌아가서 벽에 물을 뿌렸다.</p>
+                <p class="mb-6">벽은 완전한 스파 관리를 받았다. 나는 배신감을 받았다.</p>
+                <p class="mb-6">나는 그게 진짜 문제가 아니라는 걸 알고 있었다. 세상 사람들에게는 실제로 어려운 일들이 있다는 것도 알고 있었다. 그래도 그것은 <b class="highlight">내 신경을 건드렸다</b>. 그날 아침 중요한 회의가 있었고, 나는 머리가 차분하고 프로페셔널해 보이길 원했다. 대신 내 머리는 밤새 몇 가지 잘못된 결정을 내린 것처럼 보였다.</p>
+                <p class="mb-6">엘리베이터 문이 천천히 닫혔다. 나는 로비 버튼을 눌렀다. 이미 불이 들어와 있었지만 말이다. 그게 아무 효과가 없다는 건 알지만, 가끔은 내 고통에 직접 참여하고 싶을 때가 있다.</p>
+                <p class="mb-6">그때 거울 속의 내 모습을 봤다.</p>
+                <p class="mb-6">블라우스에 아주 작은 커피 점 하나가 있었다. 나는 아직 한 모금도 마시지 않았는데, 이건 정말 불공평하게 느껴졌다. 나는 그 점을 바라보았다. 그 점도 나를 바라보았다. 작았지만 당당했다.</p>
+                <p class="mb-6">엘리베이터가 9층에서 멈췄다.</p>
+                <p class="mb-6">아무도 타지 않았다.</p>
+                <p class="mb-6">나는 천천히 숨을 들이쉬었다. “좋아,” 나는 속삭였다. “보이지 않는 사람들을 위해 멈추자.”</p>
+                <p class="mb-6">그때 구석에 보안 카메라가 있다는 것을 기억했다. 나는 즉시 <b class="highlight">속마음을 숨기려고</b> 했다. 카메라를 향해 예의 바르게 미소를 지었는데, 그게 모든 걸 더 나쁘게 만들었다. 이제 나는 배관, 커피, 현대 건축과의 전쟁에서 지지 않으려고 애쓰는 여자처럼 보였다.</p>
+                <p class="mb-6">엘리베이터가 7층에서 멈췄다.</p>
+                <p class="mb-6">한 남자가 쿠팡 상자 여섯 개를 들고 들어왔다. 여섯 개였다. 그는 고개를 끄덕이며 “좋은 아침입니다”라고 말했다.</p>
+                <p class="mb-6">나는 밝게 “좋은 아침입니다”라고 말했지만, 속으로는 ‘왜 당신의 상자들은 자기들만의 아파트가 필요한 거죠?’라고 생각했다.</p>
+                <p class="mb-6">우리는 침묵 속에서 내려갔다. 내 커피는 식어 갔다. 내 머리는 어떤 샴푸 광고도 승인하지 않을 모양으로 말라 갔다. 상자들은 마치 인맥을 쌓으려는 것처럼 내 팔꿈치 근처로 다가왔다.</p>
+                <p class="mb-6">마침내 엘리베이터가 로비에 도착했을 때, 나는 품위 있게 내렸다.</p>
+                <p class="mb-6">그때 밖에 비가 오는 것을 보았다.</p>
+                <p class="mb-6">내 우산은 위층, 현관문 옆에 아주 평온하게 걸려 있었다.</p>
+                <p class="mb-6">물론 그랬다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "427630.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

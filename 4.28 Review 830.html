@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Planet With Too Many Wheels</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🛒</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Planet With Too Many Wheels</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">haven't had much chance to</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">~할 기회가 별로 없었다</td></tr>
+                <tr><td class="p-4"><b class="text-white">feel self-conscious</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">남의 시선을 의식하다 / 민망하게 느끼다</td></tr>
+                <tr><td class="p-4"><b class="text-white">grocery store</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">식료품점 / 슈퍼마켓</td></tr>
+                <tr><td class="p-4"><b class="text-white">have lots of land</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">땅이 많다 / 넓은 땅을 가지고 있다</td></tr>
+                <tr><td class="p-4"><b class="text-white">peaceful</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">평화로운 / 조용하고 편안한</td></tr>
+                <tr><td class="p-4"><b class="text-white">a car is a must</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">차는 필수다 / 차가 꼭 필요하다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border border-white/5">
+                <h3 class="text-teal-400 font-bold mb-2">haven't had much chance to</h3>
+                <p class="text-slate-300 text-sm">무언가를 하고 싶었지만 상황이나 기회가 없어서 많이 못 했다는 뜻이에요. “못했다”보다 부드럽고 자연스러운 표현입니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5">
+                <h3 class="text-teal-400 font-bold mb-2">feel self-conscious</h3>
+                <p class="text-slate-300 text-sm">다른 사람들이 나를 어떻게 볼지 신경 쓰여서 어색하거나 민망한 느낌이에요. 단순히 “부끄럽다”보다 남의 시선을 의식하는 뉘앙스가 강합니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5">
+                <h3 class="text-teal-400 font-bold mb-2">a car is a must</h3>
+                <p class="text-slate-300 text-sm">“must”는 여기서 명사가 아니라 “꼭 필요한 것”이라는 뜻이에요. 선택이 아니라 거의 필수라는 느낌입니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Ziblor’s guide, Mina, decided to take him to the countryside because she thought it would be <b class="highlight quiz-target" data-ans="peaceful" data-kor="평화로운 / 조용하고 편안한">peaceful</b>. Ziblor liked the idea. On his planet, peaceful places usually had soft purple grass, quiet floating houses, and signs that said, PLEASE DO NOT SCREAM AT THE MOON AFTER 9 P.M.</p>
+                <p class="mb-6">Earth’s countryside looked different. There were trees, fields, houses, and roads that seemed to go everywhere except the place they were trying to reach.</p>
+                <p class="mb-6">“I <b class="highlight quiz-target" data-ans="haven't had much chance to" data-kor="~할 기회가 별로 없었다">haven't had much chance to</b> visit places like this,” Ziblor said, pressing his face to the car window. “Why are the houses so far apart? Are they angry at each other?”</p>
+                <p class="mb-6">“No,” Mina said. “People here just <b class="highlight quiz-target" data-ans="have lots of land" data-kor="땅이 많다 / 넓은 땅을 가지고 있다">have lots of land</b>.”</p>
+                <p class="mb-6">Ziblor nodded slowly. “So each house gets a large amount of outside.”</p>
+                <p class="mb-6">“Basically.”</p>
+                <p class="mb-6">“And then everyone sits inside?”</p>
+                <p class="mb-6">Mina paused. “Well… a lot of the time, yes.”</p>
+                <p class="mb-6">Ziblor wrote in his notebook: Humans buy land so they can have more outside, then use walls to avoid it.</p>
+                <p class="mb-6">They drove for twenty more minutes. Ziblor saw no people walking.</p>
+                <p class="mb-6">“Where are the humans?” he asked.</p>
+                <p class="mb-6">“In their houses. Or cars.”</p>
+                <p class="mb-6">“Why not outside on the large outside they bought?”</p>
+                <p class="mb-6">Mina thought about it. “It’s a little far to walk anywhere.”</p>
+                <p class="mb-6">“So they spread everything far apart, and then invented a machine because everything was far apart?”</p>
+                <p class="mb-6">“Yes.”</p>
+                <p class="mb-6">“And now <b class="highlight quiz-target" data-ans="a car is a must" data-kor="차는 필수다 / 차가 꼭 필요하다">a car is a must</b>?”</p>
+                <p class="mb-6">“Pretty much.”</p>
+                <p class="mb-6">Ziblor looked deeply impressed. “That is beautiful nonsense. On my planet, if a place requires a machine to leave it, we do not call it a home. We call it a soft prison with a mailbox.”</p>
+                <p class="mb-6">Their next stop was a <b class="highlight quiz-target" data-ans="grocery store" data-kor="식료품점 / 슈퍼마켓">grocery store</b>. Ziblor became excited when he saw rows and rows of food.</p>
+                <p class="mb-6">“At last!” he said. “A food museum.”</p>
+                <p class="mb-6">“It’s not a museum. You buy things here.”</p>
+                <p class="mb-6">Ziblor picked up a bag of salad. “This leaf collection has been washed, cut, placed in a bag, and given a tiny fork of sadness.”</p>
+                <p class="mb-6">“That’s convenient.”</p>
+                <p class="mb-6">“But the leaves were already portable,” Ziblor said. “They were leaves.”</p>
+                <p class="mb-6">Near the fruit section, Mina noticed Ziblor standing very still.</p>
+                <p class="mb-6">“What’s wrong?”</p>
+                <p class="mb-6">“I <b class="highlight quiz-target" data-ans="feel self-conscious" data-kor="남의 시선을 의식하다 / 민망하게 느끼다">feel self-conscious</b>,” he whispered. “That melon is staring at me.”</p>
+                <p class="mb-6">“That’s a sticker.”</p>
+                <p class="mb-6">“It has a face.”</p>
+                <p class="mb-6">“It’s a brand logo.”</p>
+                <p class="mb-6">Ziblor relaxed only a little. “Humans put faces on food, then eat the food. That is not marketing. That is emotional confusion.”</p>
+                <p class="mb-6">At the checkout, Mina bought bottled water.</p>
+                <p class="mb-6">Ziblor looked alarmed. “But your house has water.”</p>
+                <p class="mb-6">“Yes, but this is for the road.”</p>
+                <p class="mb-6">“The road also has water in clouds.”</p>
+                <p class="mb-6">“We can’t drink clouds.”</p>
+                <p class="mb-6">“Have you tried politely?”</p>
+                <p class="mb-6">Mina laughed as they walked back to the car. The countryside was quiet, wide, and green. It really was peaceful.</p>
+                <p class="mb-6">Ziblor looked out at the fields and sighed happily. “Earth is strange,” he said. “Humans own land they do not stand on, drive because walking became impossible, and buy water because clouds are inconvenient. Still, I admit this place is pleasant.”</p>
+                <p class="mb-6">Mina smiled. “So you like it?”</p>
+                <p class="mb-6">“Yes,” said Ziblor. “But I would like it more if the houses stopped pretending they were islands.”</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">미나는 지블러를 시골로 데려가기로 했다. 그곳이 <b class="highlight">평화로울</b> 거라고 생각했기 때문이다. 지블러는 그 생각이 마음에 들었다. 그의 행성에서 평화로운 장소에는 보통 부드러운 보라색 풀, 조용히 떠 있는 집들, 그리고 “오후 9시 이후에는 달에게 소리 지르지 마세요”라고 적힌 표지판이 있었다.</p>
+                <p class="mb-6">지구의 시골은 달랐다. 나무와 들판, 집, 도로가 있었고, 그 도로들은 그들이 가려는 곳만 빼고 어디든 가는 것처럼 보였다.</p>
+                <p class="mb-6">“저는 이런 곳에 와 볼 <b class="highlight">기회가 별로 없었어요</b>,” 지블러가 차창에 얼굴을 붙이며 말했다. “왜 집들이 이렇게 멀리 떨어져 있죠? 서로 화가 났나요?”</p>
+                <p class="mb-6">“아니요,” 미나가 말했다. “여기 사람들은 그냥 <b class="highlight">땅이 많아요</b>.”</p>
+                <p class="mb-6">지블러는 천천히 고개를 끄덕였다. “그러니까 각 집이 많은 양의 바깥을 가지는 거군요.”</p>
+                <p class="mb-6">“기본적으로는요.”</p>
+                <p class="mb-6">“그리고 나서 모두 안에 앉아 있고요?”</p>
+                <p class="mb-6">미나는 잠시 멈췄다. “음… 많은 경우엔 그렇죠.”</p>
+                <p class="mb-6">지블러는 노트에 적었다. 인간은 더 많은 바깥을 가지기 위해 땅을 사고, 그다음 벽을 이용해 그 바깥을 피한다.</p>
+                <p class="mb-6">그들은 20분을 더 달렸다. 지블러는 걷고 있는 사람을 한 명도 보지 못했다.</p>
+                <p class="mb-6">“인간들은 어디 있습니까?” 그가 물었다.</p>
+                <p class="mb-6">“집 안에 있거나, 차 안에 있죠.”</p>
+                <p class="mb-6">“왜 자신들이 산 그 넓은 바깥에 있지 않죠?”</p>
+                <p class="mb-6">미나는 생각해 보았다. “어디든 걸어가기에는 좀 멀거든요.”</p>
+                <p class="mb-6">“그러니까 모든 것을 멀리 떨어뜨려 놓고, 그다음 모든 것이 멀리 있기 때문에 기계를 발명한 거군요?”</p>
+                <p class="mb-6">“네.”</p>
+                <p class="mb-6">“그리고 이제 <b class="highlight">차가 필수고요</b>?”</p>
+                <p class="mb-6">“거의 그렇죠.”</p>
+                <p class="mb-6">지블러는 깊은 감명을 받은 표정을 지었다. “아름다운 말도 안 됨이군요. 제 행성에서는 어떤 장소를 떠나기 위해 기계가 필요하다면, 우리는 그것을 집이라고 부르지 않습니다. 우편함이 달린 부드러운 감옥이라고 부르죠.”</p>
+                <p class="mb-6">그들의 다음 목적지는 <b class="highlight">식료품점</b>이었다. 지블러는 줄지어 늘어선 음식들을 보고 신이 났다.</p>
+                <p class="mb-6">“드디어!” 그가 말했다. “음식 박물관이군요.”</p>
+                <p class="mb-6">“박물관이 아니에요. 여기서는 물건을 사는 거예요.”</p>
+                <p class="mb-6">지블러는 샐러드 한 봉지를 집어 들었다. “이 잎 모음은 씻기고, 잘리고, 봉지에 담기고, 작은 슬픔의 포크까지 받았군요.”</p>
+                <p class="mb-6">“편리하잖아요.”</p>
+                <p class="mb-6">“하지만 잎은 원래 들고 다닐 수 있었잖아요,” 지블러가 말했다. “잎이니까요.”</p>
+                <p class="mb-6">과일 코너 근처에서 미나는 지블러가 아주 가만히 서 있는 것을 보았다.</p>
+                <p class="mb-6">“왜 그래요?”</p>
+                <p class="mb-6">“<b class="highlight">남의 시선이 의식돼요</b>,” 그가 속삭였다. “저 멜론이 저를 쳐다보고 있어요.”</p>
+                <p class="mb-6">“그건 스티커예요.”</p>
+                <p class="mb-6">“얼굴이 있잖아요.”</p>
+                <p class="mb-6">“브랜드 로고예요.”</p>
+                <p class="mb-6">지블러는 조금밖에 안심하지 못했다. “인간들은 음식에 얼굴을 붙이고, 그다음 그 음식을 먹는군요. 그건 마케팅이 아닙니다. 감정적 혼란입니다.”</p>
+                <p class="mb-6">계산대에서 미나는 생수를 샀다.</p>
+                <p class="mb-6">지블러는 놀란 표정으로 바라보았다. “하지만 당신 집에는 물이 있잖아요.”</p>
+                <p class="mb-6">“네, 하지만 이건 길에서 마시려고요.”</p>
+                <p class="mb-6">“길에도 구름 속에 물이 있습니다.”</p>
+                <p class="mb-6">“우리는 구름을 마실 수 없어요.”</p>
+                <p class="mb-6">“정중하게 부탁해 보셨나요?”</p>
+                <p class="mb-6">미나는 웃으며 차로 돌아갔다. 시골은 조용하고 넓고 푸르렀다. 정말 평화로웠다.</p>
+                <p class="mb-6">지블러는 들판을 바라보며 행복하게 한숨을 쉬었다. “지구는 이상합니다,” 그가 말했다. “인간들은 밟지도 않는 땅을 소유하고, 걷는 것이 불가능해져서 차를 몰고, 구름이 불편하다는 이유로 물을 삽니다. 그래도 이곳이 pleasant하다는 것은 인정하겠습니다.”</p>
+                <p class="mb-6">미나는 미소 지었다. “그럼 마음에 들어요?”</p>
+                <p class="mb-6">“네,” 지블러가 말했다. “하지만 집들이 섬인 척하지 않는다면 더 좋을 것 같습니다.”</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "428830.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

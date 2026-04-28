@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | Ziblor Studies the Human Bathroom</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🚽</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">Ziblor Studies the Human Bathroom</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">same day service</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">당일 서비스 / 당일 처리 서비스</td></tr>
+                <tr><td class="p-4"><b class="text-white">hey folks</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">여러분 안녕하세요 / 얘들아, 안녕</td></tr>
+                <tr><td class="p-4"><b class="text-white">y'all</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">너희들 / 여러분 / 다들</td></tr>
+                <tr><td class="p-4"><b class="text-white">outhouse</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">야외 화장실 / 재래식 외부 화장실</td></tr>
+                <tr><td class="p-4"><b class="text-white">kneeled down</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">무릎을 꿇었다 / 무릎을 굽혀 앉았다</td></tr>
+                <tr><td class="p-4"><b class="text-white">speak indirectly</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">돌려 말하다 / 간접적으로 말하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">beat around the bush</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">빙빙 돌려 말하다 / 핵심을 피하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">bathroom stalls</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">화장실 칸 / 화장실 개별 부스</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border border-white/5">
+                <h3 class="text-teal-400 font-bold mb-2">hey folks</h3>
+                <p class="text-slate-300 text-sm">여러 사람에게 친근하게 인사할 때 쓰는 표현이에요. “folks”는 “people”보다 더 따뜻하고 캐주얼하게 들립니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5">
+                <h3 class="text-teal-400 font-bold mb-2">y’all</h3>
+                <p class="text-slate-300 text-sm">“you all”의 줄임말로, 여러 사람에게 “너희들 / 여러분”이라고 말할 때 씁니다. 미국 남부식 영어로 특히 잘 알려져 있어요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5">
+                <h3 class="text-teal-400 font-bold mb-2">outhouse</h3>
+                <p class="text-slate-300 text-sm">건물 안이 아니라 밖에 따로 있는 옛날식 화장실이에요. 시골, 캠핑장, 오래된 집 이야기에서 자주 나옵니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5">
+                <h3 class="text-teal-400 font-bold mb-2">beat around the bush</h3>
+                <p class="text-slate-300 text-sm">하고 싶은 말을 바로 하지 않고 빙빙 돌려 말하는 것을 뜻해요. 답을 피하거나 불편한 말을 직접 하지 않을 때 씁니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5">
+                <h3 class="text-teal-400 font-bold mb-2">bathroom stalls</h3>
+                <p class="text-slate-300 text-sm">공중화장실 안에 칸막이로 나뉜 개별 공간을 말해요. 화장실 전체가 아니라 각각의 “칸”을 가리킵니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Ziblor was an alien tourist from the planet Varn, where doors either opened or did not open, rooms either provided privacy or did not provide privacy, and nobody invented a machine unless walking had already failed three times. Mina was his official Earth guide. Her job was to explain ordinary human life. This was difficult, because ordinary human life often became less ordinary as soon as Ziblor asked one calm question about it.</p>
+                <p class="mb-6">One morning, Mina took him to a small country fair. At the entrance, a woman waved and called, “<b class="highlight quiz-target" data-ans="hey folks" data-kor="여러분 안녕하세요 / 얘들아, 안녕">Hey folks</b>, welcome to Maple Day!”</p>
+                <p class="mb-6">Ziblor stopped. “Why did she call us ordinary people in such a warm voice? Is this a ceremony?”</p>
+                <p class="mb-6">“No,” Mina said. “It’s just a friendly greeting.”</p>
+                <p class="mb-6">A man selling lemonade smiled and said, “How are <b class="highlight quiz-target" data-ans="y'all" data-kor="너희들 / 여러분 / 다들">y'all</b> doing?”</p>
+                <p class="mb-6">Ziblor looked pleased. “Good. That word is efficient. It means more than one ‘you.’ Human English has finally repaired itself.”</p>
+                <p class="mb-6">Mina laughed and led him past a booth with a large sign: <b class="highlight quiz-target" data-ans="same day service" data-kor="당일 서비스 / 당일 처리 서비스">same day service</b> for phone repairs.</p>
+                <p class="mb-6">Ziblor stared at it. “They fix the phone on the same day?”</p>
+                <p class="mb-6">“Yes.”</p>
+                <p class="mb-6">“But that is the day the phone is broken.”</p>
+                <p class="mb-6">“Right.”</p>
+                <p class="mb-6">“So they are advertising that they will solve the problem while the problem still matters?”</p>
+                <p class="mb-6">Mina opened her mouth, then nodded. “Basically.”</p>
+                <p class="mb-6">“On Varn, that is not a service. That is just not being strange.”</p>
+                <p class="mb-6">Behind an old farmhouse, Mina showed him a historical <b class="highlight quiz-target" data-ans="outhouse" data-kor="야외 화장실 / 재래식 외부 화장실">outhouse</b>. Ziblor studied it with deep concern.</p>
+                <p class="mb-6">“So humans once built a tiny separate house for the toilet?”</p>
+                <p class="mb-6">“Yes.”</p>
+                <p class="mb-6">“Was the toilet too loud?”</p>
+                <p class="mb-6">“No.”</p>
+                <p class="mb-6">“Did it need emotional space?”</p>
+                <p class="mb-6">“No. People just didn’t have indoor plumbing.”</p>
+                <p class="mb-6">Ziblor wrote in his notebook: Early humans put the bathroom outside, then later became proud of bringing it back inside.</p>
+                <p class="mb-6">Inside the fair building, Ziblor found the modern restroom even more confusing. He pointed at the <b class="highlight quiz-target" data-ans="bathroom stalls" data-kor="화장실 칸 / 화장실 개별 부스">bathroom stalls</b>.</p>
+                <p class="mb-6">“These are private rooms?”</p>
+                <p class="mb-6">“Yes.”</p>
+                <p class="mb-6">“But the doors have gaps. I can see shoes, bags, and part of someone’s entire life.”</p>
+                <p class="mb-6">“That’s normal here.”</p>
+                <p class="mb-6">Ziblor <b class="highlight quiz-target" data-ans="kneeled down" data-kor="무릎을 꿇었다 / 무릎을 굽혀 앉았다">kneeled down</b> slightly to inspect the space under one door. Mina grabbed his shoulder.</p>
+                <p class="mb-6">“Do not do that.”</p>
+                <p class="mb-6">“But the room is showing me the floor person.”</p>
+                <p class="mb-6">“It is not showing you. You are looking.”</p>
+                <p class="mb-6">Ziblor stood up. “Human privacy is very strange. You hide the face but display the feet. On my planet, we do the opposite during arguments, but never in bathrooms.”</p>
+                <p class="mb-6">Later, Mina explained that humans often <b class="highlight quiz-target" data-ans="speak indirectly" data-kor="돌려 말하다 / 간접적으로 말하다">speak indirectly</b> when they feel uncomfortable.</p>
+                <p class="mb-6">“For example,” she said, “if someone wants to leave, they might say, ‘We should probably get going soon.’”</p>
+                <p class="mb-6">“But they mean, ‘I want to leave now.’”</p>
+                <p class="mb-6">“Yes.”</p>
+                <p class="mb-6">“So they hide the sentence inside another sentence?”</p>
+                <p class="mb-6">“Sometimes.”</p>
+                <p class="mb-6">“And the other person must guess?”</p>
+                <p class="mb-6">“Yes.”</p>
+                <p class="mb-6">Ziblor looked horrified. “This is why your bathroom doors have gaps. Humans are direct with feet and indirect with words.”</p>
+                <p class="mb-6">Mina sighed. “We call that <b class="highlight quiz-target" data-ans="beat around the bush" data-kor="빙빙 돌려 말하다 / 핵심을 피하다">beating around the bush</b>.”</p>
+                <p class="mb-6">Ziblor looked around the restroom hallway. “There is no bush.”</p>
+                <p class="mb-6">“It’s an idiom.”</p>
+                <p class="mb-6">“Of course,” said Ziblor. “Humans refuse to say the clear sentence, then invent unclear sentences to describe the unclear sentence.”</p>
+                <p class="mb-6">Mina smiled. “That sounds fair.”</p>
+                <p class="mb-6">Ziblor closed his notebook. “In summary, Earth bathrooms used to be outside, now they are inside, but not fully private. Earth conversations are private, but not fully clear. Your species has made both plumbing and honesty more complicated than necessary.”</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">지블러는 바른이라는 행성에서 온 외계인 관광객이었다. 그 행성에서는 문은 열리거나 열리지 않았고, 방은 사생활을 제공하거나 제공하지 않았으며, 걷기가 이미 세 번 실패한 경우가 아니라면 아무도 기계를 발명하지 않았다. 미나는 그의 공식 지구 가이드였다. 그녀의 일은 평범한 인간의 삶을 설명하는 것이었다. 하지만 그것은 어려운 일이었다. 지블러가 평범한 일에 대해 차분하게 질문 하나만 하면, 평범한 인간의 삶은 곧 덜 평범해졌기 때문이다.</p>
+                <p class="mb-6">어느 아침, 미나는 그를 작은 시골 축제로 데려갔다. 입구에서 한 여성이 손을 흔들며 말했다. “<b class="highlight">여러분 안녕하세요</b>, 메이플 데이에 오신 걸 환영합니다!”</p>
+                <p class="mb-6">지블러는 멈춰 섰다. “왜 저분은 우리를 그렇게 따뜻한 목소리로 평범한 사람들이라고 부르는 겁니까? 의식인가요?”</p>
+                <p class="mb-6">“아니요,” 미나가 말했다. “그냥 친근한 인사예요.”</p>
+                <p class="mb-6">레모네이드를 팔던 한 남자가 미소 지으며 말했다. “<b class="highlight">다들</b> 어떻게 지내요?”</p>
+                <p class="mb-6">지블러는 만족스러워 보였다. “좋습니다. 저 단어는 효율적이군요. 하나 이상의 ‘you’를 뜻하니까요. 인간 영어가 드디어 스스로를 고쳤습니다.”</p>
+                <p class="mb-6">미나는 웃으며 그를 전화 수리 부스 쪽으로 데려갔다. 그곳에는 “<b class="highlight">당일 서비스</b>”라고 크게 쓰인 표지판이 있었다.</p>
+                <p class="mb-6">지블러는 그것을 빤히 보았다. “그들은 전화기를 같은 날에 고쳐 줍니까?”</p>
+                <p class="mb-6">“네.”</p>
+                <p class="mb-6">“하지만 그날이 바로 전화기가 고장 난 날이잖아요.”</p>
+                <p class="mb-6">“맞아요.”</p>
+                <p class="mb-6">“그러니까 문제가 아직 중요할 때 문제를 해결해 주겠다고 광고하는 겁니까?”</p>
+                <p class="mb-6">미나는 입을 열었다가, 고개를 끄덕였다. “기본적으로는요.”</p>
+                <p class="mb-6">“바른에서는 그걸 서비스라고 부르지 않습니다. 그냥 이상하게 굴지 않는 거죠.”</p>
+                <p class="mb-6">오래된 농가 뒤에서, 미나는 그에게 역사적인 <b class="highlight">야외 화장실</b>을 보여 주었다. 지블러는 깊은 걱정이 담긴 표정으로 그것을 살펴보았다.</p>
+                <p class="mb-6">“그러니까 인간들은 한때 화장실을 위해 작고 따로 떨어진 집을 지은 겁니까?”</p>
+                <p class="mb-6">“네.”</p>
+                <p class="mb-6">“화장실이 너무 시끄러웠나요?”</p>
+                <p class="mb-6">“아니요.”</p>
+                <p class="mb-6">“감정적인 공간이 필요했나요?”</p>
+                <p class="mb-6">“아니요. 그냥 실내 배관이 없었어요.”</p>
+                <p class="mb-6">지블러는 노트에 적었다. 초기 인간들은 화장실을 밖에 두었고, 나중에는 그것을 다시 안으로 들여온 것을 자랑스러워했다.</p>
+                <p class="mb-6">축제 건물 안에서, 지블러는 현대식 화장실이 훨씬 더 혼란스럽다고 느꼈다. 그는 <b class="highlight">화장실 칸</b>들을 가리켰다.</p>
+                <p class="mb-6">“이것들이 사적인 방입니까?”</p>
+                <p class="mb-6">“네.”</p>
+                <p class="mb-6">“하지만 문에 틈이 있습니다. 신발, 가방, 그리고 누군가의 삶의 일부가 보입니다.”</p>
+                <p class="mb-6">“여기서는 그게 평범해요.”</p>
+                <p class="mb-6">지블러는 한 문 아래의 공간을 살펴보려고 살짝 <b class="highlight">무릎을 굽혀 앉았다</b>. 미나가 그의 어깨를 붙잡았다.</p>
+                <p class="mb-6">“그러면 안 돼요.”</p>
+                <p class="mb-6">“하지만 방이 바닥 사람을 보여 주고 있습니다.”</p>
+                <p class="mb-6">“보여 주는 게 아니에요. 당신이 보는 거예요.”</p>
+                <p class="mb-6">지블러는 일어섰다. “인간의 사생활은 정말 이상하군요. 얼굴은 숨기지만 발은 보여 줍니다. 제 행성에서는 말다툼할 때 그 반대로 하긴 하지만, 화장실에서는 절대 그러지 않습니다.”</p>
+                <p class="mb-6">나중에 미나는 인간들이 불편할 때 자주 <b class="highlight">돌려 말한다고</b> 설명했다.</p>
+                <p class="mb-6">“예를 들어,” 그녀가 말했다. “누군가 떠나고 싶으면 ‘우리 슬슬 가야 할 것 같아’라고 말할 수 있어요.”</p>
+                <p class="mb-6">“하지만 뜻은 ‘나는 지금 가고 싶다’인 거죠.”</p>
+                <p class="mb-6">“네.”</p>
+                <p class="mb-6">“그러니까 다른 문장 안에 진짜 문장을 숨기는 겁니까?”</p>
+                <p class="mb-6">“가끔은요.”</p>
+                <p class="mb-6">“그리고 상대방이 추측해야 하고요?”</p>
+                <p class="mb-6">“네.”</p>
+                <p class="mb-6">지블러는 충격을 받은 표정이었다. “그래서 당신들의 화장실 문에 틈이 있는 거군요. 인간은 발로는 직접적이고, 말로는 간접적입니다.”</p>
+                <p class="mb-6">미나는 한숨을 쉬었다. “우리는 그걸 <b class="highlight">빙빙 돌려 말한다고</b> 해요.”</p>
+                <p class="mb-6">지블러는 화장실 복도를 둘러보았다. “덤불은 없는데요.”</p>
+                <p class="mb-6">“관용 표현이에요.”</p>
+                <p class="mb-6">“물론이죠,” 지블러가 말했다. “인간들은 분명한 문장을 말하기를 거부하고, 그다음 그 불분명한 문장을 설명하기 위해 또 불분명한 문장을 발명하는군요.”</p>
+                <p class="mb-6">미나는 미소 지었다. “그 말은 맞는 것 같네요.”</p>
+                <p class="mb-6">지블러는 노트를 닫았다. “요약하자면, 지구의 화장실은 예전에는 밖에 있었고, 지금은 안에 있지만 완전히 사적이지는 않습니다. 지구의 대화는 사적이지만 완전히 분명하지는 않습니다. 당신들의 종족은 배관과 솔직함을 필요 이상으로 복잡하게 만들었습니다.”</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "4281200.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

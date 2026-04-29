@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Guessing Game That Improves Your Judgment</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🎯</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Guessing Game That Improves Your Judgment</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">by feel</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">감으로 / 느낌으로</td></tr>
+                <tr><td class="p-4"><b class="text-white">eyeball it</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">눈대중으로 하다 / 대충 보고 판단하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">make a bet</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">내기를 하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">put your money where your mouth is</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">말만 하지 말고 행동으로 보여 주다</td></tr>
+                <tr><td class="p-4"><b class="text-white">diabetic</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">당뇨가 있는 / 당뇨병 환자</td></tr>
+                <tr><td class="p-4"><b class="text-white">filling</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">포만감을 주는 / 든든한</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-6 rounded-3xl">
+                <h3 class="text-teal-400 font-bold mb-2">by feel</h3>
+                <p class="text-slate-300">정확히 재지 않고 경험이나 감각에 의지해서 한다는 뜻이에요. 요리, 운동, 운전, 일 처리 방식 등에 쓸 수 있어요.</p>
+            </div>
+            <div class="glass p-6 rounded-3xl">
+                <h3 class="text-teal-400 font-bold mb-2">eyeball it</h3>
+                <p class="text-slate-300">자나 저울 없이 눈으로 대충 보고 양이나 크기를 판단하는 표현이에요. 캐주얼한 말이에요.</p>
+            </div>
+            <div class="glass p-6 rounded-3xl">
+                <h3 class="text-teal-400 font-bold mb-2">put your money where your mouth is</h3>
+                <p class="text-slate-300">“그렇게 자신 있으면 행동으로 증명해 봐”라는 뜻이에요. 실제 돈을 걸라는 뜻일 수도 있지만, 보통은 말보다 행동을 요구할 때 써요.</p>
+            </div>
+            <div class="glass p-6 rounded-3xl">
+                <h3 class="text-teal-400 font-bold mb-2">diabetic</h3>
+                <p class="text-slate-300">형용사로 “당뇨가 있는”이라는 뜻이고, 명사로는 “당뇨병 환자”라는 뜻이에요. 사람을 말할 때는 표현이 민감할 수 있어서 “a person with diabetes”가 더 부드럽게 들릴 때도 있어요.</p>
+            </div>
+            <div class="glass p-6 rounded-3xl">
+                <h3 class="text-teal-400 font-bold mb-2">filling</h3>
+                <p class="text-slate-300">음식이 배를 오래 든든하게 채워 주는 느낌이에요. “맛있는”과는 다른 뜻이에요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">There is a useful skill that almost nobody practices on purpose: learning how wrong your guesses are.</p>
+                <p class="mb-6">Most people move through the day <b class="highlight quiz-target" data-ans="by feel" data-kor="감으로">by feel</b>. They guess how long a task will take. They guess how much food is enough. They guess how much money they spend on coffee, taxis, snacks, or delivery. The problem is not guessing. The problem is never checking.</p>
+                <p class="mb-6">Here is the tip: once a day, guess something first, then measure it.</p>
+                <p class="mb-6">To start off, choose something small. Don’t begin with a serious medical or financial decision. Start with ordinary life. Guess how long it will take to answer five emails. Guess how many steps it is from your desk to the elevator. Guess how much rice is in your bowl. At first, just <b class="highlight quiz-target" data-ans="eyeball it" data-kor="눈대중으로 해 보세요">eyeball it</b>.</p>
+                <p class="mb-6">Then write down your guess before you check. This part really matters. If you only guess in your head, your brain will quietly change the answer later. It will tell you, “I basically knew that.” Writing it down stops that little trick.</p>
+                <p class="mb-6">From there, measure the real answer. Use a timer, a scale, a receipt, or a simple note on your phone. The goal is not to be perfect. The goal is to notice the gap between your feeling and reality.</p>
+                <p class="mb-6">Quick tip: turn it into a tiny game. You can make a bet with yourself. For example, say, “I think cleaning the kitchen will take twelve minutes.” Then start the timer. If you are wrong by more than five minutes, you have to do one small extra task, like taking out the trash. That is a harmless way to <b class="highlight quiz-target" data-ans="put your money where your mouth is" data-kor="말만 하지 말고 행동으로 보여 주는 방법">put your money where your mouth is</b>.</p>
+                <p class="mb-6">This method is especially useful with food. Many people think a small snack is nothing, but some snacks are not very <b class="highlight quiz-target" data-ans="filling" data-kor="든든한">filling</b>. They disappear quickly and leave you hungry again. Checking once or twice can help you understand what actually keeps you full.</p>
+                <p class="mb-6">One thing to watch out for: if you are <b class="highlight quiz-target" data-ans="diabetic" data-kor="당뇨가 있거나">diabetic</b> or have a medical condition, do not use guessing for anything related to blood sugar, medication, or treatment. Follow professional medical advice and use proper measurements.</p>
+                <p class="mb-6">When you’re done, you should have a better sense of your own judgment. You will still guess, of course. Everyone does. But your guesses will become quieter, humbler, and more accurate.</p>
+                <p class="mb-6">That’s basically it. Guess first, measure second, and let reality train your instincts.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">거의 아무도 의식적으로 연습하지 않지만 아주 유용한 능력이 하나 있습니다. 바로 자신의 추측이 얼마나 틀리는지 배우는 능력입니다.</p>
+                <p class="mb-6">대부분의 사람들은 하루를 <b class="highlight">감으로</b> 살아갑니다. 어떤 일이 얼마나 걸릴지 추측합니다. 음식이 얼마나 충분할지 추측합니다. 커피, 택시, 간식, 배달 음식에 돈을 얼마나 쓰는지도 추측합니다. 문제는 추측하는 것이 아닙니다. 문제는 확인하지 않는 것입니다.</p>
+                <p class="mb-6">팁은 이렇습니다. 하루에 한 번, 먼저 추측하고 그다음 측정해 보세요.</p>
+                <p class="mb-6">처음에는 작은 것을 고르세요. 심각한 의료 결정이나 금전적인 결정으로 시작하지 마세요. 평범한 일상에서 시작하세요. 이메일 다섯 개에 답하는 데 얼마나 걸릴지 추측해 보세요. 책상에서 엘리베이터까지 몇 걸음인지 추측해 보세요. 밥그릇에 밥이 얼마나 들어 있는지 추측해 보세요. 처음에는 그냥 <b class="highlight">눈대중으로 해 보세요</b>.</p>
+                <p class="mb-6">그다음 확인하기 전에 추측한 값을 적어 두세요. 이 부분이 정말 중요합니다. 머릿속으로만 추측하면, 뇌가 나중에 조용히 답을 바꿔 버립니다. “나 거의 알고 있었는데”라고 말하게 만들죠. 적어 두면 그런 작은 속임수를 막을 수 있습니다.</p>
+                <p class="mb-6">거기서 이제 실제 답을 측정하세요. 타이머, 저울, 영수증, 또는 휴대폰 메모를 사용하면 됩니다. 목표는 완벽해지는 것이 아닙니다. 자신의 느낌과 현실 사이의 차이를 알아차리는 것입니다.</p>
+                <p class="mb-6">꿀팁 하나는, 이것을 작은 게임으로 만드는 것입니다. 스스로와 내기를 할 수 있습니다. 예를 들어 “부엌 청소는 12분 걸릴 것 같아”라고 말한 뒤 타이머를 시작하세요. 5분 이상 틀리면 쓰레기 버리기처럼 작은 추가 일을 하나 하는 것입니다. 이것은 해롭지 않은 방식으로 <b class="highlight">말만 하지 말고 행동으로 보여 주는 방법</b>입니다.</p>
+                <p class="mb-6">이 방법은 음식과 관련해서 특히 유용합니다. 많은 사람들은 작은 간식은 별것 아니라고 생각하지만, 어떤 간식은 별로 <b class="highlight">든든하지</b> 않습니다. 금방 사라지고 다시 배고프게 만들죠. 한두 번 확인해 보면 실제로 무엇이 포만감을 오래 주는지 이해하는 데 도움이 됩니다.</p>
+                <p class="mb-6">한 가지 조심할 점이 있습니다. <b class="highlight">당뇨가 있거나</b> 의학적 상태가 있다면, 혈당, 약, 치료와 관련된 일에는 추측을 사용하지 마세요. 전문적인 의학 조언을 따르고 정확한 측정 도구를 사용해야 합니다.</p>
+                <p class="mb-6">다 끝나면 자신의 판단 감각을 더 잘 이해하게 될 것입니다. 물론 여전히 추측은 하게 됩니다. 모두가 그렇습니다. 하지만 여러분의 추측은 더 조용해지고, 더 겸손해지고, 더 정확해질 것입니다.</p>
+                <p class="mb-6">대충 이 정도입니다. 먼저 추측하고, 그다음 측정하고, 현실이 여러분의 감각을 훈련하게 하세요.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "4291020.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

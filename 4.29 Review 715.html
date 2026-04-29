@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Frozen-Food Rule for Better Conversations</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🧊</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Frozen-Food Rule for Better Conversations</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">defrost</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">해동하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">overlapping</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">겹치는 / 겹쳐지는</td></tr>
+                <tr><td class="p-4"><b class="text-white">meet them at eye level</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">눈높이를 맞추다</td></tr>
+                <tr><td class="p-4"><b class="text-white">feel more responsibility</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">더 책임감을 느끼다</td></tr>
+                <tr><td class="p-4"><b class="text-white">applies to everyone</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">모두에게 적용된다</td></tr>
+                <tr><td class="p-4"><b class="text-white">absent</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">결석한 / 없는 / 부재중인</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-6 rounded-3xl">
+                <h3 class="text-teal-400 font-bold mb-2">defrost</h3>
+                <p class="text-slate-300">냉동된 음식을 녹일 때 쓰는 말이에요. 냉장고나 전자레인지 기능 이름으로도 자주 보여요.</p>
+            </div>
+            <div class="glass p-6 rounded-3xl">
+                <h3 class="text-teal-400 font-bold mb-2">overlapping</h3>
+                <p class="text-slate-300">물건이 겹칠 때도 쓰지만, 일정이나 역할이 서로 겹칠 때도 쓸 수 있어요.</p>
+            </div>
+            <div class="glass p-6 rounded-3xl">
+                <h3 class="text-teal-400 font-bold mb-2">meet them at eye level</h3>
+                <p class="text-slate-300">실제로 눈높이를 맞춘다는 뜻도 있지만, 상대를 내려다보지 않고 동등하게 대한다는 의미로도 쓰여요.</p>
+            </div>
+            <div class="glass p-6 rounded-3xl">
+                <h3 class="text-teal-400 font-bold mb-2">applies to everyone</h3>
+                <p class="text-slate-300">“모든 사람에게 해당된다 / 적용된다”라는 뜻이에요. 규칙이나 조언을 말할 때 자주 써요.</p>
+            </div>
+            <div class="glass p-6 rounded-3xl">
+                <h3 class="text-teal-400 font-bold mb-2">absent</h3>
+                <p class="text-slate-300">학교에서는 “결석한,” 회의나 상황에서는 “없는 / 부재한”이라는 뜻으로 쓰여요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">There is a small rule that helps when you need to explain something to someone. It works at school, at work, and even at home. The rule is simple: never serve frozen information.</p>
+                <p class="mb-6">Imagine taking a meal out of the freezer and putting it straight on the table. It may technically be food, but nobody can eat it yet. Information can be the same way. When you explain something too quickly, with too much detail, or with words the other person does not know, the idea is still frozen.</p>
+                <p class="mb-6">So the first thing you want to do is <b class="highlight quiz-target" data-ans="defrost" data-kor="해동하다">defrost</b> the information.</p>
+                <p class="mb-6">That means you start with the simplest version first. Before you explain every detail, say the main point in one clear sentence. For example, instead of saying, “There are several <b class="highlight quiz-target" data-ans="overlapping" data-kor="겹치는">overlapping</b> responsibilities in this project,” you could start with, “Two people are doing parts of the same job.” That sentence is easier to understand. After that, you can add the more exact word, “<b class="highlight quiz-target" data-ans="overlapping" data-kor="겹치는">overlapping</b>.”</p>
+                <p class="mb-6">This part really matters: you have to <b class="highlight quiz-target" data-ans="meet them at eye level" data-kor="눈높이를 맞추다">meet them at eye level</b>. That does not mean you treat the other person like a child. It means you notice where they are starting from. If someone is new to the topic, give them a simple example. If they already understand the basics, move faster.</p>
+                <p class="mb-6">Here’s a trick: after you explain the idea, give the person one small role. Ask them to repeat the plan, choose the next step, or explain one part back to you. People <b class="highlight quiz-target" data-ans="feel more responsibility" data-kor="더 책임감을 느끼다">feel more responsibility</b> when they are not just listening. They become part of the process.</p>
+                <p class="mb-6">This tip <b class="highlight quiz-target" data-ans="applies to everyone" data-kor="모두에게 적용된다">applies to everyone</b>. A manager explaining a new system can use it. A teacher helping a student can use it. A friend explaining a recipe can use it.</p>
+                <p class="mb-6">One thing to watch out for is the person who is quiet. Quiet does not always mean understanding. Sometimes the question is simply <b class="highlight quiz-target" data-ans="absent" data-kor="없는">absent</b> because the person feels embarrassed to ask.</p>
+                <p class="mb-6">So check gently. You can say, “Does that make sense so far?” or “Which part should I explain again?”</p>
+                <p class="mb-6">When you’re done, the other person should not just hear the information. They should be able to use it.</p>
+                <p class="mb-6">That’s basically it. <b class="highlight quiz-target" data-ans="defrost" data-kor="해동하다">Defrost</b> the idea first, then serve it.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">설명이 필요할 때 도움이 되는 작은 규칙이 있습니다. 이 규칙은 학교에서도, 직장에서도, 심지어 집에서도 통합니다. 규칙은 간단합니다. 얼어붙은 정보를 그대로 내놓지 말라는 것입니다.</p>
+                <p class="mb-6">냉동실에서 음식을 꺼내자마자 식탁 위에 올려놓는다고 상상해 보세요. 엄밀히 말하면 음식은 맞지만, 아직 아무도 먹을 수 없습니다. 정보도 마찬가지일 수 있습니다. 너무 빠르게 설명하거나, 디테일이 너무 많거나, 상대가 모르는 단어로 설명하면 그 생각은 아직 얼어 있는 상태입니다.</p>
+                <p class="mb-6">그래서 제일 먼저 할 일은 정보를 <b class="highlight">해동하는</b> 것입니다.</p>
+                <p class="mb-6">그 말은 가장 단순한 버전부터 시작한다는 뜻입니다. 모든 세부 내용을 설명하기 전에, 핵심을 명확한 한 문장으로 말하세요. 예를 들어 “이 프로젝트에는 여러 <b class="highlight">겹치는</b> 책임이 있습니다”라고 말하는 대신, “두 사람이 같은 일의 일부를 하고 있어요”라고 시작할 수 있습니다. 이 문장은 이해하기 더 쉽습니다. 그다음에 더 정확한 단어인 “<b class="highlight">겹치는</b>”을 추가하면 됩니다.</p>
+                <p class="mb-6">이 부분이 정말 중요합니다. 상대와 <b class="highlight">눈높이를 맞춰야</b> 합니다. 이것은 상대를 아이처럼 대하라는 뜻이 아닙니다. 상대가 어디에서 시작하고 있는지를 알아차리라는 뜻입니다. 누군가 그 주제가 처음이라면 간단한 예를 들어 주세요. 이미 기본을 알고 있다면 조금 더 빠르게 넘어가면 됩니다.</p>
+                <p class="mb-6">팁 하나는, 설명을 한 뒤 상대에게 작은 역할을 하나 주는 것입니다. 계획을 다시 말해 보게 하거나, 다음 단계를 고르게 하거나, 한 부분을 다시 설명하게 해 보세요. 사람들은 그냥 듣기만 할 때보다 과정에 참여할 때 <b class="highlight">더 책임감을 느끼다</b>. 이 팁은 <b class="highlight">모두에게 적용됩니다</b>. 새 시스템을 설명하는 관리자도 쓸 수 있습니다. 학생을 도와주는 선생님도 쓸 수 있습니다. 레시피를 설명하는 친구도 쓸 수 있습니다.</p>
+                <p class="mb-6">한 가지 조심할 점은 조용한 사람입니다. 조용하다고 해서 항상 이해했다는 뜻은 아닙니다. 때로는 질문이 <b class="highlight">없는</b> 이유가, 그 사람이 질문하기를 부끄러워하기 때문일 수도 있습니다.</p>
+                <p class="mb-6">그러니 부드럽게 확인하세요. “여기까지 이해되세요?” 또는 “어느 부분을 다시 설명해 드릴까요?”라고 말할 수 있습니다.</p>
+                <p class="mb-6">다 끝났을 때, 상대는 정보를 단순히 들은 상태가 아니어야 합니다. 그 정보를 사용할 수 있어야 합니다.</p>
+                <p class="mb-6">대충 이 정도입니다. 먼저 생각을 <b class="highlight">해동한</b> 다음, 내놓으세요.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "429715.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

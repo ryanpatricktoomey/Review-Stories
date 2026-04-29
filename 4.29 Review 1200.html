@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The One-to-Two Rule for Asking Better Questions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🧪</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The One-to-Two Rule for Asking Better Questions</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">ferment</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">발효되다 / 발효시키다</td></tr>
+                <tr><td class="p-4"><b class="text-white">breed</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">번식하다 / 품종 / 키우다</td></tr>
+                <tr><td class="p-4"><b class="text-white">1:1</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">1대1</td></tr>
+                <tr><td class="p-4"><b class="text-white">one to one</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">1대1 / 일대일</td></tr>
+                <tr><td class="p-4"><b class="text-white">one to two</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">1대2</td></tr>
+                <tr><td class="p-4"><b class="text-white">two on two</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">2대2</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-6 rounded-3xl">
+                <h3 class="text-teal-400 font-bold mb-2">ferment</h3>
+                <p class="text-slate-300">음식이 발효될 때 쓰는 말이에요. 김치, 요구르트, 빵 반죽, 술 같은 것에 자주 쓰입니다.</p>
+            </div>
+            <div class="glass p-6 rounded-3xl">
+                <h3 class="text-teal-400 font-bold mb-2">breed</h3>
+                <p class="text-slate-300">동물이나 식물이 번식한다는 뜻도 있고, 특정 품종을 키운다는 뜻도 있어요. 명사로는 “품종”이라는 뜻도 됩니다.</p>
+            </div>
+            <div class="glass p-6 rounded-3xl">
+                <h3 class="text-teal-400 font-bold mb-2">1:1 / one to one</h3>
+                <p class="text-slate-300">숫자로는 “1대1”이고, 말할 때는 “one to one”이라고 읽어요. 수업, 회의, 비율, 상담 상황에서 자주 씁니다.</p>
+            </div>
+            <div class="glass p-6 rounded-3xl">
+                <h3 class="text-teal-400 font-bold mb-2">one to two</h3>
+                <p class="text-slate-300">비율로는 “1:2”를 뜻해요. 예를 들어 물과 쌀의 비율, 설탕과 밀가루의 비율 등을 설명할 때 쓸 수 있어요.</p>
+            </div>
+            <div class="glass p-6 rounded-3xl">
+                <h3 class="text-teal-400 font-bold mb-2">two on two</h3>
+                <p class="text-slate-300">스포츠나 게임에서 “2대2”라는 뜻이에요. 비율보다는 팀 대결 상황에 더 많이 씁니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">There is a small communication trick that sounds almost too simple: when you ask for help, use a <b class="highlight quiz-target" data-ans="one to two" data-kor="1대2">one to two</b> question.</p>
+                <p class="mb-6">Most people ask for help in one of two bad ways. The first way is too open. They say, “What should I do?” That sounds easy, but it gives the other person too much work. The second way is too closed. They say, “Should I do this?” That is easier to answer, but it often leads to a lazy yes or no.</p>
+                <p class="mb-6">The better method is the <b class="highlight quiz-target" data-ans="one to two" data-kor="1대2">one to two</b> question. You give one clear problem and two possible choices.</p>
+                <p class="mb-6">Here is how it works.</p>
+                <p class="mb-6">To start off, define the problem in one sentence. For example, “I need to choose a topic for my presentation.” Keep it simple. Do not let the explanation <b class="highlight quiz-target" data-ans="ferment" data-kor="발효되다">ferment</b> for too long in your head until it becomes bigger and more confusing than it really is.</p>
+                <p class="mb-6">From there, give two options. You might say, “Should I talk about food waste or public transportation?” Now the other person has something to compare. This is the key part. People make better comments when they can see a contrast.</p>
+                <p class="mb-6">This works especially well in a <b class="highlight quiz-target" data-ans="1:1" data-kor="1대1">1:1</b> meeting. In a <b class="highlight quiz-target" data-ans="one to one" data-kor="1대1">one to one</b> conversation, the other person can focus on your exact situation. They do not have to answer for a whole group. They can say, “Food waste sounds more personal, but transportation may have stronger data.”</p>
+                <p class="mb-6">Quick tip: make the two options different enough. If the choices are too similar, the question does not help much. It is like asking someone to choose between two nearly identical apples from the same <b class="highlight quiz-target" data-ans="breed" data-kor="품종">breed</b>. They can answer, but the answer will not teach you much.</p>
+                <p class="mb-6">This trick also works in groups, but you need to be careful. In a <b class="highlight quiz-target" data-ans="two on two" data-kor="2대2">two on two</b> discussion, two people may support one idea and two people may support another. That can be useful, but it can also turn into a debate too quickly.</p>
+                <p class="mb-6">One thing to watch out for is pretending you have only two choices when you actually need more. This is a tool, not a rule for every situation.</p>
+                <p class="mb-6">When you’re done, your question should be easy to answer and useful to discuss. The other person should not have to build the whole decision from nothing.</p>
+                <p class="mb-6">That’s basically it. Bring one problem, offer two choices, and let the comparison do the hard work.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">질문을 더 잘하는 데 도움이 되는 작은 소통 요령이 있습니다. 너무 단순하게 들릴 수도 있습니다. 도움을 요청할 때 <b class="highlight">1대2</b> 질문을 사용하는 것입니다.</p>
+                <p class="mb-6">대부분의 사람들은 두 가지 좋지 않은 방식 중 하나로 도움을 요청합니다. 첫 번째 방식은 너무 열려 있습니다. “어떻게 해야 할까요?”라고 묻는 것입니다. 쉬워 보이지만, 상대에게 너무 많은 일을 맡기는 질문입니다. 두 번째 방식은 너무 닫혀 있습니다. “이걸 해야 할까요?”라고 묻는 것입니다. 대답하기는 더 쉽지만, 대개 성의 없는 예 또는 아니오로 끝나기 쉽습니다.</p>
+                <p class="mb-6">더 좋은 방법은 <b class="highlight">1대2</b> 질문입니다. 하나의 명확한 문제와 두 가지 가능한 선택지를 제시하는 것입니다.</p>
+                <p class="mb-6">방법은 이렇습니다.</p>
+                <p class="mb-6">먼저 문제를 한 문장으로 정리하세요. 예를 들어 “발표 주제를 골라야 해요”라고 말할 수 있습니다. 단순하게 유지하세요. 설명이 머릿속에서 너무 오래 <b class="highlight">발효되어</b> 실제보다 더 크고 더 복잡해지게 두지 마세요.</p>
+                <p class="mb-6">거기서 이제 두 가지 선택지를 제시합니다. “음식물 쓰레기에 대해 말할까요, 아니면 대중교통에 대해 말할까요?”라고 말할 수 있습니다. 이제 상대는 비교할 것이 생깁니다. 이게 핵심입니다. 사람들은 대비되는 두 가지를 볼 때 더 나은 의견을 말합니다.</p>
+                <p class="mb-6">이 방법은 <b class="highlight">1대1</b> 회의에서 특히 잘 통합니다. <b class="highlight">일대일</b> 대화에서는 상대가 당신의 정확한 상황에 집중할 수 있습니다. 전체 그룹을 위해 대답할 필요가 없습니다. 상대는 “음식물 쓰레기는 더 개인적으로 느껴지고, 대중교통은 자료가 더 강할 수 있겠네요”라고 말할 수 있습니다.</p>
+                <p class="mb-6">꿀팁 하나는 두 선택지를 충분히 다르게 만드는 것입니다. 선택지가 너무 비슷하면 질문이 별로 도움이 되지 않습니다. 같은 <b class="highlight">품종의</b> 거의 똑같은 사과 두 개 중 하나를 고르라고 하는 것과 비슷합니다. 답은 할 수 있지만, 그 답에서 많이 배우기는 어렵습니다.</p>
+                <p class="mb-6">이 요령은 그룹에서도 통하지만 조심해야 합니다. <b class="highlight">2대2</b> 토론에서는 두 사람이 한 아이디어를 지지하고, 다른 두 사람이 다른 아이디어를 지지할 수도 있습니다. 그것은 유용할 수 있지만, 너무 빨리 논쟁이 될 수도 있습니다.</p>
+                <p class="mb-6">한 가지 조심할 점은 실제로는 더 많은 선택지가 필요한데 두 가지 선택지만 있는 척하는 것입니다. 이것은 도구이지, 모든 상황에 적용되는 규칙은 아닙니다.</p>
+                <p class="mb-6">다 끝나면, 여러분의 질문은 답하기 쉽고 토론하기에도 유용해야 합니다. 상대가 아무것도 없는 상태에서 결정을 처음부터 만들어야 해서는 안 됩니다.</p>
+                <p class="mb-6">대충 이 정도입니다. 문제 하나를 가져오고, 선택지 두 개를 제시하고, 비교가 어려운 일을 대신하게 하세요.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "4291200.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Spoon Beside the Cup</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🩺</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Spoon Beside the Cup</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">made me think a lot</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">많은 생각을 하게 했다</td></tr>
+                <tr><td class="p-4"><b class="text-white">limbo</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">애매한 상태 / 불확실한 상태</td></tr>
+                <tr><td class="p-4"><b class="text-white">sleep (in your eye)</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">눈곱</td></tr>
+                <tr><td class="p-4"><b class="text-white">invasive procedure</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">침습적 시술 / 몸 안에 기구를 넣는 의료 시술</td></tr>
+                <tr><td class="p-4"><b class="text-white">impacted</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">영향을 받은</td></tr>
+                <tr><td class="p-4"><b class="text-white">regularly</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">정기적으로 / 자주</td></tr>
+                <tr><td class="p-4"><b class="text-white">suspicious</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">수상한 / 의심스러운</td></tr>
+                <tr><td class="p-4"><b class="text-white">on an empty stomach</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">빈속에</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="font-bold text-teal-400 mb-2">made me think a lot</h3>
+                <p class="text-sm text-slate-300">단순히 생각했다가 아니라, 어떤 일이 마음에 남아서 깊이 생각하게 만들었다는 뜻입니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="font-bold text-teal-400 mb-2">limbo</h3>
+                <p class="text-sm text-slate-300">결정이 나지 않아 어정쩡하게 기다리는 상태를 말합니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="font-bold text-teal-400 mb-2">sleep (in your eye)</h3>
+                <p class="text-sm text-slate-300">잠을 자고 난 뒤 눈에 끼는 “눈곱”을 뜻하는 자연스러운 표현입니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="font-bold text-teal-400 mb-2">invasive procedure</h3>
+                <p class="text-sm text-slate-300">의료 표현으로, 몸 안에 기구를 넣거나 절개가 필요한 시술을 말합니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="font-bold text-teal-400 mb-2">impacted</h3>
+                <p class="text-sm text-slate-300">일상에서도 “영향을 받았다”는 뜻으로 쓰이지만, 치아가 매복된 상태를 말할 때도 쓰입니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="font-bold text-teal-400 mb-2">on an empty stomach</h3>
+                <p class="text-sm text-slate-300">아무것도 먹지 않은 빈속 상태를 말합니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Ruth noticed the tiny silver spoon beside Vanessa’s cup. It was too shiny for the old café, like Vanessa herself.</p>
+                <p class="mb-6">“You look tired,” Ruth said.</p>
+                <p class="mb-6">“I am tired,” Vanessa said. “But I’m happy to see you.”</p>
+                <p class="mb-6">“Same,” Ruth said. “You have a little <b class="highlight quiz-target" data-ans="sleep in your eye" data-kor="눈곱">sleep in your eye</b>, by the way.”</p>
+                <p class="mb-6">Vanessa laughed and wiped her face. “That’s the most honest thing anyone has said to me all week.”</p>
+                <p class="mb-6">“I still provide local service.”</p>
+                <p class="mb-6">“That’s why I missed you.”</p>
+                <p class="mb-6">Ruth smiled. “So. How’s your glamorous life?”</p>
+                <p class="mb-6">Vanessa leaned back. “Glamorous is a strong word.”</p>
+                <p class="mb-6">“You posted a picture from Paris last month.”</p>
+                <p class="mb-6">“For work.”</p>
+                <p class="mb-6">“And Rome before that.”</p>
+                <p class="mb-6">“Also work.”</p>
+                <p class="mb-6">“And some place with blue water and tiny boats.”</p>
+                <p class="mb-6">“Still work.”</p>
+                <p class="mb-6">Ruth stirred her coffee. “Poor you.”</p>
+                <p class="mb-6">Vanessa looked at her. “That sounded sharp.”</p>
+                <p class="mb-6">“It was meant to.”</p>
+                <p class="mb-6">“Ruth.”</p>
+                <p class="mb-6">“What? You fly everywhere, eat beautiful food, wear perfect jackets, and then tell me you’re tired.”</p>
+                <p class="mb-6">“I am tired.”</p>
+                <p class="mb-6">“I’m tired too. I take my mother to the doctor <b class="highlight quiz-target" data-ans="regularly" data-kor="정기적으로">regularly</b>. I teach bored teenagers. I had a dental appointment last week, and they said one tooth was <b class="highlight quiz-target" data-ans="impacted" data-kor="매복된">impacted</b>.”</p>
+                <p class="mb-6">“Ouch.”</p>
+                <p class="mb-6">“Then they mentioned an <b class="highlight quiz-target" data-ans="invasive procedure" data-kor="침습적 시술">invasive procedure</b>, which is never a phrase you want to hear <b class="highlight quiz-target" data-ans="on an empty stomach" data-kor="빈속에">on an empty stomach</b>.”</p>
+                <p class="mb-6">Vanessa winced. “No, it isn’t.”</p>
+                <p class="mb-6">“So forgive me if your hotel complaints sound a little <b class="highlight quiz-target" data-ans="suspicious" data-kor="수상한">suspicious</b>.”</p>
+                <p class="mb-6">Vanessa looked down. “I’m sorry.”</p>
+                <p class="mb-6">Ruth sighed. “No, I’m sorry. I’m being ugly.”</p>
+                <p class="mb-6">“You’re being honest.”</p>
+                <p class="mb-6">“I thought I was done comparing myself to people.”</p>
+                <p class="mb-6">“No one is ever done,” Vanessa said quietly.</p>
+                <p class="mb-6">Ruth looked at her.</p>
+                <p class="mb-6">Vanessa turned her cup in her hands. “When my father got sick last year, everything went into <b class="highlight quiz-target" data-ans="limbo" data-kor="애매한 상태">limbo</b>. I was in meetings, airports, hotel rooms. I kept thinking, ‘I should be home.’ But I didn’t really have a home anymore.”</p>
+                <p class="mb-6">Ruth’s anger softened.</p>
+                <p class="mb-6">“I didn’t know,” she said.</p>
+                <p class="mb-6">“I didn’t tell people. That whole year <b class="highlight quiz-target" data-ans="made me think a lot" data-kor="많은 생각을 하게 했다">made me think a lot</b>.”</p>
+                <p class="mb-6">“About what?”</p>
+                <p class="mb-6">“About how your life looks from far away. I looked at you online. Your classroom, your garden, your mother’s birthday dinner. I thought, Ruth built something real.”</p>
+                <p class="mb-6">Ruth laughed sadly. “I thought I had built a waiting room.”</p>
+                <p class="mb-6">“No,” Vanessa said. “You built a life.”</p>
+                <p class="mb-6">Ruth touched the spoon beside her cup. “And you?”</p>
+                <p class="mb-6">“I built a very expensive suitcase.”</p>
+                <p class="mb-6">They both smiled.</p>
+                <p class="mb-6">“Maybe we should stop looking at each other from far away,” Ruth said.</p>
+                <p class="mb-6">Vanessa nodded. “Maybe we should.”</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">루스는 바네사의 컵 옆에 놓인 작은 은색 숟가락을 보았다. 그 숟가락은 오래된 카페에 어울리지 않게 너무 반짝였고, 바네사 자신도 그랬다.</p>
+                <p class="mb-6">“너 피곤해 보여,” 루스가 말했다.</p>
+                <p class="mb-6">“피곤해,” 바네사가 말했다. “그래도 너를 봐서 좋아.”</p>
+                <p class="mb-6">“나도,” 루스가 말했다. “그런데 너 눈에 <b class="highlight">눈곱</b> 조금 있다.”</p>
+                <p class="mb-6">바네사는 웃으며 얼굴을 닦았다. “이번 주에 누가 나한테 한 말 중 제일 솔직하네.”</p>
+                <p class="mb-6">“나는 아직도 지역 서비스를 제공하지.”</p>
+                <p class="mb-6">“그래서 네가 보고 싶었어.”</p>
+                <p class="mb-6">루스가 미소 지었다. “그래서. 네 화려한 인생은 어때?”</p>
+                <p class="mb-6">바네사는 몸을 뒤로 기댔다. “화려하다는 건 좀 강한 표현인데.”</p>
+                <p class="mb-6">“지난달에 파리 사진 올렸잖아.”</p>
+                <p class="mb-6">“일 때문이었어.”</p>
+                <p class="mb-6">“그전에는 로마.”</p>
+                <p class="mb-6">“그것도 일.”</p>
+                <p class="mb-6">“그리고 파란 물이랑 작은 배들이 있는 어떤 곳.”</p>
+                <p class="mb-6">“그것도 일.”</p>
+                <p class="mb-6">루스는 커피를 저었다. “불쌍하기도 해라.”</p>
+                <p class="mb-6">바네사가 그녀를 바라보았다. “그 말 좀 날카롭게 들렸어.”</p>
+                <p class="mb-6">“그렇게 들리라고 한 말이야.”</p>
+                <p class="mb-6">“루스.”</p>
+                <p class="mb-6">“왜? 너는 여기저기 날아다니고, 예쁜 음식을 먹고, 완벽한 재킷을 입고, 그러고 나서 피곤하다고 말하잖아.”</p>
+                <p class="mb-6">“나 정말 피곤해.”</p>
+                <p class="mb-6">“나도 피곤해. 나는 엄마를 <b class="highlight">정기적으로</b> 병원에 모시고 가. 지루해하는 십 대들을 가르치고. 지난주에는 치과에 갔는데, 치아 하나가 <b class="highlight">매복돼</b> 있다고 하더라.”</p>
+                <p class="mb-6">“아프겠다.”</p>
+                <p class="mb-6">“그다음에는 <b class="highlight">침습적 시술</b>이라는 말을 했어. <b class="highlight">빈속에</b> 듣고 싶은 말은 절대 아니지.”</p>
+                <p class="mb-6">바네사가 얼굴을 찡그렸다. “그렇지.”</p>
+                <p class="mb-6">“그러니까 네 호텔 불평이 조금 <b class="highlight">수상하게</b> 들려도 이해해 줘.”</p>
+                <p class="mb-6">바네사는 아래를 내려다보았다. “미안해.”</p>
+                <p class="mb-6">루스가 한숨을 쉬었다. “아니, 내가 미안해. 내가 못되게 굴고 있어.”</p>
+                <p class="mb-6">“솔직한 거야.”</p>
+                <p class="mb-6">“나는 이제 사람들과 나를 비교하는 걸 그만둔 줄 알았어.”</p>
+                <p class="mb-6">“아무도 완전히 그만두지는 못해,” 바네사가 조용히 말했다.</p>
+                <p class="mb-6">루스가 그녀를 바라보았다.</p>
+                <p class="mb-6">바네사는 손안에서 컵을 돌렸다. “작년에 아버지가 아프셨을 때 모든 게 <b class="highlight">애매한 상태</b>가 됐어. 나는 회의실, 공항, 호텔 방에 있었지. 계속 생각했어. ‘집에 가야 하는데.’ 그런데 사실 나에게는 더 이상 진짜 집이 없었어.”</p>
+                <p class="mb-6">루스의 화가 누그러졌다.</p>
+                <p class="mb-6">“몰랐어,” 그녀가 말했다.</p>
+                <p class="mb-6">“사람들에게 말하지 않았어. 그 한 해가 나에게 <b class="highlight">많은 생각을 하게 했어</b>.”</p>
+                <p class="mb-6">“무슨 생각?”</p>
+                <p class="mb-6">“멀리서 보면 삶이 어떻게 보이는지에 대해. 온라인에서 너를 봤어. 네 교실, 네 정원, 네 어머니 생신 저녁 식사. 나는 루스가 진짜 무언가를 만들었구나 생각했어.”</p>
+                <p class="mb-6">루스가 슬프게 웃었다. “나는 대기실을 만든 줄 알았는데.”</p>
+                <p class="mb-6">“아니,” 바네사가 말했다. “너는 삶을 만든 거야.”</p>
+                <p class="mb-6">루스는 컵 옆의 숟가락을 만졌다. “너는?”</p>
+                <p class="mb-6">“나는 아주 비싼 여행 가방을 만들었지.”</p>
+                <p class="mb-6">둘은 함께 미소 지었다.</p>
+                <p class="mb-6">“멀리서 서로를 바라보는 건 그만해야 할지도 모르겠다,” 루스가 말했다.</p>
+                <p class="mb-6">바네사가 고개를 끄덕였다. “그래야 할지도 몰라.”</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "4301020.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

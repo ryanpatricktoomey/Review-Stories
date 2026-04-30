@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Table by the Window</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">☕</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Table by the Window</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">grading papers</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">시험지/과제 채점하기</td></tr>
+                <tr><td class="p-4"><b class="text-white">engineering</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">공학 / 엔지니어링</td></tr>
+                <tr><td class="p-4"><b class="text-white">adapted</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">적응했다 / 맞게 바꾸었다</td></tr>
+                <tr><td class="p-4"><b class="text-white">adjusted</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">조정했다 / 적응했다</td></tr>
+                <tr><td class="p-4"><b class="text-white">a sharp kid</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">똑똑한 아이</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="font-bold text-teal-400 mb-2">grading papers</h3>
+                <p class="text-sm text-slate-300">교사가 학생들의 시험지나 과제를 채점하는 상황에서 자주 쓰는 표현입니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="font-bold text-teal-400 mb-2">adapted / adjusted</h3>
+                <p class="text-sm text-slate-300">둘 다 “적응하다/맞추다”의 의미가 있지만, adapted는 더 큰 변화에 익숙해진 느낌이고, adjusted는 생활이나 상황을 조금씩 맞춰 간 느낌이 강합니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="font-bold text-teal-400 mb-2">a sharp kid</h3>
+                <p class="text-sm text-slate-300">단순히 “날카로운 아이”가 아니라, 눈치가 빠르거나 똑똑한 아이를 뜻하는 자연스러운 표현입니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Mina sat across from Claire at the small coffee shop near the old train station. Outside, rain touched the windows softly.</p>
+                <p class="mb-6">“It’s been forever,” Claire said, taking off her expensive-looking scarf.</p>
+                <p class="mb-6">“It has,” Mina said. “I still can’t believe you’re here.”</p>
+                <p class="mb-6">“I had one free afternoon between flights,” Claire said. “Singapore yesterday, Chicago tomorrow. I’m exhausted.”</p>
+                <p class="mb-6">Mina smiled politely. “That sounds exciting.”</p>
+                <p class="mb-6">“It is, but it’s a lot. I mean, after college, I never thought I’d end up in international <b class="highlight quiz-target" data-ans="engineering" data-kor="엔지니어링">engineering</b>.”</p>
+                <p class="mb-6">“No, you always said you hated math.”</p>
+                <p class="mb-6">“I did,” Claire said, laughing. “I guess I <b class="highlight quiz-target" data-ans="adapted" data-kor="적응했다">adapted</b>.”</p>
+                <p class="mb-6">Mina looked down at her coffee. “Must be nice, seeing the world.”</p>
+                <p class="mb-6">Claire tilted her head. “What about you? How have you been?”</p>
+                <p class="mb-6">“Oh, you know,” Mina said. “Same town. Same school. Mostly <b class="highlight quiz-target" data-ans="grading papers" data-kor="시험지 채점">grading papers</b> and buying groceries.”</p>
+                <p class="mb-6">“That doesn’t sound bad.”</p>
+                <p class="mb-6">“It sounds boring because it is boring.”</p>
+                <p class="mb-6">Claire blinked. “I didn’t mean—”</p>
+                <p class="mb-6">“No, it’s fine,” Mina said, though her voice was sharper than she wanted. “You’re flying around the world, working on huge projects, staying in hotels. I’m telling twelve-year-olds not to throw erasers.”</p>
+                <p class="mb-6">Claire’s smile disappeared. “I wasn’t trying to brag.”</p>
+                <p class="mb-6">“A little bit?” Mina asked.</p>
+                <p class="mb-6">Claire looked out the window. “Maybe. I’m sorry.”</p>
+                <p class="mb-6">The silence sat between them.</p>
+                <p class="mb-6">Then Claire said, “Honestly, I practiced what I was going to say on the plane.”</p>
+                <p class="mb-6">Mina frowned. “Why?”</p>
+                <p class="mb-6">“Because I was nervous to see you.”</p>
+                <p class="mb-6">“You? Nervous?”</p>
+                <p class="mb-6">“Yes. You have a home. People know you here. Your students probably remember you. You always wanted a life that meant something to someone.”</p>
+                <p class="mb-6">Mina let out a small laugh. “Yesterday, one of my students told me my sweater looked like oatmeal.”</p>
+                <p class="mb-6">Claire laughed too. “Still. I envy that.”</p>
+                <p class="mb-6">“You envy my oatmeal sweater life?”</p>
+                <p class="mb-6">“I envy that you belong somewhere.”</p>
+                <p class="mb-6">Mina stirred her coffee. “I thought you came here to show me how amazing your life was.”</p>
+                <p class="mb-6">“I thought you’d look at me and see a tired woman who never really <b class="highlight quiz-target" data-ans="adjusted" data-kor="적응한">adjusted</b> to anything.”</p>
+                <p class="mb-6">Mina looked at her old friend carefully. “Claire.”</p>
+                <p class="mb-6">“What?”</p>
+                <p class="mb-6">“You’re still <b class="highlight quiz-target" data-ans="a sharp kid" data-kor="똑똑한 아이">a sharp kid</b>.”</p>
+                <p class="mb-6">Claire smiled. “I’m forty-one.”</p>
+                <p class="mb-6">“Still sharp.”</p>
+                <p class="mb-6">Claire reached across the table and touched Mina’s hand. “I missed you.”</p>
+                <p class="mb-6">Mina squeezed her hand back. “I missed you too. And for the record, my life is not always boring.”</p>
+                <p class="mb-6">“Oh yeah?”</p>
+                <p class="mb-6">“Last week, the copier caught fire.”</p>
+                <p class="mb-6">Claire raised her cup. “To hometown adventure.”</p>
+                <p class="mb-6">Mina laughed and touched her cup to Claire’s. “To jet-setting exhaustion.”</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">미나는 오래된 기차역 근처의 작은 카페에서 클레어와 마주 앉아 있었다. 밖에서는 비가 창문을 부드럽게 두드리고 있었다.</p>
+                <p class="mb-6">“정말 오랜만이다,” 클레어가 비싸 보이는 스카프를 벗으며 말했다.</p>
+                <p class="mb-6">“그러게,” 미나가 말했다. “네가 여기 있다는 게 아직도 안 믿겨.”</p>
+                <p class="mb-6">“비행기 일정 사이에 오후 시간이 딱 하루 비었어,” 클레어가 말했다. “어제는 싱가포르, 내일은 시카고. 완전 지쳤어.”</p>
+                <p class="mb-6">미나는 예의 있게 웃었다. “재미있겠다.”</p>
+                <p class="mb-6">“재미있긴 한데, 많아. 그러니까, 대학 졸업하고 내가 국제 <b class="highlight">엔지니어링</b> 쪽 일을 하게 될 줄은 몰랐어.”</p>
+                <p class="mb-6">“그렇지. 너 항상 수학 싫어한다고 했잖아.”</p>
+                <p class="mb-6">“그랬지,” 클레어가 웃으며 말했다. “아마 <b class="highlight">적응한</b> 거겠지.”</p>
+                <p class="mb-6">미나는 커피를 내려다보았다. “세상을 보는 건 좋겠다.”</p>
+                <p class="mb-6">클레어가 고개를 살짝 기울였다. “너는? 어떻게 지냈어?”</p>
+                <p class="mb-6">“뭐, 알잖아,” 미나가 말했다. “같은 동네. 같은 학교. 대체로 <b class="highlight">시험지 채점</b>하고 장 보면서 지내.”</p>
+                <p class="mb-6">“나쁘게 들리진 않는데.”</p>
+                <p class="mb-6">“지루하게 들리지. 실제로도 지루하니까.”</p>
+                <p class="mb-6">클레어가 눈을 깜빡였다. “내 말은 그런 뜻이 아니었어.”</p>
+                <p class="mb-6">“아니, 괜찮아,” 미나가 말했다. 하지만 목소리는 자신이 원한 것보다 더 날카로웠다. “너는 세계를 돌아다니고, 큰 프로젝트를 하고, 호텔에서 지내잖아. 나는 열두 살짜리 애들한테 지우개 던지지 말라고 말하고 있고.”</p>
+                <p class="mb-6">클레어의 미소가 사라졌다. “자랑하려던 건 아니야.”</p>
+                <p class="mb-6">“조금은?” 미나가 물었다.</p>
+                <p class="mb-6">클레어는 창밖을 바라보았다. “어쩌면. 미안해.”</p>
+                <p class="mb-6">침묵이 둘 사이에 놓였다.</p>
+                <p class="mb-6">그러다 클레어가 말했다. “솔직히 말하면, 비행기에서 너한테 뭐라고 말할지 연습했어.”</p>
+                <p class="mb-6">미나가 미간을 찌푸렸다. “왜?”</p>
+                <p class="mb-6">“너를 만나는 게 긴장됐거든.”</p>
+                <p class="mb-6">“네가? 긴장했다고?”</p>
+                <p class="mb-6">“응. 너는 집이 있잖아. 여기 사람들이 너를 알고. 네 학생들은 아마 너를 기억할 거야. 너는 항상 누군가에게 의미 있는 삶을 원했잖아.”</p>
+                <p class="mb-6">미나는 작게 웃었다. “어제 내 학생 하나가 내 스웨터가 오트밀 같다고 했어.”</p>
+                <p class="mb-6">클레어도 웃었다. “그래도. 난 그게 부러워.”</p>
+                <p class="mb-6">“내 오트밀 스웨터 같은 삶이 부럽다고?”</p>
+                <p class="mb-6">“네가 어딘가에 속해 있다는 게 부러워.”</p>
+                <p class="mb-6">미나는 커피를 저었다. “난 네가 네 인생이 얼마나 멋진지 보여 주려고 온 줄 알았어.”</p>
+                <p class="mb-6">“난 네가 나를 보고, 어디에도 제대로 <b class="highlight">적응하지</b> 못한 지친 여자로 볼 줄 알았어.”</p>
+                <p class="mb-6">미나는 오래된 친구를 가만히 바라보았다. “클레어.”</p>
+                <p class="mb-6">“왜?”</p>
+                <p class="mb-6">“넌 아직도 <b class="highlight">똑똑한 아이</b>야.”</p>
+                <p class="mb-6">클레어가 미소 지었다. “나 마흔한 살이야.”</p>
+                <p class="mb-6">“그래도 똑똑해.”</p>
+                <p class="mb-6">클레어는 테이블 너머로 손을 뻗어 미나의 손에 닿았다. “너 보고 싶었어.”</p>
+                <p class="mb-6">미나도 그 손을 꼭 잡았다. “나도 보고 싶었어. 그리고 분명히 말해 두는데, 내 삶이 항상 지루한 건 아니야.”</p>
+                <p class="mb-6">“그래?”</p>
+                <p class="mb-6">“지난주에 복사기에 불이 났어.”</p>
+                <p class="mb-6">클레어가 컵을 들어 올렸다. “고향의 모험을 위해.”</p>
+                <p class="mb-6">미나는 웃으며 자기 컵을 클레어의 컵에 살짝 부딪쳤다. “전 세계를 돌아다니는 피로를 위해.”</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "430630.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

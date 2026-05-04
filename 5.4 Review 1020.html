@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Cookie Table</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🏘️</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Cookie Table</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">suburb</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">교외 지역 / 교외 주택가</td></tr>
+                <tr><td class="p-4"><b class="text-white">rough</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">힘든 / 거친 / 험한</td></tr>
+                <tr><td class="p-4"><b class="text-white">charity event</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">자선 행사</td></tr>
+                <tr><td class="p-4"><b class="text-white">donation</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">기부 / 기부금</td></tr>
+                <tr><td class="p-4"><b class="text-white">forced me to eat</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">억지로 먹게 했다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-6 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold mb-2">suburb</h3>
+                <p class="text-sm text-slate-300">도시 중심부가 아니라 그 주변의 주거 지역을 말해요. 조용하고 가족 중심적인 이미지가 있을 수 있어요.</p>
+            </div>
+            <div class="glass p-6 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold mb-2">rough</h3>
+                <p class="text-sm text-slate-300">상황이 힘들거나, 지역이 험하거나, 사람이 거칠다는 뜻으로 다양하게 쓰여요. 문맥이 중요해요.</p>
+            </div>
+            <div class="glass p-6 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold mb-2">charity event</h3>
+                <p class="text-sm text-slate-300">좋은 목적을 위해 돈이나 물건을 모으는 행사예요. 학교, 회사, 지역사회에서 자주 열릴 수 있어요.</p>
+            </div>
+            <div class="glass p-6 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold mb-2">donation</h3>
+                <p class="text-sm text-slate-300">돈뿐만 아니라 옷, 음식, 물건 등을 기부하는 것도 포함해요.</p>
+            </div>
+            <div class="glass p-6 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold mb-2">forced me to eat</h3>
+                <p class="text-sm text-slate-300">단순히 권한 것이 아니라, 원하지 않는데 억지로 먹게 했다는 강한 느낌이에요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Evan chose the restaurant because it was quiet and far from the center of the city. He had never liked crowded places. When Sora arrived, she said the same thing before she even sat down.</p>
+                <p class="mb-6">“I grew up in a <b class="highlight quiz-target" data-ans="suburb" data-kor="교외 지역">suburb</b>,” she said. “So places like this feel more comfortable.”</p>
+                <p class="mb-6">Evan smiled. “Same here. A quiet neighborhood, a small park, too many old people watching from their windows.”</p>
+                <p class="mb-6">Sora laughed. “Exactly.”</p>
+                <p class="mb-6">At first, the blind date seemed harmless. They talked about work, coffee, and bad movies. Then the conversation moved toward childhood, and both of them became more interested.</p>
+                <p class="mb-6">They had lived in almost the same kind of apartment complex. They had both loved strawberry milk. They had both been afraid of elevators after dark. They had both watched the same cartoon about a brave rabbit who wanted to become a pilot.</p>
+                <p class="mb-6">“That was my favorite,” Evan said.</p>
+                <p class="mb-6">“Mine too,” Sora replied. “I even had a notebook with that rabbit on it.”</p>
+                <p class="mb-6">Evan leaned back. “This is strange.”</p>
+                <p class="mb-6">“It’s nice,” she said, but her smile was careful.</p>
+                <p class="mb-6">They talked about school. Evan said elementary school had been <b class="highlight quiz-target" data-ans="rough" data-kor="힘든">rough</b> for him because he was shy and small. Sora looked at him for a moment, then nodded.</p>
+                <p class="mb-6">“I understand,” she said. “There was one day that made school feel unsafe for me.”</p>
+                <p class="mb-6">Evan waited.</p>
+                <p class="mb-6">“It was a <b class="highlight quiz-target" data-ans="charity event" data-kor="자선 행사">charity event</b>,” Sora said. “Our school was collecting food and money. Everyone had to bring a small <b class="highlight quiz-target" data-ans="donation" data-kor="기부">donation</b>.”</p>
+                <p class="mb-6">Evan’s hand moved slightly on the table.</p>
+                <p class="mb-6">“My mother packed homemade cookies,” she continued. “They had peanuts in them. I told the teacher I couldn’t eat peanuts, but some boys didn’t believe me. One of them said I was lying to get attention.”</p>
+                <p class="mb-6">Evan looked down.</p>
+                <p class="mb-6">Sora’s voice became quieter. “He <b class="highlight quiz-target" data-ans="forced me to eat" data-kor="억지로 먹게 했다">forced me to eat</b> one. Not with his hands, exactly. He laughed, and the others laughed, and he said I had to prove I wasn’t spoiled. So I ate it.”</p>
+                <p class="mb-6">The restaurant seemed to grow still around them.</p>
+                <p class="mb-6">“I got sick in front of everyone,” she said. “After that, I hated school events. I hated cookie tables. I hated people asking me to prove things.”</p>
+                <p class="mb-6">Evan closed his eyes.</p>
+                <p class="mb-6">Sora watched him. “You remember it.”</p>
+                <p class="mb-6">He opened his mouth, but no apology came out at first.</p>
+                <p class="mb-6">“I didn’t know you were really allergic,” he said.</p>
+                <p class="mb-6">“But I said I was.”</p>
+                <p class="mb-6">The waiter came with dessert menus, then quietly took them away.</p>
+                <p class="mb-6">Sora stood and picked up her bag. Her face was calm, which made Evan feel worse.</p>
+                <p class="mb-6">“I hope your childhood was easier after that,” he said.</p>
+                <p class="mb-6">She looked at him once. “Yours was.”</p>
+                <p class="mb-6">Then she left, and Evan remained in the quiet restaurant, with nothing in front of him but a clean white plate.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">에번은 도심에서 멀고 조용한 식당을 골랐다. 그는 붐비는 장소를 좋아한 적이 없었다. 소라가 도착했을 때, 그녀는 자리에 앉기도 전에 똑같은 말을 했다.</p>
+                <p class="mb-6">“저는 <b class="highlight">교외 지역</b>에서 자랐어요.” 그녀가 말했다. “그래서 이런 곳이 더 편하게 느껴져요.”</p>
+                <p class="mb-6">에번은 미소 지었다. “저도요. 조용한 동네, 작은 공원, 창문에서 바라보는 노인들이 너무 많은 곳.”</p>
+                <p class="mb-6">소라는 웃었다. “정확해요.”</p>
+                <p class="mb-6">처음에 그 소개팅은 아무 문제 없어 보였다. 그들은 일, 커피, 재미없는 영화에 대해 이야기했다. 그러다 대화가 어린 시절로 옮겨 갔고, 두 사람은 더 흥미를 느끼기 시작했다.</p>
+                <p class="mb-6">그들은 거의 같은 종류의 아파트 단지에서 살았다. 둘 다 딸기 우유를 좋아했다. 둘 다 어두워진 후의 엘리베이터를 무서워했다. 둘 다 파일럿이 되고 싶어 하는 용감한 토끼가 나오는 같은 만화를 봤다.</p>
+                <p class="mb-6">“그게 제가 제일 좋아하던 만화였어요.” 에번이 말했다.</p>
+                <p class="mb-6">“저도요.” 소라가 대답했다. “저는 그 토끼가 그려진 공책도 있었어요.”</p>
+                <p class="mb-6">에번은 의자에 기대앉았다. “이거 이상하네요.”</p>
+                <p class="mb-6">“좋은 일이죠.” 그녀가 말했지만, 그녀의 미소는 조심스러웠다.</p>
+                <p class="mb-6">그들은 학교 이야기를 했다. 에번은 자신이 수줍고 작았기 때문에 초등학교 생활이 <b class="highlight">힘들었다</b>고 말했다. 소라는 잠시 그를 바라보다가 고개를 끄덕였다.</p>
+                <p class="mb-6">“이해해요.” 그녀가 말했다. “저에게도 학교가 안전하지 않게 느껴지게 만든 하루가 있었어요.”</p>
+                <p class="mb-6">에번은 기다렸다.</p>
+                <p class="mb-6">“<b class="highlight">자선 행사</b>였어요.” 소라가 말했다. “우리 학교에서 음식과 돈을 모으고 있었죠. 모두 작은 <b class="highlight">기부</b>를 가져와야 했어요.”</p>
+                <p class="mb-6">에번의 손이 테이블 위에서 살짝 움직였다.</p>
+                <p class="mb-6">“엄마가 집에서 만든 쿠키를 싸 주셨어요.” 그녀가 계속 말했다. “그 안에는 땅콩이 들어 있었어요. 저는 선생님께 제가 땅콩을 먹을 수 없다고 말했지만, 어떤 남자아이들은 믿지 않았어요. 그중 한 명은 제가 관심을 받으려고 거짓말한다고 했죠.”</p>
+                <p class="mb-6">에번은 아래를 내려다보았다.</p>
+                <p class="mb-6">소라의 목소리가 더 조용해졌다. “그 아이는 저를 <b class="highlight">억지로 먹게 했어요</b>. 정확히 손으로 먹인 건 아니었어요. 그는 웃었고, 다른 아이들도 웃었고, 제가 버릇없는 아이가 아니라는 걸 증명해야 한다고 말했어요. 그래서 저는 그걸 먹었어요.”</p>
+                <p class="mb-6">식당 전체가 조용해지는 것 같았다.</p>
+                <p class="mb-6">“저는 모두 앞에서 아팠어요.” 그녀가 말했다. “그 후로 학교 행사를 싫어했어요. 쿠키가 놓인 테이블도 싫어했고, 사람들이 뭔가를 증명하라고 하는 것도 싫어했어요.”</p>
+                <p class="mb-6">에번은 눈을 감았다.</p>
+                <p class="mb-6">소라는 그를 바라보았다. “기억하네요.”</p>
+                <p class="mb-6">그는 입을 열었지만, 처음에는 사과가 나오지 않았다. </p>
+                <p class="mb-6">“당신이 정말 알레르기가 있는 줄은 몰랐어요.” 그가 말했다.</p>
+                <p class="mb-6">“하지만 저는 그렇다고 말했어요.”</p>
+                <p class="mb-6">종업원이 디저트 메뉴를 들고 왔다가, 조용히 다시 가져갔다.</p>
+                <p class="mb-6">소라는 일어나 가방을 집어 들었다. 그녀의 얼굴은 차분했고, 그래서 에번은 더 괴로웠다.</p>
+                <p class="mb-6">“그 후로 당신 어린 시절은 좀 더 편했기를 바라요.” 그가 말했다.</p>
+                <p class="mb-6">그녀는 그를 한 번 바라보았다. “당신 것은 그랬겠죠.”</p>
+                <p class="mb-6">그리고 그녀는 떠났다. 에번은 조용한 식당에 남았고, 그의 앞에는 깨끗한 흰 접시 하나뿐이었다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "541020.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Ride Back to the Apartment</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🌋</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Ride Back to the Apartment</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">stove</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">가스레인지 / 스토브</td></tr>
+                <tr><td class="p-4"><b class="text-white">left the stove on</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">가스레인지를 켜 둔 채 나왔다</td></tr>
+                <tr><td class="p-4"><b class="text-white">valley</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">계곡 / 골짜기</td></tr>
+                <tr><td class="p-4"><b class="text-white">Bali</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">발리</td></tr>
+                <tr><td class="p-4"><b class="text-white">decorating myself</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">나 자신을 꾸미는 것</td></tr>
+                <tr><td class="p-4"><b class="text-white">take a gap year</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">갭이어를 갖다 / 1년 쉬다</td></tr>
+                <tr><td class="p-4"><b class="text-white">take a semester off</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">한 학기 쉬다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-2xl p-5 border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold mb-2">left the stove on</h3>
+                <p class="text-sm text-slate-300">가스레인지나 전기레인지를 끄지 않고 켜 둔 상태로 나왔다는 뜻이에요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold mb-2">decorating myself</h3>
+                <p class="text-sm text-slate-300">조금 어색하게 들릴 수 있는 표현이에요. 보통은 “dressing up,” “putting on makeup,” “accessorizing”처럼 말해요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold mb-2">take a gap year</h3>
+                <p class="text-sm text-slate-300">진학이나 취업 전후로 1년 정도 쉬면서 여행, 일, 자기 탐색 등을 하는 것을 말해요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold mb-2">take a semester off</h3>
+                <p class="text-sm text-slate-300">학교를 완전히 그만두는 것이 아니라 한 학기 동안 쉬는 것을 뜻해요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Nari got into the taxi near the university gate with a suitcase, a backpack, and a very worried face.</p>
+                <p class="mb-6">“Airport, please,” she said. Then she touched her coat pocket, checked her phone, and looked out the window. “Actually, wait. I think I <b class="highlight quiz-target" data-ans="left the stove on" data-kor="가스레인지를 켜 둔 채 나왔어요">left the stove on</b>.”</p>
+                <p class="mb-6">The driver did not move. He looked at her in the mirror. “That is never a small thought.”</p>
+                <p class="mb-6">“I was making tea. I turned it off… I think. No, maybe I didn’t. My apartment is only five minutes away. Could we go back first?”</p>
+                <p class="mb-6">“Of course,” he said. “A <b class="highlight quiz-target" data-ans="stove" data-kor="가스레인지">stove</b> changed my life once.”</p>
+                <p class="mb-6">Nari stopped searching her bag. “A stove changed your life?”</p>
+                <p class="mb-6">The driver smiled. “Long story short, I was supposed to be a doctor. My parents were proud, my professors were hopeful, and I was completely miserable. So I decided to <b class="highlight quiz-target" data-ans="take a semester off" data-kor="한 학기 쉬기로 했어요">take a semester off</b>.”</p>
+                <p class="mb-6">“Just one semester?” “That was the plan. Then I decided to <b class="highlight quiz-target" data-ans="take a gap year" data-kor="갭이어를 갖기로 했어요">take a gap year</b>. Then the gap became a road, and the road became ten countries.”</p>
+                <p class="mb-6">Nari forgot her panic for a moment. “Where did you go?”</p>
+                <p class="mb-6">“Thailand, Nepal, Turkey, Morocco, and finally <b class="highlight quiz-target" data-ans="Bali" data-kor="발리">Bali</b>. In Bali, I rented a room above a small restaurant in a green <b class="highlight quiz-target" data-ans="valley" data-kor="계곡">valley</b>. I washed dishes for free meals and taught tourists how to ride old motorbikes.”</p>
+                <p class="mb-6">“That sounds amazing.” “It was amazing until the kitchen caught fire.”</p>
+                <p class="mb-6">Nari’s eyes grew wide. “The cook had left the stove on after making soup. Everyone ran outside, but I went back in because I heard a child crying. It was not a child. It was a radio playing a baby commercial.”</p>
+                <p class="mb-6">“Oh no.” “Yes. Very embarrassing. But while I was inside, I found the owner’s passport box under the counter and carried it out. That box had passports, money, and one letter from his daughter.”</p>
+                <p class="mb-6">“What happened after that?” “He gave me a job driving guests around the island. I discovered that I liked listening to people more than studying diseases. Later, I came back to Korea and became a taxi driver.”</p>
+                <p class="mb-6">Nari smiled. “So the fire was your turning point?” “Not exactly,” he said.</p>
+                <p class="mb-6">The taxi stopped in front of her apartment. Nari ran upstairs and came back laughing. “The stove was off.”</p>
+                <p class="mb-6">The driver nodded. “Good. Then maybe this ride is not about danger.” “What is it about?” He pointed to her suitcase. “Maybe it is about finding out where you really want to go.”</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">나리는 여행 가방과 배낭, 그리고 몹시 걱정스러운 얼굴을 하고 대학교 정문 근처에서 택시에 탔다.</p>
+                <p class="mb-6">“공항으로 가 주세요,” 그녀가 말했다. 그러고는 코트 주머니를 만지고, 휴대폰을 확인하고, 창밖을 바라보았다. “아니, 잠깐만요. 제가 <b class="highlight">가스레인지를 켜 둔 채 나온</b> 것 같아요.”</p>
+                <p class="mb-6">운전사는 출발하지 않았다. 그는 거울로 그녀를 바라보았다. “그런 생각은 절대 사소하지 않죠.”</p>
+                <p class="mb-6">“차를 끓이고 있었어요. 껐는데… 그런 것 같아요. 아니, 안 껐을지도 몰라요. 제 아파트가 여기서 5분 거리예요. 먼저 돌아가 주실 수 있을까요?”</p>
+                <p class="mb-6">“물론이죠,” 그가 말했다. “저도 예전에 <b class="highlight">가스레인지</b> 하나 때문에 인생이 바뀐 적이 있어요.”</p>
+                <p class="mb-6">나리는 가방을 뒤지던 손을 멈췄다. “가스레인지 때문에 인생이 바뀌었다고요?”</p>
+                <p class="mb-6">운전사는 미소를 지었다. “간단히 말하면, 저는 의사가 될 예정이었어요. 부모님은 자랑스러워하셨고, 교수님들은 기대하셨고, 저는 완전히 불행했죠. 그래서 <b class="highlight">한 학기 쉬기로</b> 했습니다.”</p>
+                <p class="mb-6">“딱 한 학기만요?” “그게 계획이었죠. 그러다 <b class="highlight">갭이어를 갖기로</b> 했어요. 그리고 그 공백은 길이 되었고, 그 길은 열 개의 나라가 되었습니다.”</p>
+                <p class="mb-6">나리는 잠시 걱정을 잊었다. “어디에 가셨어요?”</p>
+                <p class="mb-6">“태국, 네팔, 튀르키예, 모로코, 그리고 마지막으로 <b class="highlight">발리</b>요. 발리에서는 푸른 <b class="highlight">계곡</b>에 있는 작은 식당 위층 방을 빌렸어요. 공짜 식사를 받는 대신 설거지를 했고, 관광객들에게 낡은 오토바이 타는 법을 가르쳤죠.”</p>
+                <p class="mb-6">“정말 멋진데요.” “주방에 불이 나기 전까지는 멋졌습니다.”</p>
+                <p class="mb-6">나리의 눈이 커졌다. “요리사가 수프를 만든 뒤 가스레인지를 켜 둔 채 나갔어요. 모두 밖으로 뛰어나갔는데, 저는 아이 우는 소리를 듣고 다시 들어갔죠. 그런데 아이가 아니었어요. 아기 광고가 나오는 라디오였습니다.”</p>
+                <p class="mb-6">“아이고.” “네. 아주 민망했죠. 하지만 안에 있는 동안, 저는 카운터 밑에서 주인의 여권 상자를 발견해서 밖으로 들고 나왔어요. 그 상자 안에는 여권들, 돈, 그리고 그의 딸이 보낸 편지 한 통이 들어 있었습니다.”</p>
+                <p class="mb-6">“그다음엔 어떻게 됐어요?” “그는 저에게 섬 주변으로 손님들을 태워 주는 일을 맡겼어요. 저는 병을 공부하는 것보다 사람들의 이야기를 듣는 걸 더 좋아한다는 걸 깨달았죠. 나중에 한국으로 돌아와 택시 운전사가 됐습니다.”</p>
+                <p class="mb-6">나리는 미소를 지었다. “그러면 그 화재가 인생의 전환점이었네요?” “정확히는 아니에요,” 그가 말했다.</p>
+                <p class="mb-6">택시는 그녀의 아파트 앞에 멈췄다. 나리는 위층으로 뛰어 올라갔다가 웃으며 돌아왔다. “가스레인지는 꺼져 있었어요.”</p>
+                <p class="mb-6">운전사는 고개를 끄덕였다. “다행이네요. 그렇다면 이 택시 탑승은 위험에 관한 게 아닐 수도 있겠군요.” “그럼 무엇에 관한 건데요?” 그는 그녀의 여행 가방을 가리켰다. “어쩌면 자신이 정말 어디로 가고 싶은지 알아내는 일에 관한 걸지도 모르죠.”</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "56830.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Song on the Phone</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🎻</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Song on the Phone</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">fell into a rut</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">틀에 박힌 생활에 빠졌다 / 매너리즘에 빠졌다</td></tr>
+                <tr><td class="p-4"><b class="text-white">vietnamese</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">베트남의 / 베트남 사람 / 베트남어</td></tr>
+                <tr><td class="p-4"><b class="text-white">compulsory</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">의무적인 / 필수의</td></tr>
+                <tr><td class="p-4"><b class="text-white">felt the same way</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">같은 기분이었다 / 같은 생각이었다</td></tr>
+                <tr><td class="p-4"><b class="text-white">got accepted into</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">~에 합격했다 / ~에 받아들여졌다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-2xl p-5 border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold mb-2">fell into a rut</h3>
+                <p class="text-sm text-slate-300">반복적이고 지루한 생활이나 습관에 빠져서 변화가 없는 상태를 말해요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold mb-2">Vietnamese</h3>
+                <p class="text-sm text-slate-300">문맥에 따라 “베트남어,” “베트남 사람,” “베트남의”라는 뜻이 될 수 있어요. 항상 대문자 V로 써요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold mb-2">compulsory</h3>
+                <p class="text-sm text-slate-300">선택이 아니라 반드시 해야 하는 “의무적인”이라는 뜻이에요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold mb-2">got accepted into</h3>
+                <p class="text-sm text-slate-300">학교, 프로그램, 회사, 단체 등에 “합격했다 / 받아들여졌다”는 뜻이에요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Sora got into the taxi near a language school and asked to go to the train station. The driver greeted her in Korean, then answered a phone call in smooth <b class="highlight quiz-target" data-ans="Vietnamese" data-kor="베트남어">Vietnamese</b>. When he hung up, Sora could not hide her surprise.</p>
+                <p class="mb-6">“You speak Vietnamese?” “A little,” he said. “That did not sound like a little.” The driver smiled. “People say that about my life too.” Sora laughed. “How did you get into taxi driving?”</p>
+                <p class="mb-6">“Long story short, I started out as a music student. I played the violin. I was good, but not brave. After graduation, I <b class="highlight quiz-target" data-ans="fell into a rut" data-kor="틀에 박힌 생활에 빠졌어요">fell into a rut</b>. I taught children in the morning, played at weddings on weekends, and told everyone I was happy.” “But you weren’t?” “No. I was bored in a very polite way.”</p>
+                <p class="mb-6">He explained that his life changed when he met a Vietnamese singer at a small hotel concert in Busan. She was in Korea for a cultural program, and he was hired to play background music. She sang one song without a microphone because the sound system broke. Everyone in the room stopped eating.</p>
+                <p class="mb-6">“I had never heard a voice like that,” he said. “After the show, she told me she wanted to study in Korea, but her Korean was poor. I told her I wanted to change my life, but my courage was poor. We <b class="highlight quiz-target" data-ans="felt the same way" data-kor="같은 기분이었어요">felt the same way</b>.”</p>
+                <p class="mb-6">Sora leaned closer. “Did you two become friends?” “Friends, then business partners, then almost family. I helped her study Korean. She helped me hear music differently. Later, she <b class="highlight quiz-target" data-ans="got accepted into" data-kor="~에 합격했어요">got accepted into</b> a famous music program in Seoul.”</p>
+                <p class="mb-6">“That sounds beautiful.” “It was. Then came the problem. I had to do my <b class="highlight quiz-target" data-ans="compulsory" data-kor="의무적인">compulsory</b> military service, and she had to return to Vietnam because her visa ended. We promised to meet again after two years.” “Did you?”</p>
+                <p class="mb-6">The driver was quiet for a moment. “I went to Vietnam to find her. I found her village, her old school, even her favorite noodle shop. But not her.” Sora’s face softened. “That’s sad.”</p>
+                <p class="mb-6">“Not completely,” he said. “In Vietnam, I learned the language, drove tourists around, and discovered I liked roads more than stages.” The taxi reached the station. As Sora paid, a woman’s voice came from the driver’s phone in Vietnamese.</p>
+                <p class="mb-6">He smiled. “My wife says I forgot to buy onions.” Sora blinked. “Wait. Is that her?” The driver laughed. “Who else would still be giving me directions after thirty years?”</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">소라는 어학원 근처에서 택시에 타고 기차역으로 가 달라고 했다. 운전사는 한국어로 인사를 했고, 그다음 걸려 온 전화를 유창한 <b class="highlight">베트남어</b>로 받았다. 전화를 끊자, 소라는 놀란 표정을 숨길 수 없었다.</p>
+                <p class="mb-6">“베트남어를 하세요?” “조금요,” 그가 말했다. “조금처럼 들리지는 않았는데요.” 운전사는 미소를 지었다. “사람들이 제 인생에 대해서도 그렇게 말하곤 해요.” 소라는 웃었다. “어쩌다 택시 운전을 하게 되셨어요?”</p>
+                <p class="mb-6">“간단히 말하면, 저는 처음에 음악을 공부했어요. 바이올린을 연주했죠. 실력은 있었지만 용기는 없었습니다. 졸업 후에는 <b class="highlight">틀에 박힌 생활에 빠졌어요</b>. 아침에는 아이들을 가르치고, 주말에는 결혼식에서 연주하고, 모두에게 행복하다고 말했죠.” “하지만 행복하지 않았나요?” “네. 아주 예의 바르게 지루했어요.”</p>
+                <p class="mb-6">그는 부산의 작은 호텔 콘서트에서 베트남 가수를 만나면서 인생이 바뀌었다고 설명했다. 그녀는 문화 프로그램 때문에 한국에 와 있었고, 그는 배경 음악을 연주하도록 고용되었다. 음향 장비가 고장 나자 그녀는 마이크 없이 노래 한 곡을 불렀다. 방 안의 모든 사람이 식사를 멈췄다.</p>
+                <p class="mb-6">“그런 목소리는 처음 들어 봤어요,” 그가 말했다. “공연 후에 그녀는 한국에서 공부하고 싶지만 한국어가 부족하다고 했어요. 저는 인생을 바꾸고 싶지만 용기가 부족하다고 했죠. 우리는 <b class="highlight">같은 기분이었습니다</b>.”</p>
+                <p class="mb-6">소라는 몸을 조금 앞으로 기울였다. “두 분은 친구가 되셨어요?” “친구가 되었고, 그다음에는 사업 파트너가 되었고, 거의 가족 같은 사이가 되었죠. 저는 그녀의 한국어 공부를 도왔고, 그녀는 제가 음악을 다르게 듣도록 도와줬어요. 나중에 그녀는 서울의 유명한 음악 프로그램에 <b class="highlight">합격했습니다</b>.”</p>
+                <p class="mb-6">“아름다운 이야기네요.” “그랬죠. 그러다 문제가 생겼어요. 저는 <b class="highlight">의무적인</b> 군복무를 해야 했고, 그녀는 비자가 끝나서 베트남으로 돌아가야 했습니다. 우리는 2년 뒤 다시 만나기로 약속했어요.” “만나셨어요?”</p>
+                <p class="mb-6">운전사는 잠시 조용해졌다. “그녀를 찾으러 베트남에 갔어요. 그녀의 마을, 옛 학교, 심지어 그녀가 좋아하던 국수 가게까지 찾았습니다. 하지만 그녀는 찾지 못했죠.” 소라의 표정이 부드러워졌다. “슬픈 이야기네요.”</p>
+                <p class="mb-6">“완전히 슬프지는 않아요,” 그가 말했다. “베트남에서 저는 언어를 배웠고, 관광객들을 태우고 다녔고, 무대보다 길을 더 좋아한다는 걸 알게 됐습니다.” 택시는 역에 도착했다. 소라가 요금을 내고 있을 때, 운전사의 휴대폰에서 베트남어로 말하는 여성의 목소리가 들렸다.</p>
+                <p class="mb-6">그는 미소를 지었다. “아내가 양파 사 오는 걸 잊었다고 하네요.” 소라는 눈을 깜박였다. “잠깐만요. 그분이 그 가수예요?” 운전사는 웃었다. “30년이 지나도 아직 저에게 길을 알려 줄 사람이 또 누가 있겠어요?”</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "561200.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

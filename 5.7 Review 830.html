@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Smartest Grant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🧠</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Smartest Grant</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">just accept it</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그냥 받아들이다</td></tr>
+                <tr><td class="p-4"><b class="text-white">my build</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">내 체격 / 내 몸매 구조</td></tr>
+                <tr><td class="p-4"><b class="text-white">entrepreneurial spirit</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">기업가 정신 / 창업가 기질</td></tr>
+                <tr><td class="p-4"><b class="text-white">double eyelids</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">쌍꺼풀</td></tr>
+                <tr><td class="p-4"><b class="text-white">eyelash</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">속눈썹</td></tr>
+                <tr><td class="p-4"><b class="text-white">identity</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">정체성</td></tr>
+                <tr><td class="p-4"><b class="text-white">individuality</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">개성</td></tr>
+                <tr><td class="p-4"><b class="text-white">facial features</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">얼굴 생김새 / 이목구비</td></tr>
+                <tr><td class="p-4"><b class="text-white">give off a vibe</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">어떤 분위기를 풍기다</td></tr>
+                <tr><td class="p-4"><b class="text-white">ocd</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">강박증 / 강박적인 성향</td></tr>
+                <tr><td class="p-4"><b class="text-white">spectrum</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">스펙트럼 / 범위</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-6 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold mb-2">just accept it</h3>
+                <p class="text-sm text-slate-300">원하지 않는 사실을 바꾸려 하지 않고 그냥 받아들이는 느낌이에요.</p>
+            </div>
+            <div class="glass p-6 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold mb-2">entrepreneurial spirit</h3>
+                <p class="text-sm text-slate-300">사업 기회를 찾고 새로운 일을 시작하려는 적극적인 성향을 말해요.</p>
+            </div>
+            <div class="glass p-6 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold mb-2">give off a vibe</h3>
+                <p class="text-sm text-slate-300">말투, 표정, 행동 등으로 어떤 분위기나 인상을 준다는 뜻이에요.</p>
+            </div>
+            <div class="glass p-6 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold mb-2">identity / individuality</h3>
+                <p class="text-sm text-slate-300">identity는 정체성이고, individuality는 남들과 다른 나만의 개성을 뜻해요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Ellie Grant was the smartest person in her house, and everyone knew it except her father and brother.</p>
+                <p class="mb-6">Her father once tried to make toast in the microwave with a metal fork still stuck in the bread. Her brother Max believed fish were “basically wet birds.” They were both loud, lazy, and strangely proud of their worst ideas.</p>
+                <p class="mb-6">At her cousin’s birthday party, Aunt Nora looked at Ellie across the table and frowned. “Oh no,” Aunt Nora said. “You’re getting that Grant look.”</p>
+                <p class="mb-6">Ellie stopped eating cake. “What look?” “That blank little stare,” Aunt Nora said. “Your grandfather, your father, and Max all started doing that around your age.”</p>
+                <p class="mb-6">Ellie felt cold. Her father had a blank stare. So did Max. It usually came right before they said something terrible. Her father once stared at a broken chair and said, “Maybe chairs need vacations.” Max once stared at his homework and wrote, “Because I feel like it,” for every answer.</p>
+                <p class="mb-6">That night, Ellie checked her face in the mirror. She still had the same <b class="highlight quiz-target" data-ans="double eyelids" data-kor="쌍꺼풀">double eyelids</b>, the same left <b class="highlight quiz-target" data-ans="eyelash" data-kor="속눈썹">eyelash</b>, and the same <b class="highlight quiz-target" data-ans="facial features" data-kor="이목구비">facial features</b> as yesterday. But did she <b class="highlight quiz-target" data-ans="give off a vibe" data-kor="분위기를 풍기다">give off a vibe</b> of stupidity now?</p>
+                <p class="mb-6">She studied her shoulders. “Is <b class="highlight quiz-target" data-ans="my build" data-kor="내 체격">my build</b> changing too?” she whispered, even though that made no sense. That scared her more.</p>
+                <p class="mb-6">At school, the teacher asked everyone to write about <b class="highlight quiz-target" data-ans="identity" data-kor="정체성">identity</b> and <b class="highlight quiz-target" data-ans="individuality" data-kor="개성">individuality</b>. Ellie wrote, “I used to be smart.” Then she erased it quickly.</p>
+                <p class="mb-6">By Thursday, Ellie had made a chart called The Grant Stupidity <b class="highlight quiz-target" data-ans="spectrum" data-kor="스펙트럼">spectrum</b>. On the left side, she wrote normal. In the middle, she wrote confused by doors. On the far right, she wrote Max.</p>
+                <p class="mb-6">When Max came home selling rocks from the driveway and called it <b class="highlight quiz-target" data-ans="entrepreneurial spirit" data-kor="기업가 정신">entrepreneurial spirit</b>, Ellie nearly cried.</p>
+                <p class="mb-6">That evening, she told her mother, “Maybe I should <b class="highlight quiz-target" data-ans="just accept it" data-kor="그냥 받아들이다">just accept it</b>. Maybe I’m going to become stupid like Dad and Max.”</p>
+                <p class="mb-6">Her mother put down her cup. “Who told you that?” “Aunt Nora said Grandpa, Dad, and Max all started getting the blank stare around my age.”</p>
+                <p class="mb-6">Her mother sighed. “Nora left out the important part. That Grant problem only happens to the men.”</p>
+                <p class="mb-6">Ellie blinked. “Only the men?” “Only the men.”</p>
+                <p class="mb-6">From the living room, Max shouted, “Mom, is soup a drink or a place?” Ellie smiled for the first time all week. Her brain was still hers.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>엘리 그랜트는 자기 집에서 가장 똑똑한 사람이었다. 모두가 그 사실을 알고 있었다. 아버지와 오빠만 빼고.</p>
+                <p>아버지는 한 번 빵에 금속 포크를 꽂아 둔 채 전자레인지로 토스트를 만들려고 했다. 오빠 맥스는 물고기가 “기본적으로 젖은 새”라고 믿었다.</p>
+                <p>사촌의 생일 파티에서 노라 이모가 “너도 그랜트 집안 표정이 나오네.”라고 말했다. “그 멍한 표정 말이야. 네 할아버지, 아버지, 그리고 맥스가 모두 네 나이쯤에 그렇게 하기 시작했어.”</p>
+                <p>엘리는 거울 속 얼굴을 확인했다. 그녀에게는 여전히 어제와 같은 <b class="highlight">쌍꺼풀</b>, 같은 왼쪽 <b class="highlight">속눈썹</b>, 같은 <b class="highlight">이목구비</b>가 있었다. 하지만 이제 자신이 멍청한 <b class="highlight">분위기를 풍기고</b> 있는 걸까?</p>
+                <p>그녀는 어깨를 살폈다. “<b class="highlight">내 체격</b>도 변하고 있는 건가?” 말도 안 되는 생각이었지만, 그래서 더 무서웠다.</p>
+                <p>학교에서 선생님은 모두에게 <b class="highlight">정체성</b>과 <b class="highlight">개성</b>에 대해 글을 쓰라고 했다. 목요일이 되자 엘리는 ‘그랜트 멍청함 <b class="highlight">스펙트럼</b>’이라는 표를 만들었다.</p>
+                <p>맥스가 집에 와서 차도에 있는 돌멩이를 팔고 그것을 <b class="highlight">기업가 정신</b>이라고 불렀을 때, 엘리는 거의 울 뻔했다.</p>
+                <p>그날 저녁, 그녀는 엄마에게 말했다. “어쩌면 <b class="highlight">그냥 받아들여야</b> 할지도 몰라요. 저도 아빠랑 맥스처럼 멍청해질지도 몰라요.”</p>
+                <p>엄마는 한숨을 쉬었다. “그 그랜트 집안 문제는 남자들에게만 나타나.”</p>
+                <p>거실에서 맥스가 소리쳤다. “엄마, 수프는 음료예요, 아니면 장소예요?” 엘리는 그 주 들어 처음으로 미소 지었다. 그녀의 머리는 여전히 그녀의 것이었다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "57830.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

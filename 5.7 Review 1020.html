@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Bell Brain</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">👂</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Bell Brain</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">ear lobe</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">귓불</td></tr>
+                <tr><td class="p-4"><b class="text-white">trait</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">특징 / 특성</td></tr>
+                <tr><td class="p-4"><b class="text-white">dentures</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">틀니</td></tr>
+                <tr><td class="p-4"><b class="text-white">20/20 vision</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">정상 시력 / 아주 좋은 시력</td></tr>
+                <tr><td class="p-4"><b class="text-white">has bad eyesight</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">시력이 나쁘다</td></tr>
+                <tr><td class="p-4"><b class="text-white">has bad eyes</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">눈이 나쁘다 / 시력이 안 좋다</td></tr>
+                <tr><td class="p-4"><b class="text-white">strong silent type</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">말수가 적고 듬직한 사람</td></tr>
+                <tr><td class="p-4"><b class="text-white">big-boned</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">골격이 큰 / 체격이 큰</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-6 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold mb-2">20/20 vision</h3>
+                <p class="text-sm text-slate-300">미국식 표현으로 정상 시력 또는 아주 좋은 시력을 뜻해요.</p>
+            </div>
+            <div class="glass p-6 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold mb-2">has bad eyesight / has bad eyes</h3>
+                <p class="text-sm text-slate-300">둘 다 시력이 나쁘다는 뜻이에요. eyesight가 더 정확하고, eyes는 더 캐주얼해요.</p>
+            </div>
+            <div class="glass p-6 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold mb-2">strong silent type</h3>
+                <p class="text-sm text-slate-300">말수가 적고 듬직해 보이는 사람을 뜻하지만, 감정 표현이 부족한 느낌을 줄 수 있어요.</p>
+            </div>
+            <div class="glass p-6 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold mb-2">big-boned</h3>
+                <p class="text-sm text-slate-300">골격이 크다는 뜻이지만, 체형을 돌려 말할 때도 쓰여서 주의가 필요해요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Nina Bell got the highest score on every spelling test. She read books during lunch. She corrected her teacher once, very politely, and was right.</p>
+                <p class="mb-6">That was why Uncle Ray’s comment ruined her entire week. At dinner, Nina was explaining why the moon did not actually follow their car. Uncle Ray looked at her left <b class="highlight quiz-target" data-ans="ear lobe" data-kor="귓불">ear lobe</b> and said, “Uh-oh.”</p>
+                <p class="mb-6">Nina stopped. “What?” “That ear,” he said. “Your grandfather, your father, and Toby all had that same little fold around your age. Then their brains got soft.” Everyone laughed. Nina did not.</p>
+                <p class="mb-6">The Bell men were not just silly. They were proudly silly. Her grandfather wore his <b class="highlight quiz-target" data-ans="dentures" data-kor="틀니">dentures</b> upside down once and said, “Mouths are flexible.” Her father claimed he had <b class="highlight quiz-target" data-ans="20/20 vision" data-kor="정상 시력">20/20 vision</b>, but he once tried to unlock the mailbox with a banana. Her brother Toby definitely <b class="highlight quiz-target" data-ans="has bad eyesight" data-kor="시력이 나쁘다">has bad eyesight</b>, but that did not explain why he thought Australia was a planet.</p>
+                <p class="mb-6">Nina’s mother said Toby <b class="highlight quiz-target" data-ans="has bad eyes" data-kor="눈이 나쁘다">has bad eyes</b>. Nina thought Toby had bad everything.</p>
+                <p class="mb-6">Her father called himself the <b class="highlight quiz-target" data-ans="strong silent type" data-kor="듬직한 사람">strong silent type</b>, but he was only silent when he did not understand the question. He was <b class="highlight quiz-target" data-ans="big-boned" data-kor="골격이 큰">big-boned</b>, loud-footed, and always in the way. Toby once got stuck in a sweater because he tried to wear it “from the bottom up.”</p>
+                <p class="mb-6">Now Nina had the ear. That night, she stood in front of the mirror and touched her ear lobe. Was this the first sign? Was stupidity the Bell family <b class="highlight quiz-target" data-ans="trait" data-kor="특징">trait</b>? Would she wake up one day and believe socks were hand blankets?</p>
+                <p class="mb-6">At school, she panicked during English class. She was so busy checking whether her brain still worked that she wrote Ing - glish at the top of her paper. Her teacher said, “Nina, are you feeling all right?” “I don’t know,” Nina said. “I may be turning into my brother.”</p>
+                <p class="mb-6">That evening, Nina told her mother everything. Uncle Ray, the ear, the soft brains, the fear that she would lose the part of herself she liked most. Her mother rubbed her forehead. “Ray needs to stop talking at dinner. The Bell foolishness only happens to the men.”</p>
+                <p class="mb-6">Nina sat up. “Only the men?” “Only the men. You may have the ear lobe. You do not have Toby’s brain.” From the hallway, Toby shouted, “Is Thursday a food?” Nina smiled. She opened her book and understood every word.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>니나 벨은 모든 철자 시험에서 최고 점수를 받았다. 한 번은 선생님을 아주 공손하게 정정했는데, 그녀가 맞았다.</p>
+                <p>저녁 식사 때 레이 삼촌이 그녀의 왼쪽 <b class="highlight">귓불</b>을 보고 말했다. “네 할아버지, 아버지, 그리고 토비가 모두 네 나이쯤에 똑같은 작은 접힌 부분이 있었어. 그러고 나서 머리가 물렁해졌지.”</p>
+                <p>벨 집안 남자들은 그냥 우스꽝스러운 사람들이 아니었다. 할아버지는 한 번 <b class="highlight">틀니</b>를 거꾸로 꼈다. 아버지는 자신이 <b class="highlight">정상 시력</b>이라고 주장했지만 바나나로 우편함을 열려고 했다. 오빠 토비는 분명히 <b class="highlight">시력이 나빴다</b>.</p>
+                <p>니나의 엄마는 토비가 <b class="highlight">눈이 나쁘다</b>고 말했다. 아버지는 자신을 <b class="highlight">말수가 적고 듬직한 사람</b>이라고 불렀지만, 질문을 이해하지 못할 때만 조용했다. 그는 <b class="highlight">골격이 컸고</b> 항상 길을 막고 있었다.</p>
+                <p>이제 니나에게도 그 귀가 있었다. 멍청함이 벨 집안의 <b class="highlight">특징</b>인 걸까? 학교에서 그녀는 영어 시간에 겁에 질려 종이 맨 위에 Ing - glish라고 썼다.</p>
+                <p>니나는 엄마에게 모든 것을 말했다. 엄마는 이마를 문질렀다. “벨 집안의 어리석음은 남자들에게만 나타나.”</p>
+                <p>니나는 몸을 일으켰다. “남자들에게만요?” 복도에서 토비가 소리쳤다. “목요일은 음식이야?” 니나는 미소 지었다. 그녀는 책을 펼쳤고, 모든 단어를 이해했다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "571020.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

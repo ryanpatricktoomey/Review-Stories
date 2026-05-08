@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Late Bus Home</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🎒</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Late Bus Home</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">overstimulating</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">자극이 너무 많은 / 정신없게 만드는</td></tr>
+                <tr><td class="p-4"><b class="text-white">spoils me</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">나를 너무 잘 챙겨준다 / 응석받이로 만든다</td></tr>
+                <tr><td class="p-4"><b class="text-white">peace of mind</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">마음의 평안 / 안심</td></tr>
+                <tr><td class="p-4"><b class="text-white">comfort</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">위로 / 편안함</td></tr>
+                <tr><td class="p-4"><b class="text-white">curfew</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">귀가 시간 / 통금 시간</td></tr>
+                <tr><td class="p-4"><b class="text-white">bummer</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">아쉬운 일 / 실망스러운 일</td></tr>
+                <tr><td class="p-4"><b class="text-white">it bummed me out</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그것 때문에 기분이 안 좋았다 / 속상했다</td></tr>
+                <tr><td class="p-4"><b class="text-white">I was hurt that you did...</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">네가 …해서 상처받았어</td></tr>
+                <tr><td class="p-4"><b class="text-white">i didn't mean to hurt you</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">너에게 상처 주려던 건 아니었어</td></tr>
+                <tr><td class="p-4"><b class="text-white">i was kind of hurt</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">나 좀 상처받았어</td></tr>
+                <tr><td class="p-4"><b class="text-white">letdown</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">실망스러운 일 / 기대에 못 미치는 것</td></tr>
+                <tr><td class="p-4"><b class="text-white">i felt letdown</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">실망했어 / 기대에 못 미쳐서 속상했어</td></tr>
+                <tr><td class="p-4"><b class="text-white">resilient</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">회복력이 강한 / 어려움을 잘 이겨내는</td></tr>
+                <tr><td class="p-4"><b class="text-white">worry about what others think</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">다른 사람들이 어떻게 생각할지 걱정하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">be self-conscious</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">남의 시선을 의식하다 / 신경 쓰다</td></tr>
+                <tr><td class="p-4"><b class="text-white">hypocrite</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">위선자 / 말과 행동이 다른 사람</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-6 rounded-3xl space-y-2">
+                <h3 class="text-amber-500 font-bold">overstimulating</h3>
+                <p class="text-sm text-slate-300">소리, 사람, 정보, 활동 등이 너무 많아서 정신적으로 피곤하거나 부담스러운 상태를 말합니다.</p>
+            </div>
+            <div class="glass p-6 rounded-3xl space-y-2">
+                <h3 class="text-amber-500 font-bold">spoils me</h3>
+                <p class="text-sm text-slate-300">좋은 의미로는 “너무 잘 챙겨준다”는 뜻이고, 부정적으로는 “응석받이로 만든다”는 뜻도 됩니다.</p>
+            </div>
+            <div class="glass p-6 rounded-3xl space-y-2">
+                <h3 class="text-amber-500 font-bold">peace of mind</h3>
+                <p class="text-sm text-slate-300">걱정이 줄어서 마음이 편안한 상태를 뜻합니다.</p>
+            </div>
+            <div class="glass p-6 rounded-3xl space-y-2">
+                <h3 class="text-amber-500 font-bold">bummer</h3>
+                <p class="text-sm text-slate-300">큰 비극은 아니지만 아쉽고 실망스러운 일을 가볍게 말할 때 씁니다.</p>
+            </div>
+            <div class="glass p-6 rounded-3xl space-y-2">
+                <h3 class="text-amber-500 font-bold">it bummed me out</h3>
+                <p class="text-sm text-slate-300">어떤 일 때문에 기분이 가라앉거나 속상했다는 캐주얼한 표현입니다.</p>
+            </div>
+            <div class="glass p-6 rounded-3xl space-y-2">
+                <h3 class="text-amber-500 font-bold">letdown / i felt letdown</h3>
+                <p class="text-sm text-slate-300">기대했던 것보다 결과가 별로라 실망한 느낌입니다.</p>
+            </div>
+            <div class="glass p-6 rounded-3xl space-y-2">
+                <h3 class="text-amber-500 font-bold">resilient</h3>
+                <p class="text-sm text-slate-300">힘든 일을 겪어도 다시 회복하고 버틸 수 있는 힘을 말합니다.</p>
+            </div>
+            <div class="glass p-6 rounded-3xl space-y-2">
+                <h3 class="text-amber-500 font-bold">be self-conscious</h3>
+                <p class="text-sm text-slate-300">자기 모습이나 행동을 남들이 어떻게 볼지 지나치게 의식하는 상태입니다.</p>
+            </div>
+            <div class="glass p-6 rounded-3xl space-y-2">
+                <h3 class="text-amber-500 font-bold">hypocrite</h3>
+                <p class="text-sm text-slate-300">자신이 말하는 원칙과 실제 행동이 다를 때 쓰는 강한 표현입니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">When Sora was sixteen, her parents gave her a strict <b class="highlight quiz-target" data-ans="curfew" data-kor="통금 시간">curfew</b>. She had to be home by nine, even on weekends. Her mother said it gave her <b class="highlight quiz-target" data-ans="peace of mind" data-kor="마음의 평안">peace of mind</b>. Her father said rules were a form of love.</p>
+                <p class="mb-6">Sora understood that they worried. They were kind parents in many ways. Her mother always packed extra snacks for her, and her father drove across town whenever she forgot an umbrella. Sometimes Sora joked, “Dad <b class="highlight quiz-target" data-ans="spoils me" data-kor="나를 너무 잘 챙겨줘">spoils me</b>,” because he brought her warm bread after academy classes. Their care gave her real <b class="highlight quiz-target" data-ans="comfort" data-kor="위로">comfort</b>.</p>
+                <p class="mb-6">But the rules also made her feel small. When friends stayed out for dinner after a school festival, Sora had to leave early. “That’s a <b class="highlight quiz-target" data-ans="bummer" data-kor="아쉬운 일">bummer</b>,” one friend said. Sora laughed, but inside, <b class="highlight quiz-target" data-ans="it bummed me out" data-kor="속상했어">it bummed me out</b>. She began to <b class="highlight quiz-target" data-ans="worry about what others think" data-kor="남의 시선을 걱정하다">worry about what others think</b>. She felt embarrassed when she had to explain her parents’ rules. She started to <b class="highlight quiz-target" data-ans="be self-conscious" data-kor="의식하다">be self-conscious</b> about every message she sent.</p>
+                <p class="mb-6">One night, the bus was late. Sora got home at 9:18, and her mother was waiting by the door. Before Sora could explain, her mother said, “You broke our trust.”</p>
+                <p class="mb-6">Sora’s face got hot. “I didn’t do anything wrong,” she said. “The bus was late.”</p>
+                <p class="mb-6">Her mother looked tired and scared, but she did not listen. Later, Sora went to her room and cried. The next morning, she told her mother, “<b class="highlight quiz-target" data-ans="I was hurt that you did" data-kor="네가 ...해서 상처받았어">I was hurt that you did</b> not believe me.”</p>
+                <p class="mb-6">Her mother sighed. “<b class="highlight quiz-target" data-ans="I didn't mean to hurt you" data-kor="상처 주려던 건 아니었어">I didn't mean to hurt you</b>,” she said. “I just got scared.”</p>
+                <p class="mb-6">“I know,” Sora answered. “But <b class="highlight quiz-target" data-ans="I was kind of hurt" data-kor="나 좀 상처받았어">I was kind of hurt</b>. I felt like you trusted the clock more than me.”</p>
+                <p class="mb-6">Years later, Sora remembered that conversation while folding tiny baby clothes in her bedroom. She was expecting a daughter, and she already understood why parents wanted rules. The world could be loud and <b class="highlight quiz-target" data-ans="overstimulating" data-kor="자극이 너무 많은">overstimulating</b>, and rules could help a child feel safe.</p>
+                <p class="mb-6">Still, she did not want her daughter to see every rule as a punishment. She wanted to raise a child who was <b class="highlight quiz-target" data-ans="resilient" data-kor="회복력이 강한">resilient</b>, not afraid. She wanted to listen before judging.</p>
+                <p class="mb-6">Her husband smiled and said, “So, no curfew ever?”</p>
+                <p class="mb-6">Sora laughed. “Of course there will be rules. I’m not a <b class="highlight quiz-target" data-ans="hypocrite" data-kor="위선자">hypocrite</b>. But I want our child to understand them.”</p>
+                <p class="mb-6">She knew parenting would include mistakes. Some days would be a <b class="highlight quiz-target" data-ans="letdown" data-kor="실망스러운 일">letdown</b>. Some days, her child might say, “<b class="highlight quiz-target" data-ans="I felt letdown" data-kor="실망했어요">I felt letdown</b>,” and Sora would have to listen carefully.</p>
+                <p class="mb-6">She hoped she could offer both safety and trust. Not a locked door, not an open road, but a porch light waiting kindly at the right hour.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">소라가 열여섯 살이었을 때, 부모님은 엄격한 <b class="highlight">귀가 시간</b>을 정해주었다. 주말에도 아홉 시까지는 집에 와야 했다. 엄마는 그래야 <b class="highlight">마음이 놓인다고</b> 말했다. 아빠는 규칙도 사랑의 한 형태라고 말했다.</p>
+                <p class="mb-6">소라는 부모님이 걱정한다는 것을 이해했다. 부모님은 여러 면에서 다정한 사람들이었다. 엄마는 항상 간식을 넉넉히 싸주었고, 아빠는 소라가 우산을 잊고 나올 때마다 시내를 가로질러 데리러 왔다. 가끔 소라는 “<b class="highlight">아빠가 나를 너무 잘 챙겨줘</b>”라고 농담했다. 아빠가 학원 수업 후 따뜻한 빵을 사다 주었기 때문이다. 부모님의 보살핌은 소라에게 진짜 <b class="highlight">위로</b>가 되었다.</p>
+                <p class="mb-6">하지만 그 규칙들은 소라를 작게 느끼게 하기도 했다. 친구들이 학교 축제 후 저녁을 먹으러 남아 있을 때, 소라는 일찍 떠나야 했다. 한 친구가 “<b class="highlight">아쉽다</b>”라고 말했다. 소라는 웃었지만, 속으로는 <b class="highlight">기분이 좋지 않았다</b>. 그녀는 <b class="highlight">다른 사람들이 어떻게 생각할지 걱정하기</b> 시작했다. 부모님의 규칙을 설명해야 할 때마다 부끄러웠다. 그녀는 자신이 보내는 모든 메시지까지 <b class="highlight">남의 시선을 의식하기</b> 시작했다.</p>
+                <p class="mb-6">어느 날 밤, 버스가 늦게 왔다. 소라는 9시 18분에 집에 도착했고, 엄마는 문 앞에서 기다리고 있었다. 소라가 설명하기도 전에 엄마는 말했다. “너는 우리의 신뢰를 깨뜨렸어.”</p>
+                <p class="mb-6">소라의 얼굴이 뜨거워졌다. “저는 잘못한 거 없어요,” 소라가 말했다. “버스가 늦었어요.”</p>
+                <p class="mb-6">엄마는 피곤하고 겁먹은 표정이었지만, 듣지 않았다. 나중에 소라는 방에 들어가 울었다. 다음 날 아침, 그녀는 엄마에게 말했다. “<b class="highlight">엄마가 저를 믿지 않아서</b> 상처받았어요.”</p>
+                <p class="mb-6">엄마는 한숨을 쉬었다. “<b class="highlight">너에게 상처 주려던 건 아니었어</b>,” 엄마가 말했다. “그냥 무서웠어.”</p>
+                <p class="mb-6">“알아요,” 소라가 대답했다. “하지만 <b class="highlight">저 좀 상처받았어요</b>. 엄마가 저보다 시계를 더 믿는 것 같았어요.”</p>
+                <p class="mb-6">몇 년 후, 소라는 침실에서 작은 아기 옷을 접으며 그 대화를 떠올렸다. 그녀는 딸을 임신 중이었고, 부모가 왜 규칙을 원하게 되는지 이미 이해하고 있었다. 세상은 시끄럽고 <b class="highlight">자극이 너무 많을 수 있었고</b>, 규칙은 아이가 안전하다고 느끼게 도와줄 수도 있었다.</p>
+                <p class="mb-6">그래도 소라는 딸이 모든 규칙을 벌처럼 느끼게 하고 싶지는 않았다. 그녀는 아이가 두려워하는 사람이 아니라 <b class="highlight">어려움을 잘 이겨내는 사람</b>이 되기를 원했다. 판단하기 전에 먼저 들어주고 싶었다.</p>
+                <p class="mb-6">남편은 미소를 지으며 말했다. “그럼 귀가 시간은 아예 없는 거야?”</p>
+                <p class="mb-6">소라는 웃었다. “당연히 규칙은 있을 거야. 내가 <b class="highlight">위선자</b>는 아니잖아. 하지만 우리 아이가 그 규칙을 이해했으면 좋겠어.”</p>
+                <p class="mb-6">그녀는 부모 역할에는 실수가 따를 것임을 알았다. 어떤 날은 <b class="highlight">실망스러울</b> 것이다. 어떤 날은 아이가 “<b class="highlight">실망했어요</b>”라고 말할지도 모르고, 그때 소라는 조심스럽게 들어야 할 것이다.</p>
+                <p class="mb-6">그녀는 안전과 신뢰를 모두 줄 수 있기를 바랐다. 잠긴 문도 아니고, 완전히 열린 길도 아닌, 적당한 시간에 다정하게 기다리는 현관 불빛 같은 사랑을 주고 싶었다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "58830.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

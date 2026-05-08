@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Empty Apartment Key</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🧸</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Empty Apartment Key</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">break it to him</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그에게 조심스럽게 말하다 / 안 좋은 소식을 전하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">stubborn</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">고집 센</td></tr>
+                <tr><td class="p-4"><b class="text-white">well-off</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">부유한 / 형편이 넉넉한</td></tr>
+                <tr><td class="p-4"><b class="text-white">been there done that</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">이미 다 겪어봤다 / 해볼 만큼 해봤다</td></tr>
+                <tr><td class="p-4"><b class="text-white">latchkey kid</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">부모가 집에 없어서 혼자 집에 들어가 지내는 아이</td></tr>
+                <tr><td class="p-4"><b class="text-white">take initiative</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">솔선수범하다 / 주도적으로 하다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-6 rounded-3xl space-y-2">
+                <h3 class="text-amber-500 font-bold">break it to him</h3>
+                <p class="text-sm text-slate-300">보통 상대가 듣기 어려운 소식이나 불편한 사실을 조심스럽게 말할 때 씁니다.</p>
+            </div>
+            <div class="glass p-6 rounded-3xl space-y-2">
+                <h3 class="text-amber-500 font-bold">well-off</h3>
+                <p class="text-sm text-slate-300">단순히 “rich”보다 부드러운 표현으로, 경제적으로 여유 있다는 뜻입니다.</p>
+            </div>
+            <div class="glass p-6 rounded-3xl space-y-2">
+                <h3 class="text-amber-500 font-bold">been there done that</h3>
+                <p class="text-sm text-slate-300">어떤 일을 이미 경험해 봐서 새롭지 않거나 조언할 수 있다는 느낌입니다.</p>
+            </div>
+            <div class="glass p-6 rounded-3xl space-y-2">
+                <h3 class="text-amber-500 font-bold">latchkey kid</h3>
+                <p class="text-sm text-slate-300">부모가 일 때문에 집에 없어서 방과 후 혼자 집에 들어가 시간을 보내는 아이를 말합니다. 문화적 배경이 있는 표현입니다.</p>
+            </div>
+            <div class="glass p-6 rounded-3xl space-y-2">
+                <h3 class="text-amber-500 font-bold">take initiative</h3>
+                <p class="text-sm text-slate-300">누가 시키기 전에 스스로 판단하고 먼저 행동한다는 뜻입니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">When Mina was eight years old, she wore her house key on a blue string around her neck. Every afternoon, she came home from school, opened the apartment door by herself, and turned on the lights. Her parents both worked long hours, and they always said she was strong and smart enough to handle it.</p>
+                <p class="mb-6">In many ways, they were right. Mina learned how to cook simple meals, finish her homework, and call her mother if something serious happened. She became the kind of child who could <b class="highlight quiz-target" data-ans="take initiative" data-kor="솔선수범하다">take initiative</b> without being told. By middle school, teachers often praised her for being responsible.</p>
+                <p class="mb-6">Her parents were not cold people. They loved her deeply. They were not exactly <b class="highlight quiz-target" data-ans="well-off" data-kor="부유한">well-off</b>, but they worked hard so Mina could take piano lessons, join English classes, and go to a good academy. Her mother packed fruit for her every morning. Her father checked the door lock twice every night. Love was everywhere, but it was often quiet.</p>
+                <p class="mb-6">Still, Mina remembered how lonely the apartment felt after school. She remembered eating dinner from a small bowl while the TV filled the silence. When other children complained that their mothers asked too many questions, Mina wanted to say, “I was a <b class="highlight quiz-target" data-ans="latchkey kid" data-kor="혼자 집에 지내는 아이">latchkey kid</b>. I would have liked a few more questions.”</p>
+                <p class="mb-6">Now Mina was seven months pregnant, and people gave her advice everywhere. Her aunt told her not to worry too much. “I raised three children,” she said. “<b class="highlight quiz-target" data-ans="Been there done that" data-kor="이미 다 겪어봤다">Been there done that</b>.”</p>
+                <p class="mb-6">Mina smiled, but she did not agree with everything. Her aunt also said children should become independent as early as possible. Mina’s mother nodded strongly. She could be <b class="highlight quiz-target" data-ans="stubborn" data-kor="고집 센">stubborn</b> about this topic. “You turned out fine,” her mother said.</p>
+                <p class="mb-6">Mina did not want to hurt her, but she knew she had to <b class="highlight quiz-target" data-ans="break it to her" data-kor="조심스럽게 말하다">break it to her</b> gently. “Mom, you and Dad did your best. I know that. But sometimes I felt very alone.”</p>
+                <p class="mb-6">Her mother looked down at her tea. For a moment, neither of them spoke.</p>
+                <p class="mb-6">“I didn’t know,” her mother said quietly.</p>
+                <p class="mb-6">Mina reached across the table and touched her hand. “I know. That’s why I want to do some things the same, and some things differently.”</p>
+                <p class="mb-6">She wanted her child to be responsible, but not lonely. She wanted to teach independence, but also warmth. She would give her child room to grow, but she would also be waiting when the door opened.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">미나가 여덟 살이었을 때, 그녀는 파란 끈에 집 열쇠를 걸어 목에 메고 다녔다. 매일 오후 학교에서 돌아오면, 그녀는 혼자 아파트 문을 열고 불을 켰다. 부모님은 두 분 다 오래 일하셨고, 항상 미나가 충분히 강하고 똑똑해서 그 정도는 해낼 수 있다고 말씀하셨다.</p>
+                <p class="mb-6">여러 면에서 부모님의 말은 맞았다. 미나는 간단한 음식을 만들고, 숙제를 끝내고, 심각한 일이 생기면 엄마에게 전화하는 법을 배웠다. 그녀는 누가 말하지 않아도 <b class="highlight">스스로 먼저 행동할 수 있는</b> 아이가 되었다. 중학교에 갈 무렵, 선생님들은 미나가 책임감이 강하다고 자주 칭찬했다.</p>
+                <p class="mb-6">부모님은 차가운 사람들이 아니었다. 그들은 미나를 깊이 사랑했다. 아주 <b class="highlight">부유한</b> 편은 아니었지만, 미나가 피아노 수업을 듣고, 영어 수업에 다니고, 좋은 학원에 갈 수 있도록 열심히 일했다. 엄마는 매일 아침 과일을 싸주었다. 아빠는 매일 밤 문이 잠겼는지 두 번 확인했다. 사랑은 어디에나 있었지만, 대개 조용한 방식이었다.</p>
+                <p class="mb-6">그래도 미나는 방과 후 아파트가 얼마나 외로웠는지 기억했다. 작은 그릇에 담긴 저녁을 먹으며 TV 소리로 침묵을 채우던 일도 기억했다. 다른 아이들이 엄마가 너무 많은 질문을 한다고 불평할 때, 미나는 이렇게 말하고 싶었다. “나는 <b class="highlight">혼자 집에 들어가 지내는 아이</b>였어. 나는 질문을 조금 더 받아보고 싶었어.”</p>
+                <p class="mb-6">이제 미나는 임신 7개월이었고, 사람들은 어디서나 그녀에게 조언을 해주었다. 이모는 너무 걱정하지 말라고 했다. “나는 아이 셋을 키웠잖아. <b class="highlight">이미 다 겪어봤어</b>.”</p>
+                <p class="mb-6">미나는 미소를 지었지만, 모든 말에 동의하지는 않았다. 이모는 아이들이 최대한 빨리 독립적이 되어야 한다고도 말했다. 미나의 엄마도 강하게 고개를 끄덕였다. 엄마는 이 주제에 대해 <b class="highlight">고집이 센</b> 편이었다. “너도 잘 컸잖니,” 엄마가 말했다.</p>
+                <p class="mb-6">미나는 엄마에게 상처를 주고 싶지 않았지만, <b class="highlight">조심스럽게 말해야</b> 한다는 것을 알았다. “엄마, 엄마랑 아빠가 최선을 다했다는 거 알아요. 정말 알아요. 하지만 가끔 저는 많이 외로웠어요.”</p>
+                <p class="mb-6">엄마는 차를 내려다보았다. 잠시 동안 두 사람은 아무 말도 하지 않았다.</p>
+                <p class="mb-6">“나는 몰랐어,” 엄마가 조용히 말했다.</p>
+                <p class="mb-6">미나는 식탁 너머로 손을 뻗어 엄마의 손을 잡았다. “알아요. 그래서 저는 어떤 건 똑같이 하고, 어떤 건 다르게 하고 싶어요.”</p>
+                <p class="mb-6">그녀는 아이가 책임감 있는 사람이 되기를 원했지만, 외롭지는 않았으면 했다. 독립심을 가르치고 싶었지만, 따뜻함도 함께 주고 싶었다. 아이가 성장할 공간을 주겠지만, 문이 열릴 때 기다리고 있는 사람이 되어주고 싶었다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "58630.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Piano Room</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🎭</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Piano Room</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">love and hate relationship</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">애증 관계</td></tr>
+                <tr><td class="p-4"><b class="text-white">emulate</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">본받다 / 따라 하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">live vicariously</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">대리만족하다 / 남의 경험을 통해 대신 만족하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">teach your child manners</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">아이에게 예절을 가르치다</td></tr>
+                <tr><td class="p-4"><b class="text-white">let's make up</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">화해하자</td></tr>
+                <tr><td class="p-4"><b class="text-white">disciplines the kids</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">아이들을 훈육하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">softie</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">마음이 약한 사람 / 정이 많은 사람</td></tr>
+                <tr><td class="p-4"><b class="text-white">pushover</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">쉽게 휘둘리는 사람 / 만만한 사람</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-6 rounded-3xl space-y-2">
+                <h3 class="text-amber-500 font-bold">love and hate relationship</h3>
+                <p class="text-sm text-slate-300">좋은 마음과 힘든 감정이 공존하는 복잡한 관계를 말합니다.</p>
+            </div>
+            <div class="glass p-6 rounded-3xl space-y-2">
+                <h3 class="text-amber-500 font-bold">emulate</h3>
+                <p class="text-sm text-slate-300">존경하는 대상을 본받아 따라 하려는 긍정적인 의미입니다.</p>
+            </div>
+            <div class="glass p-6 rounded-3xl space-y-2">
+                <h3 class="text-amber-500 font-bold">live vicariously</h3>
+                <p class="text-sm text-slate-300">타인의 경험을 통해 대리 만족을 느끼는 상태를 뜻합니다.</p>
+            </div>
+            <div class="glass p-6 rounded-3xl space-y-2">
+                <h3 class="text-amber-500 font-bold">let's make up</h3>
+                <p class="text-sm text-slate-300">갈등 후 관계를 회복하고자 할 때 쓰는 표현입니다.</p>
+            </div>
+            <div class="glass p-6 rounded-3xl space-y-2">
+                <h3 class="text-amber-500 font-bold">softie</h3>
+                <p class="text-sm text-slate-300">정이 많고 마음이 약해 쉽게 감동하거나 양보하는 사람을 뜻합니다.</p>
+            </div>
+            <div class="glass p-6 rounded-3xl space-y-2">
+                <h3 class="text-amber-500 font-bold">pushover</h3>
+                <p class="text-sm text-slate-300">자기 주장이 약해 남에게 쉽게 휘둘리는 사람을 일컫습니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">When Yuna was a child, she had a <b class="highlight quiz-target" data-ans="love and hate relationship" data-kor="애증 관계">love and hate relationship</b> with the piano. She loved the sound of it in the evening, especially when her mother played old songs after dinner. But she hated the long practice hours, the competitions, and the way her mother watched her fingers like a judge.</p>
+                <p class="mb-6">Yuna’s mother had wanted to become a pianist when she was young. Her family had not had enough money for lessons, so she gave Yuna every chance she never had. At first, Yuna was proud. She wanted to <b class="highlight quiz-target" data-ans="emulate" data-kor="본받다">emulate</b> her mother’s graceful hands and calm face. But slowly, the piano became less like music and more like homework.</p>
+                <p class="mb-6">“You have talent,” her mother often said. “Don’t waste it.”</p>
+                <p class="mb-6">Yuna did not know how to explain that talent could feel heavy. When she lost a competition, her mother became quiet for two days. When she won, her mother smiled more brightly than Yuna did. By high school, Yuna understood that her mother was trying to <b class="highlight quiz-target" data-ans="live vicariously" data-kor="대리만족하다">live vicariously</b> through her. She loved Yuna, but she also wanted Yuna to finish a dream that had never truly belonged to her.</p>
+                <p class="mb-6">Her father was different. He was the one who <b class="highlight quiz-target" data-ans="disciplines the kids" data-kor="아이들을 훈육하다">disciplines the kids</b> in the family, but he was also a <b class="highlight quiz-target" data-ans="softie" data-kor="마음 약한 사람">softie</b>. If Yuna cried after practice, he brought sliced apples to her room and said, “Your mother means well.”</p>
+                <p class="mb-6">“Then why does it hurt?” Yuna once asked.</p>
+                <p class="mb-6">He sighed. “Because love can get mixed up with wanting too much.”</p>
+                <p class="mb-6">Years later, Yuna was pregnant with her first child. One evening, her mother visited and found the old piano in Yuna’s living room.</p>
+                <p class="mb-6">“Will you teach the baby piano someday?” her mother asked.</p>
+                <p class="mb-6">“Maybe,” Yuna said. “But only if the child wants to learn.”</p>
+                <p class="mb-6">Her mother looked disappointed. “You can’t be a <b class="highlight quiz-target" data-ans="pushover" data-kor="만만한 사람">pushover</b> as a parent.”</p>
+                <p class="mb-6">“I know,” Yuna answered gently. “I’ll set rules. I’ll <b class="highlight quiz-target" data-ans="teach your child manners" data-kor="예절을 가르치다">teach your child manners</b>. I’ll help them practice things that matter. But I don’t want to turn my dream, or your dream, into their duty.”</p>
+                <p class="mb-6">Her mother sat down slowly on the piano bench. For a moment, the room was quiet.</p>
+                <p class="mb-6">“I pushed too hard, didn’t I?” she asked.</p>
+                <p class="mb-6">Yuna sat beside her. “Sometimes.”</p>
+                <p class="mb-6">Her mother touched one key softly. “I’m sorry.”</p>
+                <p class="mb-6">Yuna looked at the small curve of her pregnant belly and then at her mother’s tired face. “<b class="highlight quiz-target" data-ans="Let's make up" data-kor="화해해요">Let's make up</b>,” she said.</p>
+                <p class="mb-6">The note from the piano faded, but the room felt lighter. Yuna knew she would make mistakes as a mother. But she hoped her child would grow up knowing the difference between support and pressure, between guidance and someone else’s unfinished dream.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">유나는 어렸을 때 피아노와 <b class="highlight">애증 관계</b>였다. 저녁에 들리는 피아노 소리는 좋아했다. 특히 저녁 식사 후 엄마가 옛 노래를 연주할 때가 좋았다. 하지만 긴 연습 시간, 대회, 그리고 엄마가 심사위원처럼 자신의 손가락을 지켜보는 것은 싫었다.</p>
+                <p class="mb-6">유나의 엄마는 어릴 때 피아니스트가 되고 싶었다. 하지만 그녀의 가족은 레슨을 받을 만큼 형편이 넉넉하지 않았고, 그래서 엄마는 자신이 누리지 못했던 모든 기회를 유나에게 주었다. 처음에 유나는 자랑스러웠다. 엄마의 우아한 손과 차분한 표정을 <b class="highlight">본받고</b> 싶었다. 하지만 서서히 피아노는 음악이라기보다 숙제처럼 느껴졌다.</p>
+                <p class="mb-6">“너는 재능이 있어,” 엄마는 자주 말했다. “그걸 낭비하면 안 돼.”</p>
+                <p class="mb-6">유나는 재능이 무겁게 느껴질 수도 있다는 것을 어떻게 설명해야 할지 몰랐다. 대회에서 지면 엄마는 이틀 동안 조용해졌다. 대회에서 이기면 엄마가 유나보다 더 환하게 웃었다. 고등학생이 되었을 때, 유나는 엄마가 자신을 통해 <b class="highlight">대리만족하려</b> 한다는 것을 이해했다. 엄마는 유나를 사랑했지만, 동시에 유나가 엄마 자신의 것이 아니었던 꿈을 완성해주기를 바라고 있었다.</p>
+                <p class="mb-6">아빠는 달랐다. 아빠는 가족 안에서 <b class="highlight">아이들을 훈육하는</b> 사람이었지만, <b class="highlight">마음이 약한 사람</b>이기도 했다. 유나가 연습 후 울면, 아빠는 잘라 놓은 사과를 들고 방으로 와서 말했다. “엄마도 좋은 뜻으로 그러시는 거야.”</p>
+                <p class="mb-6">“그럼 왜 아파요?” 유나가 언젠가 물었다. </p>
+                <p class="mb-6">아빠는 한숨을 쉬었다. “사랑에 너무 많은 바람이 섞일 수 있으니까.”</p>
+                <p class="mb-6">몇 년 후, 유나는 첫아이를 임신했다. 어느 저녁, 엄마가 찾아와 유나의 거실에 있는 오래된 피아노를 보았다.</p>
+                <p class="mb-6">“언젠가 아기에게 피아노를 가르칠 거니?” 엄마가 물었다.</p>
+                <p class="mb-6">“아마도요,” 유나가 말했다. “하지만 아이가 배우고 싶어 할 때만요.”</p>
+                <p class="mb-6">엄마는 실망한 표정을 지었다. “부모가 너무 <b class="highlight">만만하면</b> 안 돼.”</p>
+                <p class="mb-6">“알아요,” 유나는 부드럽게 대답했다. “규칙도 세울 거예요. 아이에게 <b class="highlight">예절도 가르칠</b> 거고요. 중요한 일은 연습하도록 도울 거예요. 하지만 제 꿈이나 엄마의 꿈을 아이의 의무로 만들고 싶지는 않아요.”</p>
+                <p class="mb-6">엄마는 천천히 피아노 의자에 앉았다. 잠시 방은 조용했다.</p>
+                <p class="mb-6">“내가 너무 몰아붙였지?” 엄마가 물었다.</p>
+                <p class="mb-6">유나는 엄마 옆에 앉았다. “가끔은요.”</p>
+                <p class="mb-6">엄마는 건반 하나를 부드럽게 눌렀다. “미안해.”</p>
+                <p class="mb-6">유나는 자신의 둥글어진 배를 바라보고, 다시 엄마의 지친 얼굴을 보았다. “<b class="highlight">우리 화해해요</b>,” 그녀가 말했다.</p>
+                <p class="mb-6">피아노 소리는 사라졌지만, 방은 더 가벼워진 것 같았다. 유나는 자신도 엄마로서 실수할 것임을 알았다. 하지만 자신의 아이가 지지와 압박의 차이, 지도와 다른 사람의 끝나지 않은 꿈 사이의 차이를 알고 자라기를 바랐다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "581200.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

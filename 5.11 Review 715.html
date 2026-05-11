@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Emergency Exit Plan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🚌</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Emergency Exit Plan</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">twice</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">두 번</td></tr>
+                <tr><td class="p-4"><b class="text-white">geek</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">괴짜 / 특정 분야에 매우 빠진 사람</td></tr>
+                <tr><td class="p-4"><b class="text-white">is a must</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">꼭 필요하다 / 필수다</td></tr>
+                <tr><td class="p-4"><b class="text-white">crucial</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">매우 중요한 / 결정적인</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-6 rounded-2xl border-l-4 border-amber-500">
+                <h3 class="text-amber-500 font-bold mb-2">geek</h3>
+                <p class="text-sm text-slate-300">예전에는 부정적인 느낌이 강했지만, 요즘은 어떤 분야를 아주 좋아하고 잘 아는 사람이라는 긍정적 의미로도 많이 쓰여요.</p>
+            </div>
+            <div class="glass p-6 rounded-2xl border-l-4 border-amber-500">
+                <h3 class="text-amber-500 font-bold mb-2">is a must</h3>
+                <p class="text-sm text-slate-300">“반드시 해야 한다” 또는 “꼭 필요한 것”이라는 뜻의 자연스러운 회화 표현이에요.</p>
+            </div>
+            <div class="glass p-6 rounded-2xl border-l-4 border-amber-500">
+                <h3 class="text-amber-500 font-bold mb-2">crucial</h3>
+                <p class="text-sm text-slate-300">그냥 important보다 더 강한 느낌으로, 결과에 큰 영향을 주는 “결정적으로 중요한” 상황에 써요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Clara only wanted to buy a sandwich. That was all. Bread, cheese, maybe some quiet. But while she was standing in line at the café, a man behind her said, “Busy today, isn’t it?”</p>
+                <p class="mb-6">She made the common mistake of smiling.</p>
+                <p class="mb-6">“Yes, it is,” she said.</p>
+                <p class="mb-6">The man looked delighted, as if she had opened a door and invited him into her home. “I’ve been here <b class="highlight quiz-target" data-ans="twice" data-kor="두 번">twice</b> this week already,” he said. “The coffee is excellent.”</p>
+                <p class="mb-6">“That’s nice,” Clara said.</p>
+                <p class="mb-6">The line moved forward by one person. Clara moved with it, but the man moved too, of course. That was how lines worked, which suddenly seemed unfair.</p>
+                <p class="mb-6">“I’m actually a coffee <b class="highlight quiz-target" data-ans="geek" data-kor="괴짜">geek</b>,” he continued. “I know everything about beans, water temperature, cup shape…”</p>
+                <p class="mb-6">“Wow,” Clara said, because “wow” was shorter than screaming.</p>
+                <p class="mb-6">“For good coffee, clean water <b class="highlight quiz-target" data-ans="is a must" data-kor="필수다">is a must</b>,” he said. “People forget that. They think beans are everything, but water is <b class="highlight quiz-target" data-ans="crucial" data-kor="결정적으로 중요한">crucial</b>.”</p>
+                <p class="mb-6">Clara nodded. “I hear you.”</p>
+                <p class="mb-6">She did not hear him. She heard the soft call of freedom from the door behind her. Unfortunately, leaving without a sandwich felt like losing to the conversation.</p>
+                <p class="mb-6">The cashier smiled at the next customer. Only two people were ahead of Clara now. She could survive two people. Probably.</p>
+                <p class="mb-6">“Do you make coffee at home?” the man asked.</p>
+                <p class="mb-6">“Sometimes,” Clara said.</p>
+                <p class="mb-6">“With a hand grinder?”</p>
+                <p class="mb-6">“No.”</p>
+                <p class="mb-6">His face changed, not with anger, but with deep sadness. Clara had disappointed a stranger in less than three minutes.</p>
+                <p class="mb-6">“Oh,” he said. “Well, fresh grinding is important, isn’t it?”</p>
+                <p class="mb-6">“Sure,” Clara said. “No kidding.”</p>
+                <p class="mb-6">The line moved again. One person left.</p>
+                <p class="mb-6">Clara prepared her escape. She would order quickly, pay quickly, and leave quickly. It was a beautiful plan, simple and bright.</p>
+                <p class="mb-6">“Well…” she said, even though nobody had asked her anything. “I should get going after I order.”</p>
+                <p class="mb-6">“Oh, of course,” the man said. “I don’t want to keep you.”</p>
+                <p class="mb-6">The cashier called, “Next.”</p>
+                <p class="mb-6">Clara ordered a sandwich and the fastest coffee of her life. As she stepped away, the man smiled and said, “Have a good one.”</p>
+                <p class="mb-6">“You too. Take care,” Clara said.</p>
+                <p class="mb-6">Outside, she took a deep breath. The sandwich was a little smashed, but she felt proud of it. It had survived the conversation with her.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>클라라는 그저 샌드위치를 사고 싶었을 뿐이었다. 그게 전부였다. 빵, 치즈, 어쩌면 약간의 조용함. 하지만 카페에서 줄을 서고 있을 때, 뒤에 있던 남자가 말했다. “오늘 바쁘네요, 그렇지 않나요?”</p>
+                <p>그녀는 미소 짓는 흔한 실수를 했다.</p>
+                <p>“네, 그러네요,” 그녀가 말했다.</p>
+                <p>남자는 매우 기뻐 보였다. 마치 그녀가 문을 열고 그를 집 안으로 초대한 것 같았다. “저 이번 주에 벌써 여기 <b class="highlight">두 번</b> 왔어요,” 그가 말했다. “커피가 정말 훌륭하거든요.”</p>
+                <p>“좋네요,” 클라라가 말했다.</p>
+                <p>줄이 한 사람만큼 앞으로 움직였다. 클라라도 따라 움직였지만, 당연히 그 남자도 움직였다. 줄이라는 게 원래 그런 것이었고, 갑자기 그것이 불공평하게 느껴졌다.</p>
+                <p>“사실 저는 커피 <b class="highlight">괴짜</b>예요,” 그가 계속 말했다. “원두, 물 온도, 컵 모양까지 다 알아요…”</p>
+                <p>“와,” 클라라가 말했다. 왜냐하면 “와”는 소리 지르는 것보다 짧았기 때문이다.</p>
+                <p>“좋은 커피에는 깨끗한 물이 <b class="highlight">필수</b>예요,” 그가 말했다. “사람들이 그걸 잊어요. 원두가 전부라고 생각하지만, 물이 <b class="highlight">결정적으로 중요</b>하거든요.”</p>
+                <p>클라라는 고개를 끄덕였다. “무슨 말인지 알아요.”</p>
+                <p>그녀는 그의 말을 듣고 있지 않았다. 그녀는 뒤쪽 문에서 들려오는 자유의 부드러운 부름을 듣고 있었다. 하지만 샌드위치 없이 나가는 것은 그 대화에 지는 것처럼 느껴졌다.</p>
+                <p>계산원이 다음 손님에게 미소 지었다. 이제 클라라 앞에는 두 사람만 있었다. 두 사람 정도는 버틸 수 있었다. 아마도.</p>
+                <p>“집에서 커피 만들어 드세요?” 남자가 물었다.</p>
+                <p>“가끔요,” 클라라가 말했다.</p>
+                <p>“핸드 그라인더로요?”</p>
+                <p>“아니요.”</p>
+                <p>그의 표정이 변했다. 화난 표정은 아니었고, 깊이 슬퍼하는 표정이었다. 클라라는 3분도 안 되어 낯선 사람을 실망시킨 것이다.</p>
+                <p>“아,” 그가 말했다. “음, 신선하게 가는 게 중요하죠, 그렇지 않나요?”</p>
+                <p>“그렇죠,” 클라라가 말했다. “진짜요.”</p>
+                <p>줄이 다시 움직였다. 한 사람이 나갔다.</p>
+                <p>클라라는 탈출을 준비했다. 빨리 주문하고, 빨리 계산하고, 빨리 나갈 것이다. 그것은 단순하고 밝은, 아름다운 계획이었다.</p>
+                <p>“음…” 그녀는 아무도 묻지 않았는데도 말했다. “주문하고 나면 저는 가봐야겠어요.”</p>
+                <p>“아, 물론이죠,” 남자가 말했다. “더 붙잡고 있으면 안 되겠네요.”</p>
+                <p>계산원이 말했다. “다음 손님이요.”</p>
+                <p>클라라는 샌드위치와 인생에서 가장 빠른 커피를 주문했다. 그녀가 옆으로 나서자, 남자가 미소 지으며 말했다. “좋은 하루 보내세요.”</p>
+                <p>“그쪽도요. 몸 조심하세요,” 클라라가 말했다.</p>
+                <p>밖으로 나와서 그녀는 깊게 숨을 쉬었다. 샌드위치는 조금 눌려 있었지만, 그녀는 그것이 자랑스러웠다. 그 샌드위치도 그녀와 함께 그 대화에서 살아남은 것이었다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "511715.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

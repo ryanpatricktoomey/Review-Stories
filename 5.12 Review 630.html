@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Cheap Paradise</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🏝️</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Cheap Paradise</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">something we could afford</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">우리가 감당할 수 있는 것</td></tr>
+                <tr><td class="p-4"><b class="text-white">something in our price range</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">우리 예산 범위 안에 있는 것</td></tr>
+                <tr><td class="p-4"><b class="text-white">drug addict</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">마약 중독자</td></tr>
+                <tr><td class="p-4"><b class="text-white">make a living</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">생계를 유지하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">make ends meet</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">겨우 먹고살다 / 수입과 지출을 맞추다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-6 rounded-3xl">
+                <h3 class="text-teal-400 font-bold mb-2">something we could afford</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">단순히 “살 수 있다”가 아니라, 돈을 내도 생활에 큰 무리가 없는 정도를 말해요.</p>
+            </div>
+            <div class="glass p-6 rounded-3xl">
+                <h3 class="text-teal-400 font-bold mb-2">something in our price range</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">물건이나 서비스가 자신의 예산 범위 안에 있을 때 쓰는 자연스러운 표현이에요.</p>
+            </div>
+            <div class="glass p-6 rounded-3xl">
+                <h3 class="text-teal-400 font-bold mb-2">make a living</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">직업이나 일을 통해 생활비를 벌어 살아간다는 뜻이에요.</p>
+            </div>
+            <div class="glass p-6 rounded-3xl">
+                <h3 class="text-teal-400 font-bold mb-2">make ends meet</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">돈이 넉넉하지 않아서 겨우 생활비를 맞추는 느낌이 강해요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">I had high expectations for the trip because the advertisement looked honest. It showed a quiet beach, a clean room, and a small restaurant with fresh fish on white plates. The price was low, but not too low. That made it seem believable. My wife and I did not want luxury. We only wanted <b class="highlight quiz-target" data-ans="something we could afford" data-kor="우리가 감당할 수 있는 것">something we could afford</b>, a short holiday that would not punish us for being ordinary people with ordinary salaries.</p>
+                <p class="mb-6">The agent on the phone was polite. He said the hotel was family-run and close to the sea. He also said the package was <b class="highlight quiz-target" data-ans="something in our price range" data-kor="우리 예산 범위 안에 있는 것">something in our price range</b>, which made me trust him more than I should have. I paid the deposit that same evening.</p>
+                <p class="mb-6">When we actually got there, the beach was behind a wall of broken concrete. The sea smelled like oil. The hotel was not a hotel, but a gray building above a closed pharmacy. Our room had no window, only a square hole covered with cardboard. The bed sheets were damp, and the bathroom door did not close.</p>
+                <p class="mb-6">I went downstairs to complain, but the man at the desk was not the agent. He said the agent worked “somewhere else.” Then he asked for another payment. When I refused, he smiled and pointed at a printed rule on the wall. It said all guests had to pay a local service fee in cash.</p>
+                <p class="mb-6">Outside, a thin man sat on the steps and shouted at people passing by. Someone whispered that he was a <b class="highlight quiz-target" data-ans="drug addict" data-kor="마약 중독자">drug addict</b> and that it was better not to look at him. The restaurant from the advertisement did not exist. In its place was a shop selling instant noodles and warm soda.</p>
+                <p class="mb-6">That night, I lay awake and listened to people arguing in the hall. I thought about how hard we worked just to <b class="highlight quiz-target" data-ans="make a living" data-kor="생계를 유지하다">make a living</b>. We saved for months, skipped small pleasures, and told ourselves that one good trip would be worth it. But the whole thing was a lie.</p>
+                <p class="mb-6">By morning, I understood there would be no refund and no apology. We had spent money we needed in order to <b class="highlight quiz-target" data-ans="make ends meet" data-kor="겨우 먹고살다">make ends meet</b>, and all we had bought was a dirty room, a bad smell, and the knowledge that we had been fooled.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>저는 그 여행에 대한 기대가 컸습니다. 광고가 정직해 보였기 때문입니다. 광고에는 조용한 해변, 깨끗한 방, 그리고 흰 접시에 신선한 생선을 담아 주는 작은 식당이 나와 있었습니다. 가격은 저렴했지만 지나치게 저렴하지는 않았습니다. 그래서 믿을 만해 보였습니다. 아내와 저는 사치를 원한 것이 아니었습니다. 그저 <b class="highlight">우리가 감당할 수 있는 것</b>, 평범한 월급을 받는 평범한 사람들이 무리하지 않고 다녀올 수 있는 짧은 휴가를 원했을 뿐입니다.</p>
+                <p>전화 속 여행사 직원은 공손했습니다. 그는 호텔이 가족이 운영하는 곳이고 바다와 가깝다고 말했습니다. 그는 또한 그 패키지가 <b class="highlight">우리 예산 범위 안에 있는 것</b>이라고 말했고, 저는 그 말을 듣고 그를 지나치게 믿게 되었습니다. 저는 그날 저녁 바로 예약금을 냈습니다.</p>
+                <p>막상 도착해 보니 해변은 부서진 콘크리트 벽 뒤에 있었습니다. 바다에서는 기름 냄새가 났습니다. 호텔은 호텔이 아니라 문 닫은 약국 위에 있는 회색 건물이었습니다. 우리 방에는 창문이 없었고, 판지로 막아 놓은 네모난 구멍 하나만 있었습니다. 침대 시트는 축축했고, 욕실 문은 닫히지 않았습니다.</p>
+                <p>저는 항의하러 아래층으로 내려갔지만, 데스크에 있던 남자는 그 여행사 직원이 아니었습니다. 그는 그 직원이 “다른 어딘가에서” 일한다고 말했습니다. 그러고는 추가 요금을 요구했습니다. 제가 거절하자 그는 웃으며 벽에 붙은 인쇄된 규정을 가리켰습니다. 거기에는 모든 투숙객이 현금으로 지역 서비스 요금을 내야 한다고 적혀 있었습니다.</p>
+                <p>밖에서는 마른 남자가 계단에 앉아 지나가는 사람들에게 소리를 지르고 있었습니다. 누군가 그가 <b class="highlight">마약 중독자</b>라고 속삭였고, 그를 쳐다보지 않는 편이 낫다고 했습니다. 광고에 나왔던 식당은 존재하지 않았습니다. 그 자리에는 컵라면과 미지근한 탄산음료를 파는 가게가 있었습니다.</p>
+                <p>그날 밤, 저는 잠을 이루지 못한 채 복도에서 사람들이 다투는 소리를 들었습니다. 저는 우리가 <b class="highlight">생계를 유지하다</b> 위해 얼마나 열심히 일했는지 생각했습니다. 우리는 몇 달 동안 돈을 모았고, 작은 즐거움들을 포기했으며, 좋은 여행 한 번이면 그럴 가치가 있을 거라고 스스로에게 말했습니다. 하지만 모든 것이 거짓말이었습니다.</p>
+                <p>아침이 되자 저는 환불도 사과도 없을 것이라는 사실을 이해했습니다. 우리는 <b class="highlight">겨우 먹고살기</b> 위해 필요했던 돈을 써 버렸고, 우리가 산 것은 더러운 방, 역한 냄새, 그리고 속았다는 사실뿐이었습니다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "512630.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

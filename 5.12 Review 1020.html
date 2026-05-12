@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The City in the Brochure</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🚕</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The City in the Brochure</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">caught off guard</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">허를 찔리다 / 예상치 못해 당황하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">unfriendly</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">불친절한 / 친절하지 않은</td></tr>
+                <tr><td class="p-4"><b class="text-white">wide streets</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">넓은 거리</td></tr>
+                <tr><td class="p-4"><b class="text-white">drive by</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">차를 타고 지나가다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-6 rounded-3xl">
+                <h3 class="text-teal-400 font-bold mb-2">caught off guard</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">준비가 안 된 상태에서 예상치 못한 일을 만나 당황했을 때 쓰는 표현이에요.</p>
+            </div>
+            <div class="glass p-6 rounded-3xl">
+                <h3 class="text-teal-400 font-bold mb-2">unfriendly</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">단순히 “무례한” 정도까지는 아니어도, 따뜻하거나 친절하지 않은 분위기를 말할 수 있어요.</p>
+            </div>
+            <div class="glass p-6 rounded-3xl">
+                <h3 class="text-teal-400 font-bold mb-2">drive by</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">멈추지 않고 차를 타고 지나가는 느낌이에요. “drive past”와 비슷하게 쓸 수 있어요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">I had high expectations for the city because the brochure made it look open, bright, and easy to enjoy. It showed clean buildings, <b class="highlight quiz-target" data-ans="wide streets" data-kor="넓은 거리">wide streets</b>, and smiling people sitting outside cafés. The travel agency called it “the perfect city for first-time visitors.” I believed that phrase because I wanted to believe it.</p>
+                <p class="mb-6">The package included airport pickup, a small hotel in the center, and a guided evening tour. It sounded safe and simple. I thought I would arrive, rest for an hour, and then walk around a beautiful city with my camera.</p>
+                <p class="mb-6">When I actually landed, no one was waiting for me. I called the number from the booking page, but the man who answered sounded angry that I had called. He told me to take a taxi and said the driver would know the hotel. The driver did not know it. He only looked at the address, shrugged, and started driving too fast through gray streets.</p>
+                <p class="mb-6">I was <b class="highlight quiz-target" data-ans="caught off guard" data-kor="허를 찔린/당황한">caught off guard</b> by how different everything looked. The streets were wide, but they felt empty and cold, not grand or welcoming. Many shops were closed. The cafés from the photos were nowhere to be seen. We passed one square that looked familiar from the brochure, but the driver would not stop. He only <b class="highlight quiz-target" data-ans="drove by" data-kor="차를 타고 지나갔다">drove by</b> and said there was nothing to see there.</p>
+                <p class="mb-6">The hotel was not in the center. It stood beside a road full of buses and repair shops. The woman at the front desk was <b class="highlight quiz-target" data-ans="unfriendly" data-kor="불친절한">unfriendly</b> from the moment I walked in. She said my room was not ready, then asked for an extra cleaning fee in cash. When I showed her my confirmation email, she pushed it back across the counter and said online prices were “not complete prices.”</p>
+                <p class="mb-6">The evening tour was worse. The guide arrived late and took us to three souvenir stores. He called each one a cultural stop. At the last store, I saw the same city brochure in a plastic box near the door. The photos looked almost insulting now.</p>
+                <p class="mb-6">By night, I understood the trip had been built from careful lies. The city was not hidden, charming, or misunderstood. It was simply not what they had sold me. I went back to my room, listened to buses outside the window, and felt nothing but disappointment.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>저는 그 도시가 개방적이고 밝고 즐기기 쉬운 곳처럼 보여서 기대가 컸습니다. 안내 책자에는 깨끗한 건물들, <b class="highlight">넓은 거리</b>, 그리고 카페 밖에 앉아 웃고 있는 사람들이 나와 있었습니다. 여행사는 그곳을 “처음 방문하는 사람들에게 완벽한 도시”라고 불렀습니다. 저는 그 말을 믿고 싶었기 때문에 믿었습니다.</p>
+                <p>그 패키지에는 공항 픽업, 중심가에 있는 작은 호텔, 그리고 저녁 가이드 투어가 포함되어 있었습니다. 안전하고 간단하게 들렸습니다. 저는 도착해서 한 시간 정도 쉬고, 카메라를 들고 아름다운 도시를 걸어 다닐 거라고 생각했습니다.</p>
+                <p>막상 도착해 보니 아무도 저를 기다리고 있지 않았습니다. 예약 페이지에 있는 번호로 전화를 걸었지만, 전화를 받은 남자는 제가 전화한 것 자체에 화가 난 듯한 목소리였습니다. 그는 택시를 타라고 했고, 운전기사가 호텔을 알 거라고 말했습니다. 운전기사는 호텔을 몰랐습니다. 그는 주소를 보고 어깨를 으쓱하더니 회색 거리들을 너무 빠르게 달리기 시작했습니다.</p>
+                <p>모든 것이 얼마나 다르게 보이는지에 저는 <b class="highlight">허를 찔려 당황</b>했습니다. 거리는 넓었지만, 웅장하거나 반가운 느낌이 아니라 텅 비고 차가운 느낌이었습니다. 많은 가게들이 닫혀 있었습니다. 사진 속 카페들은 어디에도 보이지 않았습니다. 안내 책자에서 본 것 같은 광장을 하나 지나쳤지만, 운전기사는 멈추지 않았습니다. 그는 그저 <b class="highlight">차를 타고 지나가며</b> 거기에는 볼 것이 없다고 말했습니다.</p>
+                <p>호텔은 중심가에 있지 않았습니다. 버스와 정비소가 가득한 도로 옆에 서 있었습니다. 프런트 데스크의 여자는 제가 들어서는 순간부터 <b class="highlight">불친절</b>했습니다. 그녀는 제 방이 준비되지 않았다고 말한 뒤, 현금으로 추가 청소비를 요구했습니다. 제가 예약 확인 이메일을 보여 주자, 그녀는 그것을 카운터 너머로 다시 밀어 놓고 온라인 가격은 “완전한 가격이 아니다”라고 말했습니다.</p>
+                <p>저녁 투어는 더 나빴습니다. 가이드는 늦게 도착했고 우리를 세 군데의 기념품 가게로 데려갔습니다. 그는 각각의 가게를 문화 체험 장소라고 불렀습니다. 마지막 가게에서 저는 문 근처 플라스틱 상자 안에 같은 도시 안내 책자가 들어 있는 것을 보았습니다. 이제 그 사진들은 거의 모욕처럼 느껴졌습니다.</p>
+                <p>밤이 되자 저는 이 여행이 정교한 거짓말들로 만들어졌다는 것을 이해했습니다. 그 도시는 숨겨진 곳도, 매력적인 곳도, 오해받은 곳도 아니었습니다. 그것은 단지 그들이 저에게 판 것과 다른 곳이었습니다. 저는 제 방으로 돌아가 창밖의 버스 소리를 들으며, 실망감 외에는 아무것도 느끼지 못했습니다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "5121020.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Movie She Had Forgotten</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🎬</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Movie She Had Forgotten</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">model student</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">모범생</td></tr>
+                <tr><td class="p-4"><b class="text-white">cinephile</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">영화광 / 영화 애호가</td></tr>
+                <tr><td class="p-4"><b class="text-white">movie buff</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">영화광 / 영화를 아주 좋아하는 사람</td></tr>
+                <tr><td class="p-4"><b class="text-white">emulate</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">따라 하다 / 본받다</td></tr>
+                <tr><td class="p-4"><b class="text-white">look up to</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">존경하다 / 우러러보다</td></tr>
+                <tr><td class="p-4"><b class="text-white">have two left feet</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">몸치이다 / 춤을 못 추다</td></tr>
+                <tr><td class="p-4"><b class="text-white">inner child</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">내면의 아이 / 어린 시절의 순수한 마음</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-6 rounded-2xl border border-white/5">
+                <h3 class="text-amber-400 font-bold mb-2">cinephile</h3>
+                <p class="text-sm text-slate-300">영화를 깊이 좋아하고 잘 아는 사람을 뜻합니다. 조금 더 격식 있거나 세련된 느낌입니다.</p>
+            </div>
+            <div class="glass p-6 rounded-2xl border border-white/5">
+                <h3 class="text-amber-400 font-bold mb-2">movie buff</h3>
+                <p class="text-sm text-slate-300">영화를 아주 좋아하는 사람이라는 뜻의 자연스러운 구어체 표현입니다. cinephile보다 더 편하게 들립니다.</p>
+            </div>
+            <div class="glass p-6 rounded-2xl border border-white/5">
+                <h3 class="text-amber-400 font-bold mb-2">emulate</h3>
+                <p class="text-sm text-slate-300">단순히 베끼는 것이 아니라, 존경하거나 목표로 삼는 사람의 방식이나 스타일을 본받으려고 한다는 뜻입니다.</p>
+            </div>
+            <div class="glass p-6 rounded-2xl border border-white/5">
+                <h3 class="text-amber-400 font-bold mb-2">look up to</h3>
+                <p class="text-sm text-slate-300">누군가를 존경하거나 우러러볼 때 쓰는 표현입니다.</p>
+            </div>
+            <div class="glass p-6 rounded-2xl border border-white/5">
+                <h3 class="text-amber-400 font-bold mb-2">have two left feet</h3>
+                <p class="text-sm text-slate-300">직역하면 “왼발이 두 개 있다”이지만, 실제로는 춤이나 몸동작이 서툴다는 뜻입니다.</p>
+            </div>
+            <div class="glass p-6 rounded-2xl border border-white/5">
+                <h3 class="text-amber-400 font-bold mb-2">inner child</h3>
+                <p class="text-sm text-slate-300">어른이 된 후에도 마음속에 남아 있는 어린아이 같은 감정, 순수함, 상처, 즐거움을 뜻합니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">In the near future, people received packages before they ordered anything. The delivery system studied their messages, schedules, health data, search history, facial expressions, and even small changes in their voices. Then it sent what it believed they would want next.</p>
+                <p class="mb-6">Most people found it helpful. Daniel found it embarrassing.</p>
+                <p class="mb-6">He was thirty-two and worked as an accountant. His desk was clean, his shirts were plain, and his calendar was full of quiet, responsible tasks. At work, people joked that he must have been a <b class="highlight quiz-target" data-ans="model student" data-kor="모범생">model student</b>. They were right. Daniel had always been the kind of person adults praised.</p>
+                <p class="mb-6">One evening, a flat black package arrived at his apartment. Inside was an old film camera, a red notebook, and a ticket to a midnight movie festival.</p>
+                <p class="mb-6">Daniel frowned. He had not searched for movies. He had not talked about movies. He had not even watched a trailer in months.</p>
+                <p class="mb-6">A message appeared on his phone: For the <b class="highlight quiz-target" data-ans="cinephile" data-kor="영화 애호가">cinephile</b> you keep correcting into a practical person.</p>
+                <p class="mb-6">Daniel almost laughed. “I’m not a cinephile,” he said to the empty room. “I just like movies.”</p>
+                <p class="mb-6">Another message appeared: That is what a <b class="highlight quiz-target" data-ans="movie buff" data-kor="영화광">movie buff</b> says when he is trying to sound normal.</p>
+                <p class="mb-6">He put the phone face down. The next day, his coworker showed him a presentation about career goals. “Choose someone you <b class="highlight quiz-target" data-ans="look up to" data-kor="존경하다">look up to</b>,” she said. “Then <b class="highlight quiz-target" data-ans="emulate" data-kor="본받다">emulate</b> one habit that made them successful.”</p>
+                <p class="mb-6">Daniel thought of famous investors and company leaders. Then, against his will, he thought of an old film director whose interviews he had watched secretly as a teenager.</p>
+                <p class="mb-6">That night, another box arrived. Inside were soft black dance shoes. Daniel stared at them. “Wrong person,” he whispered. “I <b class="highlight quiz-target" data-ans="have two left feet" data-kor="몸치이다">have two left feet</b>.”</p>
+                <p class="mb-6">The system replied, You danced in your first movie. Daniel stopped breathing for a moment.</p>
+                <p class="mb-6">When he was ten, he had made a movie with his cousins using his father’s camera. The story had no logic. Everyone wore blankets as costumes. Daniel had danced in the final scene because he thought every good movie needed a celebration.</p>
+                <p class="mb-6">He had forgotten that boy. Or maybe he had trained himself not to remember him.</p>
+                <p class="mb-6">Daniel opened the red notebook. On the first page, the system had written one sentence: Your <b class="highlight quiz-target" data-ans="inner child" data-kor="내면의 아이">inner child</b> did not disappear. He is waiting for better lighting.</p>
+                <p class="mb-6">Daniel wanted to feel angry. Instead, he picked up the camera. The system had not ordered him to make a film. It had simply sent proof that he still wanted to.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>가까운 미래에는 사람들이 아무것도 주문하지 않아도 소포를 받았다. 배송 시스템은 사람들의 메시지, 일정, 건강 데이터, 검색 기록, 얼굴 표정, 심지어 목소리의 작은 변화까지 분석했다. 그런 다음 사람들이 다음에 원할 것이라고 생각하는 것을 보냈다.</p>
+                <p>대부분의 사람들은 그것을 유용하다고 여겼다. 다니엘은 그것이 부끄러웠다.</p>
+                <p>그는 서른두 살이었고 회계사로 일했다. 그의 책상은 깔끔했고, 셔츠는 단순했으며, 일정표는 조용하고 책임감 있는 일들로 가득했다. 직장에서 사람들은 그가 분명 <b class="highlight">모범생</b>이었을 것이라고 농담했다. 그 말은 맞았다. 다니엘은 언제나 어른들이 칭찬하는 그런 사람이었다.</p>
+                <p>어느 저녁, 납작한 검은 소포가 그의 아파트에 도착했다. 안에는 오래된 필름 카메라, 빨간 공책, 그리고 심야 영화제 표가 들어 있었다.</p>
+                <p>다니엘은 눈살을 찌푸렸다. 그는 영화를 검색한 적이 없었다. 영화에 대해 말한 적도 없었다. 몇 달 동안 예고편조차 본 적이 없었다.</p>
+                <p>그의 휴대폰에 메시지가 떴다. 당신이 계속 현실적인 사람으로 고쳐 쓰고 있는 <b class="highlight">영화 애호가</b>를 위해.</p>
+                <p>다니엘은 거의 웃을 뻔했다. “나는 영화광이 아니야,” 그가 빈 방에 말했다. “그냥 영화를 좋아할 뿐이지.”</p>
+                <p>또 다른 메시지가 나타났다. 그것은 평범하게 들리려고 애쓰는 <b class="highlight">영화광</b>이 하는 말입니다.</p>
+                <p>그는 휴대폰을 뒤집어 놓았다. 다음 날, 동료가 커리어 목표에 관한 발표 자료를 보여 주었다. “당신이 <b class="highlight">존경하는</b> 사람을 고르세요,” 그녀가 말했다. “그리고 그 사람을 성공하게 만든 습관 하나를 <b class="highlight">본받아</b> 보세요.”</p>
+                <p>다니엘은 유명한 투자자들과 기업 리더들을 떠올렸다. 그러다가 원치 않게, 십 대 시절 몰래 인터뷰 영상을 보던 한 오래된 영화감독이 떠올랐다.</p>
+                <p>그날 밤, 또 다른 상자가 도착했다. 안에는 부드러운 검은 댄스화가 들어 있었다. 다니엘은 그것을 바라보았다. “사람 잘못 봤네,” 그가 속삭였다. “나는 <b class="highlight">몸치</b>야.”</p>
+                <p>시스템이 답했다. 당신은 첫 영화에서 춤을 췄습니다. 다니엘은 잠시 숨을 멈췄다.</p>
+                <p>열 살 때, 그는 아버지의 카메라를 사용해 사촌들과 영화를 만든 적이 있었다. 이야기는 논리가 없었다. 모두가 담요를 의상처럼 걸쳤다. 다니엘은 마지막 장면에서 춤을 췄다. 좋은 영화라면 모두 축하 장면이 필요하다고 생각했기 때문이었다.</p>
+                <p>그는 그 소년을 잊고 있었다. 아니면, 기억하지 않도록 스스로를 훈련시켰는지도 몰랐다.</p>
+                <p>다니엘은 빨간 공책을 열었다. 첫 페이지에는 시스템이 한 문장을 적어 놓았다. 당신의 <b class="highlight">내면의 아이</b>는 사라지지 않았습니다. 그는 더 나은 조명을 기다리고 있습니다.</p>
+                <p>다니엘은 화가 나고 싶었다. 하지만 대신 카메라를 집어 들었다. 시스템이 그에게 영화를 만들라고 명령한 것은 아니었다. 그것은 그가 아직도 그러고 싶어 한다는 증거를 보냈을 뿐이었다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "513830.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

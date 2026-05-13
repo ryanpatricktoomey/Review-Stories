@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Package That Knew First</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">📦</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Package That Knew First</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">hasty</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">성급한</td></tr>
+                <tr><td class="p-4"><b class="text-white">itinerary</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">여행 일정 / 일정표</td></tr>
+                <tr><td class="p-4"><b class="text-white">uneasy</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">불안한 / 마음이 편치 않은</td></tr>
+                <tr><td class="p-4"><b class="text-white">accomplishment</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">성취 / 성과</td></tr>
+                <tr><td class="p-4"><b class="text-white">behind my mother's back</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">엄마 몰래</td></tr>
+                <tr><td class="p-4"><b class="text-white">mischief</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">장난 / 말썽</td></tr>
+                <tr><td class="p-4"><b class="text-white">start with a blank slate</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">새롭게 시작하다 / 백지상태에서 시작하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">that's what I'm saying</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">내 말이 그 말이야</td></tr>
+                <tr><td class="p-4"><b class="text-white">tell me about it</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">내 말이 / 정말 그래</td></tr>
+                <tr><td class="p-4"><b class="text-white">diligent</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">성실한</td></tr>
+                <tr><td class="p-4"><b class="text-white">hardworking</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">열심히 일하는 / 근면한</td></tr>
+                <tr><td class="p-4"><b class="text-white">productive</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">생산적인</td></tr>
+                <tr><td class="p-4"><b class="text-white">gets stuff done</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">일을 척척 해내다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-6 rounded-2xl border border-white/5">
+                <h3 class="text-amber-400 font-bold mb-2">behind my mother's back</h3>
+                <p class="text-sm text-slate-300">직역하면 “엄마 등 뒤에서”이지만, 실제로는 “엄마 몰래”라는 뜻입니다.</p>
+            </div>
+            <div class="glass p-6 rounded-2xl border border-white/5">
+                <h3 class="text-amber-400 font-bold mb-2">start with a blank slate</h3>
+                <p class="text-sm text-slate-300">과거의 실수나 부담을 내려놓고 완전히 새롭게 시작한다는 뜻입니다.</p>
+            </div>
+            <div class="glass p-6 rounded-2xl border border-white/5">
+                <h3 class="text-amber-400 font-bold mb-2">that's what I'm saying</h3>
+                <p class="text-sm text-slate-300">상대방이 내 생각과 같은 말을 했을 때 “내 말이 바로 그거야”라는 뜻으로 씁니다.</p>
+            </div>
+            <div class="glass p-6 rounded-2xl border border-white/5">
+                <h3 class="text-amber-400 font-bold mb-2">tell me about it</h3>
+                <p class="text-sm text-slate-300">문자 그대로 “말해 줘”가 아니라, 상대방 말에 강하게 공감할 때 쓰는 표현입니다.</p>
+            </div>
+            <div class="glass p-6 rounded-2xl border border-white/5">
+                <h3 class="text-amber-400 font-bold mb-2">gets stuff done</h3>
+                <p class="text-sm text-slate-300">일을 미루지 않고 실제로 잘 처리하는 사람에게 쓰는 자연스러운 구어체 표현입니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">In 2042, nobody searched for products anymore. The system simply knew.</p>
+                <p class="mb-6">Every morning, small white boxes appeared in apartment lobbies before breakfast. Most people liked it. The boxes saved time. They saved thought. They saved desire from the slow work of becoming clear.</p>
+                <p class="mb-6">Jina hated them.</p>
+                <p class="mb-6">She was known as a <b class="highlight quiz-target" data-ans="diligent" data-kor="성실한">diligent</b>, <b class="highlight quiz-target" data-ans="hardworking" data-kor="열심히 일하는">hardworking</b> student who <b class="highlight quiz-target" data-ans="gets stuff done" data-kor="일을 척척 해내다">gets stuff done</b>. Her teachers called her <b class="highlight quiz-target" data-ans="productive" data-kor="생산적인">productive</b>, and her mother proudly repeated it to relatives. Jina smiled whenever people said it, but lately the words made her feel trapped.</p>
+                <p class="mb-6">One Tuesday, a box arrived outside her door. She had not ordered anything.</p>
+                <p class="mb-6">Inside was a soft gray sleep mask and a note: You will need rest before you know you need it.</p>
+                <p class="mb-6">Jina felt <b class="highlight quiz-target" data-ans="uneasy" data-kor="불안한">uneasy</b>. She threw the mask into a drawer. That night, after studying until 3 a.m., she opened the drawer and used it. In the morning, she hated how grateful she felt.</p>
+                <p class="mb-6">The next box came two days later. It contained a small suitcase, a train ticket, and a printed <b class="highlight quiz-target" data-ans="itinerary" data-kor="여행 일정표">itinerary</b> for a seaside town she had never visited. The trip was scheduled for Saturday.</p>
+                <p class="mb-6">“This is insane,” she told her friend Mina over lunch. Mina looked at the ticket. “Maybe it knows you need a break.”</p>
+                <p class="mb-6">“<b class="highlight quiz-target" data-ans="That’s what I’m saying" data-kor="내 말이 그 말이야">That’s what I’m saying</b>,” Jina whispered. “It knows before I do. That’s the problem.”</p>
+                <p class="mb-6">Mina sighed. “<b class="highlight quiz-target" data-ans="Tell me about it" data-kor="정말 그래 / 내 말이">Tell me about it</b>. Last month it sent me running shoes. I laughed, and now I jog every morning.”</p>
+                <p class="mb-6">Jina wanted to refuse the trip. Accepting it felt too <b class="highlight quiz-target" data-ans="hasty" data-kor="성급한">hasty</b>, almost like letting the system make choices for her. But on Saturday morning, she packed the suitcase quietly and left <b class="highlight quiz-target" data-ans="behind her mother’s back" data-kor="엄마 몰래">behind her mother’s back</b>.</p>
+                <p class="mb-6">At the station, she felt a strange sense of <b class="highlight quiz-target" data-ans="accomplishment" data-kor="성취감">accomplishment</b>, as if leaving home for one day was a major victory.</p>
+                <p class="mb-6">On the train, another box waited on her seat. Inside was a notebook. The first page said: For starting over.</p>
+                <p class="mb-6">Jina stared at the words. She had never told anyone that she wanted to <b class="highlight quiz-target" data-ans="start with a blank slate" data-kor="백지상태에서 시작하다">start with a blank slate</b>. Not her mother. Not Mina. Not even herself.</p>
+                <p class="mb-6">For the first time, she wondered if the system was not predicting her choices. Maybe it was planting them.</p>
+                <p class="mb-6">Outside the window, the city disappeared. Jina opened the notebook, ready for a little <b class="highlight quiz-target" data-ans="mischief" data-kor="장난 / 말썽">mischief</b>, and wrote one sentence: I want to want something by myself.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>2042년에는 아무도 더 이상 상품을 검색하지 않았다. 시스템이 그냥 알고 있었다.</p>
+                <p>매일 아침, 아침 식사 전이면 작은 흰색 상자들이 아파트 로비에 나타났다. 대부분의 사람들은 그것을 좋아했다. 상자들은 시간을 아껴 주었다. 생각도 아껴 주었다. 욕망이 분명해지기까지 필요한 느린 과정도 아껴 주었다.</p>
+                <p>지나는 그것들이 싫었다.</p>
+                <p>그녀는 <b class="highlight">성실하고</b>, <b class="highlight">열심히 하는</b> 학생으로 알려져 있었고, <b class="highlight">일을 척척 해내는</b> 사람이었다. 선생님들은 그녀를 <b class="highlight">생산적</b>이라고 불렀고, 어머니는 친척들에게 그 말을 자랑스럽게 반복했다. 지나는 사람들이 그렇게 말할 때마다 미소 지었지만, 요즘 그 말들은 그녀를 가두는 것처럼 느껴졌다.</p>
+                <p>어느 화요일, 그녀의 문밖에 상자 하나가 도착했다. 그녀는 아무것도 주문하지 않았다.</p>
+                <p>안에는 부드러운 회색 수면 안대와 쪽지가 들어 있었다. 당신은 자신이 휴식이 필요하다는 것을 알기 전에 휴식이 필요할 것입니다.</p>
+                <p>지나는 <b class="highlight">불안했다</b>. 그녀는 그 안대를 서랍 속으로 던져 넣었다. 그날 밤, 새벽 3시까지 공부한 뒤, 그녀는 서랍을 열고 그 안대를 사용했다. 아침에 그녀는 자신이 고마워하고 있다는 사실이 싫었다.</p>
+                <p>이틀 뒤 다음 상자가 왔다. 그 안에는 작은 여행 가방, 기차표, 그리고 그녀가 한 번도 가 본 적 없는 바닷가 마을의 <b class="highlight">여행 일정표</b>가 들어 있었다. 여행은 토요일로 예정되어 있었다.</p>
+                <p>“이거 미친 것 같아,” 그녀는 점심시간에 친구 미나에게 말했다. 미나는 기차표를 보았다. “어쩌면 네가 휴식이 필요하다는 걸 아는 걸지도 몰라.”</p>
+                <p>“<b class="highlight">내 말이 그 말이야</b>,” 지나가 속삭였다. “내가 알기도 전에 알고 있어. 그게 문제야.”</p>
+                <p>미나가 한숨을 쉬었다. “<b class="highlight">정말 그래</b>. 지난달에는 나한테 운동화를 보냈어. 나는 웃었는데, 지금은 매일 아침 조깅해.”</p>
+                <p>지나는 그 여행을 거절하고 싶었다. 그것을 받아들이는 것은 너무 <b class="highlight">성급한</b> 일처럼 느껴졌고, 거의 시스템이 자신의 선택을 대신하게 두는 것 같았다. 하지만 토요일 아침, 그녀는 조용히 여행 가방을 싸서 <b class="highlight">엄마 몰래</b> 집을 나섰다.</p>
+                <p>역에서 그녀는 이상한 <b class="highlight">성취감</b>을 느꼈다. 단 하루 집을 떠나는 일이 큰 승리처럼 느껴졌다.</p>
+                <p>기차 안에는 또 다른 상자가 그녀의 자리에 놓여 있었다. 안에는 공책 한 권이 들어 있었다. 첫 페이지에는 이렇게 쓰여 있었다. 새롭게 시작하기 위해.</p>
+                <p>지나는 그 문장을 바라보았다. 그녀는 <b class="highlight">새롭게 시작하고 싶다</b>고 누구에게도 말한 적이 없었다. 어머니에게도. 미나에게도. 심지어 자기 자신에게도.</p>
+                <p>처음으로 그녀는 시스템이 자신의 선택을 예측하는 것이 아닐지도 모른다고 생각했다. 어쩌면 그것은 선택을 심고 있는지도 몰랐다.</p>
+                <p>창밖으로 도시는 사라지고 있었다. 지나는 약간의 <b class="highlight">장난</b>을 칠 준비가 된 채 공책을 열고 한 문장을 썼다. 나는 스스로 무언가를 원하고 싶다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "513630.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | Grandpa’s Terrible, Ancient, Surprisingly Okay Life</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🚜</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">Grandpa’s Terrible, Ancient, Surprisingly Okay Life</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">transaction history</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">거래 내역</td></tr>
+                <tr><td class="p-4"><b class="text-white">photo booth</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">포토 부스 / 즉석 사진 기계</td></tr>
+                <tr><td class="p-4"><b class="text-white">crane game</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">인형 뽑기 게임</td></tr>
+                <tr><td class="p-4"><b class="text-white">haggle</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">흥정하다 / 가격을 깎으려 하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">epic</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">엄청난 / 대단한 / 기가 막힌</td></tr>
+                <tr><td class="p-4"><b class="text-white">magical</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">마법 같은 / 신기하고 특별한</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-6 rounded-3xl space-y-2">
+                <h3 class="text-amber-500 font-bold">haggle</h3>
+                <p class="text-sm text-slate-300">가게나 시장에서 가격을 낮추려고 말로 흥정하는 것을 뜻해요. 온라인 쇼핑에서는 보통 잘 쓰지 않고, 전통시장이나 중고 거래 상황에 잘 어울려요.</p>
+            </div>
+            <div class="glass p-6 rounded-3xl space-y-2">
+                <h3 class="text-amber-500 font-bold">epic</h3>
+                <p class="text-sm text-slate-300">원래는 “서사시적인”이라는 뜻이지만, 일상 대화에서는 “진짜 대단한,” “엄청난,” “기가 막힌”이라는 뜻으로 많이 써요.</p>
+            </div>
+            <div class="glass p-6 rounded-3xl space-y-2">
+                <h3 class="text-amber-500 font-bold">magical</h3>
+                <p class="text-sm text-slate-300">실제 마법이라는 뜻이 아니라, 어떤 순간이 특별하고 따뜻하게 느껴질 때도 사용할 수 있어요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">When Max arrived at his grandfather’s house, he looked around like he had been sent to live in a museum with plumbing.</p>
+                <p class="mb-6">“Where’s the Wi-Fi password?” Max asked.</p>
+                <p class="mb-6">Grandpa looked up from a paper calendar. “The what?”</p>
+                <p class="mb-6">Max closed his eyes. “Great. Fantastic. My life is over.”</p>
+                <p class="mb-6">His mother had sent him to the countryside because his dad was in the hospital after a sudden accident. “Just for a while,” she had said. But “a while” felt like a prison sentence when Grandpa still used cash, wrote phone numbers in a notebook, and kept receipts in a cookie tin.</p>
+                <p class="mb-6">At lunch, Max watched Grandpa pull vegetables from the garden.</p>
+                <p class="mb-6">“You know,” Max said, “normal people order groceries online. Then they check their <b class="highlight quiz-target" data-ans="transaction history" data-kor="거래 내역">transaction history</b> and feel poor in a modern way.”</p>
+                <p class="mb-6">Grandpa handed him a carrot. “Normal people also know where food comes from.”</p>
+                <p class="mb-6">“From delivery drivers,” Max said.</p>
+                <p class="mb-6">The next day, Grandpa took him to the village market. Max hated it immediately. There were no kiosks, no QR codes, no tablet menus, and no one saying, “Your order is ready” in a polite robot voice.</p>
+                <p class="mb-6">Grandpa stopped at a fruit stand. “Watch this,” he said. Then he began to <b class="highlight quiz-target" data-ans="haggle" data-kor="흥정하다">haggle</b> with the owner over peaches.</p>
+                <p class="mb-6">Max whispered, “This is embarrassing.”</p>
+                <p class="mb-6">“No,” Grandpa said. “This is communication.”</p>
+                <p class="mb-6">After that, they visited a tiny shop with an old <b class="highlight quiz-target" data-ans="photo booth" data-kor="포토 부스">photo booth</b> in the corner. Grandpa pulled Max inside.</p>
+                <p class="mb-6">“We can take pictures on my phone,” Max said.</p>
+                <p class="mb-6">“And lose them in the cloud forever?” Grandpa said.</p>
+                <p class="mb-6">The photos came out in four small squares. Max looked annoyed in the first one, suspicious in the second, and almost human in the third. In the last one, Grandpa had made rabbit ears behind his head.</p>
+                <p class="mb-6">“Fine,” Max said. “That was mildly <b class="highlight quiz-target" data-ans="epic" data-kor="대단한">epic</b>.”</p>
+                <p class="mb-6">On Saturday night, the village had a small festival. There was no streaming, no gaming café, and no giant screen. Just food stalls, music, and a rusty <b class="highlight quiz-target" data-ans="crane game" data-kor="인형 뽑기">crane game</b> with prizes that looked older than Max.</p>
+                <p class="mb-6">Grandpa won him a small stuffed chicken on the third try.</p>
+                <p class="mb-6">Max stared at it. “That was stupid.”</p>
+                <p class="mb-6">“You’re smiling,” Grandpa said.</p>
+                <p class="mb-6">“I’m smiling because it’s stupid.”</p>
+                <p class="mb-6">Later, they sat outside under a dark sky full of stars. Max still missed his phone, his room, and delivery chicken. But the air smelled like grass, Grandpa’s radio played softly, and the little printed photos sat in his pocket.</p>
+                <p class="mb-6">Max sighed. “I’m not saying this place is good.”</p>
+                <p class="mb-6">Grandpa nodded. “Of course not.”</p>
+                <p class="mb-6">“But,” Max added, “there’s something kind of <b class="highlight quiz-target" data-ans="magical" data-kor="마법 같은">magical</b> about it.”</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>맥스가 할아버지 집에 도착했을 때, 그는 마치 수도 시설이 있는 박물관에 보내진 사람처럼 주변을 둘러보았다.</p>
+                <p>“와이파이 비밀번호가 뭐예요?” 맥스가 물었다.</p>
+                <p>할아버지는 종이 달력에서 고개를 들었다. “뭐라고?”</p>
+                <p>맥스는 눈을 감았다. “좋아요. 환상적이네요. 제 인생은 끝났어요.”</p>
+                <p>아버지가 갑작스러운 사고로 병원에 입원하게 되자, 엄마는 맥스를 시골에 있는 할아버지 집으로 보냈다. “잠깐이면 돼,” 엄마는 말했다. 하지만 할아버지가 아직도 현금을 쓰고, 전화번호를 공책에 적고, 영수증을 과자 통에 보관하는 걸 보니, 그 “잠깐”은 감옥살이처럼 느껴졌다.</p>
+                <p>점심시간에 맥스는 할아버지가 텃밭에서 채소를 뽑는 모습을 보았다.</p>
+                <p>“아시죠,” 맥스가 말했다. “보통 사람들은 식료품을 온라인으로 주문해요. 그리고 <b class="highlight">거래 내역</b>을 확인하면서 현대적인 방식으로 가난함을 느끼죠.”</p>
+                <p>할아버지는 그에게 당근 하나를 건넸다. “보통 사람들은 음식이 어디서 오는지도 안단다.”</p>
+                <p>“배달 기사님한테서요,” 맥스가 말했다.</p>
+                <p>다음 날, 할아버지는 맥스를 마을 시장에 데려갔다. 맥스는 바로 싫어졌다. 키오스크도 없고, QR 코드도 없고, 태블릿 메뉴도 없고, 공손한 로봇 목소리로 “주문하신 음식이 준비되었습니다”라고 말하는 것도 없었다.</p>
+                <p>할아버지는 과일 가게 앞에 멈췄다. “잘 봐라,” 그가 말했다. 그러고는 복숭아 값을 두고 주인과 <b class="highlight">흥정하기</b> 시작했다.</p>
+                <p>맥스가 속삭였다. “이거 창피해요.”</p>
+                <p>“아니,” 할아버지가 말했다. “이건 소통이야.”</p>
+                <p>그 후, 그들은 구석에 오래된 <b class="highlight">포토 부스</b>가 있는 작은 가게에 갔다. 할아버지는 맥스를 안으로 끌고 들어갔다.</p>
+                <p>“제 폰으로 사진 찍으면 되잖아요,” 맥스가 말했다.</p>
+                <p>“그리고 클라우드 속에서 영원히 잃어버리려고?” 할아버지가 말했다.</p>
+                <p>사진은 작은 네 컷으로 나왔다. 첫 번째 사진에서 맥스는 짜증 난 표정이었고, 두 번째에서는 의심스러운 표정이었으며, 세 번째에서는 거의 사람다운 표정을 하고 있었다. 마지막 사진에서는 할아버지가 그의 머리 뒤로 토끼 귀를 만들고 있었다.</p>
+                <p>“좋아요,” 맥스가 말했다. “그건 약간 <b class="highlight">대단했어요</b>.”</p>
+                <p>토요일 밤, 마을에서는 작은 축제가 열렸다. 스트리밍도 없고, 게임 카페도 없고, 커다란 화면도 없었다. 그냥 음식 노점, 음악, 그리고 맥스보다 더 오래돼 보이는 상품들이 들어 있는 낡은 <b class="highlight">인형 뽑기 게임</b>이 있었다.</p>
+                <p>할아버지는 세 번째 시도 만에 작은 닭 인형을 뽑아 주었다.</p>
+                <p>맥스는 그것을 바라보았다. “이거 바보 같아요.”</p>
+                <p>“너 웃고 있잖니,” 할아버지가 말했다.</p>
+                <p>“바보 같아서 웃는 거예요.”</p>
+                <p>나중에 그들은 별이 가득한 어두운 하늘 아래 바깥에 앉았다. 맥스는 여전히 자기 휴대폰, 자기 방, 그리고 배달 치킨이 그리웠다. 하지만 공기에서는 풀 냄새가 났고, 할아버지의 라디오는 조용히 흘러나왔으며, 작은 인화 사진들은 그의 주머니 안에 있었다.</p>
+                <p>맥스가 한숨을 쉬었다. “여기가 좋다고 말하는 건 아니에요.”</p>
+                <p>할아버지가 고개를 끄덕였다. “물론 아니지.”</p>
+                <p>“하지만,” 맥스가 덧붙였다. “여기에는 좀 <b class="highlight">마법 같은</b> 게 있어요.”</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "514630.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Five-Minute Touch-Up Kit</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🧳</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Five-Minute Touch-Up Kit</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">touch up</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">살짝 고치다 / 보완하다 / 수정하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">you can't put a price on...</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">…에는 가격을 매길 수 없어요</td></tr>
+                <tr><td class="p-4"><b class="text-white">priceless</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">값을 매길 수 없는 / 매우 소중한</td></tr>
+                <tr><td class="p-4"><b class="text-white">invaluable</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">매우 귀중한 / 아주 유용한</td></tr>
+                <tr><td class="p-4"><b class="text-white">pilot</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">조종사 / 파일럿 / 시험 프로그램</td></tr>
+                <tr><td class="p-4"><b class="text-white">not included</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">포함되지 않음</td></tr>
+                <tr><td class="p-4"><b class="text-white">take my advice with a grain of salt</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">제 조언은 어느 정도 걸러서 들으세요</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border-l-4 border-amber-500">
+                <h3 class="font-bold text-amber-500 mb-2">touch up</h3>
+                <p class="text-sm text-slate-300">큰 수정이 아니라 작은 부분을 살짝 고치거나 보완한다는 뜻이에요. 화장, 사진, 페인트, 글 등에 자주 씁니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-amber-500">
+                <h3 class="font-bold text-amber-500 mb-2">you can't put a price on...</h3>
+                <p class="text-sm text-slate-300">돈으로 가치를 계산할 수 없을 만큼 중요하거나 소중하다는 뜻이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-amber-500">
+                <h3 class="font-bold text-amber-500 mb-2">priceless / invaluable</h3>
+                <p class="text-sm text-slate-300">priceless는 감정적으로 “값을 매길 수 없을 만큼 소중한” 느낌이고, invaluable은 실용적으로 “아주 유용한” 느낌이 강해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-amber-500">
+                <h3 class="font-bold text-amber-500 mb-2">not included</h3>
+                <p class="text-sm text-slate-300">상품 설명에서 “포함되지 않음”이라는 뜻으로 자주 쓰입니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-amber-500">
+                <h3 class="font-bold text-amber-500 mb-2">take my advice with a grain of salt</h3>
+                <p class="text-sm text-slate-300">“내 조언을 무조건 믿지는 말고 참고만 해”라는 뜻이에요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Are you tired of arriving somewhere and realizing your shirt is wrinkled, your hair is flat, and your confidence is gone? Do you want to look a little more prepared without carrying a whole suitcase? Then you need the Five-Minute Touch-Up Kit.</p>
+                <p class="mb-6">This compact kit is made for workdays, trips, interviews, weddings, and any moment when you need a quick <b class="highlight quiz-target" data-ans="touch up" data-kor="살짝 고치기">touch-up</b>. It fits in a small bag, but it helps you fix the little things that can make a big difference.</p>
+                <p class="mb-6">Inside, you get a mini lint roller, a pocket mirror, a wrinkle spray, a comb, and a stain-removal pen. Just open the case, choose what you need, and give yourself five minutes. Your jacket looks cleaner. Your hair looks neater. Your shirt looks fresher. And most importantly, you feel ready.</p>
+                <p class="mb-6">Now, <b class="highlight quiz-target" data-ans="take my advice with a grain of salt" data-kor="조언을 걸러서 듣다">take my advice with a grain of salt</b>, because no product can solve every problem. This kit will not write your presentation, make traffic disappear, or turn a bad meeting into a vacation. But it can help you walk into the room feeling more comfortable.</p>
+                <p class="mb-6">And honestly, <b class="highlight quiz-target" data-ans="you can't put a price on" data-kor="가격을 매길 수 없다">you can't put a price on</b> that little moment of confidence. When you look in the mirror and think, “Okay, I can do this,” that feeling is <b class="highlight quiz-target" data-ans="priceless" data-kor="소중한">priceless</b>.</p>
+                <p class="mb-6">For travelers, this kit is <b class="highlight quiz-target" data-ans="invaluable" data-kor="매우 귀중한">invaluable</b>. Keep it in your backpack, your desk drawer, or your car. Use it before a dinner, after a long flight, or right before a photo. It is simple, light, and easy to carry.</p>
+                <p class="mb-6">We tested the first version through a small <b class="highlight quiz-target" data-ans="pilot" data-kor="시험 프로그램">pilot</b> program with office workers and frequent travelers. The feedback was clear: people liked that it was practical, not flashy. They used it because it solved real problems.</p>
+                <p class="mb-6">Please note: clothes are <b class="highlight quiz-target" data-ans="not included" data-kor="포함되지 않음">not included</b>. Shoes are <b class="highlight quiz-target" data-ans="not included" data-kor="포함되지 않음">not included</b>. A perfect personality is definitely <b class="highlight quiz-target" data-ans="not included" data-kor="포함되지 않음">not included</b>. But the tools you need for a cleaner, sharper look are right here.</p>
+                <p class="mb-6">So what do you think? The Five-Minute Touch-Up Kit is small, useful, and ready when life gives you no time to get ready.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">어딘가에 도착했는데 셔츠는 구겨져 있고, 머리는 납작하고, 자신감은 사라졌다는 걸 깨닫는 게 지겹지 않으신가요? 커다란 여행 가방을 들고 다니지 않고도 조금 더 준비된 모습으로 보이고 싶으신가요? 그렇다면 파이브 미닛 터치업 키트가 필요합니다.</p>
+                <p class="mb-6">이 작은 키트는 근무일, 여행, 면접, 결혼식, 그리고 빠른 <b class="highlight">손질</b>이 필요한 모든 순간을 위해 만들어졌습니다. 작은 가방에 들어가지만, 큰 차이를 만들 수 있는 작은 문제들을 해결하도록 도와줍니다.</p>
+                <p class="mb-6">안에는 미니 먼지 제거 롤러, 휴대용 거울, 주름 제거 스프레이, 빗, 얼룩 제거 펜이 들어 있습니다. 케이스를 열고, 필요한 것을 고른 뒤, 자신에게 5분만 주세요. 재킷은 더 깔끔해 보이고, 머리는 더 단정해 보이고, 셔츠는 더 산뜻해 보입니다. 그리고 무엇보다도 여러분은 준비가 된 기분을 느낍니다.</p>
+                <p class="mb-6">물론 <b class="highlight">제 조언은 어느 정도 걸러서 들으세요</b>. 어떤 제품도 모든 문제를 해결할 수는 없습니다. 이 키트가 발표 자료를 써 주거나, 교통 체증을 없애 주거나, 나쁜 회의를 휴가로 바꿔 주지는 않습니다. 하지만 방에 들어갈 때 조금 더 편안한 기분을 느끼도록 도와줄 수는 있습니다.</p>
+                <p class="mb-6">그리고 솔직히, 그 작은 자신감의 순간에는 <b class="highlight">가격을 매길 수 없습니다</b>. 거울을 보고 “좋아, 할 수 있어”라고 생각하는 그 느낌은 정말 <b class="highlight">값을 매길 수 없을 만큼 소중합니다</b>.</p>
+                <p class="mb-6">여행자들에게 이 키트는 <b class="highlight">아주 유용합니다</b>. 배낭, 책상 서랍, 또는 차 안에 넣어 두세요. 저녁 식사 전, 긴 비행 후, 또는 사진 찍기 직전에 사용하세요. 간단하고, 가볍고, 들고 다니기 쉽습니다.</p>
+                <p class="mb-6">저희는 첫 번째 버전을 직장인과 자주 여행하는 사람들을 대상으로 한 작은 <b class="highlight">시험 프로그램</b>을 통해 테스트했습니다. 반응은 분명했습니다. 사람들은 이 제품이 화려하지 않고 실용적이라는 점을 좋아했습니다. 실제 문제를 해결해 주기 때문에 사용했습니다.</p>
+                <p class="mb-6">참고해 주세요. 옷은 <b class="highlight">포함되지 않습니다</b>. 신발도 <b class="highlight">포함되지 않습니다</b>. 완벽한 성격은 당연히 <b class="highlight">포함되지 않습니다</b>. 하지만 더 깔끔하고 단정한 모습을 위한 도구들은 바로 여기에 있습니다.</p>
+                <p class="mb-6">그래서 어떻게 생각하시나요? 파이브 미닛 터치업 키트는 작고, 유용하고, 삶이 준비할 시간을 주지 않을 때 여러분을 도와줄 준비가 되어 있습니다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "5151200.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

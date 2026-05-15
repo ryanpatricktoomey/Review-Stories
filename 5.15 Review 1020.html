@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+ <html lang="en">
+ <head>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+     <title>Review Note | The Fresh Desk Care Kit</title>
+     <script src="https://cdn.tailwindcss.com"></script>
+     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+     <style>
+         :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+         body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+         .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+         .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+         input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+         input:focus::placeholder { opacity: 0 !important; }
+         .mystery-cell { transition: color 0.3s; }
+         .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+         .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+         .highlight { color: var(--teal); font-weight: 700; }
+         .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+         audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+     </style>
+ </head>
+ <body class="p-4 md:p-12">
+     <div class="max-w-4xl mx-auto space-y-8">
+
+         <header class="text-center space-y-4">
+             <div class="flex items-center justify-center gap-4">
+                 <span class="text-5xl">🧴</span>
+                 <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Fresh Desk Care Kit</h1>
+             </div>
+             <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+         </header>
+
+         <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+             <div class="flex items-center justify-between px-2">
+                 <div class="flex items-center gap-3">
+                     <span class="text-xl">🎧</span>
+                     <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                 </div>
+                 <div class="flex gap-2">
+                     <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                         <span class="text-lg">↺</span> 5s
+                     </button>
+                     <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                         5s <span class="text-lg">↻</span>
+                     </button>
+                 </div>
+             </div>
+             <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+         </div>
+
+         <div class="flex justify-center">
+             <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+         </div>
+
+         <section class="glass rounded-3xl overflow-hidden shadow-xl">
+             <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                 <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+             </div>
+             <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                 <tr><td class="p-4"><b class="text-white">gadget</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">도구 / 기기 / 장치</td></tr>
+                 <tr><td class="p-4"><b class="text-white">gear</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">장비 / 용품</td></tr>
+                 <tr><td class="p-4"><b class="text-white">merch</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">굿즈 / 상품</td></tr>
+                 <tr><td class="p-4"><b class="text-white">merchandise</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">상품 / 판매 제품</td></tr>
+                 <tr><td class="p-4"><b class="text-white">fly swatter</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">파리채</td></tr>
+                 <tr><td class="p-4"><b class="text-white">pores</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">모공</td></tr>
+                 <tr><td class="p-4"><b class="text-white">pat</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">가볍게 두드리다</td></tr>
+                 <tr><td class="p-4"><b class="text-white">elasticity</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">탄력 / 탄성</td></tr>
+                 <tr><td class="p-4"><b class="text-white">penetrate</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">스며들다 / 침투하다</td></tr>
+                 <tr><td class="p-4"><b class="text-white">posture</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">자세</td></tr>
+             </tbody></table>
+         </section>
+
+         <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+             <div class="glass p-5 rounded-2xl border-l-4 border-amber-500">
+                 <h3 class="font-bold text-amber-500 mb-2">gadget</h3>
+                 <p class="text-sm text-slate-300">작고 유용한 기계나 도구를 말해요. 생활용품이나 전자기기에 자주 씁니다.</p>
+             </div>
+             <div class="glass p-5 rounded-2xl border-l-4 border-amber-500">
+                 <h3 class="font-bold text-amber-500 mb-2">gear</h3>
+                 <p class="text-sm text-slate-300">특정 활동에 필요한 장비나 용품을 넓게 가리키는 말이에요.</p>
+             </div>
+             <div class="glass p-5 rounded-2xl border-l-4 border-amber-500">
+                 <h3 class="font-bold text-amber-500 mb-2">merch / merchandise</h3>
+                 <p class="text-sm text-slate-300">merch는 merchandise의 줄임말이에요. 브랜드나 행사에서 파는 굿즈를 말할 때 자주 씁니다.</p>
+             </div>
+             <div class="glass p-5 rounded-2xl border-l-4 border-amber-500">
+                 <h3 class="font-bold text-amber-500 mb-2">pat</h3>
+                 <p class="text-sm text-slate-300">문지르는 것이 아니라 손으로 가볍게 톡톡 두드리는 동작입니다.</p>
+             </div>
+             <div class="glass p-5 rounded-2xl border-l-4 border-amber-500">
+                 <h3 class="font-bold text-amber-500 mb-2">penetrate</h3>
+                 <p class="text-sm text-slate-300">액체나 성분이 피부나 표면 안으로 스며든다는 뜻이에요. 스킨케어 광고에서 자주 나옵니다.</p>
+             </div>
+         </section>
+
+         <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+             <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                 <p class="mb-6">Are you tired of sitting at your desk all day and feeling stiff, tired, and not quite fresh? Do you want a simple way to reset your body and face during a busy afternoon? Then take a look at the Fresh Desk Care Kit.</p>
+                 <p class="mb-6">This is a small wellness <b class="highlight quiz-target" data-ans="gadget" data-kor="기기">gadget</b> made for people who work, study, or spend long hours at a computer. It fits neatly beside your laptop, but it gives you everything you need for a quick midday reset.</p>
+                 <p class="mb-6">First, there is the cooling face pad. Add a little toner, press the button, and the pad becomes cool in seconds. Then gently <b class="highlight quiz-target" data-ans="pat" data-kor="두드리다">pat</b> your cheeks and forehead. It helps your skin feel fresh without making a mess. After a long morning, your <b class="highlight quiz-target" data-ans="pores" data-kor="모공">pores</b> can feel oily or tired, and this gives your face a clean, comfortable feeling.</p>
+                 <p class="mb-6">The kit also includes a light moisturizer pad. It is designed to help the product <b class="highlight quiz-target" data-ans="penetrate" data-kor="스며들다">penetrate</b> smoothly, especially when your skin feels dry from indoor heating or air conditioning. You do not need a full skincare routine at your desk. Just a quick touch is enough.</p>
+                 <p class="mb-6">But this is not only skincare <b class="highlight quiz-target" data-ans="gear" data-kor="용품">gear</b>. The Fresh Desk Care Kit also comes with a small <b class="highlight quiz-target" data-ans="posture" data-kor="자세">posture</b> card and stretch band. The band has just enough <b class="highlight quiz-target" data-ans="elasticity" data-kor="탄력">elasticity</b> to help you open your shoulders and sit taller. Use it for one minute between meetings, and your <b class="highlight quiz-target" data-ans="posture" data-kor="자세">posture</b> may start to feel better.</p>
+                 <p class="mb-6">And because real life includes small annoyances, the kit includes a mini <b class="highlight quiz-target" data-ans="fly swatter" data-kor="파리채">fly swatter</b> for summer offices, balconies, or study rooms. It is simple, flat, and easy to store. No drama, no noise, just a practical little tool.</p>
+                 <p class="mb-6">We also have official Fresh Desk <b class="highlight quiz-target" data-ans="merch" data-kor="굿즈">merch</b>, including a pouch and a clean white towel. This is useful <b class="highlight quiz-target" data-ans="merchandise" data-kor="상품">merchandise</b>, not just something with a logo on it.</p>
+                 <p class="mb-6">So, what do you think? If you want fresher skin, better desk habits, and a cleaner workspace, the Fresh Desk Care Kit is a simple product you may actually use every day.</p>
+             </div>
+             <hr class="border-white/10">
+             <div class="text-slate-400 italic leading-relaxed space-y-6">
+                 <p class="mb-6">하루 종일 책상에 앉아 있다가 몸이 뻣뻣하고, 피곤하고, 왠지 개운하지 않은 느낌이 드는 게 지겹지 않으신가요? 바쁜 오후에 몸과 얼굴을 간단히 재정비할 방법을 원하시나요? 그렇다면 프레시 데스크 케어 키트를 보세요.</p>
+                 <p class="mb-6">이것은 일하거나, 공부하거나, 컴퓨터 앞에서 오랜 시간을 보내는 사람들을 위한 작은 웰니스 <b class="highlight">기기</b>입니다. 노트북 옆에 깔끔하게 들어가지만, 짧은 낮 시간 리셋에 필요한 모든 것을 제공합니다.</p>
+                 <p class="mb-6">먼저 쿨링 페이스 패드가 있습니다. 토너를 조금 넣고 버튼을 누르면 패드가 몇 초 만에 시원해집니다. 그런 다음 볼과 이마를 부드럽게 <b class="highlight">톡톡 두드리세요</b>. 피부가 지저분해지지 않으면서 산뜻하게 느껴지도록 도와줍니다. 긴 오전이 지나면 <b class="highlight">모공</b>이 기름지거나 피곤하게 느껴질 수 있는데, 이 제품은 얼굴에 깨끗하고 편안한 느낌을 줍니다.</p>
+                 <p class="mb-6">키트에는 가벼운 보습 패드도 포함되어 있습니다. 실내 난방이나 에어컨 때문에 피부가 건조하게 느껴질 때, 제품이 부드럽게 <b class="highlight">스며들도록</b> 도와주는 디자인입니다. 책상에서 전체 스킨케어 루틴을 할 필요는 없습니다. 짧게 한 번만 관리해도 충분합니다.</p>
+                 <p class="mb-6">하지만 이것은 단순한 스킨케어 <b class="highlight">용품</b>이 아닙니다. 프레시 데스크 케어 키트에는 작은 <b class="highlight">자세</b> 카드와 스트레치 밴드도 들어 있습니다. 밴드는 어깨를 열고 더 곧게 앉는 데 도움이 될 만큼의 <b class="highlight">탄력</b>을 가지고 있습니다. 회의 사이에 1분만 사용해 보세요. <b class="highlight">자세</b>가 조금 더 편해지는 것을 느낄 수 있습니다.</p>
+                 <p class="mb-6">그리고 현실에는 작은 귀찮은 일들도 있기 때문에, 이 키트에는 여름 사무실, 발코니, 공부방에서 쓸 수 있는 미니 <b class="highlight">파리채</b>도 들어 있습니다. 간단하고, 납작하고, 보관하기 쉽습니다. 호들갑도 없고, 소음도 없이, 그저 실용적인 작은 도구입니다.</p>
+                 <p class="mb-6">공식 프레시 데스크 <b class="highlight">굿즈</b>도 있습니다. 파우치와 깨끗한 흰색 수건이 포함됩니다. 이것은 로고만 붙어 있는 것이 아니라 실제로 유용한 <b class="highlight">상품</b>입니다.</p>
+                 <p class="mb-6">그래서 어떻게 생각하시나요? 더 산뜻한 피부, 더 나은 책상 습관, 더 깨끗한 작업 공간을 원한다면, 프레시 데스크 케어 키트는 매일 실제로 사용하게 될 간단한 제품입니다.</p>
+             </div>
+         </section>
+
+     </div>
+     <script>
+         function skipAudio(seconds) {
+             const player = document.getElementById('player');
+             if (player.src) {
+                 player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+             }
+         }
+
+         function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+         let _quizOriginals = new Map();
+         function toggleQuiz() {
+             const btn = document.getElementById('quizBtn');
+             const isQuiz = btn.innerText.includes("Quiz");
+             const targets = document.querySelectorAll('.quiz-target');
+             const cells = document.querySelectorAll('.mystery-cell');
+             if (isQuiz) {
+                 btn.innerText = "Study Mode 📖";
+                 cells.forEach(c => c.classList.add('quiz-hidden'));
+                 targets.forEach(t => {
+                     const ans = t.dataset.ans; const kor = t.dataset.kor;
+                     _quizOriginals.set(t, t.innerHTML);
+                     t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                 });
+             } else {
+                 btn.innerText = "Quiz Mode 👻";
+                 cells.forEach(c => c.classList.remove('quiz-hidden'));
+                 targets.forEach(t => {
+                     if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                 });
+                 _quizOriginals.clear();
+             }
+         }
+
+         function checkQuiz(i, a) {
+             if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                 i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                 confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                 checkAllSolved();
+             } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+         }
+
+         function checkAllSolved() {
+             const inputs = document.querySelectorAll('.quiz-input');
+             if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                 var duration = 3 * 1000; var end = Date.now() + duration;
+                 (function frame() {
+                     confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                     confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                     if (Date.now() < end) requestAnimationFrame(frame);
+                 }());
+             }
+         }
+
+         document.getElementById('player').src = "5151020.m4a";
+     </script>
+     <script src="wordbank-utils.js"></script>
+     <script src="chat.js"></script>
+ </body>
+ </html>

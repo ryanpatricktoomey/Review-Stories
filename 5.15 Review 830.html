@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+ <html lang="en">
+ <head>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+     <title>Review Note | The SmartLunch Pro</title>
+     <script src="https://cdn.tailwindcss.com"></script>
+     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+     <style>
+         :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+         body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+         .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+         .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+         input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+         input:focus::placeholder { opacity: 0 !important; }
+         .mystery-cell { transition: color 0.3s; }
+         .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+         .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+         .highlight { color: var(--teal); font-weight: 700; }
+         .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+         audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+     </style>
+ </head>
+ <body class="p-4 md:p-12">
+     <div class="max-w-4xl mx-auto space-y-8">
+
+         <header class="text-center space-y-4">
+             <div class="flex items-center justify-center gap-4">
+                 <span class="text-5xl">🥗</span>
+                 <h1 class="text-3xl md:text-4xl font-extrabold text-white">The SmartLunch Pro</h1>
+             </div>
+             <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+         </header>
+
+         <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+             <div class="flex items-center justify-between px-2">
+                 <div class="flex items-center gap-3">
+                     <span class="text-xl">🎧</span>
+                     <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                 </div>
+                 <div class="flex gap-2">
+                     <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                         <span class="text-lg">↺</span> 5s
+                     </button>
+                     <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                         5s <span class="text-lg">↻</span>
+                     </button>
+                 </div>
+             </div>
+             <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+         </div>
+
+         <div class="flex justify-center">
+             <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+         </div>
+
+         <section class="glass rounded-3xl overflow-hidden shadow-xl">
+             <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                 <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+             </div>
+             <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                 <tr><td class="p-4"><b class="text-white">SaaS</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">서비스형 소프트웨어 / 구독형 소프트웨어</td></tr>
+                 <tr><td class="p-4"><b class="text-white">VC</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">벤처 캐피털 / 스타트업 투자자</td></tr>
+                 <tr><td class="p-4"><b class="text-white">evidence</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">증거 / 근거</td></tr>
+                 <tr><td class="p-4"><b class="text-white">pores</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">모공</td></tr>
+                 <tr><td class="p-4"><b class="text-white">carbonated drinks</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">탄산음료</td></tr>
+                 <tr><td class="p-4"><b class="text-white">chicken breast</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">닭가슴살</td></tr>
+                 <tr><td class="p-4"><b class="text-white">egg white</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">달걀흰자</td></tr>
+                 <tr><td class="p-4"><b class="text-white">egg yolk</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">달걀노른자</td></tr>
+                 <tr><td class="p-4"><b class="text-white">character</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">성격 / 인물 / 개성</td></tr>
+                 <tr><td class="p-4"><b class="text-white">personality</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">성격 / 개성</td></tr>
+                 <tr><td class="p-4"><b class="text-white">attitude</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">태도</td></tr>
+                 <tr><td class="p-4"><b class="text-white">take over</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">장악하다 / 차지하다 / 인수하다</td></tr>
+                 <tr><td class="p-4"><b class="text-white">bought the rights</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">판권을 샀다 / 권리를 샀다</td></tr>
+             </tbody></table>
+         </section>
+
+         <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+             <div class="glass p-5 rounded-2xl border-l-4 border-amber-500">
+                 <h3 class="font-bold text-amber-500 mb-2">SaaS</h3>
+                 <p class="text-sm text-slate-300">“Software as a Service”의 줄임말로, 프로그램을 설치해서 소유하는 대신 구독해서 온라인으로 사용하는 소프트웨어를 말해요.</p>
+             </div>
+             <div class="glass p-5 rounded-2xl border-l-4 border-amber-500">
+                 <h3 class="font-bold text-amber-500 mb-2">VC</h3>
+                 <p class="text-sm text-slate-300">“Venture Capital”의 줄임말이에요. 성장 가능성이 있는 스타트업에 투자하는 사람이나 회사를 뜻합니다.</p>
+             </div>
+             <div class="glass p-5 rounded-2xl border-l-4 border-amber-500">
+                 <h3 class="font-bold text-amber-500 mb-2">pores</h3>
+                 <p class="text-sm text-slate-300">피부의 “모공”입니다. 스킨케어 제품 설명에서 자주 나와요.</p>
+             </div>
+             <div class="glass p-5 rounded-2xl border-l-4 border-amber-500">
+                 <h3 class="font-bold text-amber-500 mb-2">take over</h3>
+                 <p class="text-sm text-slate-300">문맥에 따라 “인수하다,” “장악하다,” “차지하다”라는 뜻으로 쓰입니다.</p>
+             </div>
+             <div class="glass p-5 rounded-2xl border-l-4 border-amber-500">
+                 <h3 class="font-bold text-amber-500 mb-2">bought the rights</h3>
+                 <p class="text-sm text-slate-300">어떤 제품, 캐릭터, 책, 영화 등을 사용할 법적 권리를 샀다는 뜻이에요.</p>
+             </div>
+         </section>
+
+         <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+             <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                 <p class="mb-6">Are you tired of opening the fridge and having no idea what to eat? Do you want healthier meals without spending your whole evening planning them? Then let me introduce the SmartLunch Pro.</p>
+                 <p class="mb-6">This is not just another meal box. It is a smart lunch system with an app that works like meal-planning <b class="highlight quiz-target" data-ans="SaaS" data-kor="구독형 소프트웨어">SaaS</b>. You choose your goals, enter your favorite foods, and the app suggests simple meals for the week.</p>
+                 <p class="mb-6">Let’s say you want something high in protein. The app may suggest <b class="highlight quiz-target" data-ans="chicken breast" data-kor="닭가슴살">chicken breast</b>, rice, vegetables, and a boiled egg. It even tells you when to use the <b class="highlight quiz-target" data-ans="egg white" data-kor="달걀흰자">egg white</b> for a lighter meal and when to keep the <b class="highlight quiz-target" data-ans="egg yolk" data-kor="달걀노른자">egg yolk</b> for extra flavor. Simple, practical, and easy to follow.</p>
+                 <p class="mb-6">Now, I know people want <b class="highlight quiz-target" data-ans="evidence" data-kor="근거">evidence</b> before they trust a new product. That makes sense. The real <b class="highlight quiz-target" data-ans="evidence" data-kor="증거">evidence</b> is in your daily routine. When lunch is already planned, you are less likely to skip meals, order fast food, or stand in front of the fridge feeling annoyed.</p>
+                 <p class="mb-6">And because life is not only about food, the SmartLunch Pro also has a small wellness section. It reminds you to drink water, take a short walk, and wash your face after a long day. Clean skin starts with simple habits, and yes, that includes taking care of your <b class="highlight quiz-target" data-ans="pores" data-kor="모공">pores</b>.</p>
+                 <p class="mb-6">It even helps you cut down on <b class="highlight quiz-target" data-ans="carbonated drinks" data-kor="탄산음료">carbonated drinks</b> by suggesting easy alternatives, like fruit water or unsweetened tea. You still get something refreshing, but with less sugar and less guilt.</p>
+                 <p class="mb-6">What makes this product different is its <b class="highlight quiz-target" data-ans="personality" data-kor="개성">personality</b>. The app is friendly, not bossy. It gives advice with a positive <b class="highlight quiz-target" data-ans="attitude" data-kor="태도">attitude</b>, and each meal plan has a little <b class="highlight quiz-target" data-ans="character" data-kor="특징">character</b>. It feels like a helpful coach, not a strict teacher.</p>
+                 <p class="mb-6">The company started small, but a health-tech <b class="highlight quiz-target" data-ans="VC" data-kor="벤처 투자자">VC</b> recently invested in it. They also <b class="highlight quiz-target" data-ans="bought the rights" data-kor="권리를 샀다">bought the rights</b> to a popular meal-planning calendar design, so the app is now even easier to use. It may not <b class="highlight quiz-target" data-ans="take over" data-kor="장악하다">take over</b> your whole life, but it can definitely <b class="highlight quiz-target" data-ans="take over" data-kor="차지하다">take over</b> the stressful part of lunch.</p>
+                 <p class="mb-6">So, what do you think? If you want meals that are easier, healthier, and better organized, the SmartLunch Pro might be perfect for you.</p>
+             </div>
+             <hr class="border-white/10">
+             <div class="text-slate-400 italic leading-relaxed space-y-6">
+                 <p class="mb-6">냉장고를 열었는데 무엇을 먹어야 할지 전혀 모르겠는 게 지겹지 않으신가요? 저녁 시간을 전부 식단 계획에 쓰지 않고도 더 건강한 식사를 하고 싶으신가요? 그렇다면 스마트런치 프로를 소개합니다.</p>
+                 <p class="mb-6">이것은 단순한 도시락통이 아닙니다. 식단 계획 <b class="highlight">구독형 소프트웨어</b>처럼 작동하는 앱이 함께 있는 스마트 점심 시스템입니다. 목표를 선택하고, 좋아하는 음식을 입력하면, 앱이 일주일 동안의 간단한 식사를 추천해 줍니다.</p>
+                 <p class="mb-6">예를 들어 단백질이 많은 식사를 원한다고 해 봅시다. 앱은 <b class="highlight">닭가슴살</b>, 밥, 채소, 삶은 달걀을 추천할 수 있습니다. 더 가벼운 식사를 원할 때는 <b class="highlight">달걀흰자</b>를 사용하고, 풍미를 더하고 싶을 때는 <b class="highlight">달걀노른자</b>를 남겨 두라고 알려 주기도 합니다. 간단하고, 실용적이고, 따라 하기 쉽습니다.</p>
+                 <p class="mb-6">물론 사람들은 새로운 제품을 믿기 전에 <b class="highlight">근거</b>를 원합니다. 당연한 일입니다. 진짜 <b class="highlight">근거</b>는 일상에서 나타납니다. 점심이 이미 계획되어 있으면, 끼니를 거르거나 패스트푸드를 주문하거나 냉장고 앞에서 짜증 내며 서 있을 가능성이 줄어듭니다.</p>
+                 <p class="mb-6">그리고 삶은 음식만으로 이루어진 것이 아니기 때문에, 스마트런치 프로에는 작은 웰니스 섹션도 있습니다. 물을 마시고, 짧게 걷고, 긴 하루가 끝난 뒤 세수하라고 알려 줍니다. 깨끗한 피부는 간단한 습관에서 시작되며, 네, <b class="highlight">모공</b> 관리도 포함됩니다.</p>
+                 <p class="mb-6">또한 <b class="highlight">탄산음료</b>를 줄이는 데도 도움을 줍니다. 과일 물이나 무가당 차처럼 쉬운 대안을 추천해 주기 때문입니다. 여전히 상쾌한 것을 마실 수 있지만, 설탕과 죄책감은 줄일 수 있습니다.</p>
+                 <p class="mb-6">이 제품이 다른 점은 <b class="highlight">개성</b>입니다. 앱은 친절하고, 윽박지르지 않습니다. 긍정적인 <b class="highlight">태도</b>로 조언해 주며, 각 식단 계획에는 작은 <b class="highlight">특징</b>이 있습니다. 엄격한 선생님이 아니라 도움이 되는 코치처럼 느껴집니다.</p>
+                 <p class="mb-6">이 회사는 작게 시작했지만, 최근 건강 기술 분야의 <b class="highlight">벤처 투자자</b>가 투자했습니다. 또한 인기 있는 식단 계획 캘린더 디자인의 <b class="highlight">권리를 샀기</b> 때문에 앱은 이제 훨씬 사용하기 쉬워졌습니다. 여러분의 삶 전체를 <b class="highlight">장악</b>하지는 않겠지만, 점심 때문에 스트레스 받는 부분은 확실히 <b class="highlight">해결</b>해 줄 수 있습니다.</p>
+                 <p class="mb-6">그래서 어떻게 생각하시나요? 더 쉽고, 더 건강하고, 더 잘 정리된 식사를 원한다면 스마트런치 프로가 딱 맞을 수도 있습니다.</p>
+             </div>
+         </section>
+
+     </div>
+     <script>
+         function skipAudio(seconds) {
+             const player = document.getElementById('player');
+             if (player.src) {
+                 player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+             }
+         }
+
+         function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+         let _quizOriginals = new Map();
+         function toggleQuiz() {
+             const btn = document.getElementById('quizBtn');
+             const isQuiz = btn.innerText.includes("Quiz");
+             const targets = document.querySelectorAll('.quiz-target');
+             const cells = document.querySelectorAll('.mystery-cell');
+             if (isQuiz) {
+                 btn.innerText = "Study Mode 📖";
+                 cells.forEach(c => c.classList.add('quiz-hidden'));
+                 targets.forEach(t => {
+                     const ans = t.dataset.ans; const kor = t.dataset.kor;
+                     _quizOriginals.set(t, t.innerHTML);
+                     t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                 });
+             } else {
+                 btn.innerText = "Quiz Mode 👻";
+                 cells.forEach(c => c.classList.remove('quiz-hidden'));
+                 targets.forEach(t => {
+                     if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                 });
+                 _quizOriginals.clear();
+             }
+         }
+
+         function checkQuiz(i, a) {
+             if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                 i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                 confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                 checkAllSolved();
+             } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+         }
+
+         function checkAllSolved() {
+             const inputs = document.querySelectorAll('.quiz-input');
+             if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                 var duration = 3 * 1000; var end = Date.now() + duration;
+                 (function frame() {
+                     confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                     confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                     if (Date.now() < end) requestAnimationFrame(frame);
+                 }());
+             }
+         }
+
+         document.getElementById('player').src = "515830.m4a";
+     </script>
+     <script src="wordbank-utils.js"></script>
+     <script src="chat.js"></script>
+ </body>
+ </html>

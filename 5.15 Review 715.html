@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+ <html lang="en">
+ <head>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+     <title>Review Note | The Weekend Dessert Station</title>
+     <script src="https://cdn.tailwindcss.com"></script>
+     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+     <style>
+         :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+         body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+         .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+         .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+         input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+         input:focus::placeholder { opacity: 0 !important; }
+         .mystery-cell { transition: color 0.3s; }
+         .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+         .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+         .highlight { color: var(--teal); font-weight: 700; }
+         .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+         audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+     </style>
+ </head>
+ <body class="p-4 md:p-12">
+     <div class="max-w-4xl mx-auto space-y-8">
+
+         <header class="text-center space-y-4">
+             <div class="flex items-center justify-center gap-4">
+                 <span class="text-5xl">🍰</span>
+                 <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Weekend Dessert Station</h1>
+             </div>
+             <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+         </header>
+
+         <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+             <div class="flex items-center justify-between px-2">
+                 <div class="flex items-center gap-3">
+                     <span class="text-xl">🎧</span>
+                     <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                 </div>
+                 <div class="flex gap-2">
+                     <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                         <span class="text-lg">↺</span> 5s
+                     </button>
+                     <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                         5s <span class="text-lg">↻</span>
+                     </button>
+                 </div>
+             </div>
+             <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+         </div>
+
+         <div class="flex justify-center">
+             <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+         </div>
+
+         <section class="glass rounded-3xl overflow-hidden shadow-xl">
+             <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                 <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+             </div>
+             <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                 <tr><td class="p-4"><b class="text-white">pitch</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">판매 설명 / 홍보 멘트 / 설득하는 말</td></tr>
+                 <tr><td class="p-4"><b class="text-white">dishwasher</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">식기세척기</td></tr>
+                 <tr><td class="p-4"><b class="text-white">persuasive</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">설득력 있는</td></tr>
+                 <tr><td class="p-4"><b class="text-white">long weekend</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">긴 주말 / 연휴</td></tr>
+                 <tr><td class="p-4"><b class="text-white">condensed milk</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">연유</td></tr>
+             </tbody></table>
+         </section>
+
+         <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+             <div class="glass p-5 rounded-2xl border-l-4 border-amber-500">
+                 <h3 class="font-bold text-amber-500 mb-2">pitch</h3>
+                 <p class="text-sm text-slate-300">제품이나 아이디어를 팔기 위해 짧고 설득력 있게 설명하는 말이에요.</p>
+             </div>
+             <div class="glass p-5 rounded-2xl border-l-4 border-amber-500">
+                 <h3 class="font-bold text-amber-500 mb-2">long weekend</h3>
+                 <p class="text-sm text-slate-300">금요일이나 월요일이 쉬어서 주말이 길어진 경우를 말해요. 한국어의 “연휴”와 비슷합니다.</p>
+             </div>
+             <div class="glass p-5 rounded-2xl border-l-4 border-amber-500">
+                 <h3 class="font-bold text-amber-500 mb-2">condensed milk</h3>
+                 <p class="text-sm text-slate-300">달고 걸쭉한 연유예요. 디저트, 커피, 빙수 등에 자주 씁니다.</p>
+             </div>
+         </section>
+
+         <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+             <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                 <p class="mb-6">Are you tired of making dessert and ending up with a sticky counter, dirty spoons, and three bowls in the sink? Do you want something sweet without turning your kitchen into a disaster? Then listen closely, because this <b class="highlight quiz-target" data-ans="pitch" data-kor="판매 설명">pitch</b> is for you.</p>
+                 <p class="mb-6">Introducing the Weekend Dessert Station, the simple dessert kit that helps you make café-style treats at home. It comes with a mixing cup, a soft spatula, a topping bottle, and a small tray that keeps everything in one place.</p>
+                 <p class="mb-6">It is perfect for a <b class="highlight quiz-target" data-ans="long weekend" data-kor="연휴">long weekend</b> when friends come over, your family wants something special, or you just want to relax with a sweet snack. You can make shaved ice toppings, quick fruit bowls, coffee cream, or toast sauce in just a few minutes.</p>
+                 <p class="mb-6">One good thing is that it is easy to use. Add fruit, yogurt, syrup, or <b class="highlight quiz-target" data-ans="condensed milk" data-kor="연유">condensed milk</b>, mix gently, and serve. You do not need baking skills. You do not need a big machine. You just need a few simple ingredients and five quiet minutes in the kitchen.</p>
+                 <p class="mb-6">Another nice thing is that the parts are easy to clean. The cup, tray, and spatula can go in the <b class="highlight quiz-target" data-ans="dishwasher" data-kor="식기세척기">dishwasher</b>, so you do not have to stand at the sink scrubbing sticky sugar after everyone else has finished eating.</p>
+                 <p class="mb-6">Now, you may be thinking, “Do I really need a dessert station?” That’s fair. But think about how often you buy expensive desserts outside. With this kit, you can make something pretty, sweet, and fun at home whenever you want.</p>
+                 <p class="mb-6">What makes it stand out is how simple it feels. It is not trying to be fancy or complicated. It just helps you make dessert faster, cleaner, and with less stress. And honestly, that is a pretty <b class="highlight quiz-target" data-ans="persuasive" data-kor="설득력 있는">persuasive</b> reason to keep one in your kitchen.</p>
+                 <p class="mb-6">So what do you think? Can you see yourself using this on a slow Saturday afternoon? Trust me, the Weekend Dessert Station is useful, affordable, and ready for your next sweet break.</p>
+             </div>
+             <hr class="border-white/10">
+             <div class="text-slate-400 italic leading-relaxed space-y-6">
+                 <p class="mb-6">디저트를 만들고 나면 끈적한 조리대, 더러운 숟가락, 싱크대에 쌓인 그릇 세 개가 남는 게 지겹지 않으신가요? 주방을 엉망으로 만들지 않고 달콤한 것을 먹고 싶으신가요? 그렇다면 집중해서 들어보세요. 이 <b class="highlight">판매 설명</b>은 바로 여러분을 위한 것입니다.</p>
+                 <p class="mb-6">위켄드 디저트 스테이션을 소개합니다. 집에서 카페 스타일 디저트를 쉽게 만들 수 있도록 도와주는 간단한 디저트 키트입니다. 믹싱 컵, 부드러운 주걱, 토핑 병, 그리고 모든 것을 한곳에 정리해 주는 작은 트레이가 들어 있습니다.</p>
+                 <p class="mb-6">친구들이 놀러 오는 <b class="highlight">긴 주말</b>, 가족이 특별한 간식을 원할 때, 또는 그냥 달콤한 간식을 먹으며 쉬고 싶을 때 딱 좋습니다. 몇 분 만에 빙수 토핑, 간단한 과일 볼, 커피 크림, 토스트 소스를 만들 수 있습니다.</p>
+                 <p class="mb-6">좋은 점 하나는 사용하기 쉽다는 것입니다. 과일, 요거트, 시럽, 또는 <b class="highlight">연유</b>를 넣고 부드럽게 섞은 뒤 내놓기만 하면 됩니다. 베이킹 실력이 필요하지 않습니다. 큰 기계도 필요 없습니다. 간단한 재료 몇 가지와 주방에서의 조용한 5분이면 충분합니다.</p>
+                 <p class="mb-6">또 좋은 점은 세척이 쉽다는 것입니다. 컵, 트레이, 주걱은 <b class="highlight">식기세척기</b>에 넣을 수 있어서, 모두가 다 먹고 난 뒤 싱크대 앞에서 끈적한 설탕을 문지르며 서 있을 필요가 없습니다.</p>
+                 <p class="mb-6">이렇게 생각하실 수도 있습니다. “디저트 스테이션이 정말 필요할까?” 그럴 수 있습니다. 하지만 밖에서 비싼 디저트를 얼마나 자주 사 먹는지 생각해 보세요. 이 키트가 있으면 원할 때마다 집에서 예쁘고, 달콤하고, 재미있는 디저트를 만들 수 있습니다.</p>
+                 <p class="mb-6">이 제품을 돋보이게 하는 점은 간단함입니다. 화려하거나 복잡하려고 하지 않습니다. 그저 디저트를 더 빠르고, 더 깔끔하고, 덜 스트레스 받으며 만들 수 있도록 도와줍니다. 그리고 솔직히 말해, 그것은 주방에 하나쯤 두기에 꽤 <b class="highlight">설득력 있는</b> 이유입니다.</p>
+                 <p class="mb-6">그래서 어떻게 생각하시나요? 느긋한 토요일 오후에 이걸 사용하는 모습이 상상되시나요? 믿어보세요. 위켄드 디저트 스테이션은 유용하고, 가격 부담이 적고, 다음 달콤한 휴식을 위해 준비되어 있습니다.</p>
+             </div>
+         </section>
+
+     </div>
+     <script>
+         function skipAudio(seconds) {
+             const player = document.getElementById('player');
+             if (player.src) {
+                 player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+             }
+         }
+
+         function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+         let _quizOriginals = new Map();
+         function toggleQuiz() {
+             const btn = document.getElementById('quizBtn');
+             const isQuiz = btn.innerText.includes("Quiz");
+             const targets = document.querySelectorAll('.quiz-target');
+             const cells = document.querySelectorAll('.mystery-cell');
+             if (isQuiz) {
+                 btn.innerText = "Study Mode 📖";
+                 cells.forEach(c => c.classList.add('quiz-hidden'));
+                 targets.forEach(t => {
+                     const ans = t.dataset.ans; const kor = t.dataset.kor;
+                     _quizOriginals.set(t, t.innerHTML);
+                     t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                 });
+             } else {
+                 btn.innerText = "Quiz Mode 👻";
+                 cells.forEach(c => c.classList.remove('quiz-hidden'));
+                 targets.forEach(t => {
+                     if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                 });
+                 _quizOriginals.clear();
+             }
+         }
+
+         function checkQuiz(i, a) {
+             if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                 i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                 confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                 checkAllSolved();
+             } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+         }
+
+         function checkAllSolved() {
+             const inputs = document.querySelectorAll('.quiz-input');
+             if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                 var duration = 3 * 1000; var end = Date.now() + duration;
+                 (function frame() {
+                     confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                     confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                     if (Date.now() < end) requestAnimationFrame(frame);
+                 }());
+             }
+         }
+
+         document.getElementById('player').src = "515715.m4a";
+     </script>
+     <script src="wordbank-utils.js"></script>
+     <script src="chat.js"></script>
+ </body>
+ </html>

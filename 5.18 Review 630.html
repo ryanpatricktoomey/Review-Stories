@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Journal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🏠</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Journal</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">on autopilot</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">자동으로, 무의식중에</td></tr>
+                <tr><td class="p-4"><b class="text-white">go easy on me</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">나한테 좀 너그러워하다, 날 봐주다</td></tr>
+                <tr><td class="p-4"><b class="text-white">turn a blind eye</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">눈감다, 외면하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">let it go</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">놔두다, 받아들이다</td></tr>
+                <tr><td class="p-4"><b class="text-white">cut me some slack</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">나한테 좀 관대해하다, 날 좀 봐주다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">on autopilot</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">자동으로 무언가를 하지만 진정한 관심이나 의식 없이 하는 상태를 의미합니다. 단순히 "자동으로"라는 뜻이 아니라, 마음이나 정신이 다른 곳에 있다는 느낌을 담고 있어요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">turn a blind eye</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">뭔가 잘못되었거나 명백한 상황을 의도적으로 무시하고 외면하는 것입니다. 눈을 감다는 직역과는 다르게, "모른 척하다" 또는 "외면하다"라는 뜻이에요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">cut me some slack</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">누군가에게 엄격하지 말고 좀 더 관대해달라거나, 실수나 부족함을 봐달라는 의미입니다. go easy on me와 비슷하지만, 더 강한 어조로 요청하는 느낌이에요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Maya had been living <b class="highlight quiz-target" data-ans="on autopilot" data-kor="자동으로">on autopilot</b> for three years. Not her life—just the apartment. She'd stopped noticing the dishes piling up in the sink, stopped counting how many times she'd scrubbed the bathroom alone, stopped expecting Jordan to notice anything at all.</p>
+                <p class="mb-6">Jordan, her best friend since college, moved through their shared space like a ghost. Cheerful, distracted, completely oblivious to the fact that Maya had become both their mother and their maid.</p>
+                <p class="mb-6">It happened on a Tuesday. Maya found herself staring at a sink full of plates—Jordan's plates from three days ago—and something inside her snapped.</p>
+                <p class="mb-6">"I can't do this anymore," Maya said quietly.</p>
+                <p class="mb-6">Jordan blinked. "Do what?"</p>
+                <p class="mb-6">"All of it. The dishes, the floors, the trash, the everything. I <b class="highlight quiz-target" data-ans="turn a blind eye" data-kor="눈감다">turn a blind eye</b> to so much, Jordan. But I can't anymore."</p>
+                <p class="mb-6">"Come on," Jordan said, laughing nervously. "<b class="highlight quiz-target" data-ans="Go easy on me" data-kor="날 봐주다">Go easy on me</b>. I've been stressed about work."</p>
+                <p class="mb-6">That's when Maya felt it—not anger, but something worse. Betrayal. Because Jordan wasn't asking her to work through this together. She was asking Maya to pretend it wasn't happening.</p>
+                <p class="mb-6">"I'm done pretending," Maya whispered.</p>
+                <p class="mb-6">For two days, they barely spoke. Jordan tried apologizing, but the words felt hollow. Maya had meant what she said. She was considering moving out.</p>
+                <p class="mb-6">Then Jordan found the journal.</p>
+                <p class="mb-6">It was an old notebook, fallen behind the bookshelf while cleaning. Maya's handwriting, young and hopeful, from their first week as roommates: "Jordan said I could stay here when my parents kicked me out. She didn't even hesitate. She just said yes. I'm going to make sure she never regrets this. I'm going to take care of things so she can focus on her dreams."</p>
+                <p class="mb-6">Jordan sat on the floor and cried.</p>
+                <p class="mb-6">When Maya came home, Jordan didn't ask her to <b class="highlight quiz-target" data-ans="cut her some slack" data-kor="관대해 봐달라고">cut her some slack</b> or <b class="highlight quiz-target" data-ans="let it go" data-kor="이제 놔두자고">let it go</b>. Instead, she held out the journal with trembling hands.</p>
+                <p class="mb-6">"I didn't know," Jordan said. "I forgot. I forgot what you did for me."</p>
+                <p class="mb-6">Maya sat beside her, and for the first time in three years, they talked. Really talked. Not about dishes or chores, but about how they'd both changed, how they'd both gotten lost.</p>
+                <p class="mb-6">By evening, they'd made a schedule. Equal chores, equal effort, equal partnership.</p>
+                <p class="mb-6">But more importantly, they remembered why they'd become friends in the first place—because they'd always shown up for each other. They'd just forgotten how to say thank you.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">마야는 3년 동안 <b class="highlight">자동으로</b> 살아왔다. 인생이 자동이었던 건 아니고, 그저 아파트에서의 삶이 자동이었다. 그녀는 더 이상 싱크대에 쌓이는 그릇들을 신경 쓰지 않았고, 자신이 혼자 욕실을 몇 번을 닦았는지 세지 않았으며, 조던이 뭔가를 알아차리기를 기대하지 않았다.</p>
+                <p class="mb-6">조던은 대학 때부터의 가장 친한 친구였는데, 아파트를 유령처럼 다니고 다녔다. 쾌활하고 산만했으며, 마야가 자신들 둘 다의 엄마이자 가정부가 되었다는 사실에 완전히 무의식이었다.</p>
+                <p class="mb-6">그것은 화요일에 일어났다. 마야는 3일 동안 쌓인 조던의 그릇들로 가득한 싱크대를 바라보다가 갑자기 뭔가가 터져나왔다.</p>
+                <p class="mb-6">"나 이제 못 하겠어," 마야가 조용히 말했다.</p>
+                <p class="mb-6">조던이 깜빡했다. "뭘?"</p>
+                <p class="mb-6">"다 해야 할 일들. 설거지, 바닥, 쓰레기, 진짜 모든 것 말이야. 나 이 정도면 충분히 <b class="highlight">눈감아왔어</b>, 조던. 근데 이제는 못하겠어."</p>
+                <p class="mb-6">"와, 진정해," 조던이 신경 쓰이는 듯이 웃었다. "나 좀 <b class="highlight">봐줄래</b>? 일이 많았거든."</p>
+                <p class="mb-6">그때 마야는 그것을 느꼈다. 분노가 아니라 더 나쁜 것. 배신감. 왜냐하면 조던은 이것을 함께 헤쳐나가자고 요청하지 않았기 때문이다. 그저 마야에게 그것이 일어나지 않고 있다고 가장하도록 요청했을 뿐이었다.</p>
+                <p class="mb-6">"나 이제 가짜 연기 못 해," 마야가 속삭였다.</p>
+                <p class="mb-6">2일 동안 그들은 거의 말하지 않았다. 조던은 사과를 시도했지만, 그 말들은 공허했다. 마야는 자신이 말한 것을 의미했다. 그녀는 이사를 고려하고 있었다.</p>
+                <p class="mb-6">그러다 조던이 그 일기를 발견했다.</p>
+                <p class="mb-6">낡은 노트였는데, 청소를 하다가 책장 뒤에서 떨어져 나온 것이었다. 마야의 어린 필체, 그들이 처음 룸메이트가 된 첫 주의 글이었다: "조던이가 내 부모가 날 쫓아낸 뒤 여기 있어도 된다고 했어. 한 번도 망설이지 않았어. 그냥 '좋아'라고 했어. 나 조던이가 나랑 함께 있는 걸 절대 후회하지 않게 해줄 거야. 그래서 그애가 꿈에 집중할 수 있도록 내가 모든 것을 챙겨줄 거야."</p>
+                <p class="mb-6">조던은 바닥에 앉아 울었다.</p>
+                <p class="mb-6">마야가 집에 들어오자, 조던은 자신을 <b class="highlight">관대해 봐달라고</b> 하거나 이제 <b class="highlight">놔두자고</b> 하지 않았다. 대신 그녀는 떨리는 손으로 일기장을 내밀었다.</p>
+                <p class="mb-6">"난 몰랐어," 조던이 말했다. "잊어버렸어. 나를 위해 넌 뭘 했는지 다 잊어버렸어."</p>
+                <p class="mb-6">마야는 그녀 옆에 앉았고, 처음으로 3년 만에 그들은 대화했다. 정말로 대화했다. 설거지나 집안일에 대해서가 아니라, 어떻게 그들이 둘 다 변했는지, 어떻게 둘 다 길을 잃었는지에 대해.</p>
+                <p class="mb-6">저녁이 되자, 그들은 일정을 만들었다. 공평한 집안일, 공평한 노력, 공평한 파트너십.</p>
+                <p class="mb-6">하지만 더 중요한 것은, 그들은 왜 처음에 친구가 되었는지를 기억했다는 것이었다. 그들은 항상 서로를 위해 나타났으니까. 그저 감사하는 법을 잊었을 뿐이었다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "518630.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

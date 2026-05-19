@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Cooking Class</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🧩</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Cooking Class</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">broaden my perspective</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">시야를 넓히다 / 관점을 넓히다</td></tr>
+                <tr><td class="p-4"><b class="text-white">attend</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">참석하다 / 다니다</td></tr>
+                <tr><td class="p-4"><b class="text-white">bilingual</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">이중 언어를 사용하는 / 두 언어로 된</td></tr>
+                <tr><td class="p-4"><b class="text-white">buying time</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">시간을 벌기</td></tr>
+                <tr><td class="p-4"><b class="text-white">read out loud</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">소리 내어 읽다</td></tr>
+                <tr><td class="p-4"><b class="text-white">the right way for me</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">나에게 맞는 방법</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-2xl p-5 space-y-2 border-l-4 border-teal-500">
+                <h3 class="text-xl font-bold text-white">broaden my perspective</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">단순히 지식을 늘린다는 뜻이 아니라, 다른 방식으로 생각하게 되거나 시야가 넓어진다는 느낌이에요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2 border-l-4 border-teal-500">
+                <h3 class="text-xl font-bold text-white">buying time</h3>
+                <p class="text-sm text-slate-300 line-relaxed">바로 대답하거나 행동하기 어려울 때, 잠깐 시간을 벌기 위해 하는 행동을 말해요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2 border-l-4 border-teal-500">
+                <h3 class="text-xl font-bold text-white">the right way for me</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">정답이 하나가 아니라, “내 성향이나 상황에 맞는 방식”이라는 뜻이에요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">I stared at the dough on the table.</p>
+                <p class="mb-6">“This is wrong,” I said.</p>
+                <p class="mb-6">My friend Jisoo looked at my hands. “It’s just dough.”</p>
+                <p class="mb-6">“No, it’s not just dough. It’s a personal attack.”</p>
+                <p class="mb-6">She laughed. “You’re being dramatic.”</p>
+                <p class="mb-6">“I’ve watched ten videos. I’ve practiced at home. I still can’t make dumpling wrappers that look normal.”</p>
+                <p class="mb-6">Our cooking teacher, Mrs. Park, came over. “What’s happening here?”</p>
+                <p class="mb-6">“I’m failing,” I said.</p>
+                <p class="mb-6">“You’re making dumplings.”</p>
+                <p class="mb-6">“Bad dumplings.”</p>
+                <p class="mb-6">Mrs. Park picked up one of my wrappers. It was thick on one side and almost transparent on the other.</p>
+                <p class="mb-6">She nodded. “Interesting.”</p>
+                <p class="mb-6">“That’s teacher language for terrible.”</p>
+                <p class="mb-6">“No,” she said. “It means I can see what you’re doing. You’re trying to copy the video exactly.”</p>
+                <p class="mb-6">“Isn’t that the point?”</p>
+                <p class="mb-6">“Not always.”</p>
+                <p class="mb-6">I sighed. “I wanted to <b class="highlight quiz-target" data-ans="attend" data-kor="참석하기">attend</b> this class because I thought learning in person would help. But everyone else is getting better, and I’m still stuck.”</p>
+                <p class="mb-6">Jisoo said, “You’re not stuck. You’re just annoyed.”</p>
+                <p class="mb-6">“I’m both.”</p>
+                <p class="mb-6">Mrs. Park sat beside me. “Why did you choose this class?”</p>
+                <p class="mb-6">“My grandmother used to make dumplings. I wanted to learn her recipe.”</p>
+                <p class="mb-6">“Did she measure everything?”</p>
+                <p class="mb-6">“No. She just knew.”</p>
+                <p class="mb-6">“Then maybe copying a video is not <b class="highlight quiz-target" data-ans="the right way for you" data-kor="당신에게 맞는 방법">the right way for you</b>.”</p>
+                <p class="mb-6">I looked at her. “Then what is?”</p>
+                <p class="mb-6">She pointed to Jisoo. “Ask her to explain what she feels when she rolls the dough.”</p>
+                <p class="mb-6">Jisoo held up her rolling pin. “I don’t know. I just press more in the middle and less at the edges.”</p>
+                <p class="mb-6">“That sentence helps more than the whole video,” I said.</p>
+                <p class="mb-6">Mrs. Park smiled. “Good. Sometimes another person’s method can <b class="highlight quiz-target" data-ans="broaden your perspective" data-kor="시야를 넓혀">broaden your perspective</b>.”</p>
+                <p class="mb-6">Across the room, two students were speaking Korean and English with each other.</p>
+                <p class="mb-6">Mrs. Park nodded toward them. “They are making a <b class="highlight quiz-target" data-ans="bilingual" data-kor="두 언어로 된">bilingual</b> recipe card. Maybe you should do that too—one side with steps, one side with feelings.”</p>
+                <p class="mb-6">“Feelings?”</p>
+                <p class="mb-6">“Yes. ‘Too sticky.’ ‘Too dry.’ ‘Press softer.’ Cooking is not only instructions.”</p>
+                <p class="mb-6">I picked up my recipe card and started writing slowly.</p>
+                <p class="mb-6">Jisoo looked at me. “Are you taking notes or <b class="highlight quiz-target" data-ans="buying time" data-kor="시간 버는 거야">buying time</b>?”</p>
+                <p class="mb-6">“Both,” I said. “Mostly <b class="highlight quiz-target" data-ans="buying time" data-kor="시간 버는 거고">buying time</b>.”</p>
+                <p class="mb-6">She laughed. “Then <b class="highlight quiz-target" data-ans="read it out loud" data-kor="소리 내서 읽어 봐">read it out loud</b>.”</p>
+                <p class="mb-6">I cleared my throat. “Press softly near the edge. Don’t panic if it’s ugly. Ugly dumplings still taste good.”</p>
+                <p class="mb-6">Mrs. Park smiled. “That last part is important.”</p>
+                <p class="mb-6">I rolled another wrapper. It was not perfect, but it was better. More importantly, I understood what I was trying to feel.</p>
+                <p class="mb-6">“Okay,” I said. “I’m still bad at this.”</p>
+                <p class="mb-6">Jisoo nodded. “Yes.”</p>
+                <p class="mb-6">“But I’m less lost.”</p>
+                <p class="mb-6">“That’s progress.”</p>
+                <p class="mb-6">I looked at the dough again and picked up the rolling pin. “Fine. Give me another piece.”</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">나는 테이블 위의 반죽을 빤히 바라보았다.</p>
+                <p class="mb-6">“이거 잘못됐어,” 내가 말했다.</p>
+                <p class="mb-6">내 친구 지수는 내 손을 보았다. “그냥 반죽이잖아.”</p>
+                <p class="mb-6">“아니, 그냥 반죽이 아니야. 이건 나를 향한 개인적인 공격이야.”</p>
+                <p class="mb-6">지수가 웃었다. “너 너무 극적이야.”</p>
+                <p class="mb-6">“영상 열 개를 봤어. 집에서도 연습했어. 그런데 아직도 정상적으로 보이는 만두피를 못 만들겠어.”</p>
+                <p class="mb-6">우리 요리 선생님인 박 선생님이 다가왔다. “여기 무슨 일이에요?”</p>
+                <p class="mb-6">“저 실패하고 있어요,” 내가 말했다.</p>
+                <p class="mb-6">“만두를 만들고 있죠.”</p>
+                <p class="mb-6">“못 만든 만두요.”</p>
+                <p class="mb-6">박 선생님은 내 만두피 하나를 집어 들었다. 한쪽은 두껍고 다른 한쪽은 거의 투명했다.</p>
+                <p class="mb-6">선생님은 고개를 끄덕였다. “흥미롭네요.”</p>
+                <p class="mb-6">“그건 선생님식으로 ‘끔찍하다’는 뜻이죠.”</p>
+                <p class="mb-6">“아니에요,” 선생님이 말했다. “당신이 뭘 하고 있는지 보인다는 뜻이에요. 영상을 정확히 따라 하려고 하고 있네요.”</p>
+                <p class="mb-6">“그게 목적 아닌가요?”</p>
+                <p class="mb-6">“항상 그런 건 아니에요.”</p>
+                <p class="mb-6">나는 한숨을 쉬었다. “제가 이 수업에 <b class="highlight">참석하다</b>기로 한 건 직접 배우면 도움이 될 줄 알았기 때문이에요. 그런데 다른 사람들은 다 늘고 있고, 저는 아직도 막혀 있어요.”</p>
+                <p class="mb-6">지수가 말했다. “너 막힌 거 아니야. 그냥 짜증 난 거야.”</p>
+                <p class="mb-6">“둘 다야.”</p>
+                <p class="mb-6">박 선생님은 내 옆에 앉았다. “왜 이 수업을 선택했어요?”</p>
+                <p class="mb-6">“할머니가 예전에 만두를 만드셨어요. 할머니 레시피를 배우고 싶었어요.”</p>
+                <p class="mb-6">“할머니가 모든 걸 계량하셨어요?”</p>
+                <p class="mb-6">“아니요. 그냥 아셨어요.”</p>
+                <p class="mb-6">그럼 영상을 따라 하는 게 <b class="highlight">나에게 맞는 방법</b>이 아닐 수도 있겠네요.”</p>
+                <p class="mb-6">나는 선생님을 바라보았다. “그럼 뭐가 맞는 방법인데요?”</p>
+                <p class="mb-6">선생님은 지수를 가리켰다. “지수에게 반죽을 밀 때 어떤 느낌인지 설명해 달라고 해 봐요.”</p>
+                <p class="mb-6">지수는 밀대를 들어 올렸다. “잘 모르겠어. 그냥 가운데는 좀 더 누르고, 가장자리는 덜 눌러.”</p>
+                <p class="mb-6">“그 한 문장이 영상 전체보다 더 도움이 돼,” 내가 말했다.</p>
+                <p class="mb-6">박 선생님이 미소 지었다. “좋아요. 가끔은 다른 사람의 방식이 <b class="highlight">시야를 넓히다</b> 줄 수 있어요.”</p>
+                <p class="mb-6">교실 건너편에서는 두 학생이 한국어와 영어로 서로 이야기하고 있었다.</p>
+                <p class="mb-6">박 선생님은 그쪽을 향해 고개를 끄덕였다. “저 학생들은 <b class="highlight">이중 언어를 사용하는</b> 레시피 카드를 만들고 있어요. 당신도 그렇게 해 보면 좋겠어요. 한쪽에는 순서를 쓰고, 다른 쪽에는 느낌을 쓰는 거죠.”</p>
+                <p class="mb-6">“느낌이요?”</p>
+                <p class="mb-6">“네. ‘너무 끈적함.’ ‘너무 건조함.’ ‘더 부드럽게 누르기.’ 요리는 지시 사항만 있는 게 아니에요.”</p>
+                <p class="mb-6">나는 레시피 카드를 집어 들고 천천히 쓰기 시작했다.</p>
+                <p class="mb-6">지수가 나를 보았다. “메모하는 거야, 아니면 <b class="highlight">시간을 벌기</b>야?”</p>
+                <p class="mb-6">“둘 다,” 내가 말했다. “대부분은 <b class="highlight">시간을 벌기</b>고.”</p>
+                <p class="mb-6">그녀가 웃었다. “그럼 <b class="highlight">소리 내어 읽다</b> 봐.”</p>
+                <p class="mb-6">I cleared my throat. “가장자리는 부드럽게 누르기. 못생겼다고 당황하지 않기. 못생긴 만두도 맛은 좋다.”</p>
+                <p class="mb-6">박 선생님이 미소 지었다. “마지막 부분이 중요하네요.”</p>
+                <p class="mb-6">나는 만두피를 하나 더 밀었다. 완벽하지는 않았지만 더 나아졌다. 더 중요한 건, 내가 어떤 느낌을 찾아야 하는지 이해했다는 것이었다.</p>
+                <p class="mb-6">“좋아,” 내가 말했다. “나 아직도 이거 못해.”</p>
+                <p class="mb-6">지수가 고개를 끄덕였다. “응.”</p>
+                <p class="mb-6">“하지만 덜 막막해.”</p>
+                <p class="mb-6">“그게 발전이지.”</p>
+                <p class="mb-6">나는 다시 반죽을 보고 밀대를 집어 들었다. “좋아. 하나 더 줘.”</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "519830.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

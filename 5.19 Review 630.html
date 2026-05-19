@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Piano Lesson</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🎧</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Piano Lesson</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">quite</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">꽤 / 상당히 / 아주</td></tr>
+                <tr><td class="p-4"><b class="text-white">power through</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">힘들어도 버티며 해내다 / 밀고 나가다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-2xl p-5 space-y-2 border-l-4 border-teal-500">
+                <h3 class="text-xl font-bold text-white">quite</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">문맥에 따라 “꽤”라는 뜻도 되고, 영국식 영어에서는 “아주”보다 약한 느낌으로 쓰일 때도 있어요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2 border-l-4 border-teal-500">
+                <h3 class="text-xl font-bold text-white">power through</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">힘들거나 하기 싫어도 멈추지 않고 끝까지 해낸다는 뜻이에요. 단순히 “열심히 하다”보다 버티는 느낌이 강해요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">I closed the piano book and pushed it away.</p>
+                <p class="mb-6">“I can’t do this,” I said.</p>
+                <p class="mb-6">My teacher, Mina, looked at me calmly. “You say that every Tuesday.”</p>
+                <p class="mb-6">“Because it’s true every Tuesday.”</p>
+                <p class="mb-6">She smiled a little. “What feels impossible today?”</p>
+                <p class="mb-6">“This song. My fingers don’t move fast enough. I practice every night, but I still sound terrible.”</p>
+                <p class="mb-6">“You don’t sound terrible.”</p>
+                <p class="mb-6">“I sound <b class="highlight quiz-target" data-ans="quite" data-kor="꽤">quite</b> terrible.”</p>
+                <p class="mb-6">Mina laughed. “Okay. You sound frustrated.”</p>
+                <p class="mb-6">“That’s a nicer way to say terrible.”</p>
+                <p class="mb-6">She sat beside me on the piano bench. “Play the first four bars.”</p>
+                <p class="mb-6">“No.”</p>
+                <p class="mb-6">“Just four bars.”</p>
+                <p class="mb-6">“I already know what will happen. I’ll make a mistake, stop, sigh loudly, and hate myself.”</p>
+                <p class="mb-6">“Then don’t stop.”</p>
+                <p class="mb-6">I stared at her. “That’s your advice?”</p>
+                <p class="mb-6">“For now, yes.”</p>
+                <p class="mb-6">“But if I make a mistake, I need to fix it.”</p>
+                <p class="mb-6">“Not every time,” she said. “Sometimes you need to learn how to continue.”</p>
+                <p class="mb-6">I looked down at the keys. “That sounds wrong.”</p>
+                <p class="mb-6">“It feels wrong because you think progress means playing perfectly. But today, progress means staying with the music.”</p>
+                <p class="mb-6">I wanted to argue, but I was too tired. So I started playing. In the second bar, I missed a note.</p>
+                <p class="mb-6">“Keep going,” Mina said.</p>
+                <p class="mb-6">I made another mistake.</p>
+                <p class="mb-6">“Keep going.”</p>
+                <p class="mb-6">“This is painful.”</p>
+                <p class="mb-6">“I know. <b class="highlight quiz-target" data-ans="Power through" data-kor="힘들어도 끝까지 밀고 나가">Power through</b> it.”</p>
+                <p class="mb-6">I played until the end of the line. It was messy, uneven, and not beautiful at all. But I finished it.</p>
+                <p class="mb-6">Mina pointed at the page. “What happened?”</p>
+                <p class="mb-6">“I made mistakes.”</p>
+                <p class="mb-6">“And?”</p>
+                <p class="mb-6">“I didn’t stop.”</p>
+                <p class="mb-6">“Exactly.”</p>
+                <p class="mb-6">I frowned. “That’s progress?”</p>
+                <p class="mb-6">“Yes. You trained a different skill today.”</p>
+                <p class="mb-6">“What skill?”</p>
+                <p class="mb-6">“Recovering.”</p>
+                <p class="mb-6">I sat quietly for a moment. I had never thought about that. I always believed I was stuck because I couldn’t play without mistakes. But maybe I was stuck because every mistake made me quit.</p>
+                <p class="mb-6">“So I shouldn’t care about mistakes?” I asked.</p>
+                <p class="mb-6">“No. Care about them later. First, learn to survive the song.”</p>
+                <p class="mb-6">I laughed. “That sounds dramatic.”</p>
+                <p class="mb-6">“It’s music. We’re allowed to be dramatic.”</p>
+                <p class="mb-6">I put my hands back on the keys. “Four bars again?”</p>
+                <p class="mb-6">She nodded. “Four bars again.”</p>
+                <p class="mb-6">This time, I still made mistakes. But I kept going. And for the first time in weeks, I didn’t feel completely stuck.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">나는 피아노 책을 덮고 옆으로 밀어냈다.</p>
+                <p class="mb-6">“저 이거 못 하겠어요,” 내가 말했다.</p>
+                <p class="mb-6">내 선생님 미나는 침착하게 나를 바라보았다. “너 매주 화요일마다 그 말 하잖아.”</p>
+                <p class="mb-6">“왜냐하면 매주 화요일마다 사실이니까요.”</p>
+                <p class="mb-6">그녀가 살짝 웃었다. “오늘은 뭐가 그렇게 불가능하게 느껴져?”</p>
+                <p class="mb-6">“이 곡이요. 손가락이 충분히 빨리 안 움직여요. 매일 밤 연습하는데도 아직도 너무 못 쳐요.”</p>
+                <p class="mb-6">“너 그렇게 못 치지 않아.”</p>
+                <p class="mb-6">“저 <b class="highlight">꽤</b> 못 쳐요.”</p>
+                <p class="mb-6">미나가 웃었다. “좋아. 너는 답답한 거야.”</p>
+                <p class="mb-6">“그게 못 친다는 말을 더 좋게 표현한 거죠.”</p>
+                <p class="mb-6">그녀는 피아노 의자에 내 옆으로 앉았다. “처음 네 마디만 쳐 봐.”</p>
+                <p class="mb-6">“싫어요.”</p>
+                <p class="mb-6">“딱 네 마디만.”</p>
+                <p class="mb-6">“이미 어떻게 될지 알아요. 실수하고, 멈추고, 크게 한숨 쉬고, 제 자신이 싫어질 거예요.”</p>
+                <p class="mb-6">“그럼 멈추지 마.”</p>
+                <p class="mb-6">나는 그녀를 빤히 쳐다보았다. “그게 조언이에요?”</p>
+                <p class="mb-6">“지금은 그래.”</p>
+                <p class="mb-6">“하지만 실수하면 고쳐야 하잖아요.”</p>
+                <p class="mb-6">“항상 그런 건 아니야,” 그녀가 말했다. “가끔은 계속하는 법을 배워야 해.”</p>
+                <p class="mb-6">나는 건반을 내려다보았다. “그건 틀린 것 같은데요.”</p>
+                <p class="mb-6">“네가 발전을 완벽하게 치는 거라고 생각해서 그렇게 느껴지는 거야. 하지만 오늘 발전은 음악을 놓지 않는 거야.”</p>
+                <p class="mb-6">나는 반박하고 싶었지만 너무 지쳐 있었다. 그래서 연주를 시작했다. 두 번째 마디에서 음 하나를 틀렸다.</p>
+                <p class="mb-6">“계속해,” 미나가 말했다.</p>
+                <p class="mb-6">또 실수했다.</p>
+                <p class="mb-6">“계속해.”</p>
+                <p class="mb-6">“이거 괴로워요.”</p>
+                <p class="mb-6">“알아. <b class="highlight">힘들어도 끝까지 밀고 나가</b>.”</p>
+                <p class="mb-6">나는 그 줄 끝까지 연주했다. 엉망이고, 고르지 않고, 전혀 아름답지 않았다. 하지만 끝까지 했다.</p>
+                <p class="mb-6">미나는 악보를 가리켰다. “무슨 일이 있었지?”</p>
+                <p class="mb-6">“실수했어요.”</p>
+                <p class="mb-6">“그리고?”</p>
+                <p class="mb-6">“멈추지 않았어요.”</p>
+                <p class="mb-6">“바로 그거야.”</p>
+                <p class="mb-6">나는 얼굴을 찡그렸다. “그게 발전이에요?”</p>
+                <p class="mb-6">“응. 오늘은 다른 기술을 연습한 거야.”</p>
+                <p class="mb-6">“무슨 기술이요?”</p>
+                <p class="mb-6">“회복하는 기술.”</p>
+                <p class="mb-6">나는 잠시 조용히 앉아 있었다. 그런 식으로 생각해 본 적이 없었다. 나는 늘 실수 없이 연주하지 못해서 막힌 거라고 믿었다. 하지만 어쩌면 실수할 때마다 내가 포기해서 막혀 있었던 건지도 몰랐다.</p>
+                <p class="mb-6">“그럼 실수는 신경 쓰지 말라는 거예요?” 내가 물었다.</p>
+                <p class="mb-6">“아니. 나중에 신경 써. 먼저 곡을 끝까지 살아남는 법을 배워.”</p>
+                <p class="mb-6">나는 웃었다. “너무 극적인데요.”</p>
+                <p class="mb-6">“음악이잖아. 좀 극적이어도 돼.”</p>
+                <p class="mb-6">나는 다시 건반 위에 손을 올렸다. “네 마디 다시요?”</p>
+                <p class="mb-6">그녀가 고개를 끄덕였다. “네 마디 다시.”</p>
+                <p class="mb-6">이번에도 나는 실수했다. 하지만 계속했다. 그리고 몇 주 만에 처음으로, 완전히 막혀 있다는 느낌이 들지 않았다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "519630.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

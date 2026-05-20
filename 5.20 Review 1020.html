@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Woman Who Made Things Easier</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🧩</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Woman Who Made Things Easier</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">accessible</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">접근하기 쉬운 / 이해하기 쉬운</td></tr>
+                <tr><td class="p-4"><b class="text-white">easy to learn</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">배우기 쉬운</td></tr>
+                <tr><td class="p-4"><b class="text-white">strategic</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">전략적인</td></tr>
+                <tr><td class="p-4"><b class="text-white">empathize</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">공감하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">stable</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">안정적인</td></tr>
+                <tr><td class="p-4"><b class="text-white">expat</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">해외 거주자 / 외국에 사는 사람</td></tr>
+                <tr><td class="p-4"><b class="text-white">sassy</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">당돌한 / 톡 쏘는 / 재치 있게 건방진</td></tr>
+                <tr><td class="p-4"><b class="text-white">sass back</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">말대꾸하다 / 톡 쏘아붙이다</td></tr>
+                <tr><td class="p-4"><b class="text-white">savage</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">거침없는 / 사정없이 직설적인 / 살벌하게 웃긴</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">accessible</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">장소뿐 아니라 설명, 사람, 정보가 어렵지 않고 편하게 다가갈 수 있다는 뜻으로도 쓰여요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">strategic</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">단순히 계획이 있다는 뜻보다, 목적을 생각하며 영리하게 움직인다는 뉘앙스가 있어요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">expat</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">자기 나라를 떠나 외국에서 살고 있는 사람을 말해요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">sassy</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">친근한 맥락에서는 자신감 있고 재치 있게 톡 쏘는 성격을 말해요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">sass back</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">상대에게 장난스럽거나 버릇없게 톡 쏘아붙이는 것을 뜻해요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">savage</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">요즘 대화에서는 아주 직설적이거나 웃길 정도로 거침없는 말을 할 때 자주 써요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Jisoo worked at the front desk of a language school.</p>
+                <p class="mb-6">To many people, it looked like a simple job. She answered questions, printed schedules, and helped students find classrooms. But to the students who were new, nervous, or far from home, Jisoo made the whole school feel more <b class="highlight quiz-target" data-ans="accessible" data-kor="접근하기 쉬운 / 이해하기 쉬운">accessible</b>.</p>
+                <p class="mb-6">She knew which forms were confusing. She knew which classroom was hard to find. She knew which students were too embarrassed to ask for help twice. When someone struggled, she did not make them feel slow. She explained things clearly and kindly.</p>
+                <p class="mb-6">Jisoo had a gift for making difficult things <b class="highlight quiz-target" data-ans="easy to learn" data-kor="배우기 쉬운">easy to learn</b>. She could take a complicated registration process and break it into small steps. “First, write your name here. Then choose the class. We can do the payment part after that.” Her voice made people feel that the problem was manageable.</p>
+                <p class="mb-6">She was also <b class="highlight quiz-target" data-ans="strategic" data-kor="전략적인">strategic</b>. She prepared extra maps before the first day of class. She kept spare pens at the desk. She put nervous students in groups with friendly classmates. Her planning was quiet, but it helped many people avoid unnecessary stress.</p>
+                <p class="mb-6">Most of all, Jisoo knew how to <b class="highlight quiz-target" data-ans="empathize" data-kor="공감하다">empathize</b>. When an <b class="highlight quiz-target" data-ans="expat" data-kor="해외 거주자">expat</b> came to the desk confused about a notice or a rule, she did not act superior. She remembered that living in another country could make simple tasks feel difficult. A bank form, a phone plan, or a trash schedule could become overwhelming when no one explained it well.</p>
+                <p class="mb-6">Jisoo made people feel <b class="highlight quiz-target" data-ans="stable" data-kor="안정적인">stable</b>. She could not solve every problem, but she made people feel less alone while they solved it.</p>
+                <p class="mb-6">She was kind, but she was not weak. Sometimes she was a little <b class="highlight quiz-target" data-ans="sassy" data-kor="당돌한 / 톡 쏘는">sassy</b>. If a student complained rudely about a rule she could not change, she might <b class="highlight quiz-target" data-ans="sass back" data-kor="말대꾸하다 / 톡 쏘아붙이다">sass back</b> gently and say, “I understand, but being angry at me will not change the policy.”</p>
+                <p class="mb-6">Sometimes she was even a bit <b class="highlight quiz-target" data-ans="savage" data-kor="거침없는 / 사정없이 직설적인">savage</b>, but only when someone needed honest encouragement. When one student said, “I can’t learn this language,” Jisoo replied, “You can. You just cannot learn it all today.”</p>
+                <p class="mb-6">The student smiled and came back the next day.</p>
+                <p class="mb-6">People did not always notice how much Jisoo did. But many students stayed because she helped them believe they could belong.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">지수는 어학원의 안내 데스크에서 일했다.</p>
+                <p class="mb-6">많은 사람들에게는 단순한 일처럼 보였다. 그녀는 질문에 답하고, 시간표를 출력하고, 학생들이 교실을 찾도록 도와주었다. 하지만 새로 온 학생들, 긴장한 학생들, 혹은 고향에서 멀리 떨어진 학생들에게 지수는 학교 전체를 더 편하고 <b class="highlight">접근하기 쉽게</b> 느끼게 해 주었다.</p>
+                <p class="mb-6">그녀는 어떤 서류가 헷갈리는지 알고 있었다. 어떤 교실을 찾기 어려운지도 알고 있었다. 어떤 학생들이 두 번 도움을 요청하기 부끄러워하는지도 알고 있었다. 누군가 어려움을 겪으면, 그녀는 그 사람이 느리다고 느끼게 만들지 않았다. 그녀는 분명하고 친절하게 설명해 주었다.</p>
+                <p class="mb-6">지수에게는 어려운 일을 <b class="highlight">배우기 쉽게</b> 만드는 재능이 있었다. 복잡한 등록 절차도 작은 단계들로 나누어 설명할 수 있었다. “먼저 여기에 이름을 쓰세요. 그다음 수업을 선택하세요. 결제 부분은 그다음에 같이 하면 돼요.” 그녀의 목소리는 사람들에게 그 문제가 감당할 만하다고 느끼게 해 주었다.</p>
+                <p class="mb-6">그녀는 또한 <b class="highlight">전략적이었다</b>. 수업 첫날 전에 여분의 지도를 준비했다. 데스크에 여분의 펜을 두었다. 긴장한 학생들을 친절한 반 친구들과 같은 조에 배치했다. 그녀의 계획은 조용했지만, 많은 사람들이 불필요한 스트레스를 피하도록 도와주었다.</p>
+                <p class="mb-6">무엇보다 지수는 <b class="highlight">공감할 줄 알았다</b>. 외국 거주자가 공지나 규칙을 이해하지 못해 데스크에 왔을 때, 그녀는 우월한 태도를 보이지 않았다. 그녀는 다른 나라에서 산다는 것이 단순한 일도 어렵게 만들 수 있다는 것을 기억했다. 은행 서류, 휴대폰 요금제, 쓰레기 배출 일정 같은 것들도 누군가 잘 설명해 주지 않으면 부담스럽게 느껴질 수 있었다.</p>
+                <p class="mb-6">지수는 사람들에게 <b class="highlight">안정감을 주었다</b>. 그녀가 모든 문제를 해결할 수는 없았지만, 사람들이 문제를 해결하는 동안 혼자가 아니라고 느끼게 해 주었다.</p>
+                <p class="mb-6">그녀는 친절했지만 약하지는 않았다. 때로는 조금 <b class="highlight">톡 쏘는 면도 있었다</b>. 학생이 그녀가 바꿀 수 없는 규칙에 대해 무례하게 불평하면, 그녀는 부드럽게 <b class="highlight">받아치며</b> 말할 때도 있었다. “이해해요. 하지만 저에게 화를 내도 정책은 바뀌지 않아요.”</p>
+                <p class="mb-6">때로는 꽤 <b class="highlight">직설적일 때도 있었다</b>. 하지만 누군가에게 솔직한 격려가 필요할 때만 그랬다. 한 학생이 “저는 이 언어를 못 배워요”라고 말했을 때, 지수는 대답했다. “배울 수 있어요. 다만 오늘 하루에 전부 배울 수는 없는 거예요.”</p>
+                <p class="mb-6">그 학생은 웃었고, 다음 날 다시 왔다.</p>
+                <p class="mb-6">사람들은 지수가 얼마나 많은 일을 하는지 항상 알아차리지는 못했다. 하지만 많은 학생들이 계속 다닐 수 있었던 것은, 지수가 그들도 이곳에 속할 수 있다고 믿게 도와주었기 때문이다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "5201020.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

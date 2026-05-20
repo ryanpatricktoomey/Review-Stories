@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Man Who Stayed Grounded</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">Compass🧭</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Man Who Stayed Grounded</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">academia</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">학계</td></tr>
+                <tr><td class="p-4"><b class="text-white">insulated</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">보호된 / 외부와 단절된</td></tr>
+                <tr><td class="p-4"><b class="text-white">hard on myself</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">나 자신에게 엄격한 / 스스로를 심하게 몰아붙이는</td></tr>
+                <tr><td class="p-4"><b class="text-white">newlyweds</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">신혼부부</td></tr>
+                <tr><td class="p-4"><b class="text-white">follow through</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">끝까지 해내다 / 약속이나 계획을 실행하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">broke</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">돈이 없는 / 빈털터리인</td></tr>
+                <tr><td class="p-4"><b class="text-white">sleep deprived</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">수면 부족인</td></tr>
+                <tr><td class="p-4"><b class="text-white">I became who I am today</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">오늘날의 내가 되었다</td></tr>
+                <tr><td class="p-4"><b class="text-white">physical therapist</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">물리치료사</td></tr>
+                <tr><td class="p-4"><b class="text-white">not official yet</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">아직 공식적인 것은 아닌</td></tr>
+                <tr><td class="p-4"><b class="text-white">talking to someone</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">누군가와 썸 타는 중인 / 누군가와 만나며 알아가는 중인</td></tr>
+                <tr><td class="p-4"><b class="text-white">shallow</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">피상적인 / 깊이가 없는</td></tr>
+                <tr><td class="p-4"><b class="text-white">materialistic</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">물질주의적인</td></tr>
+                <tr><td class="p-4"><b class="text-white">judge of character</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">사람 보는 눈</td></tr>
+                <tr><td class="p-4"><b class="text-white">down-to-earth</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">현실적인 / 소탈한 / 허세 없는</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">insulated</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">사람이나 집단이 현실의 어려움이나 외부 영향으로부터 보호되거나 단절되어 있다는 뜻으로 쓰일 수 있어요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">hard on myself</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">이야기 속 대상에 맞게 hard on himself / herself / themselves처럼 바꿔야 자연스러워요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">follow through</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">말만 하는 것이 아니라 약속이나 책임을 끝까지 실행한다는 뜻이에요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">broke</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">broken과 다르게 “돈이 없는”이라는 뜻으로 자주 쓰여요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">talking to someone</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">연애 표현으로는 아직 공식적인 관계는 아니지만 서로 알아가는 단계라는 뜻이에요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">judge of character</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">어떤 사람이 믿을 만한지 알아보는 능력을 말해요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">down-to-earth</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">허세가 없고 현실적이며 편안한 성격을 말해요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Daniel worked in <b class="highlight quiz-target" data-ans="academia" data-kor="학계">academia</b>, but he never lost touch with ordinary life.</p>
+                <p class="mb-6">He taught history at a small college. His office was full of books, papers, and student essays, but he was not <b class="highlight quiz-target" data-ans="insulated" data-kor="단절되어">insulated</b> from the practical problems people carried every day. If a student said she was <b class="highlight quiz-target" data-ans="broke" data-kor="돈이 없다">broke</b>, he did not make her feel ashamed. He quietly told her about the campus food pantry and helped her find a scholarship form.</p>
+                <p class="mb-6">Daniel was deeply <b class="highlight quiz-target" data-ans="down-to-earth" data-kor="현실적이고 소탈한 사람이었다">down-to-earth</b>. He remembered students’ names. He noticed when someone looked tired. If a student came to class <b class="highlight quiz-target" data-ans="sleep deprived" data-kor="수면 부족인">sleep deprived</b>, he did not embarrass them. He simply said, “Do your best today. Then try to rest.”</p>
+                <p class="mb-6">He was often <b class="highlight quiz-target" data-ans="hard on myself" data-kor="스스로에게 엄격했다">hard on himself</b>. After a lecture, he remembered every unclear explanation and every moment when he could have been more patient. But that did not stop him from showing up again the next day. He always <b class="highlight quiz-target" data-ans="followed through" data-kor="끝까지 해냈다">followed through</b>. If he promised feedback by Friday, he gave feedback by Friday. If he said he would write a recommendation letter, he did it carefully.</p>
+                <p class="mb-6">Daniel and his wife had once been <b class="highlight quiz-target" data-ans="newlyweds" data-kor="신혼부부">newlyweds</b> with very little money. They learned that love was not only romance. It was budgeting, forgiving each other, and helping each other through ordinary stress. That experience made him gentle with students who were trying to build a life while carrying heavy responsibilities.</p>
+                <p class="mb-6">Students trusted Daniel because he was a good <b class="highlight quiz-target" data-ans="judge of character" data-kor="사람 보는 눈">judge of character</b>. When a student said she was <b class="highlight quiz-target" data-ans="talking to someone" data-kor="누군가와 알아가는 중">talking to someone</b>, but the relationship was <b class="highlight quiz-target" data-ans="not official yet" data-kor="아직 공식적인 것은 아닌">not official yet</b>, Daniel did not give dramatic advice. He simply asked, “Do you feel respected when you are with that person?”</p>
+                <p class="mb-6">He disliked <b class="highlight quiz-target" data-ans="shallow" data-kor="피상적인">shallow</b> praise and <b class="highlight quiz-target" data-ans="materialistic" data-kor="물질주의적인">materialistic</b> values. He respected people who were honest, responsible, and kind when nobody was watching.</p>
+                <p class="mb-6">Before becoming a professor, Daniel had worked with a <b class="highlight quiz-target" data-ans="physical therapist" data-kor="물리치료사">physical therapist</b> for a short time. He often said it taught him something important: people heal slowly, one step at a time.</p>
+                <p class="mb-6">Years later, a former student wrote to him, “Because of you, <b class="highlight quiz-target" data-ans="I became who I am today" data-kor="오늘날의 제가 되었습니다">I became who I am today</b>.”</p>
+                <p class="mb-6">Daniel did not think of himself as extraordinary. But many people became stronger because he treated them with steady respect.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">다니엘은 <b class="highlight">학계</b>에서 일했지만, 평범한 삶과 멀어지지 않았다.</p>
+                <p class="mb-6">그는 작은 대학에서 역사를 가르쳤다. 그의 연구실은 책과 서류, 학생들의 과제로 가득했지만, 그는 사람들이 매일 짊어지는 현실적인 문제들과 <b class="highlight">단절되어</b> 있지 않았다. 학생이 <b class="highlight">돈이 없다고</b> 말하면, 그는 그 학생이 부끄럽게 느끼도록 만들지 않았다. 조용히 학교 식료품 지원소에 대해 알려 주고, 장학금 신청서를 찾는 것도 도와주었다.</p>
+                <p class="mb-6">다니엘은 매우 <b class="highlight">현실적이고 소탈한 사람이었다</b>. 그는 학생들의 이름을 기억했다. 누군가 피곤해 보이면 알아차렸다. 학생이 <b class="highlight">수면 부족인</b> 상태로 수업에 오면, 그는 그 학생을 창피하게 하지 않았다. 그저 “오늘은 할 수 있는 만큼 해요. 그리고 쉬려고 해 봐요”라고 말했다.</p>
+                <p class="mb-6">그는 종종 <b class="highlight">스스로에게 엄격했다</b>. 강의가 끝나면 명확하지 않았던 설명이나, 자신이 더 인내심 있게 행동할 수 있었던 순간들을 떠올렸다. 하지만 그것이 그가 다음 날 다시 나타나는 것을 막지는 못했다. 그는 늘 <b class="highlight">끝까지 해냈다</b>. 금요일까지 피드백을 주겠다고 약속하면 금요일까지 주었다. 추천서를 써 주겠다고 말하면 정성껏 썼다.</p>
+                <p class="mb-6">다니엘과 그의 아내도 한때 돈이 거의 없는 <b class="highlight">신혼부부</b>였다. 그들은 사랑이 로맨스만은 아니라는 것을 배웠다. 사랑은 예산을 짜고, 서로를 용서하고, 평범한 스트레스를 함께 견디는 일이기도 했다. 그 경험은 무거운 책임을 지고 삶을 세워 가는 학생들에게 그가 더 부드럽게 대하도록 만들었다.</p>
+                <p class="mb-6">학생들은 다니엘을 믿었다. 그는 <b class="highlight">사람 보는 눈</b>이 좋았기 때문이다. 한 학생이 <b class="highlight">아직 공식적인 관계는 아니지만 누군가와 알아가는 중</b>이라고 말했을 때, 다니엘은 극적인 조언을 하지 않았다. 그저 “그 사람과 함께 있을 때 존중받는다고 느끼니?”라고 물었다.</p>
+                <p class="mb-6">그는 <b class="highlight">피상적인</b> 칭찬이나 <b class="highlight">물질주의적인</b> 가치를 좋아하지 않았다. 그는 아무도 보지 않을 때에도 정직하고, 책임감 있고, 친절한 사람들을 존중했다.</p>
+                <p class="mb-6">교수가 되기 전, 다니엘은 짧은 기간 동안 <b class="highlight">물리치료사</b>와 함께 일한 적이 있었다. 그는 그 일이 자신에게 중요한 것을 가르쳐 주었다고 자주 말했다. 사람은 한 걸음씩 천천히 회복된다는 것이었다.</p>
+                <p class="mb-6">몇 년 뒤, 한 졸업생이 그에게 편지를 썼다. “선생님 덕분에 <b class="highlight">오늘날의 제가 되었습니다</b>.”</p>
+                <p class="mb-6">다니엘은 자신을 특별한 사람이라고 생각하지 않았다. 하지만 많은 사람들이 그가 보여 준 꾸준한 존중 덕분에 더 강해졌다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "520830.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

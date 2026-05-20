@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Woman Who Made the Room Kinder</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🕯️</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Woman Who Made the Room Kinder</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">show host</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">진행자를 표시하다 / 호스트를 보여주다</td></tr>
+                <tr><td class="p-4"><b class="text-white">brings out the best of people</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">사람들의 가장 좋은 모습을 끌어내다</td></tr>
+                <tr><td class="p-4"><b class="text-white">self-sacrifice</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">자기희생</td></tr>
+                <tr><td class="p-4"><b class="text-white">spirit of sacrifice</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">희생정신</td></tr>
+                <tr><td class="p-4"><b class="text-white">altruistic</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">이타적인</td></tr>
+                <tr><td class="p-4"><b class="text-white">rubbed off on you</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">너에게 영향을 주었다 / 너에게 옮겨갔다</td></tr>
+                <tr><td class="p-4"><b class="text-white">had an influence on me</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">나에게 영향을 주었다</td></tr>
+                <tr><td class="p-4"><b class="text-white">clean image</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">깨끗한 이미지 / 단정하고 좋은 이미지</td></tr>
+                <tr><td class="p-4"><b class="text-white">treated badly</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">나쁘게 대우받았다</td></tr>
+                <tr><td class="p-4"><b class="text-white">broke the cycle</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">악순환을 끊었다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">brings out the best of people</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">자연스럽게는 bring out the best in people이라고 많이 말해요. 주변 사람들이 더 좋은 모습을 보이게 만든다는 뜻이에요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">rubbed off on you</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">태도, 습관, 성격 등이 자연스럽게 다른 사람에게 영향을 주었다는 뜻이에요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">clean image</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">단순히 깨끗하다는 뜻보다 “단정하고 신뢰 가는 이미지”에 가까울 수 있어요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">broke the cycle</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">반복되던 나쁜 패턴이나 악순환을 멈췄다는 뜻이에요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Mina was never the official <b class="highlight quiz-target" data-ans="show host" data-kor="진행자">show host</b> at the community center.</p>
+                <p class="mb-6">That title belonged to people with microphones, schedules, and the dangerous confidence of someone who knew how to connect a laptop to a projector. Mina was usually near the back, holding a stack of paper cups or quietly helping a nervous newcomer find a chair.</p>
+                <p class="mb-6">But everyone behaved a little better when Mina was in the room.</p>
+                <p class="mb-6">She had a way of <b class="highlight quiz-target" data-ans="bringing out the best in people" data-kor="사람들의 가장 좋은 모습을 끌어내는">bringing out the best in people</b>. Loud people lowered their voices around her. Teenagers remembered to say thank you. Even Mr. Han, who believed folding chairs were a personal enemy, helped stack them when Mina smiled and said, “You look strong today.”</p>
+                <p class="mb-6">Mina had a <b class="highlight quiz-target" data-ans="clean image" data-kor="단정하고 좋은 이미지">clean image</b>, but not in a cold or perfect way. Her kindness felt honest. She did not help people so they would praise her later. She helped because someone needed help, and that seemed like enough reason.</p>
+                <p class="mb-6">There was <b class="highlight quiz-target" data-ans="self-sacrifice" data-kor="자기희생">self-sacrifice</b> in her, though she would have laughed if anyone said that. She always took the smallest piece of cake. She gave the better seat to someone older. She stayed late after events because trash, sadly, had never learned to walk outside by itself.</p>
+                <p class="mb-6">Her <b class="highlight quiz-target" data-ans="spirit of sacrifice" data-kor="희생정신">spirit of sacrifice</b> was quiet and practical. It wore comfortable shoes. It carried extra tissues. It remembered who could not eat spicy food.</p>
+                <p class="mb-6">Some people had <b class="highlight quiz-target" data-ans="treated her badly" data-kor="그녀를 나쁘게 대우했다">treated her badly</b>. They mistook her patience for weakness. They asked too much and thanked her too little. But Mina did something rare: she <b class="highlight quiz-target" data-ans="broke the cycle" data-kor="악순환을 끊었다">broke the cycle</b>. She did not become cruel just because someone had been careless with her.</p>
+                <p class="mb-6">She was deeply <b class="highlight quiz-target" data-ans="altruistic" data-kor="이타적인">altruistic</b>, but never dramatic about it. Her goodness was not a speech. It was a warm cup of tea placed beside someone before they knew they needed it.</p>
+                <p class="mb-6">One day, a young volunteer said, “I think Mina’s patience has <b class="highlight quiz-target" data-ans="rubbed off on you" data-kor="너에게 옮겨갔다 / 영향을 주었다">rubbed off on me</b>.”</p>
+                <p class="mb-6">Another nodded. “She has really <b class="highlight quiz-target" data-ans="had an influence on me" data-kor="나에게 영향을 주었다">had an influence on me</b> too.”</p>
+                <p class="mb-6">Mina would have been embarrassed to hear that. She would have changed the subject and asked if anyone wanted more rice.</p>
+                <p class="mb-6">That was exactly why people admired her.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">미나는 커뮤니티 센터의 공식 <b class="highlight">진행자</b>가 아니었다.</p>
+                <p class="mb-6">그 직함은 마이크와 일정표, 그리고 노트북을 프로젝터에 연결할 줄 안다는 위험한 자신감을 가진 사람들의 것이었다. 미나는 보통 뒤쪽에 서서 종이컵 더미를 들고 있거나, 긴장한 새 사람이 의자를 찾도록 조용히 도와주고 있었다.</p>
+                <p class="mb-6">하지만 미나가 방 안에 있으면 모두가 조금 더 좋은 사람이 되었다.</p>
+                <p class="mb-6">그녀에게는 <b class="highlight">사람들의 가장 좋은 모습을 끌어내는</b> 힘이 있었다. 목소리가 큰 사람들도 그녀 곁에서는 목소리를 낮췄다. 십 대 아이들도 고맙다는 말을 기억했다. 접이식 의자를 개인적인 원수처럼 여기던 한 씨마저도, 미나가 “오늘 힘세 보이시네요”라고 웃으며 말하면 의자를 쌓는 일을 도왔다.</p>
+                <p class="mb-6">미나는 <b class="highlight">단정하고 신뢰 가는 이미지</b>를 가지고 있었지만, 차갑거나 완벽한 느낌은 아니었다. 그녀의 친절은 정직하게 느껴졌다. 그녀는 나중에 칭칭받기 위해 사람들을 돕지 않았다. 누군가 도움이 필요했고, 그것만으로도 충분한 이유처럼 보였기 때문에 도왔다.</p>
+                <p class="mb-6">그녀에게는 <b class="highlight">자기희생</b>이 있었다. 물론 누가 그렇게 말하면 그녀는 웃었을 것이다. 그녀는 늘 가장 작은 케이크 조각을 가져갔다. 더 좋은 자리는 나이 든 사람에게 내어 주었다. 행사가 끝난 뒤에도 늦게까지 남아 있었다. 안타깝게도 쓰레기는 스스로 밖으로 걸어 나가는 법을 배운 적이 없기 때문이다.</p>
+                <p class="mb-6">그녀의 <b class="highlight">희생정신</b>은 조용하고 실용적이었다. 편한 신발을 신고 있었고, 여분의 휴지를 들고 다녔으며, 누가 매운 음식을 못 먹는지 기억했다.</p>
+                <p class="mb-6">어떤 사람들은 <b class="highlight">그녀를 나쁘게 대우했다</b>. 그들은 그녀의 인내심을 약함으로 착각했다. 너무 많이 부탁하고 너무 적게 고마워했다. 하지만 미나는 드문 일을 해냈다. 그녀는 <b class="highlight">악순환을 끊었다</b>. 누군가가 자신을 함부로 대했다고 해서 그녀 자신이 차가운 사람이 되지는 않았다.</p>
+                <p class="mb-6">그녀는 깊이 <b class="highlight">이타적인</b> 사람이었지만, 그것을 극적으로 드러내지 않았다. 그녀의 선함은 연설이 아니었다. 누군가가 필요하다는 걸 알기도 전에 곁에 놓인 따뜻한 차 한 잔이었다.</p>
+                <p class="mb-6">어느 날, 한 젊은 봉사자가 말했다. “미나의 인내심이 <b class="highlight">나에게도 영향을 준 것 같아요</b>.”</p>
+                <p class="mb-6">다른 사람이 고개를 끄덕였다. “저에게도 정말 <b class="highlight">영향을 주었어요</b>.”</p>
+                <p class="mb-6">미나가 그 말을 들었다면 부끄러워했을 것이다. 그녀는 화제를 바꾸고 누가 밥을 더 먹을지 물었을 것이다.</p>
+                <p class="mb-6">바로 그래서 사람들이 그녀를 존경했다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "520630.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

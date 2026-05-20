@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Man Who Kept Going Anyway</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🪨</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Man Who Kept Going Anyway</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">it is what it is</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">어쩔 수 없지 / 그런 거지</td></tr>
+                <tr><td class="p-4"><b class="text-white">stoicism</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">스토아 철학 / 감정을 절제하고 담담히 받아들이는 태도</td></tr>
+                <tr><td class="p-4"><b class="text-white">takes action</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">행동으로 옮기다 / 조치를 취하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">follow through</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">끝까지 해내다 / 말한 것을 실행하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">took over her position</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그녀의 자리를 이어받았다 / 그녀의 직책을 맡게 되었다</td></tr>
+                <tr><td class="p-4"><b class="text-white">replaced</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">대체되었다 / 교체되었다</td></tr>
+                <tr><td class="p-4"><b class="text-white">as time passed by</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">시간이 지나면서</td></tr>
+                <tr><td class="p-4"><b class="text-white">it was gonna happen either way</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">어차피 일어날 일이었다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">it is what it is</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">바꿀 수 없는 상황을 담담히 받아들일 때 쓰는 표현이에요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">stoicism</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">감정이 없다는 뜻이 아니라, 힘든 상황에서도 감정에 휘둘리지 않고 침착하게 견디는 태도를 말해요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">follow through</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">결심이나 약속을 말로만 끝내지 않고 실제로 끝까지 실행한다는 뜻이에요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">took over her position</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">누군가의 역할이나 직책을 이어받았다는 뜻이에요. 이야기에서는 대상에 맞게 형태를 바꿔 쓰는 것이 자연스러워요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">it was gonna happen either way</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">어떤 선택을 했든 결국 일어났을 일이라는 뜻이에요. 구어체 표현이에요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Mr. Cho was the manager of an old apartment building.</p>
+                <p class="mb-6">Most residents only noticed him when something went wrong. A pipe leaked. The elevator stopped. A light in the hallway went out. Then someone would call Mr. Cho, and he would arrive with his tool bag, listen carefully, and say, “<b class="highlight quiz-target" data-ans="it is what it is" data-kor="어쩔 수 없지 / 그런 거지">It is what it is</b>.”</p>
+                <p class="mb-6">He did not say it because he did not care. He said it because he knew that some things could not be changed by complaining. First, you accepted the situation. Then you fixed what you could.</p>
+                <p class="mb-6">There was a quiet <b class="highlight quiz-target" data-ans="stoicism" data-kor="스토아 철학 / 담담히 받아들이는 태도">stoicism</b> in Mr. Cho. He was not emotionless. He got tired. He worried. He felt pressure when many people needed him at once. But he did not let his stress spill onto everyone else. He stayed calm so other people could calm down too.</p>
+                <p class="mb-6">When there was a problem, he <b class="highlight quiz-target" data-ans="takes action" data-kor="행동으로 옮기다 / 조치를 취하다">took action</b>. He called the repair company, checked the pipes, found the right key, and explained the situation to the residents. He did not make big promises, but he always <b class="highlight quiz-target" data-ans="followed through" data-kor="끝까지 해냈다 / 말한 것을 실행했다">followed through</b>. If he said he would come back in the afternoon, he came back. If he said he would check again tomorrow, he checked again tomorrow.</p>
+                <p class="mb-6">Years earlier, his wife had worked in the building office. She knew every family, every delivery schedule, and every small problem before it became a large one. When she became ill, Mr. Cho <b class="highlight quiz-target" data-ans="took over her position" data-kor="그녀의 자리를 이어받았다">took over her position</b>. Some people worried that she had simply been <b class="highlight quiz-target" data-ans="replaced" data-kor="대체되었다">replaced</b>, but Mr. Cho never saw it that way. He kept her notes, followed her system, and spoke of her with respect.</p>
+                <p class="mb-6">As <b class="highlight quiz-target" data-ans="as time passed by" data-kor="시간이 지나면서">time passed by</b>, the residents began to understand him better. His calm was not laziness. His acceptance was not defeat. When he said, “<b class="highlight quiz-target" data-ans="it was gonna happen either way" data-kor="어차피 일어날 일이었다">It was going to happen either way</b>,” he was not giving up. He was choosing not to waste energy blaming the past.</p>
+                <p class="mb-6">Mr. Cho was not famous. He was not praised often.</p>
+                <p class="mb-6">But because of him, the lights came back on, the doors opened, and the building kept going.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">조 씨는 오래된 아파트 건물의 관리인이었다.</p>
+                <p class="mb-6">대부분의 주민들은 무슨 일이 생겼을 때만 그를 알아차렸다. 배관에서 물이 새거나, 엘리베이터가 멈추거나, 복도 불이 나갔다. 그러면 누군가 조 씨에게 전화를 했고, 그는 공구 가방을 들고 와서 조용히 듣고는 “<b class="highlight">어쩔 수 없죠</b>”라고 말했다.</p>
+                <p class="mb-6">그가 그렇게 말한 것은 신경 쓰지 않아서가 아니었다. 어떤 일들은 불평한다고 바뀌지 않는다는 것을 알았기 때문이다. 먼저 상황을 받아들인다. 그리고 고칠 수 있는 것을 고친다.</p>
+                <p class="mb-6">조 씨에게는 조용한 <b class="highlight">스토아적인 태도</b>가 있었다. 감정이 없는 사람은 아니었다. 그는 피곤했고, 걱정했고, 많은 사람들이 한꺼번에 그를 필요로 할 때 압박감을 느꼈다. 하지만 자신의 스트레스가 다른 사람들에게 흘러넘치게 하지는 않았다. 그는 다른 사람들도 진정할 수 있도록 침착함을 유지했다.</p>
+                <p class="mb-6">문제가 생기면 그는 <b class="highlight">행동으로 옮겼다</b>. 수리 업체에 전화하고, 배관을 확인하고, 맞는 열쇠를 찾고, 주민들에게 상황을 설명했다. 그는 큰 약속을 하지는 않았지만, 늘 <b class="highlight">끝까지 해냈다</b>. 오후에 다시 오겠다고 말하면 돌아왔다. 내일 다시 확인하겠다고 말하면 다음 날 다시 확인했다.</p>
+                <p class="mb-6">몇 년 전, 그의 아내는 그 건물 사무실에서 일했다. 그녀는 모든 가족, 모든 배달 일정, 그리고 작은 문제가 큰 문제가 되기 전에 알아차리는 법을 알고 있었다. 아내가 아프게 되었을 때, 조 씨는 <b class="highlight">그녀의 자리를 이어받았다</b>. 어떤 사람들은 그녀가 단순히 <b class="highlight">대체된</b> 것처럼 보일까 걱정했지만, 조 씨는 결코 그렇게 생각하지 않았다. 그는 아내의 메모를 보관했고, 그녀의 방식을 따랐으며, 그녀에 대해 존중하는 마음으로 이야기했다.</p>
+                <p class="mb-6">시간이 지남에 따라 주민들은 그를 더 잘 이해하게 되었다. 그의 침착함은 게으름이 아니었다. 그의 받아들임은 패배가 아니었다. 그가 “<b class="highlight">어차피 일어날 일이었어요</b>”라고 말할 때, 그는 포기하는 것이 아니었다. 과거를 탓하느라 에너지를 낭비하지 않기로 선택한 것이었다.</p>
+                <p class="mb-6">조 씨는 유명하지 않았다. 자주 칭찬받지도 않았다.</p>
+                <p class="mb-6">하지만 그 덕분에 불은 다시 켜졌고, 문은 열렸고, 건물은 계속 돌아갔다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "5201200.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

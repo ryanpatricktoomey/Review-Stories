@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Island Expert</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🏝️</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Island Expert</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">per capita</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">1인당</td></tr>
+                <tr><td class="p-4"><b class="text-white">ancestor</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">조상</td></tr>
+                <tr><td class="p-4"><b class="text-white">mind-boggling</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">너무 놀라운 / 이해하기 어려울 정도로 엄청난</td></tr>
+                <tr><td class="p-4"><b class="text-white">mild</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">순한 / 약한</td></tr>
+                <tr><td class="p-4"><b class="text-white">gentle</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">부드러운 / 온화한</td></tr>
+                <tr><td class="p-4"><b class="text-white">feel betrayed</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">배신감을 느끼다</td></tr>
+                <tr><td class="p-4"><b class="text-white">knife</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">칼</td></tr>
+                <tr><td class="p-4"><b class="text-white">knight</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">기사</td></tr>
+                <tr><td class="p-4"><b class="text-white">knee</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">무릎</td></tr>
+                <tr><td class="p-4"><b class="text-white">uninhabited islands</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">무인도들</td></tr>
+                <tr><td class="p-4"><b class="text-white">useless facts</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">쓸데없는 사실들 / 잡학 지식</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-6 rounded-3xl space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">per capita</h3>
+                <p class="text-sm text-slate-300">통계에서 “한 사람당”이라는 뜻입니다. 예: income per capita = 1인당 소득.</p>
+            </div>
+            <div class="glass p-6 rounded-3xl space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">mind-boggling</h3>
+                <p class="text-sm text-slate-300">너무 놀랍거나 복잡해서 이해하기 어려울 정도라는 뜻입니다. amazing보다 더 강한 느낌입니다.</p>
+            </div>
+            <div class="glass p-6 rounded-3xl space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">mild / gentle</h3>
+                <p class="text-sm text-slate-300">Mild는 맛, 날씨, 증상 등이 “약하거나 순한” 느낌이고, gentle은 사람의 행동이나 성격이 “부드럽고 다정한” 느낌입니다.</p>
+            </div>
+            <div class="glass p-6 rounded-3xl space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">feel betrayed</h3>
+                <p class="text-sm text-slate-300">믿었던 사람이 거짓말을 하거나 실망을 줬을 때 “배신감을 느끼다”라는 뜻입니다.</p>
+            </div>
+            <div class="glass p-6 rounded-3xl space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">knife / knight / knee</h3>
+                <p class="text-sm text-slate-300">세 단어 모두 첫 글자 k를 발음하지 않습니다. 각각 “나이프,” “나이트,” “니”처럼 발음됩니다.</p>
+            </div>
+            <div class="glass p-6 rounded-3xl space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">uninhabited islands</h3>
+                <p class="text-sm text-slate-300">사람이 살지 않는 섬들을 뜻합니다. Inhabited는 사람이 사는, uninhabited는 사람이 살지 않는다는 뜻입니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Mr. Bell began class by writing one sentence on the board.</p>
+                <p class="mb-6">“I once spent a month alone on one of the world’s most mysterious <b class="highlight quiz-target" data-ans="uninhabited islands" data-kor="무인도들">uninhabited islands</b>.”</p>
+                <p class="mb-6">The students looked up from their notebooks.</p>
+                <p class="mb-6">“Alone?” Mina asked.</p>
+                <p class="mb-6">“Yes,” said Mr. Bell. “It was part of a geography research project.”</p>
+                <p class="mb-6">That sounded impressive, but possible. Mr. Bell stood proudly beside the board.</p>
+                <p class="mb-6">Sora raised her hand. “If the island was uninhabited, why did you go there?”</p>
+                <p class="mb-6">“To study old family history,” said Mr. Bell. “My <b class="highlight quiz-target" data-ans="ancestor" data-kor="조상">ancestor</b> lived there hundreds of years ago.”</p>
+                <p class="mb-6">Joon frowned. “But you said it was uninhabited.”</p>
+                <p class="mb-6">It was uninhabited when I arrived,” said Mr. Bell.</p>
+                <p class="mb-6">“So your ancestor inhabited it,” Leo said.</p>
+                <p class="mb-6">Mr. Bell paused. “Only briefly.”</p>
+                <p class="mb-6">Mina wrote something down.</p>
+                <p class="mb-6">“What was your ancestor’s name?” Sora asked.</p>
+                <p class="mb-6">“Sir Bell,” said Mr. Bell.</p>
+                <p class="mb-6">“Sir Bell?” Leo asked. “Was he a <b class="highlight quiz-target" data-ans="knight" data-kor="기사">knight</b>?”</p>
+                <p class="mb-6">“Yes,” said Mr. Bell. “A very brave <b class="highlight quiz-target" data-ans="knight" data-kor="기사">knight</b>.”</p>
+                <p class="mb-6">Joon looked confused. “On an island in the Pacific?”</p>
+                <p class="mb-6">Mr. Bell nodded. “He traveled there with a map, a <b class="highlight quiz-target" data-ans="knife" data-kor="칼">knife</b>, and a bad <b class="highlight quiz-target" data-ans="knee" data-kor="무릎">knee</b>.”</p>
+                <p class="mb-6">“That is oddly specific,” Mina said.</p>
+                <p class="mb-6">“It is family history,” said Mr. Bell.</p>
+                <p class="mb-6">Sora asked, “What did you study on the island?”</p>
+                <p class="mb-6">“The weather,” said Mr. Bell. “It was very <b class="highlight quiz-target" data-ans="mild" data-kor="순한">mild</b>. The wind was <b class="highlight quiz-target" data-ans="gentle" data-kor="부드러운">gentle</b>. The facts were <b class="highlight quiz-target" data-ans="mind-boggling" data-kor="너무 놀라운">mind-boggling</b>.”</p>
+                <p class="mb-6">“What facts?” asked Joon.</p>
+                <p class="mb-6">Mr. Bell smiled. “For example, the island had the highest number of coconuts <b class="highlight quiz-target" data-ans="per capita" data-kor="1인당">per capita</b> in the world.”</p>
+                <p class="mb-6">Leo raised his hand. “But nobody lived there. How can it have coconuts per capita?”</p>
+                <p class="mb-6">Mr. Bell blinked. “I counted myself.”</p>
+                <p class="mb-6">“So,” Mina said slowly, “one person and many coconuts?”</p>
+                <p class="mb-6">“Exactly,” said Mr. Bell.</p>
+                <p class="mb-6">Joon tapped his pencil. “Then any empty island with one visitor could have a very high number.”</p>
+                <p class="mb-6">Mr. Bell’s smile became smaller.</p>
+                <p class="mb-6">Sora looked at the board. “Also, you said your ancestor lived there, but now you said you were the only person.”</p>
+                <p class="mb-6">“He lived there in spirit,” said Mr. Bell.</p>
+                <p class="mb-6">Leo whispered, “That doesn’t add up.”</p>
+                <p class="mb-6">Mina raised her hand one more time. “Mr. Bell, did you really spend a month there?”</p>
+                <p class="mb-6">Mr. Bell looked at the floor.</p>
+                <p class="mb-6">“Well,” he said, “I spent one afternoon on a small beach during a family vacation.”</p>
+                <p class="mb-6">“And the research project?” asked Sora.</p>
+                <p class="mb-6">“I read a sign near the parking lot.”</p>
+                <p class="mb-6">Joon closed his notebook. “So the island story was made of <b class="highlight quiz-target" data-ans="useless facts" data-kor="쓸데없는 사실들">useless facts</b>?”</p>
+                <p class="mb-6">Mr. Bell sighed. “Mostly.”</p>
+                <p class="mb-6">Mina looked disappointed. “We <b class="highlight quiz-target" data-ans="feel betrayed" data-kor="배신감을 느끼다">feel betrayed</b> because we were interested. You didn’t need to lie.”</p>
+                <p class="mb-6">Mr. Bell nodded. “You’re right. The real beach was interesting enough.”</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>벨 선생님은 칠판에 한 문장을 쓰며 수업을 시작했다.</p>
+                <p>“저는 한때 세계에서 가장 신비로운 <b class="highlight">무인도들</b> 중 하나에서 한 달 동안 혼자 지낸 적이 있습니다.”</p>
+                <p>학생들은 공책에서 고개를 들었다.</p>
+                <p>“혼자요?” 미나가 물었다.</p>
+                <p>“네,” 벨 선생님이 말했다. “지리 연구 프로젝트의 일부였어요.”</p>
+                <p>인상적이었지만, 불가능하게 들리지는 않았다. 벨 선생님은 칠판 옆에 자랑스럽게 서 있었다.</p>
+                <p>소라가 손을 들었다. “그 섬이 무인도였다면, 왜 거기에 가셨어요?”</p>
+                <p>“오래된 가족 역사를 연구하기 위해서였어요,” 벨 선생님이 말했다. “제 <b class="highlight">조상</b>이 수백 년 전에 그곳에 살았거든요.”</p>
+                <p>준이 눈살을 찌푸렸다. “하지만 무인도라고 하셨잖아요.”</p>
+                <p>“제가 도착했을 때는 무인도였어요,” 벨 선생님이 말했다.</p>
+                <p>“그럼 선생님 조상은 거기에 살았던 거네요,” 레오가 말했다.</p>
+                <p>벨 선생님은 잠시 멈췄다. “아주 잠깐만요.”</p>
+                <p>미자는 무언가를 적었다.</p>
+                <p>“그 조상 이름이 뭐였나요?” 소라가 물었다.</p>
+                <p>“벨 경이요,” 벨 선생님이 말했다.</p>
+                <p>“벨 경이요?” 레오가 물었다. “<b class="highlight">기사</b>였나요?”</p>
+                <p>“네,” 벨 선생님이 말했다. “아주 용감한 <b class="highlight">기사</b>였죠.”</p>
+                <p>준은 혼란스러워 보였다. “태평양의 섬에서요?”</p>
+                <p>벨 선생님은 고개를 끄덕였다. “그는 지도와 <b class="highlight">칼</b>, 그리고 아픈 <b class="highlight">무릎</b>을 가지고 그곳으로 갔습니다.”</p>
+                <p>“이상하게 구체적이네요,” 미나가 말했다.</p>
+                <p>“가족 역사니까요,” 벨 선생님이 말했다.</p>
+                <p>소라가 물었다. “그 섬에서 무엇을 연구하셨어요?”</p>
+                <p>“날씨요,” 벨 선생님이 말했다. “아주 <b class="highlight">순한</b> 날씨였고, 바람은 <b class="highlight">부드러운</b>웠어요. 사실들이 정말 놀라웠죠.”</p>
+                <p>“무슨 사실들이요?” 준이 물었다.</p>
+                <p>벨 선생님은 미소를 지었다. “예를 들어, 그 섬은 세계에서 <b class="highlight">1인당</b> 코코넛 수가 가장 많았습니다.”</p>
+                <p>레오가 손을 들었다. “하지만 아무도 살지 않았다면서요. 어떻게 1인당 코코넛 수가 있을 수 있어요?”</p>
+                <p>벨 선생님은 눈을 깜박였다. “저 자신을 세었어요.”</p>
+                <p>“그러니까,” 미나가 천천히 말했다. “한 사람과 많은 코코넛이요?”</p>
+                <p>“정확해요,” 벨 선생님이 말했다.</p>
+                <p>준은 연필을 톡톡 쳤다. “그럼 방문객 한 명이 있는 빈 섬은 다 아주 높은 수치가 나올 수 있겠네요.”</p>
+                <p>벨 선생님의 미소가 작아졌다.</p>
+                <p>소라는 칠판을 보았다. “그리고 선생님 조상이 거기 살았다고 하셨는데, 지금은 선생님이 유일한 사람이었다고 하셨잖아요.”</p>
+                <p>“그는 정신적으로 그곳에 살았어요,” 벨 선생님이 말했다.</p>
+                <p>레오가 속삭였다. “앞뒤가 안 맞아.”</p>
+                <p>미나가 한 번 더 손을 들었다. “벨 선생님, 정말 그곳에서 한 달 동안 지내셨어요?”</p>
+                <p>벨 선생님은 바닥을 보았다.</p>
+                <p>“음,” 그가 말했다. “가족 여행 중에 작은 해변에서 오후 한나절을 보냈어요.”</p>
+                <p>“그 연구 프로젝트는요?” 소라가 물었다.</p>
+                <p>“주차장 근처 표지판을 읽었어요.”</p>
+                <p>준은 공책을 덮었다. “그럼 그 섬 이야기는 <b class="highlight">쓸데없는 사실들</b>로 만든 거였네요?”</p>
+                <p>벨 선생님은 한숨을 쉬었다. “대부분은요.”</p>
+                <p>미자는 실망한 표정으로 말했다. “저희는 관심이 있었기 때문에 <b class="highlight">배신감을 느끼다</b>해요. 거짓말하실 필요는 없었어요.”</p>
+                <p>벨 선생님은 고개를 끄덕였다. “너희 말이 맞아. 진짜 해변도 충분히 흥미로웠어.”</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "5211020.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

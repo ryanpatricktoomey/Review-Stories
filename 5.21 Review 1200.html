@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Famous Choir</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🎶</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Famous Choir</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">exist</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">존재하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">one sixth</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">6분의 1</td></tr>
+                <tr><td class="p-4"><b class="text-white">continent</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">대륙</td></tr>
+                <tr><td class="p-4"><b class="text-white">mind-boggling</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">너무 놀라운 / 이해하기 어려울 정도로 엄청난</td></tr>
+                <tr><td class="p-4"><b class="text-white">umbilical cord</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">탯줄</td></tr>
+                <tr><td class="p-4"><b class="text-white">placenta</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">태반</td></tr>
+                <tr><td class="p-4"><b class="text-white">choir</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">합창단</td></tr>
+                <tr><td class="p-4"><b class="text-white">uninhabited</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">사람이 살지 않는 / 무인도의</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-6 rounded-3xl space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">one sixth</h3>
+                <p class="text-sm text-slate-300">“6분의 1”이라는 뜻입니다. 분수를 말할 때 쓰는 표현입니다.</p>
+            </div>
+            <div class="glass p-6 rounded-3xl space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">mind-boggling</h3>
+                <p class="text-sm text-slate-300">너무 놀랍거나 이해하기 어려울 정도로 엄청난 것을 말합니다.</p>
+            </div>
+            <div class="glass p-6 rounded-3xl space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">umbilical cord / placenta</h3>
+                <p class="text-sm text-slate-300">둘 다 임신과 출산에 관련된 의학적 단어입니다. Umbilical cord는 탯줄, placenta는 태반입니다.</p>
+            </div>
+            <div class="glass p-6 rounded-3xl space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">choir</h3>
+                <p class="text-sm text-slate-300">여러 사람이 함께 노래하는 “합창단”입니다. 발음은 철자와 다르게 “콰이어”에 가깝습니다.</p>
+            </div>
+            <div class="glass p-6 rounded-3xl space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">uninhabited</h3>
+                <p class="text-sm text-slate-300">사람이 살지 않는다는 뜻입니다. 섬이나 지역을 설명할 때 자주 씁니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Mr. Bell clapped his hands once.</p>
+                <p class="mb-6">“Class,” he said, “today’s lesson is about sound. Luckily, I know a lot about this topic. When I was younger, I sang in a famous children’s <b class="highlight quiz-target" data-ans="choir" data-kor="합창단">choir</b>.”</p>
+                <p class="mb-6">Mina looked interested. “Really? Which choir?”</p>
+                <p class="mb-6">“The World Children’s Choir,” said Mr. Bell.</p>
+                <p class="mb-6">Joon sat up. “That sounds important.”</p>
+                <p class="mb-6">“It was,” said Mr. Bell. “We performed on every <b class="highlight quiz-target" data-ans="continent" data-kor="대륙">continent</b>.”</p>
+                <p class="mb-6">Sora raised her hand. “Even Antarctica?”</p>
+                <p class="mb-6">Mr. Bell paused for half a second. “Yes. Especially Antarctica.”</p>
+                <p class="mb-6">Leo frowned. “Who was the audience?”</p>
+                <p class="mb-6">“Scientists,” said Mr. Bell. “And penguins.”</p>
+                <p class="mb-6">The class laughed, but Mr. Bell stayed serious.</p>
+                <p class="mb-6">Mina asked, “How old were you?”</p>
+                <p class="mb-6">“Six,” said Mr. Bell.</p>
+                <p class="mb-6">“And you traveled to every continent when you were six?” asked Sora.</p>
+                <p class="mb-6">“Yes,” said Mr. Bell. “I was very mature.”</p>
+                <p class="mb-6">Joon tapped his pencil. “What song did you sing?”</p>
+                <p class="mb-6">Mr. Bell smiled. “Many songs.”</p>
+                <p class="mb-6">“Name one,” said Leo.</p>
+                <p class="mb-6">Mr. Bell’s smile became smaller. “The famous one.”</p>
+                <p class="mb-6">Mina tilted her head. “What was it called?”</p>
+                <p class="mb-6">“It was called ‘Children of the World,’” said Mr. Bell.</p>
+                <p class="mb-6">Sora nodded slowly. “What language was it in?”</p>
+                <p class="mb-6">“All of them,” said Mr. Bell.</p>
+                <p class="mb-6">“All languages?” asked Joon.</p>
+                <p class="mb-6">“Yes,” said Mr. Bell. “That was the <b class="highlight quiz-target" data-ans="mind-boggling" data-kor="너무 놀라운">mind-boggling</b> part.”</p>
+                <p class="mb-6">Leo leaned forward. “How many kids were in the choir?”</p>
+                <p class="mb-6">“Six hundred,” said Mr. Bell.</p>
+                <p class="mb-6">Mina looked surprised. “Six hundred children traveled together?”</p>
+                <p class="mb-6">“Correct.”</p>
+                <p class="mb-6">“And you were six years old?”</p>
+                <p class="mb-6">“Correct.”</p>
+                <p class="mb-6">“And you performed in Antarctica?”</p>
+                <p class="mb-6">“Correct.”</p>
+                <p class="mb-6">Sora crossed her arms. “But you told us last week that you did not leave Korea until college.”</p>
+                <p class="mb-6">Mr. Bell blinked. “I meant I did not leave Korea as an adult.”</p>
+                <p class="mb-6">“That doesn’t make sense,” said Joon. “College is when you became an adult.”</p>
+                <p class="mb-6">Leo added, “Also, if the choir was so famous, it should still <b class="highlight quiz-target" data-ans="exist" data-kor="존재하다">exist</b> online.”</p>
+                <p class="mb-6">Mr. Bell looked at the clock.</p>
+                <p class="mb-6">Mina took out her phone. “I searched it. There is a World Children’s Choir, but it started when you were already thirty-two.”</p>
+                <p class="mb-6">The room went quiet.</p>
+                <p class="mb-6">Sora said, “So you couldn’t have been in it when you were six.”</p>
+                <p class="mb-6">Mr. Bell touched his neck. “Maybe it was a different choir.”</p>
+                <p class="mb-6">“What was the different choir called?” asked Joon.</p>
+                <p class="mb-6">Mr. Bell sighed. “My elementary school choir.”</p>
+                <p class="mb-6">Mina smiled a little. “Did you perform on every continent?”</p>
+                <p class="mb-6">“No,” said Mr. Bell.</p>
+                <p class="mb-6">“Antarctica?”</p>
+                <p class="mb-6">“No.”</p>
+                <p class="mb-6">“For penguins?”</p>
+                <p class="mb-6">“No.”</p>
+                <p class="mb-6">Leo grinned. “Where did you perform?”</p>
+                <p class="mb-6">Mr. Bell looked at the floor. “In the school gym.”</p>
+                <p class="mb-6">“That’s fine,” said Sora. “You should have just said that.”</p>
+                <p class="mb-6">Mr. Bell nodded. “You’re right.”</p>
+                <p class="mb-6">Joon opened his notebook. “The truth is less famous, but it adds up.”</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>벨 선생님이 손뼉을 한 번 쳤다.</p>
+                <p>“여러분,” 그가 말했다. “오늘 수업은 소리에 관한 것입니다. 다행히 저는 이 주제에 대해 아주 잘 알고 있어요. 어릴 때 유명한 어린이 <b class="highlight">합창단</b>에서 노래했거든요.”</p>
+                <p>미나는 관심 있어 보였다. “정말요? 어떤 합창단이었나요?”</p>
+                <p>“세계 어린이 합창단이요,” 벨 선생님이 말했다.</p>
+                <p>준은 몸을 똑바로 세웠다. “중요한 곳처럼 들리네요.”</p>
+                <p>“그랬죠,” 벨 선생님이 말했다. “우리는 모든 <b class="highlight">대륙</b>에서 공연했습니다.”</p>
+                <p>소라가 손을 들었다. “남극에서도요?”</p>
+                <p>벨 선생님은 반초 정도 멈췄다. “네. 특히 남극에서요.”</p>
+                <p>레오는 눈살을 찌푸렸다. “관객은 누구였어요?”</p>
+                <p>“과학자들이요,” 벨 선생님이 말했다. “그리고 펭귄들이요.”</p>
+                <p>반 학생들은 웃었지만, 벨 선생님은 진지한 표정을 유지했다.</p>
+                <p>미나가 물었다. “그때 몇 살이셨어요?”</p>
+                <p>“여섯 살이요,” 벨 선생님이 말했다.</p>
+                <p>“여섯 살 때 모든 대륙을 여행하셨다고요?” 소라가 물었다.</p>
+                <p>“네,” 벨 선생님이 말했다. “저는 아주 성숙했거든요.”</p>
+                <p>준은 연필을 톡톡 두드렸다. “무슨 노래를 부르셨어요?”</p>
+                <p>벨 선생님은 미소를 지었다. “많은 노래요.”</p>
+                <p>“하나만 말해 주세요,” 레오가 말했다.</p>
+                <p>벨 선생님의 미소가 조금 작아졌다. “그 유명한 노래요.”</p>
+                <p>미자는 고개를 갸웃했다. “제목이 뭐였나요?”</p>
+                <p>“‘세계의 아이들’이라는 노래였어요,” 벨 선생님이 말했다.</p>
+                <p>소라는 천천히 고개를 끄덕였다. “어떤 언어였나요?”</p>
+                <p>“모든 언어요,” 벨 선생님이 말했다.</p>
+                <p>“모든 언어요?” 준이 물었다.</p>
+                <p>“네,” 벨 선생님이 말했다. “그게 바로 <b class="highlight">너무 놀라운</b> 부분이었죠.”</p>
+                <p>레오가 몸을 앞으로 기울였다. “합창단에 아이들이 몇 명 있었나요?”</p>
+                <p>“600명이요,” 벨 선생님이 말했다.</p>
+                <p>미나는 놀란 표정을 지었다. “600명의 아이들이 함께 여행했다고요?”</p>
+                <p>“맞아요.”</p>
+                <p>“그리고 선생님은 여섯 살이었고요?”</p>
+                <p>“맞아요.”</p>
+                <p>“남극에서 공연했고요?”</p>
+                <p>“맞아요.”</p>
+                <p>소라는 팔짱을 꼈다. “하지만 지난주에 선생님은 대학생이 될 때까지 한국을 떠난 적이 없다고 하셨어요.”</p>
+                <p>벨 선생님은 눈을 깜박였다. “어른이 되고 나서 한국을 떠난 적이 없다는 뜻이었어요.”</p>
+                <p>“말이 안 돼요,” 준이 말했다. “대학생 때가 어른이 된 뒤잖아요.”</p>
+                <p>레오가 덧붙였다. “그리고 그 합창단이 그렇게 유명했다면, 온라인에 아직 <b class="highlight">존재하다</b>해야 해요.”</p>
+                <p>벨 선생님은 시계를 보았다.</p>
+                <p>미나가 휴대폰을 꺼냈다. “검색해 봤어요. 세계 어린이 합창단은 있긴 한데, 선생님이 이미 서른두 살이었을 때 시작됐어요.”</p>
+                <p>교실은 조용해졌다.</p>
+                <p>소라가 말했다. “그러면 선생님이 여섯 살 때 그 합창단에 있었을 수 없어요.”</p>
+                <p>벨 선생님은 목을 만졌다. “아마 다른 합창단이었을 거예요.”</p>
+                <p>“그 다른 합창단 이름은 뭐였나요?” 준이 물었다.</p>
+                <p>벨 선생님은 한숨을 쉬었다. “제 초등학교 합창단이요.”</p>
+                <p>미나는 살짝 미소 지었다. “모든 대륙에서 공연했나요?”</p>
+                <p>“아니요,” 벨 선생님이 말했다.</p>
+                <p>“남극은요?”</p>
+                <p>“아니요.”</p>
+                <p>“펭귄 앞에서는요?”</p>
+                <p>“아니요.”</p>
+                <p>레오가 씩 웃었다. “그럼 어디서 공연했나요?”</p>
+                <p>벨 선생님은 바닥을 바라보았다. “학교 체육관에서요.”</p>
+                <p>“그것도 괜찮아요,” 소라가 말했다. “그냥 그렇게 말씀하셨어야죠.”</p>
+                <p>벨 선생님은 고개를 끄덕였다. “너희 말이 맞아.”</p>
+                <p>준은 공책을 펼쳤다. “진실은 덜 유명하지만, 앞뒤가 맞네요.”</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "5211200.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

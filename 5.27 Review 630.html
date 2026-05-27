@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Blind Date Warning Sign</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🍽️</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Blind Date Warning Sign</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">sarcasm</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">빈정거림 / 비꼼</td></tr>
+                <tr><td class="p-4"><b class="text-white">sarcasm radar</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">빈정거림 감지 능력</td></tr>
+                <tr><td class="p-4"><b class="text-white">little bit of a problem</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">약간 문제가 있음</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">sarcasm</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">직역하면 “비꼼”이지만, 실제 대화에서는 농담인지 진심인지 헷갈릴 때 자주 쓰입니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">sarcasm radar</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">“radar”는 실제 레이더가 아니라, 어떤 분위기나 의도를 알아차리는 능력을 비유적으로 말합니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">little bit of a problem</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">문제를 부드럽게 말하는 표현입니다. 실제로는 꽤 곤란한 상황일 때도 이렇게 말할 수 있습니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Martin arrived at the restaurant twelve minutes early, because he believed punctuality was romantic. Unfortunately, this gave him twelve extra minutes to panic.</p>
+                <p class="mb-6">He checked his reflection in a spoon. His hair looked nervous. His smile looked like it had been drawn by someone under pressure.</p>
+                <p class="mb-6">Then Claire arrived.</p>
+                <p class="mb-6">She was elegant, calm, and wearing a green dress. Martin stood up too quickly and hit his knee on the table.</p>
+                <p class="mb-6">“Wow,” he said. “You look much better than your profile picture.”</p>
+                <p class="mb-6">Claire stopped smiling.</p>
+                <p class="mb-6">Martin’s soul immediately tried to leave his body.</p>
+                <p class="mb-6">“I mean, not that your profile picture was bad,” he said. “It was just… less alive.”</p>
+                <p class="mb-6">Claire slowly sat down. “Less alive?”</p>
+                <p class="mb-6">“That came out wrong,” Martin said. “Very wrong. What I meant was, you are alive in a good way.”</p>
+                <p class="mb-6">The waiter appeared, which Martin felt was both helpful and a cruel act of timing.</p>
+                <p class="mb-6">Claire ordered sparkling water. Martin ordered the first thing he saw, which was soup, though he hated soup.</p>
+                <p class="mb-6">“So,” Claire said, “do you go on many blind dates?”</p>
+                <p class="mb-6">“No,” Martin said. “I usually avoid them because I have a <b class="highlight quiz-target" data-ans="little bit of a problem" data-kor="약간 문제가 있음">little bit of a problem</b> with speaking.”</p>
+                <p class="mb-6">Claire raised one eyebrow. “Speaking?”</p>
+                <p class="mb-6">“Not speaking generally. I can speak. I have a job. People understand me sometimes.” He laughed once, too loudly. “I mean I say things, and then they become dangerous.”</p>
+                <p class="mb-6">“That sounds honest,” Claire said.</p>
+                <p class="mb-6">Martin relaxed a little. “Good. I like honesty. For example, you seem like someone with strong opinions.”</p>
+                <p class="mb-6">Claire’s face changed. “What do you mean by that?”</p>
+                <p class="mb-6">“No! Strong in a good way. Not bossy. I mean, not that you seem bossy. You don’t. I haven’t known you long enough to say that.”</p>
+                <p class="mb-6">Claire folded her arms.</p>
+                <p class="mb-6">Martin picked up his water and drank from the small vase in the center of the table.</p>
+                <p class="mb-6">“That is for the flower,” Claire said.</p>
+                <p class="mb-6">“Yes,” Martin said, putting it down carefully. “I knew that. I was testing the restaurant.”</p>
+                <p class="mb-6">Claire stared at him.</p>
+                <p class="mb-6">“Was that <b class="highlight quiz-target" data-ans="sarcasm" data-kor="빈정거림">sarcasm</b>?” she asked.</p>
+                <p class="mb-6">“I’m not sure anymore,” Martin said. “My <b class="highlight quiz-target" data-ans="sarcasm radar" data-kor="빈정거림 감지 능력">sarcasm radar</b> is broken, along with several other parts of my personality.”</p>
+                <p class="mb-6">For one second, Claire almost laughed.</p>
+                <p class="mb-6">Encouraged, Martin smiled. “You have a very serious face when you almost enjoy something.”</p>
+                <p class="mb-6">Claire stood up.</p>
+                <p class="mb-6">Martin closed his eyes. “That was a bad way to say it.”</p>
+                <p class="mb-6">“Yes,” Claire said. “It was.”</p>
+                <p class="mb-6">As she walked away, Martin looked at the flower vase and whispered, “At least you understand me.”</p>
+                <p class="mb-6">Then he remembered he had tried to drink it.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">마틴은 레스토랑에 12분 일찍 도착했다. 그는 시간을 잘 지키는 것이 로맨틱하다고 믿었기 때문이다. 안타깝게도, 그 덕분에 그는 12분을 더 불안해할 수 있었다.</p>
+                <p class="mb-6">그는 숟가락에 비친 자신의 모습을 확인했다. 머리는 긴장한 것처럼 보였고, 미소는 압박을 받는 사람이 그린 것처럼 보였다.</p>
+                <p class="mb-6">그때 클레어가 도착했다.</p>
+                <p class="mb-6">그녀는 우아하고 차분했으며, 초록색 원피스를 입고 있었다. 마틴은 너무 급하게 일어나다가 무릎을 테이블에 부딪쳤다.</p>
+                <p class="mb-6">“와,” 그가 말했다. “프로필 사진보다 훨씬 나으시네요.”</p>
+                <p class="mb-6">클레어의 미소가 멈췄다.</p>
+                <p class="mb-6">마틴의 영혼은 즉시 몸 밖으로 나가려 했다.</p>
+                <p class="mb-6">“제 말은, 프로필 사진이 나빴다는 건 아니고요,” 그가 말했다. “그냥… 덜 살아 있는 느낌이었어요.”</p>
+                <p class="mb-6">클레어는 천천히 자리에 앉았다. “덜 살아 있다고요?”</p>
+                <p class="mb-6">“말이 이상하게 나왔네요,” 마틴이 말했다. “아주 이상하게요. 제가 말하려던 건, 좋은 의미로 살아 있어 보인다는 거였어요.”</p>
+                <p class="mb-6">웨이터가 나타났다. 마틴은 그것이 도움이 되면서도 잔인한 타이밍이라고 느꼈다.</p>
+                <p class="mb-6">클레어는 탄산수를 주문했다. 마틴은 눈에 처음 보이는 것을 주문했는데, 그것은 수프였다. 그는 수프를 싫어했는데도 말이다.</p>
+                <p class="mb-6">“그래서,” 클레어가 말했다. “소개팅 자주 하세요?”</p>
+                <p class="mb-6">“아니요,” 마틴이 말했다. “저는 보통 피하는 편이에요. 말하는 데 <b class="highlight">약간 문제가 있음</b>아서요.”</p>
+                <p class="mb-6">클레어가 한쪽 눈썹을 올렸다. “말하는 데요?”</p>
+                <p class="mb-6">“일반적으로 말을 못 한다는 건 아니고요. 말은 할 수 있어요. 직장도 있고요. 사람들이 가끔은 제 말을 이해해요.” 그는 한 번 너무 크게 웃었다. “그러니까 제가 말을 하면, 그 말들이 위험해진다는 뜻이에요.”</p>
+                <p class="mb-6">“솔직하네요,” 클레어가 말했다.</p>
+                <p class="mb-6">마틴은 조금 안심했다. “좋네요. 전 솔직한 게 좋아요. 예를 들면, 당신은 의견이 강한 사람 같아요.”</p>
+                <p class="mb-6">클레어의 표정이 변했다. “그게 무슨 뜻이에요?”</p>
+                <p class="mb-6">“아니요! 좋은 의미로 강하다는 거예요. 보스 같다는 게 아니고요. 그러니까, 보스 같아 보인다는 뜻은 아니에요. 제가 당신을 그렇게 말할 만큼 오래 알지는 못했죠.”</p>
+                <p class="mb-6">클레어는 팔짱을 꼈다.</p>
+                <p class="mb-6">마틴은 물을 집어 들고 테이블 가운데에 있던 작은 꽃병에서 물을 마셨다.</p>
+                <p class="mb-6">“그건 꽃을 위한 건데요,” 클레어가 말했다.</p>
+                <p class="mb-6">“네,” 마틴은 조심스럽게 그것을 내려놓으며 말했다. “알고 있었어요. 레스토랑을 시험해 본 거예요.”</p>
+                <p class="mb-6">클레어는 그를 바라보았다.</p>
+                <p class="mb-6">“그거 <b class="highlight">빈정거림 / 비꼼</b>이에요?” 그녀가 물었다.</p>
+                <p class="mb-6">“이제 저도 잘 모르겠어요,” 마틴이 말했다. “제 <b class="highlight">빈정거림 감지 능력</b>이 고장 났거든요. 제 성격의 다른 여러 부분과 함께요.”</p>
+                <p class="mb-6">잠깐 동안, 클레어는 거의 웃을 뻔했다.</p>
+                <p class="mb-6">용기를 얻은 마틴은 미소를 지었다. “당신은 뭔가를 거의 즐길 때 얼굴이 아주 진지해지네요.”</p>
+                <p class="mb-6">클레어가 자리에서 일어났다.</p>
+                <p class="mb-6">마틴은 눈을 감았다. “제가 말을 좀 잘못했네요.”</p>
+                <p class="mb-6">“네,” 클레어가 말했다. “그랬어요.”</p>
+                <p class="mb-6">그녀가 떠나자, 마틴은 꽃병을 바라보며 속삭였다. “적어도 너는 날 이해하지.”</p>
+                <p class="mb-6">그리고 그는 방금 그것을 마시려고 했다는 사실을 떠올렸다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "527630.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

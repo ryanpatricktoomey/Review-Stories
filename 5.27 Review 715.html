@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Pasta Incident</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🍝</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Pasta Incident</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">body-shaming</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">몸매 비하 / 외모 비하</td></tr>
+                <tr><td class="p-4"><b class="text-white">broke his spirit</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그의 기를 꺾었다 / 마음을 완전히 꺾어 놓았다</td></tr>
+                <tr><td class="p-4"><b class="text-white">never gonna let it go</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">절대 잊지 않고 계속 말할 것이다</td></tr>
+                <tr><td class="p-4"><b class="text-white">bring it up</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그 이야기를 꺼내다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">body-shaming</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">몸무게, 체형, 외모 등을 평가하거나 비난하는 말입니다. 농담처럼 말해도 매우 무례하게 들릴 수 있습니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">broke his spirit</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">실제로 영혼을 부쉈다는 뜻이 아니라, 자신감이나 의욕을 완전히 꺾었다는 뜻입니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">never gonna let it go</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">어떤 일을 잊지 않고 계속 언급하거나 문제 삼겠다는 뜻입니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">bring it up</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">특정 주제나 과거 일을 대화에서 꺼낸다는 뜻입니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Oliver had decided to be charming.</p>
+                <p class="mb-6">This was already a serious mistake because Oliver’s idea of charming was mostly saying facts in a nervous voice.</p>
+                <p class="mb-6">Across the table, Nina looked lovely, intelligent, and slightly dangerous. She had the calm expression of someone who noticed everything and forgave almost nothing.</p>
+                <p class="mb-6">Oliver opened the menu and smiled. “So, do you like pasta?”</p>
+                <p class="mb-6">“Yes,” Nina said. “Why?”</p>
+                <p class="mb-6">“No reason,” Oliver said quickly. “You just seem like a pasta person.”</p>
+                <p class="mb-6">Nina lowered her menu. “A pasta person?”</p>
+                <p class="mb-6">Oliver felt heat rise up his neck. “In a good way. Warm. Friendly. Covered in sauce.” He paused. “No. Not covered in sauce. Obviously.”</p>
+                <p class="mb-6">Nina stared at him.</p>
+                <p class="mb-6">“I mean emotionally covered in sauce,” he added, then immediately wished for a small medical emergency.</p>
+                <p class="mb-6">The waiter came. Nina ordered seafood pasta. Oliver panicked and ordered a salad because, at that moment, he felt salad was the safest personality.</p>
+                <p class="mb-6">When the waiter left, Nina said, “So, tell me about yourself.”</p>
+                <p class="mb-6">Oliver sat up. “Well, I work in marketing. I like films. I once joined a gym for six months and went twice, so I’m not here to judge anyone’s body. I hate <b class="highlight quiz-target" data-ans="body-shaming" data-kor="몸매 비하 / 외모 비하">body-shaming</b>.”</p>
+                <p class="mb-6">Nina blinked. “Why would you say that?”</p>
+                <p class="mb-6">“Because you ordered pasta!” Oliver said, then froze. “No. No, no, no. That sounded terrible.”</p>
+                <p class="mb-6">Nina put down her glass. “Are you saying pasta is a body issue?”</p>
+                <p class="mb-6">“No! I’m saying pasta is beautiful. You are beautiful. Not because of pasta. Separately from pasta.”</p>
+                <p class="mb-6">The silence was enormous.</p>
+                <p class="mb-6">Oliver tried again. “Let me rephrase that. I only meant that food should be enjoyed. People should not feel judged. Bodies are private. Pasta is private.”</p>
+                <p class="mb-6">Nina looked at him for a long moment. “Pasta is private?”</p>
+                <p class="mb-6">“Yes,” Oliver said weakly. “That may be my main belief.”</p>
+                <p class="mb-6">Their food arrived. Oliver attacked his salad as if lettuce could save him.</p>
+                <p class="mb-6">Nina took one bite of pasta. “This is actually very good.”</p>
+                <p class="mb-6">Oliver smiled too widely. “Great. I’m glad the pasta didn’t ruin everything.”</p>
+                <p class="mb-6">Nina’s eyes narrowed.</p>
+                <p class="mb-6">“I mean, I ruined everything,” he said. “The pasta is innocent.”</p>
+                <p class="mb-6">At the next table, a little boy dropped a breadstick. His mother whispered, “Don’t cry.”</p>
+                <p class="mb-6">Oliver pointed without thinking. “See? That breadstick <b class="highlight quiz-target" data-ans="broke his spirit" data-kor="그의 기를 꺾었다">broke his spirit</b>.”</p>
+                <p class="mb-6">Nina looked at the child, who was now happily eating butter.</p>
+                <p class="mb-6">“I think he’s fine,” she said.</p>
+                <p class="mb-6">“Yes,” Oliver said. “Unlike me.”</p>
+                <p class="mb-6">For the first time, Nina laughed.</p>
+                <p class="mb-6">Oliver relaxed. This was another mistake.</p>
+                <p class="mb-6">He leaned forward and said, “I’m really glad you laughed, because I was afraid you were <b class="highlight quiz-target" data-ans="never gonna let it go" data-kor="절대 잊지 않고 계속 말할 것이다">never gonna let it go</b>.”</p>
+                <p class="mb-6">Nina stopped laughing.</p>
+                <p class="mb-6">“Let what go?”</p>
+                <p class="mb-6">“The pasta thing,” Oliver said. “Which I should not <b class="highlight quiz-target" data-ans="bring it up" data-kor="그 이야기를 꺼내다">bring it up</b>.”</p>
+                <p class="mb-6">“No,” Nina said, reaching for her coat. “You should not.”</p>
+                <p class="mb-6">Oliver nodded as she stood. “To be clear, I respect pasta and women.”</p>
+                <p class="mb-6">Nina left.</p>
+                <p class="mb-6">Oliver looked at his salad. “Well,” he said, “you and I are both disappointing.”</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">올리버는 매력적으로 보이기로 결심했다. 이것은 이미 심각한 실수였다. 왜냐하면 올리버가 생각하는 매력이란 대체로 긴장한 목소리로 사실을 말하는 것이었기 때문이다. 테이블 맞은편에 앉은 니나는 아름답고, 똑똑해 보였으며, 약간 위험해 보였다. 그녀는 모든 것을 알아차리고 거의 아무것도 용서하지 않는 사람처럼 차분한 표정을 하고 있었다.</p>
+                <p class="mb-6">올리버는 메뉴를 펴고 미소를 지었다. “그래서, 파스타 좋아하세요?”</p>
+                <p class="mb-6">“네,” 니나가 말했다. “왜요?”</p>
+                <p class="mb-6">“아무 이유 없어요,” 올리버가 빠르게 말했다. “그냥 파스타 같은 사람 같아서요.”</p>
+                <p class="mb-6">니나가 메뉴를 내렸다. “파스타 같은 사람이라고요?”</p>
+                <p class="mb-6">올리버는 목덜미가 뜨거워지는 것을 느꼈다. “좋은 의미로요. 따뜻하고, 친근하고, 소스가 묻어 있는.” 그는 잠시 멈췄다. “아니요. 소스가 묻어 있다는 건 아니고요. 당연히요.”</p>
+                <p class="mb-6">니나는 그를 빤히 바라보았다.</p>
+                <p class="mb-6">“그러니까 감정적으로 소스가 묻어 있다는 뜻이에요,” 그가 덧붙였다. 그리고 즉시 작은 응급 상황이라도 생기길 바랐다.</p>
+                <p class="mb-6">웨이터가 왔다. 니나는 해산물 파스타를 주문했다. 올리버는 당황해서 샐러드를 주문했다. 그 순간 샐러드가 가장 안전한 성격처럼 느껴졌기 때문이다.</p>
+                <p class="mb-6">웨이터가 떠나자, 니나가 말했다. “그럼 본인에 대해 말해 보세요.”</p>
+                <p class="mb-6">올리버는 자세를 바로 했다. “음, 저는 마케팅 일을 해요. 영화도 좋아하고요. 한 번은 헬스장에 6개월 등록했는데 두 번 갔어요. 그래서 저는 누구 몸을 판단할 입장이 아니에요. 저는 <b class="highlight">몸매 비하 / 외모 비하</b>를 싫어해요.”</p>
+                <p class="mb-6">니나가 눈을 깜빡였다. “왜 그런 말을 하세요?”</p>
+                <p class="mb-6">“파스타를 주문하셨으니까요!” 올리버가 말했다가 얼어붙었다. “아니요. 아니, 아니, 아니요. 방금 말은 정말 끔찍하게 들렸네요.”</p>
+                <p class="mb-6">니나가 잔을 내려놓았다. “파스타가 몸과 관련된 문제라는 뜻이에요?”</p>
+                <p class="mb-6">“아니요! 파스타는 아름답다는 뜻이에요. 당신도 아름답고요. 파스타 때문이 아니라요. 파스타와는 별개로요.”</p>
+                <p class="mb-6">침묵이 엄청나게 크게 느껴졌다.</p>
+                <p class="mb-6">올리버는 다시 시도했다. “다르게 말해볼게요. 제가 말하려던 건 음식은 즐겨야 한다는 거였어요. 사람들은 평가받는다고 느끼면 안 되고요. 몸은 사적인 영역이죠. 파스타도 사적인 영역이고요.”</p>
+                <p class="mb-6">니나는 한참 동안 그를 바라보았다. “파스타도 사적인 영역이라고요?”</p>
+                <p class="mb-6">“네,” 올리버가 힘없이 말했다. “그게 제 핵심 신념일 수도 있겠네요.”</p>
+                <p class="mb-6">음식이 나왔다. 올리버는 양상추가 자신을 구해 줄 수라도 있는 것처럼 샐러드를 먹어 치웠다.</p>
+                <p class="mb-6">니나가 파스타를 한 입 먹었다. “이거 정말 맛있네요.”</p>
+                <p class="mb-6">올리버는 너무 활짝 웃었다. “좋네요. 파스타가 모든 걸 망치지 않아서 다행이에요.”</p>
+                <p class="mb-6">니나의 눈이 가늘어졌다.</p>
+                <p class="mb-6">“그러니까 제가 모든 걸 망쳤다는 뜻이에요,” 그가 말했다. “파스타는 죄가 없어요.”</p>
+                <p class="mb-6">옆 테이블에서 어린 남자아이가 빵스틱을 떨어뜨렸다. His mother whispered, “Don’t cry.”</p>
+                <p class="mb-6">올리버는 생각 없이 그쪽을 가리켰다. “보세요? 저 빵스틱이 <b class="highlight">그의 기를 꺾었다 / 마음을 완전히 꺾어 놓았다</b>.”</p>
+                <p class="mb-6">니나는 이제 행복하게 버터를 먹고 있는 아이를 바라보았다.</p>
+                <p class="mb-6">“괜찮아 보이는데요,” 그녀가 말했다.</p>
+                <p class="mb-6">“네,” 올리버가 말했다. “저와는 다르게요.”</p>
+                <p class="mb-6">그 순간 처음으로 니나가 웃었다.</p>
+                <p class="mb-6">올리버는 긴장을 풀었다. 이것은 또 다른 실수였다.</p>
+                <p class="mb-6">그는 몸을 앞으로 기울이며 말했다. “웃어 주셔서 정말 다행이에요. 저는 당신이 그 일을 <b class="highlight">절대 잊지 않고 계속 말할 것이다</b> 걱정했거든요.”</p>
+                <p class="mb-6">니나가 웃음을 멈췄다.</p>
+                <p class="mb-6">“무슨 일을 잊지 않는다고요?”</p>
+                <p class="mb-6">“파스타 일이요,” 올리버가 말했다. “제가 <b class="highlight">그 이야기를 꺼내다</b>면 안 되는 이야기였죠.”</p>
+                <p class="mb-6">“네,” 니나가 코트를 집어 들며 말했다. “꺼내면 안 됐죠.”</p>
+                <p class="mb-6">올리버는 그녀가 일어서는 것을 보며 고개를 끄덕였다. “분명히 말하자면, 저는 파스타와 여성을 존중합니다.”</p>
+                <p class="mb-6">니나는 떠났다.</p>
+                <p class="mb-6">올리버는 자신의 샐러드를 바라보았다. “그래,” 그가 말했다. “너와 나는 둘 다 실망스럽구나.”</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "527715.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

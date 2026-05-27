@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Wrong Compliment</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🍷</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Wrong Compliment</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">body-shaming</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">몸매 비하 / 외모 비하</td></tr>
+                <tr><td class="p-4"><b class="text-white">diversity</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">다양성</td></tr>
+                <tr><td class="p-4"><b class="text-white">get offended</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">기분이 상하다 / 불쾌해하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">hit a nerve</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">아픈 곳을 건드리다 / 민감한 부분을 건드리다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">body-shaming</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">몸무게나 체형을 평가하거나 비난하는 말입니다. 칭찬처럼 시작해도 몸을 평가하면 무례하게 들릴 수 있습니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">diversity</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">사람들의 배경, 경험, 정체성 등이 다양하다는 뜻입니다. 직장이나 사회적 맥락에서 자주 쓰입니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">get offended</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">어떤 말 때문에 기분이 상하거나 모욕감을 느낀다는 뜻입니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">hit a nerve</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">상대방의 민감한 부분을 건드렸다는 뜻입니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Elliot wanted to make a good first impression. His sister Jenny had set him up with Maya, and before the date she had given him one simple warning.</p>
+                <p class="mb-6">“Maya is lovely,” Jenny said, “but she notices things. Just think before you speak.”</p>
+                <p class="mb-6">“I always think before I speak,” Elliot said.</p>
+                <p class="mb-6">Jenny looked at him for a long moment.</p>
+                <p class="mb-6">“Then think twice.”</p>
+                <p class="mb-6">Now Maya was sitting across from him at a small wine bar. She wore a blue dress and silver earrings. She looked warm, confident, and very capable of hearing a stupid sentence before Elliot finished saying it.</p>
+                <p class="mb-6">“You look really nice,” Elliot said.</p>
+                <p class="mb-6">Maya smiled. “Thank you. So do you.”</p>
+                <p class="mb-6">That should have been the end of it.</p>
+                <p class="mb-6">But Elliot, encouraged by success, continued.</p>
+                <p class="mb-6">“Actually, you look better than your photos.”</p>
+                <p class="mb-6">Maya’s smile became polite. “Oh?”</p>
+                <p class="mb-6">“In the photos, you looked thinner,” he said. “Not that thin is better. I just mean you look healthier in person.”</p>
+                <p class="mb-6">Maya put her menu down.</p>
+                <p class="mb-6">Elliot’s brain screamed at him.</p>
+                <p class="mb-6">“I mean, not healthier like you looked unhealthy before,” he said. “Just more… present. Physically present. Which is obvious, because you are here.”</p>
+                <p class="mb-6">Maya stared at him. “Are you commenting on my body?”</p>
+                <p class="mb-6">“No,” Elliot said quickly. “Well, yes, accidentally. But I am strongly against <b class="highlight quiz-target" data-ans="body-shaming" data-kor="몸매 비하 / 외모 비하">body-shaming</b>.”</p>
+                <p class="mb-6">“That is a strange thing to say after commenting on my body.”</p>
+                <p class="mb-6">“Yes,” Elliot said. “I noticed that as it left my mouth.”</p>
+                <p class="mb-6">The waiter came, and Elliot ordered water because he felt he had lost the right to enjoy wine.</p>
+                <p class="mb-6">Maya took a breath. “Jenny told me you work in marketing.”</p>
+                <p class="mb-6">“Yes,” Elliot said. “And she told me you work in workplace inclusion.”</p>
+                <p class="mb-6">“I do.”</p>
+                <p class="mb-6">“That must be difficult,” he said. “You probably deal with a lot of <b class="highlight quiz-target" data-ans="diversity" data-kor="다양성">diversity</b> issues.”</p>
+                <p class="mb-6">Maya tilted her head. “What do you mean by ‘issues’?”</p>
+                <p class="mb-6">Elliot sat up straighter. “Good question. Terrible word. I meant topics. Important topics. Not problems. People are not problems. I know that.”</p>
+                <p class="mb-6">Maya nodded slowly. “Okay.”</p>
+                <p class="mb-6">For a few minutes, the date almost recovered. They talked about bad office coffee and Jenny’s bossy personality. Maya even laughed when Elliot said Jenny organized family dinners like military operations.</p>
+                <p class="mb-6">Then Elliot relaxed.</p>
+                <p class="mb-6">“I guess in your job, you meet people who <b class="highlight quiz-target" data-ans="get offended" data-kor="기분이 상하다 / 불쾌해하다">get offended</b> very easily,” he said.</p>
+                <p class="mb-6">Maya stopped smiling.</p>
+                <p class="mb-6">Elliot closed his eyes. “I should not have said ‘easily.’”</p>
+                <p class="mb-6">“No,” Maya said. “You should not have.”</p>
+                <p class="mb-6">“I meant people sometimes feel hurt at work, and you help with that.”</p>
+                <p class="mb-6">“That is very different from what you said.”</p>
+                <p class="mb-6">“Yes,” Elliot said. “My better sentences arrive late.”</p>
+                <p class="mb-6">Maya looked at him for a long moment. “Do you think people are too sensitive?”</p>
+                <p class="mb-6">Elliot knew the correct answer was no. He knew it clearly.</p>
+                <p class="mb-6">“I think some people are,” he said, and immediately hated himself.</p>
+                <p class="mb-6">Maya picked up her bag.</p>
+                <p class="mb-6">Elliot panicked. “Did I <b class="highlight quiz-target" data-ans="hit a nerve" data-kor="아픈 곳을 건드리다 / 민감한 부분을 건드리다">hit a nerve</b>?”</p>
+                <p class="mb-6">Maya stood up.</p>
+                <p class="mb-6">Elliot covered his face. “That was worse. Somehow I found worse.”</p>
+                <p class="mb-6">“Yes,” Maya said. “You did.”</p>
+                <p class="mb-6">She left.</p>
+                <p class="mb-6">The waiter returned with Elliot’s water. “Ready to order?”</p>
+                <p class="mb-6">Elliot looked at the empty chair.</p>
+                <p class="mb-6">“Yes,” he said. “I’ll have silence, please.”</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">엘리엇은 좋은 첫인상을 남기고 싶었다. 그의 여동생 제니가 마야와의 소개팅을 주선했고, 데이트 전에 그에게 간단한 경고를 하나 해 주었다.</p>
+                <p class="mb-6">“마야는 좋은 사람이야,” 제니가 말했다. “하지만 뭔가를 잘 알아차려. 말하기 전에 생각해.”</p>
+                <p class="mb-6">“나는 항상 말하기 전에 생각해,” 엘리엇이 말했다.</p>
+                <p class="mb-6">제니는 그를 한참 동안 바라보았다.</p>
+                <p class="mb-6">“그럼 두 번 생각해.”</p>
+                <p class="mb-6">이제 마야는 작은 와인 바에서 그의 맞은편에 앉아 있었다. 그녀는 파란 원피스와 은색 귀걸이를 하고 있었다. 따뜻하고 자신감 있어 보였고, 엘리엇이 멍청한 문장을 끝내기 전에 이미 알아차릴 수 있는 사람처럼 보였다.</p>
+                <p class="mb-6">“정말 예뻐 보이세요,” 엘리엇이 말했다.</p>
+                <p class="mb-6">마야가 미소 지었다. “고마워요. 당신도 멋져 보여요.”</p>
+                <p class="mb-6">거기서 끝났어야 했다.</p>
+                <p class="mb-6">하지만 엘리엇은 성공에 용기를 얻고 계속 말했다.</p>
+                <p class="mb-6">“사실, 사진보다 더 나으세요.”</p>
+                <p class="mb-6">마야의 미소가 예의 바른 미소로 바뀌었다. “그래요?”</p>
+                <p class="mb-6">“사진에서는 더 말라 보였거든요,” 그가 말했다. “말랐다는 게 더 좋다는 뜻은 아니고요. 그냥 실제로 보니까 더 건강해 보인다는 뜻이에요.”</p>
+                <p class="mb-6">마야가 메뉴를 내려놓았다.</p>
+                <p class="mb-6">엘리엇의 머릿속이 그에게 소리쳤다.</p>
+                <p class="mb-6">“그러니까 예전에는 건강하지 않아 보였다는 뜻은 아니고요,” 그가 말했다. “그냥 더… 존재감이 있어요. 신체적으로 존재감이요. 물론 여기 계시니까 당연한 말이지만요.”</p>
+                <p class="mb-6">마야는 그를 빤히 바라보았다. “제 몸에 대해 말하는 건가요?”</p>
+                <p class="mb-6">“아니요,” 엘리엇이 빠르게 말했다. “음, 맞아요. 실수로요. 하지만 저는 <b class="highlight">몸매 비하 / 외모 비하</b>에 강하게 반대합니다.”</p>
+                <p class="mb-6">“제 몸에 대해 말한 다음에 하기에는 이상한 말이네요.”</p>
+                <p class="mb-6">“네,” 엘리엇이 말했다. “입 밖으로 나가는 순간 저도 알아차렸어요.”</p>
+                <p class="mb-6">웨이터가 왔고, 엘리엇은 물을 주문했다. 그는 자신이 와인을 즐길 자격을 잃었다고 느꼈기 때문이다.</p>
+                <p class="mb-6">마야가 숨을 들이마셨다. “제니가 마케팅 일을 하신다고 했어요.”</p>
+                <p class="mb-6">“네,” 엘리엇이 말했다. “그리고 당신은 직장 내 포용 관련 일을 하신다고 들었어요.”</p>
+                <p class="mb-6">“맞아요.”</p>
+                <p class="mb-6">“힘드시겠네요,” 그가 말했다. “<b class="highlight">다양성</b> 문제들을 많이 다루시겠어요.”</p>
+                <p class="mb-6">마야가 고개를 살짝 기울였다. “‘문제’라는 게 무슨 뜻이죠?”</p>
+                <p class="mb-6">엘리엇은 자세를 바로 했다. “좋은 질문이에요. 끔찍한 단어 선택이었어요. 주제라는 뜻이었어요. 중요한 주제요. 문제가 아니라요. 사람들은 문제가 아니죠. 그건 알아요.”</p>
+                <p class="mb-6">마야는 천천히 고개를 끄덕였다. “알겠어요.”</p>
+                <p class="mb-6">몇 분 동안 데이트는 거의 회복되는 듯했다. 그들은 맛없는 사무실 커피와 제니의 지시적인 성격에 대해 이야기했다. 엘리엇이 제니는 가족 식사도 군사 작전처럼 정리한다고 말하자, 마야는 웃기까지 했다.</p>
+                <p class="mb-6">그러자 엘리엇은 긴장을 풀었다.</p>
+                <p class="mb-6">“당신 일에서는 아주 쉽게 <b class="highlight">기분이 상하다 / 불쾌해하다</b> 사람들을 많이 만나겠네요,” 그가 말했다.</p>
+                <p class="mb-6">마야의 미소가 사라졌다.</p>
+                <p class="mb-6">엘리엇은 눈을 감았다. “‘쉽게’라는 말을 하지 말았어야 했네요.”</p>
+                <p class="mb-6">“네,” 마야가 말했다. “하지 말았어야 했어요.”</p>
+                <p class="mb-6">“제 말은, 사람들이 직장에서 상처를 받을 때가 있고, 당신이 그걸 돕는다는 뜻이었어요.”</p>
+                <p class="mb-6">“그건 당신이 한 말과 아주 다르네요.”</p>
+                <p class="mb-6">“네,” 엘리엇이 말했다. “제 더 나은 문장들은 늦게 도착해요.”</p>
+                <p class="mb-6">마야는 그를 한참 동안 바라보았다. “사람들이 너무 예민하다고 생각하세요?”</p>
+                <p class="mb-6">엘리엇은 정답이 ‘아니요’라는 것을 알았다. 아주 분명히 알고 있었다.</p>
+                <p class="mb-6">“어떤 사람들은 그렇다고 생각해요,” 그가 말했다. 그리고 즉시 자기 자신이 싫어졌다.</p>
+                <p class="mb-6">마야는 가방을 집어 들었다.</p>
+                <p class="mb-6">엘리엇은 당황했다. “제가 <b class="highlight">아픈 곳을 건드리다 / 민감한 부분을 건드리다</b>?”</p>
+                <p class="mb-6">마야가 자리에서 일어났다.</p>
+                <p class="mb-6">엘리엇은 얼굴을 가렸다. “그게 더 나빴네요. 어떻게든 더 나쁜 말을 찾아냈네요.”</p>
+                <p class="mb-6">“네,” 마야가 말했다. “찾아냈네요.”</p>
+                <p class="mb-6">그녀는 떠났다.</p>
+                <p class="mb-6">웨이터가 엘리엇의 물을 가지고 돌아왔다. “주문하시겠어요?”</p>
+                <p class="mb-6">엘리엇은 빈 의자를 바라보았다.</p>
+                <p class="mb-6">“네,” 그가 말했다. “침묵으로 주세요.”</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "5271200.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

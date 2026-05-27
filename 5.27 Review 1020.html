@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Tea Shop Disaster</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🫖</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Tea Shop Disaster</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">pathetic</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">한심한 / 불쌍한 / 처참한</td></tr>
+                <tr><td class="p-4"><b class="text-white">twist my words</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">내 말을 왜곡하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">jump to conclusions</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">성급하게 결론을 내리다</td></tr>
+                <tr><td class="p-4"><b class="text-white">timeless</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">유행을 타지 않는 / 시대를 초월한</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">pathetic</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">사람에게 직접 쓰면 매우 강하게 들릴 수 있습니다. “한심하다”는 뉘앙스가 있어서 조심해야 합니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">twist my words</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">상대방이 내 말을 원래 의도와 다르게 바꿔 받아들인다는 뜻입니다. 다툼에서 자주 쓰입니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">jump to conclusions</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">충분히 듣거나 확인하지 않고 너무 빨리 판단한다는 뜻입니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">timeless</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">패션이나 디자인에는 좋은 칭찬이지만, 사람의 나이와 연결되면 오해를 부를 수 있습니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Simon chose the tea shop because it looked peaceful. He thought peaceful places helped people speak gently. This was a foolish hope, because Simon could create tension in an empty room.</p>
+                <p class="mb-6">His blind date, Laura, arrived wearing a cream sweater and silver earrings. She looked calm, serious, and ready to detect nonsense from across the street.</p>
+                <p class="mb-6">Simon stood up and smiled too hard.</p>
+                <p class="mb-6">“Hi,” he said. “You look very <b class="highlight quiz-target" data-ans="timeless" data-kor="유행을 타지 않는 / 시대를 초월한">timeless</b>.”</p>
+                <p class="mb-6">Laura paused beside the chair. “Timeless?”</p>
+                <p class="mb-6">“Yes,” Simon said. “Classic. Elegant. Not old. I definitely didn’t mean old. I mean, old things can be beautiful too, like buildings and cheese.”</p>
+                <p class="mb-6">Laura did not sit down.</p>
+                <p class="mb-6">Simon’s mouth continued without permission. “Not that you remind me of cheese.”</p>
+                <p class="mb-6">“Good,” Laura said.</p>
+                <p class="mb-6">“Or a building.”</p>
+                <p class="mb-6">“Excellent.”</p>
+                <p class="mb-6">Simon pulled out her chair, then pushed it in too early. Laura bumped into it.</p>
+                <p class="mb-6">“Sorry,” he said. “I was trying to be polite, but my timing is <b class="highlight quiz-target" data-ans="pathetic" data-kor="한심한 / 불쌍한 / 처참한">pathetic</b>.”</p>
+                <p class="mb-6">Laura sat down slowly. “Your timing is pathetic?”</p>
+                <p class="mb-6">“My timing,” Simon said. “Not me. Though possibly me. No, not possibly. Let’s not explore that.”</p>
+                <p class="mb-6">The waiter came over. Simon ordered green tea. Laura ordered mint tea.</p>
+                <p class="mb-6">There was a short silence. Simon decided to fill it with charm, which was like filling a fire with paper.</p>
+                <p class="mb-6">“So,” he said, “you seem like someone who doesn’t suffer fools.”</p>
+                <p class="mb-6">Laura looked at him. “Are you calling yourself a fool?”</p>
+                <p class="mb-6">“No,” Simon said. “I mean, yes, but only as a light social fact.”</p>
+                <p class="mb-6">“That’s an odd thing to say on a date.”</p>
+                <p class="mb-6">“Please don’t <b class="highlight quiz-target" data-ans="twist my words" data-kor="내 말을 왜곡하다">twist my words</b>,” Simon said.</p>
+                <p class="mb-6">Laura’s eyebrows rose.</p>
+                <p class="mb-6">Simon froze. “Oh no. That sounded aggressive. I meant please twist them into something better.”</p>
+                <p class="mb-6">Laura folded her arms. “So now I’m aggressive?”</p>
+                <p class="mb-6">“No! You’re not aggressive. You’re careful. Sensible. Possibly terrifying, but in a professional way.”</p>
+                <p class="mb-6">“A professional way?”</p>
+                <p class="mb-6">Simon took a large sip of tea, forgot it was hot, and made a small wounded noise.</p>
+                <p class="mb-6">Laura watched him. “Are you all right?”</p>
+                <p class="mb-6">“Yes,” he whispered. “My tongue has simply resigned.”</p>
+                <p class="mb-6">For one brief second, Laura almost smiled.</p>
+                <p class="mb-6">Simon saw hope and immediately ruined it.</p>
+                <p class="mb-6">“I knew you would <b class="highlight quiz-target" data-ans="jump to conclusions" data-kor="성급하게 결론을 내리다">jump to conclusions</b> about me,” he said.</p>
+                <p class="mb-6">Laura’s face went still. “Excuse me?”</p>
+                <p class="mb-6">“No, no. I mean, I thought you might quickly notice I’m nervous and socially weak.”</p>
+                <p class="mb-6">“That is not what ‘jump to conclusions’ means.”</p>
+                <p class="mb-6">“Right,” Simon said. “Then I withdraw the phrase and apologize to language itself.”</p>
+                <p class="mb-6">Laura stood up and picked up her bag.</p>
+                <p class="mb-6">Simon panicked. “Can I start again?”</p>
+                <p class="mb-6">She looked at him.</p>
+                <p class="mb-6">He took a breath. “You look elegant, and I am nervous because I wanted this to go well. That is what I should have said.”</p>
+                <p class="mb-6">Laura softened for half a second. Then Simon added, “Also, I respect cheese.”</p>
+                <p class="mb-6">She closed her eyes.</p>
+                <p class="mb-6">Simon nodded sadly. “Yes. That part was extra.”</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">사이먼은 찻집을 골랐다. 그곳이 평화로워 보였기 때문이다. 그는 평화로운 장소가 사람들이 부드럽게 말하는 데 도움이 된다고 생각했다. 하지만 그것은 어리석은 희망이었다. 사이먼은 텅 빈 방에서도 긴장감을 만들어 낼 수 있었기 때문이다.</p>
+                <p class="mb-6">그의 소개팅 상대인 로라는 크림색 스웨터와 은색 귀걸이를 하고 도착했다. 그녀는 차분하고 진지해 보였으며, 길 건너편에서도 헛소리를 감지할 준비가 된 사람처럼 보였다.</p>
+                <p class="mb-6">사이먼은 자리에서 일어나 너무 힘껏 미소를 지었다.</p>
+                <p class="mb-6">“안녕하세요,” 그가 말했다. “정말 <b class="highlight">유행을 타지 않는 / 시대를 초월한</b> 분위기시네요.”</p>
+                <p class="mb-6">로라는 의자 옆에서 멈칫했다. “유행을 타지 않는다고요?”</p>
+                <p class="mb-6">“네,” 사이먼이 말했다. “클래식하고 우아하다는 뜻이에요. 늙었다는 뜻은 아니고요. 절대 나이 들어 보인다는 뜻은 아니에요. 그러니까 오래된 것들도 아름다울 수 있잖아요. 건물이나 치즈처럼요.”</p>
+                <p class="mb-6">로라는 앉지 않았다.</p>
+                <p class="mb-6">사이먼의 입은 허락 없이 계속 움직였다. “당신이 치즈를 떠올리게 한다는 뜻은 아니고요.”</p>
+                <p class="mb-6">“다행이네요,” 로라가 말했다.</p>
+                <p class="mb-6">“건물도 아니고요.”</p>
+                <p class="mb-6">“훌륭하네요.”</p>
+                <p class="mb-6">사이먼은 그녀의 의자를 빼 주었다가 너무 빨리 밀어 넣었다. 로라는 의자에 부딪쳤다.</p>
+                <p class="mb-6">“죄송해요,” 그가 말했다. “예의 있게 하려던 건데, 제 타이밍이 <b class="highlight">한심한 / 불쌍한 / 처참한</b>하네요.”</p>
+                <p class="mb-6">로라는 천천히 앉았다. “타이밍이 처참하다고요?”</p>
+                <p class="mb-6">“제 타이밍이요,” 사이먼이 말했다. “제가 아니라요. 물론 저일 수도 있지만요. 아니, 저일 수도 있다는 말은 하지 맙시다.”</p>
+                <p class="mb-6">웨이터가 다가왔다. 사이먼은 녹차를 주문했고, 로라는 민트차를 주문했다.</p>
+                <p class="mb-6">짧은 침묵이 흘렀다. 사이먼은 그 침묵을 매력으로 채우기로 했다. 그것은 불에 종이를 넣는 것과 같았다.</p>
+                <p class="mb-6">“그래서,” 그가 말했다. “당신은 바보들을 참지 않는 사람 같네요.”</p>
+                <p class="mb-6">로라가 그를 바라보았다. “지금 본인이 바보라고 하는 건가요?”</p>
+                <p class="mb-6">“아니요,” 사이먼이 말했다. “그러니까, 맞긴 한데요. 가벼운 사회적 사실로서요.”</p>
+                <p class="mb-6">“데이트에서 하기에는 이상한 말이네요.”</p>
+                <p class="mb-6">“제 말을 <b class="highlight">왜곡하다</b>지는 말아 주세요,” 사이먼이 말했다.</p>
+                <p class="mb-6">로라의 눈썹이 올라갔다.</p>
+                <p class="mb-6">사이먼은 얼어붙었다. “아, 안 돼. 방금 너무 공격적으로 들렸네요. 제 말은, 제 말을 더 좋은 쪽으로 왜곡해 달라는 뜻이었어요.”</p>
+                <p class="mb-6">로라는 팔짱을 꼈다. “그럼 이제 제가 공격적이라는 건가요?”</p>
+                <p class="mb-6">“아니요! 공격적이라는 뜻이 아니에요. 신중하시다는 뜻이에요. 분별 있고요. 어쩌면 무서울 수도 있지만, 전문적인 방식으로요.”</p>
+                <p class="mb-6">“전문적인 방식이요?”</p>
+                <p class="mb-6">사이먼은 차를 크게 한 모금 마셨고, 그것이 뜨겁다는 사실을 잊고 작게 다친 소리를 냈다.</p>
+                <p class="mb-6">로라는 그를 바라보았다. “괜찮으세요?”</p>
+                <p class="mb-6">“네,” 그가 속삭였다. “제 혀가 그냥 사직서를 냈을 뿐이에요.”</p>
+                <p class="mb-6">아주 잠깐, 로라는 거의 미소를 지을 뻔했다.</p>
+                <p class="mb-6">사이먼은 희망을 보았고, 즉시 그것을 망쳤다.</p>
+                <p class="mb-6">“당신이 저에 대해 <b class="highlight">성급하게 결론을 내리다</b> 줄 알았어요,” 그가 말했다.</p>
+                <p class="mb-6">로라의 얼굴이 굳었다. “뭐라고요?”</p>
+                <p class="mb-6">아니요, 아니요. 제 말은, 제가 긴장했고 사회적으로 약하다는 걸 빨리 알아차리실 수도 있다고 생각했다는 뜻이에요.</p>
+                <p class="mb-6">“그건 ‘jump to conclusions’의 뜻이 아니에요.”</p>
+                <p class="mb-6">“맞아요,” 사이먼이 말했다. “그럼 그 표현은 철회하고 언어 자체에 사과하겠습니다.”</p>
+                <p class="mb-6">로라는 일어나 가방을 집어 들었다.</p>
+                <p class="mb-6">사이먼은 당황했다. “다시 말해도 될까요?”</p>
+                <p class="mb-6">그녀는 그를 바라보았다.</p>
+                <p class="mb-6">그는 숨을 들이마셨다. “우아해 보이시고, 저는 이 만남이 잘되길 바라서 긴장했습니다. 그렇게 말했어야 했어요.”</p>
+                <p class="mb-6">로라의 표정이 반초 정도 부드러워졌다. 그때 사이먼이 덧붙였다. “also, I respect cheese.”</p>
+                <p class="mb-6">그녀는 눈을 감았다.</p>
+                <p class="mb-6">사이먼은 슬프게 고개를 끄덕였다. “네. 그 부분은 불필요했네요.”</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "5271020.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

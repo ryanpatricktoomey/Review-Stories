@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Compliment Trap</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🕰️</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Compliment Trap</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">neat</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">깔끔한 / 단정한 / 멋진</td></tr>
+                <tr><td class="p-4"><b class="text-white">neat and tidy</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">깔끔하고 정돈된</td></tr>
+                <tr><td class="p-4"><b class="text-white">timeless</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">유행을 타지 않는 / 시대를 초월한</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">neat</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">상황에 따라 “깔끔한,” “단정한,” 또는 “멋진”이라는 뜻이 될 수 있습니다. 사람에게 쓰면 약간 애매하게 들릴 수도 있습니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">neat and tidy</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">보통 방, 책상, 옷차림처럼 정돈된 상태를 말합니다. 사람에게 쓰면 어린아이처럼 평가하는 느낌이 날 수 있습니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">timeless</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">패션, 디자인, 음악 등에 자주 쓰이며 “유행이 지나도 계속 좋은”이라는 뜻입니다. 나이와 연결되면 조심해야 합니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Daniel had prepared three safe topics for his blind date: weather, films, and dogs. He had written them on his hand in blue pen, but by the time he reached the café, his palm simply said “W F D,” which looked less like social planning and more like a medical condition.</p>
+                <p class="mb-6">Emma arrived exactly on time. She wore a black coat, red lipstick, and the expression of someone who had already survived many disappointing men.</p>
+                <p class="mb-6">Daniel stood up and knocked his chair over.</p>
+                <p class="mb-6">“Hello,” he said. “You’re very… arranged.”</p>
+                <p class="mb-6">Emma paused. “Arranged?”</p>
+                <p class="mb-6">“No, sorry. I mean put together. Not like furniture. Obviously. You look <b class="highlight quiz-target" data-ans="neat" data-kor="깔끔한 / 단정한 / 멋진">neat</b>.”</p>
+                <p class="mb-6">Emma’s eyes narrowed slightly.</p>
+                <p class="mb-6">Daniel smiled in terror. “And that is a compliment. A normal compliment. Not a school-report comment.”</p>
+                <p class="mb-6">She sat down slowly. “Do I look like a school report?”</p>
+                <p class="mb-6">“No! You look adult. Very adult. He heard himself say it and wished the floor would open politely.”</p>
+                <p class="mb-6">The waiter came over. Daniel ordered coffee. Emma ordered tea.</p>
+                <p class="mb-6">“You seem nervous,” Emma said.</p>
+                <p class="mb-6">“I am,” Daniel said. “I’m trying not to say anything strange, which is unfortunately when I say the strangest things.”</p>
+                <p class="mb-6">“That’s honest,” she said.</p>
+                <p class="mb-6">Encouraged, Daniel leaned forward. “Your style is very <b class="highlight quiz-target" data-ans="neat and tidy" data-kor="깔끔하고 정돈된">neat and tidy</b>.”</p>
+                <p class="mb-6">Emma put her menu down. “Tidy?”</p>
+                <p class="mb-6">“Yes. In a good way. Like… organized. Clean. Efficient.” He stopped. “No, not efficient. You are not a filing cabinet.”</p>
+                <p class="mb-6">Emma stared.</p>
+                <p class="mb-6">Daniel’s brain began throwing furniture out of windows.</p>
+                <p class="mb-6">What I meant was,” he said quickly, “you look elegant. Calm. Like someone who knows where her keys are.”</p>
+                <p class="mb-6">“I do know where my keys are.”</p>
+                <p class="mb-6">“Excellent,” Daniel said. “Very attractive quality.”</p>
+                <p class="mb-6">There was a silence.</p>
+                <p class="mb-6">Emma took a sip of tea. “What do you do for work?”</p>
+                <p class="mb-6">“I design websites,” he said, relieved. “Mostly for small companies. Nothing exciting. Well, one bakery website had a moving croissant, but I try not to brag.”</p>
+                <p class="mb-6">Emma almost smiled.</p>
+                <p class="mb-6">Daniel saw the almost-smile and became dangerously confident.</p>
+                <p class="mb-6">“You have a very <b class="highlight quiz-target" data-ans="timeless" data-kor="유행을 타지 않는 / 시대를 초월한">timeless</b> look.”</p>
+                <p class="mb-6">Emma’s almost-smile disappeared. “Timeless?”</p>
+                <p class="mb-6">“Yes,” Daniel said. “Classic. Not old. Absolutely not old. I’m not saying you look old. You don’t. I mean, you have probably been alive for a normal amount of time.”</p>
+                <p class="mb-6">Emma slowly reached for her bag.</p>
+                <p class="mb-6">Daniel lifted both hands. “That came out wrong. I was trying to say you look stylish in a way that doesn’t depend on trends.”</p>
+                <p class="mb-6">“That would have been better,” Emma said.</p>
+                <p class="mb-6">“Yes,” Daniel whispered. “I met that sentence too late.”</p>
+                <p class="mb-6">She stood up.</p>
+                <p class="mb-6">Daniel nodded sadly. “For the record, I think your keys are lucky.”</p>
+                <p class="mb-6">Emma looked at him for one long second.</p>
+                <p class="mb-6">Then she left.</p>
+                <p class="mb-6">Daniel looked at his hand. W F D.</p>
+                <p class="mb-6">“Dogs,” he said. “I forgot dogs.”</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">다니엘은 소개팅을 위해 안전한 주제 세 가지를 준비해 두었다. 날씨, 영화, 그리고 개였다. 그는 그것들을 파란 펜으로 손에 적어 두었지만, 카페에 도착했을 때 손바닥에는 그저 “W F D”라고만 남아 있었다. 그것은 사회생활 계획이라기보다는 어떤 의학적 증상처럼 보였다.</p>
+                <p class="mb-6">엠마는 정확히 제시간에 도착했다. 그녀는 검은 코트와 빨간 립스틱을 하고 있었고, 이미 실망스러운 남자들을 많이 겪어 본 사람 같은 표정을 짓고 있었다.</p>
+                <p class="mb-6">다니엘은 일어서다가 의자를 넘어뜨렸다.</p>
+                <p class="mb-6">“안녕하세요,” 그가 말했다. “정말… 정리되어 보이시네요.”</p>
+                <p class="mb-6">엠마가 멈칫했다. “정리되어 보인다고요?”</p>
+                <p class="mb-6">“아니요, 죄송해요. 제 말은 단정해 보인다는 거예요. 가구처럼 배치되어 있다는 뜻은 아니고요. 당연히요. 정말 <b class="highlight">깔끔한 / 단정한 / 멋진</b>해 보이세요.”</p>
+                <p class="mb-6">엠마의 눈이 살짝 가늘어졌다.</p>
+                <p class="mb-6">다니엘은 공포에 질린 미소를 지었다. “그리고 그건 칭찬이에요. 정상적인 칭찬이요. 학교 생활기록부 같은 말은 아니고요.”</p>
+                <p class="mb-6">그녀는 천천히 자리에 앉았다. “제가 학교 생활기록부처럼 보인가요?”</p>
+                <p class="mb-6">“아니요! 어른처럼 보이세요. 아주 어른스럽게요.” 그는 자신이 한 말을 듣고 바닥이 예의 있게 열리기를 바랐다.</p>
+                <p class="mb-6">웨이터가 다가왔다. 다니엘은 커피를 주문했고, 엠마는 차를 주문했다.</p>
+                <p class="mb-6">“긴장하신 것 같네요,” 엠마가 말했다.</p>
+                <p class="mb-6">“맞아요,” 다니엘이 말했다. “이상한 말을 하지 않으려고 노력 중인데, 안타깝게도 그럴 때 제가 가장 이상한 말을 해요.”</p>
+                <p class="mb-6">“솔직하시네요,” 그녀가 말했다.</p>
+                <p class="mb-6">용기를 얻은 다니엘은 몸을 앞으로 기울였다. “스타일이 정말 <b class="highlight">깔끔하고 정돈된</b> 보요.”</p>
+                <p class="mb-6">엠마가 메뉴를 내려놓았다. “정돈되어 있다고요?”</p>
+                <p class="mb-6">“네. 좋은 의미로요. 그러니까… 체계적이고요. 깨끗하고요. 효율적이고요.” 그는 멈췄다. “아니요, 효율적이라는 건 아니에요. 당신은 서류 캐비닛이 아니니까요.”</p>
+                <p class="mb-6">엠마는 빤히 바라보았다.</p>
+                <p class="mb-6">다니엘의 머릿속은 창밖으로 가구를 던지기 시작했다.</p>
+                <p class="mb-6">“제가 말하려던 건,” 그가 빠르게 말했다. “우아해 보인다는 거예요. 차분하고요. 열쇠가 어디 있는지 아는 사람처럼요.”</p>
+                <p class="mb-6">“저는 제 열쇠가 어디 있는지 알아요.”</p>
+                <p class="mb-6">“훌륭하네요,” 다니엘이 말했다. “아주 매력적인 특징이에요.”</p>
+                <p class="mb-6">침묵이 흘렀다.</p>
+                <p class="mb-6">엠마는 차를 한 모금 마셨다. “무슨 일 하세요?”</p>
+                <p class="mb-6">“웹사이트를 디자인해요,” 그가 안도하며 말했다. “주로 작은 회사들 거요. 그렇게 흥미로운 일은 아니에요. 음, 한 제과점 웹사이트에는 움직이는 크루아상이 있었지만, 자랑은 자제하려고요.”</p>
+                <p class="mb-6">엠마는 거의 미소를 지을 뻔했다.</p>
+                <p class="mb-6">다니엘은 그 거의 미소를 보고 위험할 정도로 자신감을 얻었다.</p>
+                <p class="mb-6">“당신은 아주 <b class="highlight">유행을 타지 않는 / 시대를 초월한</b> 분위기가 있어요,” 그가 말했다.</p>
+                <p class="mb-6">엠마의 거의 미소가 사라졌다. “유행을 타지 않는다고요?”</p>
+                <p class="mb-6">“네,” 다니엘이 말했다. “클래식하다는 뜻이에요. 오래됐다는 게 아니고요. 절대 오래됐다는 뜻은 아니에요. 나이 들어 보인다는 말이 아니에요. 전혀요. 그러니까 당신은 아마 정상적인 시간 동안 살아오셨을 거예요.”</p>
+                <p class="mb-6">엠마는 천천히 가방을 집어 들었다.</p>
+                <p class="mb-6">다니엘은 두 손을 들었다. “말이 이상하게 나왔네요. 제가 말하려던 건, 유행에 의존하지 않는 방식으로 스타일리시해 보인다는 거였어요.”</p>
+                <p class="mb-6">“그렇게 말했으면 더 나았겠네요,” 엠마가 말했다.</p>
+                <p class="mb-6">“네,” 다니엘이 속삭였다. “제가 그 문장을 너무 늦게 만났네요.”</p>
+                <p class="mb-6">그녀는 자리에서 일어났다.</p>
+                <p class="mb-6">다니엘은 슬프게 고개를 끄덕였다. “참고로, 당신의 열쇠들은 운이 좋다고 생각해요.”</p>
+                <p class="mb-6">엠마는 그를 아주 오래 바라보았다.</p>
+                <p class="mb-6">그리고 떠났다.</p>
+                <p class="mb-6">다니엘은 자신의 손을 내려다보았다. W F D.</p>
+                <p class="mb-6">“개,” 그가 말했다. “개 얘기를 까먹었네.”</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "527830.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Robot Vacuum Excuse</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">💸</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Robot Vacuum Excuse</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">naive</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">순진한 / 세상 물정을 모르는</td></tr>
+                <tr><td class="p-4"><b class="text-white">claim ignorance</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">몰아고 주장하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">left on read</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">읽고 답하지 않았다</td></tr>
+                <tr><td class="p-4"><b class="text-white">left on unread</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">읽지 않은 채로 두었다</td></tr>
+                <tr><td class="p-4"><b class="text-white">wasteful</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">낭비하는 / 낭비가 심한</td></tr>
+                <tr><td class="p-4"><b class="text-white">the money is burning a hole in your pocket</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">돈이 생기면 쓰고 싶어 못 견디다</td></tr>
+                <tr><td class="p-4"><b class="text-white">blackmail</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">협박하다 / 약점을 잡고 위협하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">awkward</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">어색한 / 난처한</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">claim ignorance</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">정말 몰랐을 수도 있지만, 책임을 피하려고 “몰랐다”고 주장하는 느낌도 있어요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">left on read / left on unread</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">left on read는 읽고 답하지 않은 상태이고, left on unread는 아예 읽지 않은 상태로 둔 거예요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">the money is burning a hole in your pocket</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">돈이 있으면 바로 쓰고 싶어 하는 사람에게 쓰는 표현이에요. 실제로 돈이 타는 것은 아니에요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">blackmail</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">상대의 비밀이나 약점을 이용해서 원하는 것을 하게 만드는 협박이에요. 장난스럽게도 쓸 수 있지만, 기본적으로 강한 단어예요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">awkward</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">단순히 “어색한”뿐 아니라, 난처하고 불편한 상황에도 자주 써요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Hannah and Mark had one clear rule for the month: no unnecessary spending. Their rent had gone up, their car needed repairs, and Hannah had made a careful budget on a yellow notepad.</p>
+                <p class="mb-6">So when a large box arrived at their apartment, she knew something was wrong.</p>
+                <p class="mb-6">Mark tried to slide the box behind the sofa, but the sofa was too low and the box was too big.</p>
+                <p class="mb-6">Hannah looked at the label. “Mark. Is that a robot vacuum?”</p>
+                <p class="mb-6">Mark stood very still. “I can explain.”</p>
+                <p class="mb-6">“You bought a robot vacuum after we agreed not to buy anything extra?”</p>
+                <p class="mb-6">“It was on sale,” Mark said.</p>
+                <p class="mb-6">“That is not an explanation.”</p>
+                <p class="mb-6">He cleared his throat. “In my defense, I thought cleaning tools didn’t count.”</p>
+                <p class="mb-6">Hannah stared at him. “You’re trying to <b class="highlight quiz-target" data-ans="claim ignorance" data-kor="몰랐다고 주장하다">claim ignorance</b>?”</p>
+                <p class="mb-6">“I’m not trying to. I genuinely thought it was different.”</p>
+                <p class="mb-6">“That’s a little <b class="highlight quiz-target" data-ans="naive" data-kor="순진한">naive</b>, don’t you think?”</p>
+                <p class="mb-6">Mark looked hurt. “I prefer optimistic.”</p>
+                <p class="mb-6">Hannah picked up her phone. “I texted you this morning. I wrote, ‘Please don’t buy the vacuum.’ You <b class="highlight quiz-target" data-ans="left me on read" data-kor="나를 읽고 답하지 않았어">left me on read</b>.”</p>
+                <p class="mb-6">Mark leaned over to look. “Technically, I saw the notification first and <b class="highlight quiz-target" data-ans="left it unread" data-kor="읽지 않은 채로 두었어">left it unread</b> for emotional safety.”</p>
+                <p class="mb-6">“Then you opened it.”</p>
+                <p class="mb-6">“Yes, but by then I was already in the store.”</p>
+                <p class="mb-6">Hannah pointed at the box. “You ordered it online.”</p>
+                <p class="mb-6">Mark paused. “Right. That part is <b class="highlight quiz-target" data-ans="awkward" data-kor="난처하네">awkward</b>.”</p>
+                <p class="mb-6">Their twelve-year-old daughter, Lily, walked in from the hallway. “Are we talking about Dad’s secret vacuum?”</p>
+                <p class="mb-6">Mark turned quickly. “Lily.”</p>
+                <p class="mb-6">Hannah raised an eyebrow. “You knew?”</p>
+                <p class="mb-6">Lily held up both hands. “He told me not to tell. Then he promised me bubble tea.”</p>
+                <p class="mb-6">Hannah looked at Mark. “You bribed our child?”</p>
+                <p class="mb-6">Mark sighed. “She was going to <b class="highlight quiz-target" data-ans="blackmail" data-kor="협박하다">blackmail</b> me with the delivery email.”</p>
+                <p class="mb-6">Lily frowned. “I was not. I just said Mom might find it interesting.”</p>
+                <p class="mb-6">“That is <b class="highlight quiz-target" data-ans="blackmail" data-kor="협박">blackmail</b> with better manners,” Mark said.</p>
+                <p class="mb-6">Hannah crossed her arms. “This is exactly why I said you’re <b class="highlight quiz-target" data-ans="wasteful" data-kor="낭비하는">wasteful</b> with money.”</p>
+                <p class="mb-6">Mark touched the top of the box. “But it cleans by itself.”</p>
+                <p class="mb-6">“So does a person with a mop.”</p>
+                <p class="mb-6">Lily looked at her father. “Mom says <b class="highlight quiz-target" data-ans="the money is burning a hole in your pocket" data-kor="돈이 생기면 쓰고 싶어 못 견디다">the money is burning a hole in your pocket</b>.”</p>
+                <p class="mb-6">Mark nodded slowly. “That sounds like your mother.”</p>
+                <p class="mb-6">Hannah anaerobic a deep breath. “Return it.”</p>
+                <p class="mb-6">Mark opened his mouth, probably to explain again.</p>
+                <p class="mb-6">Hannah pointed to the door. “Today.”</p>
+                <p class="mb-6">He closed his mouth and lifted the box.</p>
+                <p class="mb-6">Lily whispered, “Can I still get bubble tea?”</p>
+                <p class="mb-6">Hannah looked at Mark.</p>
+                <p class="mb-6">Mark said, “I’ll make tea at home.”</p>
+                <p class="mb-6">For once, it was the smartest excuse he had.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">한나와 마크에게는 이번 달에 딱 하나의 분명한 규칙이 있었다. 불필요한 지출은 하지 않기. 월세는 올랐고, 차는 수리가 필요했으며, 한나는 노란 메모장에 꼼꼼하게 예산을 세워 두었다.</p>
+                <p class="mb-6">그래서 큰 상자가 아파트에 도착했을 때, 그녀는 뭔가 잘못되었다는 것을 알았다.</p>
+                <p class="mb-6">마크는 그 상자를 소파 뒤로 밀어 넣으려고 했지만, 소파는 너무 낮았고 상자는 너무 컸다.</p>
+                <p class="mb-6">한나는 라벨을 보았다. “마크. 그거 로봇 청소기야?”</p>
+                <p class="mb-6">마크는 아주 가만히 서 있었다. “설명할 수 있어.”</p>
+                <p class="mb-6">“우리가 추가로 아무것도 사지 않기로 했는데 로봇 청소기를 샀어?”</p>
+                <p class="mb-6">“세일 중이었어.” 마크가 말했다.</p>
+                <p class="mb-6">“그건 설명이 아니야.”</p>
+                <p class="mb-6">그는 헛기침을 했다. “내 변명을 하자면, 청소 도구는 해당 안 된다고 생각했어.”</p>
+                <p class="mb-6">한나는 그를 빤히 보았다. “너 지금 <b class="highlight">몰랐다고 주장하려는</b> 거야?”</p>
+                <p class="mb-6">“그러려는 건 아니야. 진심으로 그건 다르다고 생각했어.”</p>
+                <p class="mb-6">“그건 좀 <b class="highlight">순진한</b> 생각 아니야?”</p>
+                <p class="mb-6">마크는 상처받은 표정을 지었다. “나는 낙관적이라고 표현하고 싶어.”</p>
+                <p class="mb-6">한나는 휴대폰을 집어 들었다. “내가 오늘 아침에 문자했어. ‘제발 그 청소기 사지 마’라고 썼어. 너는 나를 <b class="highlight">읽고 답하지 않았어</b>.”</p>
+                <p class="mb-6">마크는 몸을 기울여 보았다. “정확히 말하면, 처음에는 알림만 보고 감정적 안전을 위해 <b class="highlight">읽지 않은 채로 두었어</b>.”</p>
+                <p class="mb-6">“그다음에 열었잖아.”</p>
+                <p class="mb-6">“응, 하지만 그때는 이미 매장에 있었어.”</p>
+                <p class="mb-6">한나는 상자를 가리켰다. “너 온라인으로 주문했잖아.”</p>
+                <p class="mb-6">마크는 잠시 멈췄다. “맞아. 그 부분은 <b class="highlight">난처하네</b>.”</p>
+                <p class="mb-6">열두 살 딸 릴리가 복도에서 걸어 들어왔다. “아빠의 비밀 청소기 얘기하는 거예요?”</p>
+                <p class="mb-6">마크는 재빨리 돌아보았다. “릴리.”</p>
+                <p class="mb-6">한나는 눈썹을 치켜올렸다. “너 알고 있었어?”</p>
+                <p class="mb-6">릴리는 두 손을 들었다. “아빠가 말하지 말라고 했어요. 그리고 버블티를 사 주겠다고 약속했어요.”</p>
+                <p class="mb-6">한나는 마크를 보았다. “우리 아이한테 뇌물을 준 거야?”</p>
+                <p class="mb-6">마크는 한숨을 쉬었다. “릴리가 배송 이메일로 나를 <b class="highlight">협박하려고</b> 했어.”</p>
+                <p class="mb-6">릴리는 눈살을 찌푸렸다. “아니에요. 그냥 엄마가 흥미로워할 수도 있다고 말했을 뿐이에요.”</p>
+                <p class="mb-6">“그건 좀 더 예의 있는 <b class="highlight">협박이지</b>.” 마크가 말했다.</p>
+                <p class="mb-6">한나는 팔짱을 꼈다. “이게 바로 내가 당신이 돈을 <b class="highlight">낭비한다고</b> 말한 이유야.”</p>
+                <p class="mb-6">마크는 상자 윗부분을 만졌다. “하지만 이건 스스로 청소하잖아.”</p>
+                <p class="mb-6">“대걸레 든 사람도 스스로 청소해.”</p>
+                <p class="mb-6">릴리는 아버지를 보았다. “엄마가 아빠는 <b class="highlight">돈이 생기면 쓰고 싶어 못 견딘대요</b>.”</p>
+                <p class="mb-6">마크는 천천히 고개를 끄덕였다. “네 엄마가 할 법한 말이네.”</p>
+                <p class="mb-6">한나는 깊게 숨을 들이쉬었다. “반품해.”</p>
+                <p class="mb-6">마크는 아마 다시 설명하려고 입을 열었다.</p>
+                <p class="mb-6">한나는 문을 가리켰다. “오늘.”</p>
+                <p class="mb-6">그는 입을 다물고 상자를 들어 올렸다.</p>
+                <p class="mb-6">릴리가 속삭였다. “저 그래도 버블티 받을 수 있어요?”</p>
+                <p class="mb-6">한나는 마크를 바라보았다.</p>
+                <p class="mb-6">마크가 말했다. “집에서 차 만들어 줄게.”</p>
+                <p class="mb-6">이번만큼은, 그것이 그가 한 가장 똑똑한 변명이었다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "5281200.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

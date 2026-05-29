@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+      <title>Review Note | The Apartment Viewing</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+      <style>
+          :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+          body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+          .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+          .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+          input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+          input:focus::placeholder { opacity: 0 !important; }
+          .mystery-cell { transition: color 0.3s; }
+          .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+          .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+          .highlight { color: var(--teal); font-weight: 700; }
+          .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+          audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+      </style>
+</head>
+<body class="p-4 md:p-12">
+      <div class="max-w-4xl mx-auto space-y-8">
+
+          <header class="text-center space-y-4">
+              <div class="flex items-center justify-center gap-4">
+                  <span class="text-5xl">🏢</span>
+                  <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Apartment Viewing</h1>
+              </div>
+              <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+          </header>
+
+          <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+              <div class="flex items-center justify-between px-2">
+                  <div class="flex items-center gap-3">
+                      <span class="text-xl">🎧</span>
+                      <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                  </div>
+                  <div class="flex gap-2">
+                      <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          <span class="text-lg">↺</span> 5s
+                      </button>
+                      <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          5s <span class="text-lg">↻</span>
+                      </button>
+                  </div>
+              </div>
+              <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+          </div>
+
+          <div class="flex justify-center">
+              <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+          </div>
+
+          <section class="glass rounded-3xl overflow-hidden shadow-xl">
+              <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                  <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+              </div>
+              <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                  <tr><td class="p-4"><b class="text-white">first come first serve</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">선착순</td></tr>
+                  <tr><td class="p-4"><b class="text-white">super competitive</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">경쟁이 아주 치열한</td></tr>
+                  <tr><td class="p-4"><b class="text-white">got split up</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">흩어졌다 / 나뉘었다 / 떨어지게 되었다</td></tr>
+              </tbody></table>
+          </section>
+
+          <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="glass rounded-3xl p-6 space-y-2">
+                  <h3 class="text-amber-400 font-bold text-lg">first come first serve</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">정확한 표현은 보통 first come, first served예요. “먼저 온 사람이 먼저 받는다,” 즉 “선착순”이라는 뜻이에요.</p>
+              </div>
+              <div class="glass rounded-3xl p-6 space-y-2">
+                  <h3 class="text-amber-400 font-bold text-lg">super competitive</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">“경쟁이 아주 치열한”이라는 뜻이에요. 시험, 학교, 직장, 예약, 티켓 구매처럼 경쟁이 있는 상황에서 자연스럽게 쓸 수 있어요.</p>
+              </div>
+              <div class="glass rounded-3xl p-6 space-y-2">
+                  <h3 class="text-amber-400 font-bold text-lg">got split up</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">함께 있던 사람들이 상황 때문에 서로 떨어지게 되었을 때 써요. 일부러 헤어진 느낌보다는 “어쩌다 보니 나뉘었다”는 느낌이 강해요.</p>
+              </div>
+          </section>
+
+          <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+              <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                  <p class="mb-6">Sora had a dream about looking for a new apartment. It felt strangely serious, almost like a real memory. She couldn’t remember how it started, but she remembered standing outside a tall gray building with her older brother, Minjun.</p>
+                  <p class="mb-6">A small crowd had already gathered near the front door. Everyone held a paper form and looked nervous. A woman in a black coat stood by the entrance with a clipboard.</p>
+                  <p class="mb-6">“There are only three rooms available,” the woman said. “It’s <b class="highlight quiz-target" data-ans="first come first serve" data-kor="선착순">first come first serve</b>.”</p>
+                  <p class="mb-6">Sora looked at Minjun. “Did we come early enough?”</p>
+                  <p class="mb-6">“I thought so,” he said. “But this place seems <b class="highlight quiz-target" data-ans="super competitive" data-kor="경쟁이 아주 치열한">super competitive</b>.”</p>
+                  <p class="mb-6">The building did not look special. The windows were small, and one side of the wall had a long crack in it. Still, people were whispering as if the apartments were famous. One man was practicing what to say to the landlord. A woman kept checking her documents again and again.</p>
+                  <p class="mb-6">The doors opened, and the crowd moved inside. Sora tried to stay close to Minjun, but the lobby suddenly became narrow and crowded. Someone dropped a stack of papers. Someone else pushed past them toward the stairs. In the confusion, Sora and Minjun <b class="highlight quiz-target" data-ans="got split up" data-kor="흩어졌다 / 나뉘었다 / 떨어지게 되었다">got split up</b>.</p>
+                  <p class="mb-6">“Minjun?” Sora called.</p>
+                  <p class="mb-6">There was no answer.</p>
+                  <p class="mb-6">She followed the signs for Room 301, but every hallway looked the same. The lights flickered. At one point, she passed a door with her name written on it. She opened it and saw her childhood bedroom inside. Her old desk was there, and her middle school backpack was sitting on the chair.</p>
+                  <p class="mb-6">That part felt too real, so she closed the door quickly.</p>
+                  <p class="mb-6">Finally, she found Room 301. The woman with the clipboard was waiting inside.</p>
+                  <p class="mb-6">“You’re late,” the woman said.</p>
+                  <p class="mb-6">“I got lost,” Sora explained. “Where is my brother?”</p>
+                  <p class="mb-6">The woman looked at her list. “He already chose a room.”</p>
+                  <p class="mb-6">Sora felt a little hurt. Then she heard Minjun’s voice from behind a wall.</p>
+                  <p class="mb-6">“Sora, don’t choose this one,” he said. “The bathroom is in the kitchen.”</p>
+                  <p class="mb-6">Sora opened another door and found him standing in a tiny room with a sink beside the bed. He looked tired and embarrassed.</p>
+                  <p class="mb-6">When Sora woke up, the details were kind of fuzzy, but she remembered the feeling clearly. Everyone was rushing, and she hated being separated from her brother. Maybe the dream had something to do with moving. Maybe she was worried about making an important choice too quickly. Or maybe her brain was just sorting through old stress while she slept.</p>
+              </div>
+              <hr class="border-white/10">
+              <div class="text-slate-400 italic leading-relaxed space-y-6">
+                  <p>소라는 새 아파트를 보러 가는 꿈을 꾸었다. 그 꿈은 이상하게 진지했고, 거의 실제 기억처럼 느껴졌다. 어떻게 시작됐는지는 기억나지 않았지만, 오빠 민준과 함께 높은 회색 건물 밖에 서 있던 것은 기억났다.</p>
+                  <p>작은 무리가 이미 현관 근처에 모여 있었다. 모두 종이 양식을 들고 불안해 보였다. 검은 코트를 입은 여자가 클립보드를 들고 입구 옆에 서 있었다.</p>
+                  <p>“남은 방은 세 개뿐입니다,” 여자가 말했다. “<b class="highlight">선착순</b>이에요.”</p>
+                  <p>소라는 민준을 바라보았다. “우리 충분히 일찍 온 거 맞아?”</p>
+                  <p>“그런 줄 알았는데,” 그가 말했다. “근데 여기 <b class="highlight">경쟁이 엄청 치열한</b> 것 같아.”</p>
+                  <p>그 건물은 특별해 보이지 않았다. 창문은 작았고, 벽 한쪽에는 긴 금이 가 있었다. 그래도 사람들은 그 아파트들이 유명하기라도 한 것처럼 속삭이고 있었다. 한 남자는 집주인에게 할 말을 연습하고 있었다. 한 여자는 서류를 계속해서 확인하고 또 확인했다.</p>
+                  <p>문이 열리자 사람들이 안으로 움직였다. 소라는 민준 가까이에 있으려고 했지만, 로비가 갑자기 좁고 복잡해졌다. 누군가 서류 뭉치를 떨어뜨렸다. 또 다른 사람은 계단 쪽으로 그들을 밀치고 지나갔다. 혼란 속에서 소라와 민준은 <b class="highlight">떨어지게 되었다</b>.</p>
+                  <p>“민준 오빠?” 소라가 불렀다.</p>
+                  <p>대답은 없었다.</p>
+                  <p>그녀는 301호 표지판을 따라갔지만, 모든 복도가 똑같아 보였다. 불빛이 깜박거렸다. 어느 순간 그녀는 자기 이름이 적힌 문 하나를 지나쳤다. 문을 열어 보니 그 안에는 어린 시절 자신의 방이 있었다. 예전 책상이 있었고, 중학교 때 쓰던 가방이 의자 위에 놓여 있었다.</p>
+                  <p>그 부분은 너무 현실처럼 느껴져서 그녀는 재빨리 문을 닫았다.</p>
+                  <p>마침내 그녀는 301호를 찾았다. 클립보드를 든 여자가 안에서 기다리고 있었다.</p>
+                  <p>“늦었네요,” 여자가 말했다.</p>
+                  <p>“길을 잃었어요,” 소라가 설명했다. “제 오빠는 어디 있어요?”</p>
+                  <p>여자는 목록을 보았다. “이미 방을 골랐습니다.”</p>
+                  <p>소라는 조금 서운했다. 그때 벽 뒤에서 민준의 목소리가 들렸다.</p>
+                  <p>“소라야, 이 방은 고르지 마,” 그가 말했다. “화장실이 부엌에 있어.”</p>
+                  <p>소라가 다른 문을 열자, 그는 침대 옆에 세면대가 있는 아주 작은 방에 서 있었다. 그는 피곤하고 민망해 보였다.</p>
+                  <p>소라가 잠에서 깼을 때, 자세한 부분은 좀 흐릿했지만 그 느낌은 분명히 기억났다. 모두가 서두르고 있었고, 그녀는 오빠와 떨어지는 것이 싫었다. 어쩌면 그 꿈은 이사와 관련이 있을지도 몰랐다. 어쩌면 중요한 선택을 너무 빨리 해야 하는 것이 걱정됐던 걸지도 몰랐다. 아니면 그녀의 뇌가 잠자는 동안 오래된 스트레스를 정리하고 있었던 것일 수도 있었다.</p>
+              </div>
+          </section>
+
+      </div>
+      <script>
+          function skipAudio(seconds) {
+              const player = document.getElementById('player');
+              if (player.src) {
+                  player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+              }
+          }
+
+          function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+          let _quizOriginals = new Map();
+          function toggleQuiz() {
+              const btn = document.getElementById('quizBtn');
+              const isQuiz = btn.innerText.includes("Quiz");
+              const targets = document.querySelectorAll('.quiz-target');
+              const cells = document.querySelectorAll('.mystery-cell');
+              if (isQuiz) {
+                  btn.innerText = "Study Mode 📖";
+                  cells.forEach(c => c.classList.add('quiz-hidden'));
+                  targets.forEach(t => {
+                      const ans = t.dataset.ans; const kor = t.dataset.kor;
+                      _quizOriginals.set(t, t.innerHTML);
+                      t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                  });
+              } else {
+                  btn.innerText = "Quiz Mode 👻";
+                  cells.forEach(c => c.classList.remove('quiz-hidden'));
+                  targets.forEach(t => {
+                      if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                  });
+                  _quizOriginals.clear();
+              }
+          }
+
+          function checkQuiz(i, a) {
+              if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                  i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                  confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                  checkAllSolved();
+              } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+          }
+
+          function checkAllSolved() {
+              const inputs = document.querySelectorAll('.quiz-input');
+              if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                  var duration = 3 * 1000; var end = Date.now() + duration;
+                  (function frame() {
+                      confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                      confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                      if (Date.now() < end) requestAnimationFrame(frame);
+                  }());
+              }
+          }
+
+          document.getElementById('player').src = "529830.m4a";
+      </script>
+      <script src="wordbank-utils.js"></script>
+      <script src="chat.js"></script>
+</body>
+</html>

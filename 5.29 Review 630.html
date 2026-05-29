@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Elevator That Gave Advice</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🛗</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Elevator That Gave Advice</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">rotten tooth</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">썩은 이</td></tr>
+                <tr><td class="p-4"><b class="text-white">picked a watermelon</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">수박을 땄다 / 골랐다</td></tr>
+                <tr><td class="p-4"><b class="text-white">stranger</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">낯선 사람</td></tr>
+                <tr><td class="p-4"><b class="text-white">land on the ground</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">땅에 착지하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">lucid dream</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">자각몽</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">rotten tooth</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">치아가 썩거나 상태가 아주 나쁜 것을 말해요. 꿈 이야기에서는 불안하거나 이상한 느낌을 줄 수 있어요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">picked a watermelon</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">문맥에 따라 “수박을 땄다” 또는 “수박을 골랐다”가 될 수 있어요. 밭에서는 “땄다,” 가게에서는 “골랐다”가 자연스러워요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">land on the ground</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">공중에서 내려와 땅에 닿는 동작이에요. “fall”은 떨어지는 느낌이고, “land”는 착지하는 느낌이 더 강해요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Mina had a strange dream on Thursday night. She couldn’t remember how it started, but she remembered standing in front of an old elevator in her apartment building. The elevator doors were silver, but one button was shaped like a <b class="highlight quiz-target" data-ans="rotten tooth" data-kor="썩은 이">rotten tooth</b>. Mina stared at it and thought, “That can’t be right.”</p>
+                <p class="mb-6">She pressed the normal button for the first floor, but the elevator went up instead of down. A quiet voice came from the ceiling.</p>
+                <p class="mb-6">“Are you sure you want to go there?” it asked.</p>
+                <p class="mb-6">Mina looked around. “Who said that?”</p>
+                <p class="mb-6">The doors opened, and a <b class="highlight quiz-target" data-ans="stranger" data-kor="낯선 사람">stranger</b> stepped in. He was wearing a yellow raincoat and holding a huge green watermelon.</p>
+                <p class="mb-6">“You forgot this,” he said.</p>
+                <p class="mb-6">“I don’t own a watermelon,” Mina said.</p>
+                <p class="mb-6">“You <b class="highlight quiz-target" data-ans="picked a watermelon" data-kor="수박을 골랐다">picked a watermelon</b> yesterday,” the stranger answered seriously.</p>
+                <p class="mb-6">Mina was sure she had not done that, but dreams do not care about facts. The elevator shook, and suddenly the floor became soft grass. The walls disappeared, and Mina realized the elevator was floating high above the city.</p>
+                <p class="mb-6">She started to panic, but then she remembered something. “Wait,” she said. “This is a dream.”</p>
+                <p class="mb-6">The stranger nodded. “Congratulations. It’s a <b class="highlight quiz-target" data-ans="lucid dream" data-kor="자각몽">lucid dream</b>. Now try not to ruin it.”</p>
+                <p class="mb-6">Mina looked down. Cars looked tiny, and her school looked like a toy. She wanted to fly, so she jumped out of the elevator. For a few seconds, she really did fly. The wind pushed against her face, and she laughed.</p>
+                <p class="mb-6">Then she began falling.</p>
+                <p class="mb-6">“Bend your knees!” the stranger shouted from the elevator.</p>
+                <p class="mb-6">Mina tried to <b class="highlight quiz-target" data-ans="land on the ground" data-kor="땅에 착지하다">land on the ground</b> safely, but she landed in the middle of her school cafeteria instead. Everyone was eating watermelon soup with forks. Her math teacher pointed at the tooth-shaped elevator button on Mina’s shirt and said, “You’re late for the dental exam.”</p>
+                <p class="mb-6">Mina woke up with her blanket on the floor and one sock missing. The details were kind of fuzzy, but she remembered the elevator, the stranger, and the watermelon clearly. At breakfast, her mother asked why she looked so confused.</p>
+                <p class="mb-6">Mina said, “Maybe my brain is trying to process too many things.”</p>
+                <p class="mb-6">Her mother looked at her plate. “Or maybe you shouldn’t eat watermelon before bed.”</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>미나는 목요일 밤에 이상한 꿈을 꾸었다. 어떻게 시작됐는지는 기억나지 않았지만, 자기 아파트 건물의 낡은 엘리베이터 앞에 서 있던 것은 기억났다. 엘리베이터 문은 은색이었지만, 버튼 하나가 <b class="highlight">썩은 이</b> 모양이었다. 미나는 그것을 빤히 바라보며 생각했다. “저건 말이 안 되는데.”</p>
+                <p>그녀는 1층으로 가는 평범한 버튼을 눌렀지만, 엘리베이터는 아래가 아니라 위로 올라갔다. 천장에서 조용한 목소리가 들렸다.</p>
+                <p>“정말 그곳으로 가고 싶나요?” 목소리가 물었다.</p>
+                <p>미나는 주변을 둘러보았다. “누가 말한 거예요?”</p>
+                <p>문이 열리더니 <b class="highlight">낯선 사람</b>이 들어왔다. 그는 노란 우비를 입고 커다란 초록색 수박을 들고 있었다.</p>
+                <p>“이걸 잊어버렸어요,” 그가 말했다.</p>
+                <p>“저 수박 없는데요,” 미나가 말했다.</p>
+                <p>“어제 <b class="highlight">수박을 골랐잖아요</b>,” 낯선 사람이 진지하게 대답했다.</p>
+                <p>미나는 분명히 그런 적이 없다고 확신했지만, 꿈은 사실 따위는 신경 쓰지 않는다. 엘리베이터가 흔들리더니 갑자기 바닥이 부드러운 잔디로 변했다. 벽이 사라졌고, 미나는 엘리베이터가 도시 위 높은 곳에 떠 있다는 것을 깨달았다.</p>
+                <p>그녀는 당황하기 시작했지만, 그때 무언가가 떠올랐다. “잠깐만요,” 그녀가 말했다. “이거 꿈이네요.”</p>
+                <p>낯선 사람이 고개를 끄덕였다. “축하해요. <b class="highlight">자각몽</b>이에요. 이제 망치지 않도록 해 보세요.”</p>
+                <p>미나는 아래를 내려다보았다. 자동차들은 아주 작아 보였고, 학교는 장난감처럼 보였다. 그녀는 날고 싶어서 엘리베이터 밖으로 뛰어내렸다. 몇 초 동안은 정말로 날았다. 바람이 얼굴에 부딪혔고, 그녀는 웃었다.</p>
+                <p>그러다가 그녀는 떨어지기 시작했다.</p>
+                <p>“무릎을 굽혀요!” 낯선 사람이 엘리베이터에서 소리쳤다.</p>
+                <p>미나는 안전하게 <b class="highlight">땅에 착지하려고</b> 했지만, 학교 급식실 한가운데에 떨어지고 말았다. 모두가 포크로 수박 수프를 먹고 있었다. 수학 선생님은 미나의 셔츠에 붙은 이 모양 엘리베이터 버튼을 가리키며 말했다. “치과 시험에 늦었구나.”</p>
+                <p>미나는 담요가 바닥에 떨어져 있고 양말 한 짝이 사라진 채로 잠에서 깼다. 자세한 부분은 좀 흐릿했지만, 엘리베이터와 낯선 사람, 그리고 수박은 또렷하게 기억났다. 아침 식사 때 어머니가 왜 그렇게 혼란스러워 보이냐고 물었다.</p>
+                <p>미나는 말했다. “아마 제 뇌가 너무 많은 일을 정리하려고 하는 것 같아요.”</p>
+                <p>어머니는 미나의 접시를 보았다. “아니면 자기 전에 수박을 먹지 말아야 하는 걸 수도 있지.”</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "529630.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

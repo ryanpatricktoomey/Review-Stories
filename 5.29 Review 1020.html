@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+      <title>Review Note | The House That Sneezed</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+      <style>
+          :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+          body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+          .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+          .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+          input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+          input:focus::placeholder { opacity: 0 !important; }
+          .mystery-cell { transition: color 0.3s; }
+          .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+          .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+          .highlight { color: var(--teal); font-weight: 700; }
+          .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+          audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+      </style>
+</head>
+<body class="p-4 md:p-12">
+      <div class="max-w-4xl mx-auto space-y-8">
+
+          <header class="text-center space-y-4">
+              <div class="flex items-center justify-center gap-4">
+                  <span class="text-5xl">🏠</span>
+                  <h1 class="text-3xl md:text-4xl font-extrabold text-white">The House That Sneezed</h1>
+              </div>
+              <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+          </header>
+
+          <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+              <div class="flex items-center justify-between px-2">
+                  <div class="flex items-center gap-3">
+                      <span class="text-xl">🎧</span>
+                      <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                  </div>
+                  <div class="flex gap-2">
+                      <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          <span class="text-lg">↺</span> 5s
+                      </button>
+                      <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          5s <span class="text-lg">↻</span>
+                      </button>
+                  </div>
+              </div>
+              <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+          </div>
+
+          <div class="flex justify-center">
+              <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+          </div>
+
+          <section class="glass rounded-3xl overflow-hidden shadow-xl">
+              <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                  <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+              </div>
+              <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                  <tr><td class="p-4"><b class="text-white">my house was shaking</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">우리 집이 흔들리고 있었다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">vivid</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">생생한</td></tr>
+                  <tr><td class="p-4"><b class="text-white">ragdoll</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">헝겊 인형 / 래그돌</td></tr>
+                  <tr><td class="p-4"><b class="text-white">went missing</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">실종되었다 / 사라졌다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">wet your bed</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">오줌을 싸다 / 침대에 실수하다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">paralysis</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">마비 / 가위눌림</td></tr>
+              </tbody></table>
+          </section>
+
+          <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="glass rounded-3xl p-6 space-y-2">
+                  <h3 class="text-amber-400 font-bold text-lg">vivid</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">기억, 꿈, 색깔 등이 아주 선명하고 생생할 때 써요. 꿈 이야기에서 자주 쓰이는 표현이에요.</p>
+              </div>
+              <div class="glass rounded-3xl p-6 space-y-2">
+                  <h3 class="text-amber-400 font-bold text-lg">ragdoll</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">헝겊으로 만든 힘없는 인형을 뜻해요. 사람이나 동물이 축 늘어지는 모습을 비유적으로 말할 때도 쓸 수 있어요.</p>
+              </div>
+              <div class="glass rounded-3xl p-6 space-y-2">
+                  <h3 class="text-amber-400 font-bold text-lg">went missing</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">단순히 “없어졌다”보다 조금 더 심각하게, 사람이나 물건이 사라져서 찾을 수 없는 상황에 써요.</p>
+              </div>
+              <div class="glass rounded-3xl p-6 space-y-2">
+                  <h3 class="text-amber-400 font-bold text-lg">wet your bed</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">잠자는 동안 침대에 소변 실수를 하는 것을 말해요. 직접적인 표현이라 상황에 따라 조금 민망하게 들릴 수 있어요.</p>
+              </div>
+              <div class="glass rounded-3xl p-6 space-y-2">
+                  <h3 class="text-amber-400 font-bold text-lg">paralysis</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">몸을 움직일 수 없는 상태를 말해요. 꿈이나 수면 이야기에서는 sleep paralysis가 “가위눌림”이라는 뜻이에요.</p>
+              </div>
+          </section>
+
+          <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+              <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                  <p class="mb-6">Hana had a very strange dream after studying late for her science test. It was so <b class="highlight quiz-target" data-ans="vivid" data-kor="생생한">vivid</b> that when she woke up, she needed a minute to remember she was in her real bedroom.</p>
+                  <p class="mb-6">In the dream, Hana was lying in bed when she felt the floor move. At first, she thought a truck was passing outside. Then the window shook, her desk jumped, and her pencil case fell to the floor.</p>
+                  <p class="mb-6">“Mom!” Hana shouted. “<b class="highlight quiz-target" data-ans="My house was shaking" data-kor="우리 집이 흔들리고 있었다">My house was shaking</b>!”</p>
+                  <p class="mb-6">No one answered.</p>
+                  <p class="mb-6">She tried to get out of bed, but her arms and legs would not move. For a moment, she thought it was <b class="highlight quiz-target" data-ans="paralysis" data-kor="마비">paralysis</b>. She could blink, and she could breathe, but she could not even lift one finger.</p>
+                  <p class="mb-6">Then her closet door opened by itself.</p>
+                  <p class="mb-6">A large gray cat stepped out. It had floppy legs and a soft body like a <b class="highlight quiz-target" data-ans="ragdoll" data-kor="헝겊 인형">ragdoll</b>. It looked at Hana and said, “Don’t panic. The house is only nervous.”</p>
+                  <p class="mb-6">Hana wanted to ask why a house would be nervous, but all she could say was, “What?”</p>
+                  <p class="mb-6">“The bathroom <b class="highlight quiz-target" data-ans="went missing" data-kor="실종되었다">went missing</b>,” the cat said.</p>
+                  <p class="mb-6">That seemed like a serious problem.</p>
+                  <p class="mb-6">Suddenly, Hana could move again. She jumped out of bed and followed the cat into the hallway. The house was still shaking, but not like an earthquake. It was more like the house had cold feet before a school presentation.</p>
+                  <p class="mb-6">They passed the kitchen, where the refrigerator was wearing sunglasses. They passed the living room, where the sofa was quietly doing homework. Finally, they reached the place where the bathroom should have been.</p>
+                  <p class="mb-6">There was only a door with a note on it.</p>
+                  <p class="mb-6">The note said, “Gone to find myself. Please don’t <b class="highlight quiz-target" data-ans="wet your bed" data-kor="침대에 실수하다">wet your bed</b>.”</p>
+                  <p class="mb-6">Hana stared at the note. “That is rude.”</p>
+                  <p class="mb-6">The cat nodded. “Bathrooms can be very dramatic.”</p>
+                  <p class="mb-6">Out of nowhere, the house sneezed. The whole hallway bounced, and Hana fell into a laundry basket. The bathroom door suddenly appeared again, looking embarrassed.</p>
+                  <p class="mb-6">“Sorry,” said the bathroom. “I needed some space.”</p>
+                  <p class="mb-6">When Hana woke up, everything was quiet. Her house was not shaking, her closet was closed, and there was no talking cat. The details were kind of fuzzy, but she remembered the note clearly.</p>
+                  <p class="mb-6">At breakfast, her brother asked why she looked tired.</p>
+                  <p class="mb-6">Hana said, “Maybe my brain is trying to process science homework.”</p>
+                  <p class="mb-6">Her brother looked serious. “Or maybe our bathroom has emotional problems.”</p>
+              </div>
+              <hr class="border-white/10">
+              <div class="text-slate-400 italic leading-relaxed space-y-6">
+                  <p>하나는 과학 시험 공부를 늦게까지 한 뒤 아주 이상한 꿈을 꾸었다. 꿈이 너무 생생해서, 잠에서 깼을 때 자신이 진짜 침실에 있다는 것을 기억하는 데 잠시 시간이 필요했다.</p>
+                  <p>꿈속에서 하나는 침대에 누워 있다가 바닥이 움직이는 것을 느꼈다. 처음에는 밖에서 트럭이 지나가는 줄 알았다. 그러더니 창문이 흔들리고, 책상이 튀어 오르고, 필통이 바닥에 떨어졌다.</p>
+                  <p>“엄마!” 하나가 소리쳤다. “<b class="highlight">우리 집이 흔들리고 있었다</b>며 소리쳤다.”</p>
+                  <p>아무도 대답하지 않았다.</p>
+                  <p>그녀는 침대에서 일어나려고 했지만 팔과 다리가 움직이지 않았다. 잠깐 동안 그녀는 그것이 <b class="highlight">마비</b>라고 생각했다. 눈은 깜박일 수 있었고 숨도 쉴 수 있었지만, 손가락 하나조차 들어 올릴 수 없었다.</p>
+                  <p>그때 옷장 문이 저절로 열렸다.</p>
+                  <p>커다란 회색 고양이 한 마리가 걸어 나왔다. 그 고양이는 다리가 축 늘어지고 몸이 부드러워서 <b class="highlight">헝겊 인형</b> 같았다. 고양이는 하나를 바라보며 말했다. “당황하지 마. 집이 그냥 긴장한 것뿐이야.”</p>
+                  <p>하나는 왜 집이 긴장하냐고 묻고 싶었지만, 겨우 이렇게 말할 수밖에 없었다. “뭐라고?”</p>
+                  <p>“화장실이 <b class="highlight">사라졌어</b>,” 고양이가 말했다.</p>
+                  <p>그건 꽤 심각한 문제처럼 보였다.</p>
+                  <p>갑자기 하나는 다시 움직일 수 있게 되었다. 그녀는 침대에서 뛰어내려 고양이를 따라 복도로 나갔다. 집은 여전히 흔들리고 있었지만, 지진처럼 흔들리는 것은 아니었다. 학교 발표 전에 긴장해서 떨고 있는 것 같은 느낌이었다.</p>
+                  <p>그들은 주방을 지나갔다. 냉장고는 선글라스를 끼고 있었다. 그들은 거실도 지나갔다. 소파는 조용히 숙제를 하고 있었다. 마침내 그들은 화장실이 있어야 할 곳에 도착했다.</p>
+                  <p>그곳에는 쪽지가 붙은 문 하나만 있었다.</p>
+                  <p>쪽지에는 이렇게 적혀 있었다. “나 자신을 찾으러 떠남. 부디 <b class="highlight">침대에 실수하지 말 것</b>.”</p>
+                  <p>하나는 쪽지를 빤히 바라보았다. “무례하네.”</p>
+                  <p>고양이가 고개를 끄덕였다. “화장실들은 꽤 극적일 때가 있지.”</p>
+                  <p>난데없이 집이 재채기를 했다. 복도 전체가 튀어 올랐고, 하나는 빨래 바구니 안으로 떨어졌다. 그러자 화장실 문이 갑자기 다시 나타났고, 조금 민망해 보였다.</p>
+                  <p>“미안,” 화장실이 말했다. “나만의 공간이 좀 필요했어.”</p>
+                  <p>하나가 잠에서 깼을 때, 모든 것이 조용했다. 집은 흔들리지 않았고, 옷장 문은 닫혀 있었고, 말하는 고양이도 없었다. 자세한 부분은 좀 흐릿했지만, 쪽지는 또렷하게 기억났다.</p>
+                  <p>아침 식사 때 오빠가 왜 그렇게 피곤해 보이냐고 물었다.
+                  하나는 말했다. “아마 내 뇌가 과학 숙제를 정리하려고 하는 걸지도 몰라.”</p>
+                  <p>오빠는 진지한 표정으로 말했다. “아니면 우리 화장실에 감정 문제가 있는 걸지도 모르지.”</p>
+              </div>
+          </section>
+
+      </div>
+      <script>
+          function skipAudio(seconds) {
+              const player = document.getElementById('player');
+              if (player.src) {
+                  player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+              }
+          }
+
+          function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+          let _quizOriginals = new Map();
+          function toggleQuiz() {
+              const btn = document.getElementById('quizBtn');
+              const isQuiz = btn.innerText.includes("Quiz");
+              const targets = document.querySelectorAll('.quiz-target');
+              const cells = document.querySelectorAll('.mystery-cell');
+              if (isQuiz) {
+                  btn.innerText = "Study Mode 📖";
+                  cells.forEach(c => c.classList.add('quiz-hidden'));
+                  targets.forEach(t => {
+                      const ans = t.dataset.ans; const kor = t.dataset.kor;
+                      _quizOriginals.set(t, t.innerHTML);
+                      t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                  });
+              } else {
+                  btn.innerText = "Quiz Mode 👻";
+                  cells.forEach(c => c.classList.remove('quiz-hidden'));
+                  targets.forEach(t => {
+                      if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                  });
+                  _quizOriginals.clear();
+              }
+          }
+
+          function checkQuiz(i, a) {
+              if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                  i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                  confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                  checkAllSolved();
+              } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+          }
+
+          function checkAllSolved() {
+              const inputs = document.querySelectorAll('.quiz-input');
+              if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                  var duration = 3 * 1000; var end = Date.now() + duration;
+                  (function frame() {
+                      confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                      confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                      if (Date.now() < end) requestAnimationFrame(frame);
+                  }());
+              }
+          }
+
+          document.getElementById('player').src = "5291020.m4a";
+      </script>
+      <script src="wordbank-utils.js"></script>
+      <script src="chat.js"></script>
+</body>
+</html>

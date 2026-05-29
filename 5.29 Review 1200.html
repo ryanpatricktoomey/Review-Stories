@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+      <title>Review Note | The Tiger on the Ceiling</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+      <style>
+          :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+          body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+          .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+          .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+          input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+          input:focus::placeholder { opacity: 0 !important; }
+          .mystery-cell { transition: color 0.3s; }
+          .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+          .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+          .highlight { color: var(--teal); font-weight: 700; }
+          .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+          audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+      </style>
+</head>
+<body class="p-4 md:p-12">
+      <div class="max-w-4xl mx-auto space-y-8">
+
+          <header class="text-center space-y-4">
+              <div class="flex items-center justify-center gap-4">
+                  <span class="text-5xl">🌙</span>
+                  <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Tiger on the Ceiling</h1>
+              </div>
+              <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+          </header>
+
+          <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+              <div class="flex items-center justify-between px-2">
+                  <div class="flex items-center gap-3">
+                      <span class="text-xl">🎧</span>
+                      <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                  </div>
+                  <div class="flex gap-2">
+                      <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          <span class="text-lg">↺</span> 5s
+                      </button>
+                      <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          5s <span class="text-lg">↻</span>
+                      </button>
+                  </div>
+              </div>
+              <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+          </div>
+
+          <div class="flex justify-center">
+              <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+          </div>
+
+          <section class="glass rounded-3xl overflow-hidden shadow-xl">
+              <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                  <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+              </div>
+              <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                  <tr><td class="p-4"><b class="text-white">gave meaning to it</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그것에 의미를 부여했다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">read something into it</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그것을 과하게 해석했다 / 거기에 어떤 의미를 읽어 냈다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">attached meaning to it</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그것에 의미를 붙였다 / 의미를 부여했다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">chinese zodiac</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">십이지 / 띠</td></tr>
+                  <tr><td class="p-4"><b class="text-white">sleep paralysis</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">가위눌림</td></tr>
+              </tbody></table>
+          </section>
+
+          <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="glass rounded-3xl p-6 space-y-2">
+                  <h3 class="text-amber-400 font-bold text-lg">gave meaning to it</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">어떤 일이나 경험에 “의미를 부여했다”는 뜻이에요. 원래 의미가 분명하지 않은 것에 사람이 해석을 더하는 느낌이에요.</p>
+              </div>
+              <div class="glass rounded-3xl p-6 space-y-2">
+                  <h3 class="text-amber-400 font-bold text-lg">read something into it</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">상황을 보고 실제보다 더 깊은 의미나 숨은 뜻이 있다고 해석할 때 써요. 약간 “너무 의미 부여하는 것 아니야?”라는 뉘앙스로도 쓰일 수 있어요.</p>
+              </div>
+              <div class="glass rounded-3xl p-6 space-y-2">
+                  <h3 class="text-amber-400 font-bold text-lg">attached meaning to it</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">gave meaning to it과 비슷하지만, 어떤 사건이나 상징에 의미를 “붙였다”는 느낌이에요.</p>
+              </div>
+              <div class="glass rounded-3xl p-6 space-y-2">
+                  <h3 class="text-amber-400 font-bold text-lg">chinese zodiac</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">쥐띠, 소띠, 호랑이띠 같은 십이지를 말해요. 영어에서는 보통 the Chinese zodiac처럼 the를 붙여 말해요.</p>
+              </div>
+              <div class="glass rounded-3xl p-6 space-y-2">
+                  <h3 class="text-amber-400 font-bold text-lg">sleep paralysis</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">잠에서 깼거나 잠들기 직전에 몸을 움직일 수 없는 상태를 말해요. 한국어의 “가위눌림”에 해당해요.</p>
+              </div>
+          </section>
+
+          <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+              <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                  <p class="mb-6">Eunwoo did not usually talk about his dreams, but the dream from Monday night stayed with him all morning. It was not loud or funny. It was quiet, strange, and uncomfortable in a way he could not easily explain.</p>
+                  <p class="mb-6">He woke up before sunrise and could not move. His eyes were open, but his arms felt heavy against the blanket. He tried to sit up, but nothing happened. For a few seconds, he thought someone was standing near the door. Then he realized it was probably <b class="highlight quiz-target" data-ans="sleep paralysis" data-kor="가위눌림">sleep paralysis</b>, and he focused on breathing slowly.</p>
+                  <p class="mb-6">When he could move again, he turned on the lamp. The room was empty. Still, the dream felt too clear to ignore.</p>
+                  <p class="mb-6">In the dream, he had been sitting at his grandmother’s kitchen table. Rain tapped against the window. Across from him, his grandmother was turning the pages of an old calendar. Each page had an animal from the <b class="highlight quiz-target" data-ans="Chinese zodiac" data-kor="십이지">Chinese zodiac</b>.</p>
+                  <p class="mb-6">“You were born in the year of the tiger,” she said.</p>
+                  <p class="mb-6">“I know,” Eunwoo answered.</p>
+                  <p class="mb-6">“But this tiger is lost,” she said, pointing at the page.</p>
+                  <p class="mb-6">Eunwoo looked down. The tiger in the picture was no longer standing proudly. It was walking through a dark hallway with its head low. The hallway looked like the office where Eunwoo worked, but the doors had no names.</p>
+                  <p class="mb-6">When he told his sister about the dream later, she leaned against the kitchen counter and listened carefully.</p>
+                  <p class="mb-6">“Maybe it means you feel lost at work,” she said.</p>
+                  <p class="mb-6">“Maybe,” Eunwoo said. “Or maybe I just dreamed about a calendar.”</p>
+                  <p class="mb-6">His sister smiled. “You always say that, but you still <b class="highlight quiz-target" data-ans="gave meaning to it" data-kor="그것에 의미를 부여했다">gave meaning to it</b> the moment you told me.”</p>
+                  <p class="mb-6">Eunwoo thought about that. He did not want to <b class="highlight quiz-target" data-ans="read something into it" data-kor="그것을 과하게 해석하다">read something into it</b>, but he had been worried about changing jobs. The lost tiger bothered him because it felt personal, even though it was only a dream.</p>
+                  <p class="mb-6">By lunchtime, he had almost convinced himself that the dream was meaningless. Then he opened his notebook and saw that he had written one sentence before bed: “I don’t know where I’m going.”</p>
+                  <p class="mb-6">That was when he quietly <b class="highlight quiz-target" data-ans="attached meaning to it" data-kor="그것에 의미를 붙였다">attached meaning to it</b>. The dream had not predicted anything. It had simply shown him a feeling he had been avoiding.</p>
+              </div>
+              <hr class="border-white/10">
+              <div class="text-slate-400 italic leading-relaxed space-y-6">
+                  <p>은우는 평소에 자기 꿈 이야기를 잘 하지 않았지만, 월요일 밤에 꾼 꿈은 오전 내내 마음에 남아 있었다. 시끄럽거나 웃긴 꿈은 아니었다. 조용하고 이상했고, 쉽게 설명할 수 없는 방식으로 불편했다.</p>
+                  <p>그는 해가 뜨기 전에 잠에서 깼고 몸을 움직일 수 없었다. 눈은 떠져 있었지만 팔은 이불 위에서 무겁게 느껴졌다. 몸을 일으키려고 했지만 아무 일도 일어나지 않았다. 몇 초 동안 그는 누군가가 문 근처에 서 있는 것 같다고 생각했다. 그러다 그것이 아마 <b class="highlight">가위눌림</b>일 것이라고 깨닫고 천천히 숨 쉬는 데 집중했다.</p>
+                  <p>다시 움직일 수 있게 되었을 때, 그는 스탠드를 켰다. 방은 비어 있었다. 그래도 그 꿈은 무시하기에는 너무 선명하게 느껴졌다.</p>
+                  <p>꿈속에서 그는 할머니의 부엌 식탁에 앉아 있었다. 빗소리가 창문을 두드리고 있었다. 맞은편에서 할머니는 낡은 달력의 페이지를 넘기고 있었다. 각 페이지에는 <b class="highlight">십이지</b> 동물 하나가 그려져 있었다.</p>
+                  <p>“너는 호랑이띠에 태어났지,” 할머니가 말했다.</p>
+                  <p>“알아요,” 은우가 대답했다.</p>
+                  <p>“하지만 이 호랑이는 길을 잃었구나,” 할머니가 페이지를 가리키며 말했다.</p>
+                  <p>은우는 아래를 내려다보았다. 그림 속 호랑이는 더 이상 당당하게 서 있지 않았다. 그것은 고개를 숙인 채 어두운 복도를 걷고 있었다. 그 복도는 은우가 일하는 사무실처럼 보였지만, 문들에는 이름이 없었다.</p>
+                  <p>나중에 그가 여동생에게 그 꿈 이야기를 해 주자, 그녀는 부엌 조리대에 기대어 조용히 들었다.</p>
+                  <p>“아마 네가 직장에서 길을 잃은 것처럼 느낀다는 뜻일 수도 있어,” 그녀가 말했다.</p>
+                  <p>“그럴 수도 있지,” 은우가 말했다. “아니면 그냥 달력 꿈을 꾼 걸 수도 있고.”</p>
+                  <p>여동생은 미소를 지었다. “넌 항상 그렇게 말하지만, 나한테 말하는 순간 이미 그 꿈에 <b class="highlight">의미를 부여한 거</b>야.”</p>
+                  <p>은우는 그 말에 대해 생각했다. 그는 그 꿈을 너무 <b class="highlight">과하게 해석하고</b> 싶지는 않았지만, 사실 이직에 대해 걱정하고 있었다. 길 잃은 호랑이가 마음에 걸렸던 이유는 그것이 단지 꿈일 뿐인데도 개인적인 것처럼 느껴졌기 때문이었다.</p>
+                  <p>점심시간쯤에는 그 꿈이 아무 의미 없다고 거의 스스로를 설득한 상태였다. 그러다 그는 노트를 열었고, 잠들기 전에 자신이 한 문장을 적어 두었다는 것을 보았다. “나는 내가 어디로 가고 있는지 모르겠다.”</p>
+                  <p>그때 그는 조용히 그 꿈에 <b class="highlight">의미를 붙였다</b>. 그 꿈은 무언가를 예언한 것이 아니었다. 그저 그가 피해 오던 감정을 보여 준 것뿐이었다.</p>
+              </div>
+          </section>
+
+      </div>
+      <script>
+          function skipAudio(seconds) {
+              const player = document.getElementById('player');
+              if (player.src) {
+                  player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+              }
+          }
+
+          function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+          let _quizOriginals = new Map();
+          function toggleQuiz() {
+              const btn = document.getElementById('quizBtn');
+              const isQuiz = btn.innerText.includes("Quiz");
+              const targets = document.querySelectorAll('.quiz-target');
+              const cells = document.querySelectorAll('.mystery-cell');
+              if (isQuiz) {
+                  btn.innerText = "Study Mode 📖";
+                  cells.forEach(c => c.classList.add('quiz-hidden'));
+                  targets.forEach(t => {
+                      const ans = t.dataset.ans; const kor = t.dataset.kor;
+                      _quizOriginals.set(t, t.innerHTML);
+                      t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                  });
+              } else {
+                  btn.innerText = "Quiz Mode 👻";
+                  cells.forEach(c => c.classList.remove('quiz-hidden'));
+                  targets.forEach(t => {
+                      if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                  });
+                  _quizOriginals.clear();
+              }
+          }
+
+          function checkQuiz(i, a) {
+              if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                  i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                  confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                  checkAllSolved();
+              } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+          }
+
+          function checkAllSolved() {
+              const inputs = document.querySelectorAll('.quiz-input');
+              if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                  var duration = 3 * 1000; var end = Date.now() + duration;
+                  (function frame() {
+                      confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                      confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                      if (Date.now() < end) requestAnimationFrame(frame);
+                  }());
+              }
+          }
+
+          document.getElementById('player').src = "5291200.m4a";
+      </script>
+      <script src="wordbank-utils.js"></script>
+      <script src="chat.js"></script>
+</body>
+</html>

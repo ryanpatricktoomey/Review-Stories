@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Lunch Rush</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🍜</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Lunch Rush</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">mother's love</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">어머니의 사랑</td></tr>
+                <tr><td class="p-4"><b class="text-white">dropped out</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">중퇴했다 / 그만두었다</td></tr>
+                <tr><td class="p-4"><b class="text-white">gourmand</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">미식가 / 음식을 많이 즐기는 사람</td></tr>
+                <tr><td class="p-4"><b class="text-white">foodie</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">맛집이나 음식에 관심이 많은 사람</td></tr>
+                <tr><td class="p-4"><b class="text-white">turnover</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">직원 이직률 / 회전율</td></tr>
+                <tr><td class="p-4"><b class="text-white">proud of myself</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">스스로가 자랑스러운</td></tr>
+                <tr><td class="p-4"><b class="text-white">camp out</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">야영하다 / 죽치고 기다리다</td></tr>
+                <tr><td class="p-4"><b class="text-white">drove past</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">차를 타고 지나갔다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-2xl p-5 space-y-2 border-l-4 border-teal-500">
+                <h3 class="font-bold text-teal-400 text-lg">dropped out</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">학교나 과정 등을 끝까지 마치지 않고 그만두었다는 뜻이에요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2 border-l-4 border-teal-500">
+                <h3 class="font-bold text-teal-400 text-lg">gourmand</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">음식을 많이 즐기고 좋아하는 사람을 말해요. 문맥에 따라 약간 “먹는 것을 밝히는 사람” 느낌도 있어요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2 border-l-4 border-teal-500">
+                <h3 class="font-bold text-teal-400 text-lg">foodie</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">음식, 맛집, 요리에 관심이 많은 사람을 일상적으로 말하는 표현이에요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2 border-l-4 border-teal-500">
+                <h3 class="font-bold text-teal-400 text-lg">turnover</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">회사나 가게에서 직원들이 자주 그만두고 새로 들어오는 정도를 말해요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2 border-l-4 border-teal-500">
+                <h3 class="font-bold text-teal-400 text-lg">camp out</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">진짜 야영한다는 뜻도 있지만, 한곳에 오래 자리 잡고 기다린다는 뜻으로도 쓰여요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2 border-l-4 border-teal-500">
+                <h3 class="font-bold text-teal-400 text-lg">drove past</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">차를 타고 어떤 장소를 지나갔다는 뜻이에요. 멈췄다는 뜻은 아니에요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Rosa owned a small noodle shop near the bus station. Her kitchen was busy, hot, and simple. Wash your hands. Boil the noodles. Serve the food. Clean the tables.</p>
+                <p class="mb-6">Then Brian started work.</p>
+                <p class="mb-6">On his first morning, Rosa handed him an apron. “Put this on and wash your hands.”</p>
+                <p class="mb-6">Brian held the apron with both hands. “Just to clarify, should I put it on before I wash my hands?”</p>
+                <p class="mb-6">“Yes.”</p>
+                <p class="mb-6">“Should I tie it in the front or the back?”</p>
+                <p class="mb-6">“The back.”</p>
+                <p class="mb-6">“Should I wash my hands before touching the soap?”</p>
+                <p class="mb-6">Rosa looked at him for a long moment. “Just wash your hands.”</p>
+                <p class="mb-6">Brian had <b class="highlight quiz-target" data-ans="dropped out" data-kor="중퇴했다">dropped out</b> of culinary school after one semester, but he spoke about food with great confidence. He said his <b class="highlight quiz-target" data-ans="mother's love" data-kor="어머니의 사랑">mother's love</b> had inspired him to cook because she packed his lunch every day until he was twenty-two. He also said he was not just a <b class="highlight quiz-target" data-ans="foodie" data-kor="맛집이나 음식에 관심이 많은 사람">foodie</b>, but possibly a <b class="highlight quiz-target" data-ans="gourmand" data-kor="미식가">gourmand</b>.</p>
+                <p class="mb-6">Rosa did not care what he called himself. She cared whether he could refill water cups without asking six questions.</p>
+                <p class="mb-6">By 11:30, Brian had asked whether clean bowls went on the clean-bowl shelf. He asked whether a wet table needed a dry towel. He asked whether customers who raised their hands wanted help or exercise.</p>
+                <p class="mb-6">The shop already had high <b class="highlight quiz-target" data-ans="turnover" data-kor="직원 이직률">turnover</b>, and Rosa needed him to work out. She told herself he was new. Maybe he would improve.</p>
+                <p class="mb-6">At 12:20, a customer smiled and said, “The noodles were great.”</p>
+                <p class="mb-6">Brian turned to Rosa. “I’m <b class="highlight quiz-target" data-ans="proud of myself" data-kor="스스로가 자랑스러운">proud of myself</b>,” he whispered.</p>
+                <p class="mb-6">“You should be,” Rosa said. “Now clear table four.”</p>
+                <p class="mb-6">“Should I clear the empty plates first or the cups?”</p>
+                <p class="mb-6">“Just clear the table.”</p>
+                <p class="mb-6">At 2:00, Rosa told Brian, “The rice delivery is coming. Watch the front door.”</p>
+                <p class="mb-6">Thirty minutes later, she found him sitting on a chair by the entrance.</p>
+                <p class="mb-6">“What are you doing?”</p>
+                <p class="mb-6">“You told me to watch the front door,” Brian said. “So I decided to <b class="highlight quiz-target" data-ans="camp out" data-kor="죽치고 기다리다">camp out</b> here.”</p>
+                <p class="mb-6">“Did the delivery come?”</p>
+                <p class="mb-6">“A truck <b class="highlight quiz-target" data-ans="drove past" data-kor="차를 타고 지나갔다">drove past</b>, but it didn’t stop.”</p>
+                <p class="mb-6">“Then it wasn’t the delivery!”</p>
+                <p class="mb-6">“Should I have known that because it didn’t stop?”</p>
+                <p class="mb-6">Rosa put both hands on the counter.</p>
+                <p class="mb-6">“Brian, stop. Please stop asking questions about things everyone already knows. If the table is dirty, clean it. If a truck does not stop, it is not our delivery. If a customer raises a hand, go help them.”</p>
+                <p class="mb-6">The kitchen went quiet.</p>
+                <p class="mb-6">Brian nodded politely.</p>
+                <p class="mb-6">“Understood,” he said. “Just to clarify, should I stop asking those questions immediately, or after this one?”</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>로사는 버스 정류장 근처에서 작은 국수 가게를 운영했다. 그녀의 주방은 바쁘고, 덥고, 단순했다. 손을 씻는다. 국수를 삶는다. 음식을 낸다. 테이블을 닦는다.</p>
+                <p>그러다 브라이언이 일을 시작했다.</p>
+                <p>첫날 아침, 로사는 그에게 앞치마를 건넸다. “이거 입고 손 씻으세요.”</p>
+                <p>브라이언은 앞치마를 두 손으로 들었다. “확인차 여쭤보면, 손을 씻기 전에 앞치마를 입어야 하나요?”</p>
+                <p>“네.”</p>
+                <p>“앞에서 묶어야 하나요, 뒤에서 묶어야 하나요?”</p>
+                <p>“뒤에서요.”</p>
+                <p>“비누를 만지기 전에 손을 씻어야 하나요?”</p>
+                <p>로사는 그를 한참 바라보았다. “그냥 손 씻어요.”</p>
+                <p>브라이언은 요리 학교를 한 학기 만에 <b class="highlight">중퇴했다</b>(중퇴했지만), 음식에 대해서는 아주 자신 있게 말했다. 그는 <b class="highlight">어머니의 사랑</b>이 자신에게 요리 영감을 주었다고 했다. 어머니가 그가 스물두 살이 될 때까지 매일 도시락을 싸 주었기 때문이었다. 그는 또한 자신이 그냥 <b class="highlight">음식에 관심 많은 사람</b>(음식에 관심 많은 사람이 아니라), 어쩌면 <b class="highlight">미식가</b>(미식가일지도 모른다고) 말했다.</p>
+                <p>로사는 그가 자신을 뭐라고 부르든 상관하지 않았다. 그녀가 신경 쓰는 것은 그가 물컵을 다시 채우는 일을 여섯 번 묻지 않고 할 수 있는지였다.</p>
+                <p>11시 30분이 되자, 브라이언은 깨끗한 그릇을 깨끗한 그릇 선반에 놓으면 되는지 물었다. 젖은 테이블에는 마른 수건이 필요한지 물었다. 손을 드는 손님은 도움이 필요한 것인지 운동을 하는 것인지 물었다.</p>
+                <p>그 가게는 이미 직원 <b class="highlight">이직률</b>(이직률이 높았고), 로사는 그가 잘 버텨 주기를 바랐다. 그녀는 그가 신입이라고 스스로에게 말했다. 어쩌면 나아질 수도 있었다.</p>
+                <p>12시 20분, 한 손님이 미소를 지으며 말했다. “국수가 정말 맛있었어요.”</p>
+                <p>브라이언은 로사를 돌아보았다. “제가 <b class="highlight">스스로 자랑스럽네요</b>,” 그가 속삭였다.</p>
+                <p>“그래도 돼요,” 로사가 말했다. “이제 4번 테이블 치워 주세요.”</p>
+                <p>“빈 접시를 먼저 치워야 하나요, 아니면 컵을 먼저 치워야 하나요?”</p>
+                <p>“그냥 테이블을 치워요.”</p>
+                <p>2시가 되자, 로사는 브라이언에게 말했다. “쌀 배달이 올 거예요. 앞문을 보고 있어요.”</p>
+                <p>30분 뒤, 그녀는 그가 입구 옆 의자에 앉아 있는 것을 발견했다.</p>
+                <p>“뭐 하는 거예요?”</p>
+                <p>“앞문을 보고 있으라고 하셨잖아요,” 브라이언이 말했다. “그래서 여기서 <b class="highlight">죽치고 기다리기</b>(죽치고 기다리기로 했습니다).”</p>
+                <p>“배달 왔어요?”</p>
+                <p>“트럭 한 대가 <b class="highlight">지나갔는데</b>, 멈추지는 않았습니다.”</p>
+                <p>“그럼 배달이 아니었던 거죠!”</p>
+                <p>“멈추지 않았기 때문에 제가 그걸 알았어야 했나요?”</p>
+                <p>로사는 두 손을 카운터 위에 올렸다.</p>
+                <p>“브라이언, 그만해요. 누구나 알 만한 일을 질문하는 걸 제발 그만하세요. 테이블이 더러우면 닦고, 트럭이 멈추지 않으면 우리 배달이 아니고, 손님이 손을 들면 가서 도와주세요.”</p>
+                <p>주방이 조용해졌다.</p>
+                <p>브라이언은 예의 바르게 고개를 끄덕였다.</p>
+                <p>“알겠습니다,” 그가 말했다. “확인차 여쭤보면, 그런 질문을 지금 바로 그만해야 하나요, 아니면 이 질문 다음부터 그만해야 하나요?”</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "611020.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

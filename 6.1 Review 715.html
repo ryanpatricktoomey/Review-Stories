@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Chair Question</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">📦</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Chair Question</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">noticeable</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">눈에 띄는 / 알아볼 수 있는</td></tr>
+                <tr><td class="p-4"><b class="text-white">spatial awareness</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">공간 지각 능력</td></tr>
+                <tr><td class="p-4"><b class="text-white">clumsy</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">덜렁대는 / 몸이 서툰</td></tr>
+                <tr><td class="p-4"><b class="text-white">what are you into these days?</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">요즘 뭐에 빠져 있어요? / 요즘 뭐 좋아해요?</td></tr>
+                <tr><td class="p-4"><b class="text-white">temporary</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">일시적인 / 임시의</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-2xl p-5 space-y-2 border-l-4 border-teal-500">
+                <h3 class="font-bold text-teal-400 text-lg">spatial awareness</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">자기 몸이나 물건이 주변 공간에서 어디에 있는지 파악하는 능력을 말해요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2 border-l-4 border-teal-500">
+                <h3 class="font-bold text-teal-400 text-lg">clumsy</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">몸동작이 서툴러서 자주 부딪히거나 물건을 떨어뜨리는 사람에게 써요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2 border-l-4 border-teal-500">
+                <h3 class="font-bold text-teal-400 text-lg">what are you into these days?</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">요즘 관심 있는 것, 취미, 좋아하는 것을 자연스럽게 물을 때 쓰는 표현이에요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2 border-l-4 border-teal-500">
+                <h3 class="font-bold text-teal-400 text-lg">temporary</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">영구적인 것이 아니라 잠깐만 계속되는 상태를 말해요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Laura managed a small furniture showroom. Her rules were simple: keep the chairs clean, greet customers, and do not block the front door.</p>
+                <p class="mb-6">Her new assistant, Kevin, made all three rules difficult.</p>
+                <p class="mb-6">On his first morning, Laura pointed to a row of chairs near the window. “Please move those two chairs closer to the display table.”</p>
+                <p class="mb-6">Kevin looked at the chairs. “Just to clarify, do you mean the two chairs on the left or the two chairs closest to me?”</p>
+                <p class="mb-6">“The two by the window,” Laura said.</p>
+                <p class="mb-6">“Should they face the table directly?”</p>
+                <p class="mb-6">“Yes.”</p>
+                <p class="mb-6">“How close is closer?”</p>
+                <p class="mb-6">Laura looked at the empty space between the chairs and the table. “Close enough for people to see the display.”</p>
+                <p class="mb-6">Kevin nodded, but he did not move.</p>
+                <p class="mb-6">“Should I lift them or drag them?”</p>
+                <p class="mb-6">“Lift them if you can.”</p>
+                <p class="mb-6">The problem became <b class="highlight quiz-target" data-ans="noticeable" data-kor="눈에 띄는">noticeable</b> after ten minutes. Kevin had moved one chair three inches, stepped backward into a lamp, apologized to the lamp, and then asked whether he should keep going.</p>
+                <p class="mb-6">“You need better <b class="highlight quiz-target" data-ans="spatial awareness" data-kor="공간 지각 능력">spatial awareness</b>,” Laura said.</p>
+                <p class="mb-6">Kevin looked around carefully. “Should I practice that before or after moving the second chair?”</p>
+                <p class="mb-6">Laura pressed her lips together. “After.”</p>
+                <p class="mb-6">At 11:00, Kevin bumped his knee on the same table twice.</p>
+                <p class="mb-6">“I’m sorry,” he said. “I’m a little <b class="highlight quiz-target" data-ans="clumsy" data-kor="덜렁대는">clumsy</b>.”</p>
+                <p class="mb-6">“That’s fine,” Laura said. “Just slow down and pay attention.”</p>
+                <p class="mb-6">“Should I slow down my walking or my thinking?”</p>
+                <p class="mb-6">Laura stared at him until he chose walking.</p>
+                <p class="mb-6">During lunch, Kevin sat beside Maya, the sales manager. “<b class="highlight quiz-target" data-ans="What are you into these days?" data-kor="요즘 뭐에 빠져 있어요?">What are you into these days?</b>” he asked.</p>
+                <p class="mb-6">“Gardening,” Maya said.</p>
+                <p class="mb-6">Kevin smiled. “Should I ask what kind of plants, or is gardening already enough information?”</p>
+                <p class="mb-6">Maya looked at Laura for help. Laura looked away.</p>
+                <p class="mb-6">At 3:15, Kevin came to the office holding a sign that said <b class="highlight quiz-target" data-ans="TEMPORARY" data-kor="일시적인">TEMPORARY</b> DISPLAY.</p>
+                <p class="mb-6">“This says temporary,” he said. “Should I take it down today?”</p>
+                <p class="mb-6">“No,” Laura said. “It means the display won’t be here forever.”</p>
+                <p class="mb-6">Kevin nodded. “So not today?”</p>
+                <p class="mb-6">“No.”</p>
+                <p class="mb-6">“Tomorrow?”</p>
+                <p class="mb-6">Laura finally stood up.</p>
+                <p class="mb-6">“Kevin, stop. Please stop asking me to make every tiny decision for you. Move chairs. Read signs. Talk to customers. If something is obvious, do the obvious thing.”</p>
+                <p class="mb-6">The showroom became quiet.</p>
+                <p class="mb-6">Kevin took out his pen.</p>
+                <p class="mb-6">“Okay,” he said. “Just to clarify, should I decide what is obvious by myself?”</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>로라는 작은 가구 전시장을 관리했다. 그녀의 규칙은 간단했다. 의자를 깨끗하게 유지하고, 손님에게 인사하고, 정문을 막지 않는 것.</p>
+                <p>그녀의 새 보조 직원 케빈은 그 세 가지 규칙을 모두 어렵게 만들었다.</p>
+                <p>첫날 아침, 로라는 창가 근처의 의자 줄을 가리켰다. “저 의자 두 개를 전시 테이블 가까이로 옮겨 주세요.”</p>
+                <p>케빈은 의자들을 바라보았다. “확인차 여쭤보면, 왼쪽에 있는 의자 두 개를 말씀하시는 건가요, 아니면 저한테 가장 가까운 의자 두 개를 말씀하시는 건가요?”</p>
+                <p>“창가에 있는 두 개요,” 로라가 말했다.</p>
+                <p>“테이블을 똑바로 향하게 해야 하나요?”</p>
+                <p>“네.”</p>
+                <p>“얼마나 가까워야 가까운 건가요?”</p>
+                <p>로라는 의자와 테이블 사이의 빈 공간을 보았다. “사람들이 전시를 볼 수 있을 만큼 가까이요.”</p>
+                <p>케빈은 고개를 끄덕였지만 움직이지 않았다.</p>
+                <p>“들어서 옮겨야 하나요, 아니면 끌어야 하나요?”</p>
+                <p>“가능하면 들어서 옮기세요.”</p>
+                <p>문제는 10분 뒤에 <b class="highlight">눈에 띄게</b> 드러났다. 케빈은 의자 하나를 3인치 정도 옮겼고, 뒤로 물러나다가 램프에 부딪혔고, 램프에게 사과한 다음 계속해야 하는지 물었다.</p>
+                <p>“<b class="highlight">공간 지각 능력</b>을 좀 키워야겠네요,” 로라가 말했다.</p>
+                <p>케빈은 주변을 조심스럽게 둘러보았다. “그건 두 번째 의자를 옮기기 전에 연습해야 하나요, 아니면 옮긴 후에 해야 하나요?”</p>
+                <p>로라는 입술을 꼭 다물었다. “후에요.”</p>
+                <p>11시가 되자, 케빈은 같은 테이블에 무릎을 두 번 부딪혔다.</p>
+                <p>“죄송합니다,” 그가 말했다. “제가 좀 <b class="highlight">덜렁대요</b>.”</p>
+                <p>“괜찮아요,” 로라가 말했다. “그냥 천천히 하고 주의하세요.”</p>
+                <p>“걷는 걸 천천히 해야 하나요, 아니면 생각하는 걸 천천히 해야 하나요?”</p>
+                <p>로라는 그가 걷는 것을 선택할 때까지 그를 바라보았다.</p>
+                <p>점심시간에 케빈은 영업 매니저인 마야 옆에 앉았다. “<b class="highlight">요즘 뭐에 빠져 있어요?</b>” 그가 물었다.</p>
+                <p>“정원 가꾸기요,” 마야가 말했다.</p>
+                <p>케빈은 미소를 지었다. “어떤 식물인지 물어봐야 하나요, 아니면 정원 가꾸기라는 정보만으로 충분한가요?”</p>
+                <p>마야는 도움을 요청하듯 로라를 보았다. 로라는 시선을 피했다.</p>
+                <p>3시 15분, 케빈이 <b class="highlight">임시</b>(TEMPORARY DISPLAY라고 쓰인) 표지판을 들고 사무실로 왔다.</p>
+                <p>“여기에 임시라고 쓰여 있습니다,” 그가 말했다. “오늘 치워야 하나요?”</p>
+                <p>“아니요,” 로라가 말했다. “그 전시가 영원히 있는 건 아니라는 뜻이에요.”</p>
+                <p>케빈은 고개를 끄덕였다. “그러면 오늘은 아니군요?”</p>
+                <p>“네.”</p>
+                <p>“내일은요?”</p>
+                <p>마침내 로라는 자리에서 일어났다.</p>
+                <p>“케빈, 그만해요. 사소한 결정까지 전부 저한테 시키지 마세요. 의자를 옮기고, 표지판을 읽고, 손님과 대화하세요. 뭔가 뻔하면 뻔한 일을 하세요.”</p>
+                <p>전시장이 조용해졌다.</p>
+                <p>케빈은 펜을 꺼냈다.</p>
+                <p>“알겠습니다,” 그가 말했다. “확인차 여쭤보면, 무엇이 뻔한지는 제가 스스로 판단해야 하나요?”</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "61715.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

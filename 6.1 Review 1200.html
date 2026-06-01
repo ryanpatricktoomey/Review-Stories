@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Appointment Question</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🏥</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Appointment Question</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">gall stones</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">담석</td></tr>
+                <tr><td class="p-4"><b class="text-white">gall bladder</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">담낭 / 쓸개</td></tr>
+                <tr><td class="p-4"><b class="text-white">quarantine</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">격리</td></tr>
+                <tr><td class="p-4"><b class="text-white">went bankrupt</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">파산했다</td></tr>
+                <tr><td class="p-4"><b class="text-white">treat you</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">한턱내다 / 대접하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">anesthesia</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">마취</td></tr>
+                <tr><td class="p-4"><b class="text-white">optometrist</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">검안사 / 시력 검사 전문가</td></tr>
+                <tr><td class="p-4"><b class="text-white">pediatrician</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">소아과 의사</td></tr>
+                <tr><td class="p-4"><b class="text-white">ophthalmology</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">안과 / 안과학</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-2xl p-5 space-y-2 border-l-4 border-teal-500">
+                <h3 class="font-bold text-teal-400 text-lg">gall stones / gall bladder</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">gall stones는 담낭 안에 생기는 돌 같은 물질이고, gall bladder는 담즙을 저장하는 작은 기관이에요. 둘이 자주 같이 나와요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2 border-l-4 border-teal-500">
+                <h3 class="font-bold text-teal-400 text-lg">quarantine</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">전염병 확산을 막기 위해 사람을 일정 기간 따로 있게 하는 “격리”를 뜻해요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2 border-l-4 border-teal-500">
+                <h3 class="font-bold text-teal-400 text-lg">went bankrupt</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">회사나 사람이 돈이 없어서 더 이상 빚을 갚거나 사업을 유지할 수 없게 되었다는 뜻이에요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2 border-l-4 border-teal-500">
+                <h3 class="font-bold text-teal-400 text-lg">treat you</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">병원에서 “치료하다”라는 뜻도 있지만, 일상 대화에서는 “한턱내다 / 사주다”라는 뜻으로도 많이 써요. 문맥이 중요해요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2 border-l-4 border-teal-500">
+                <h3 class="font-bold text-teal-400 text-lg">anesthesia</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">수술이나 시술 중 통증을 느끼지 않게 하는 “마취”를 뜻해요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2 border-l-4 border-teal-500">
+                <h3 class="font-bold text-teal-400 text-lg">optometrist / ophthalmology</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">optometrist는 시력 검사나 안경 처방을 주로 하는 전문가이고, ophthalmology는 안과 진료나 눈 질환을 다루는 의학 분야예요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Mina managed the front desk at a small medical clinic. The job required patience, a calm voice, and the ability to know when a ringing phone should be answered.</p>
+                <p class="mb-6">Her new assistant, Chris, had two of those skills.</p>
+                <p class="mb-6">On his first morning, Mina gave him a list of patient calls. “Please confirm these appointments and tell me if anyone cancels.”</p>
+                <p class="mb-6">Chris held the paper carefully. “Just to clarify, should I call the first person first?”</p>
+                <p class="mb-6">“Yes,” Mina said.</p>
+                <p class="mb-6">“And if they answer, should I say hello?”</p>
+                <p class="mb-6">Mina looked at him. “Yes.”</p>
+                <p class="mb-6">“Should I tell them this is the clinic before or after I ask their name?”</p>
+                <p class="mb-6">“Before.”</p>
+                <p class="mb-6">Chris nodded and wrote it down.</p>
+                <p class="mb-6">The first call took eight minutes. A patient said he had <b class="highlight quiz-target" data-ans="gall stones" data-kor="담석">gall stones</b> and wanted to ask whether the doctor checked the <b class="highlight quiz-target" data-ans="gall bladder" data-kor="담낭">gall bladder</b> at this clinic. Chris covered the phone and asked Mina, “Should I say I don’t know, or should I ask you first?”</p>
+                <p class="mb-6">“You are already asking me,” Mina said. “Tell him I’ll check.”</p>
+                <p class="mb-6">At 10:00, another patient asked if she still needed to come in after finishing <b class="highlight quiz-target" data-ans="quarantine" data-kor="격리">quarantine</b>.</p>
+                <p class="mb-6">Chris covered the phone again. “Should I ask what illness she had?”</p>
+                <p class="mb-6">“No. Just ask when her quarantine ended.”</p>
+                <p class="mb-6">“Should I say the word quarantine back to her?”</p>
+                <p class="mb-6">Mina took off her glasses. “Yes, Chris.”</p>
+                <p class="mb-6">By lunch, Mina knew too much about Chris. His uncle’s shop had <b class="highlight quiz-target" data-ans="gone bankrupt" data-kor="파산했다">gone bankrupt</b>, his cousin was a <b class="highlight quiz-target" data-ans="pediatrician" data-kor="소아과 의사">pediatrician</b>, and he had once wanted to become an <b class="highlight quiz-target" data-ans="optometrist" data-kor="검안사">optometrist</b> until he learned that eyes made him nervous. He said <b class="highlight quiz-target" data-ans="ophthalmology" data-kor="안과">ophthalmology</b> sounded interesting, but only from a safe distance.</p>
+                <p class="mb-6">When Dr. Park walked by, Chris smiled and said, “If I survive my first day, I’ll <b class="highlight quiz-target" data-ans="treat you" data-kor="한턱내다">treat you</b> all to coffee.”</p>
+                <p class="mb-6">“That’s nice,” Mina said.</p>
+                <p class="mb-6">“Should I buy the coffee before work tomorrow, or wait until someone says they want it?”</p>
+                <p class="mb-6">“Chris.”</p>
+                <p class="mb-6">“Right. Later.”</p>
+                <p class="mb-6">At 2:30, Mina asked him to file surgery forms. “Put anything about <b class="highlight quiz-target" data-ans="anesthesia" data-kor="마취">anesthesia</b> in this folder.”</p>
+                <p class="mb-6">Chris picked up one form. “This says local anesthesia. Does that count?”</p>
+                <p class="mb-6">“Yes.”</p>
+                <p class="mb-6">This one says no anesthesia.</p>
+                <p class="mb-6">“Then no.”</p>
+                <p class="mb-6">“So should I not put it in the anesthesia folder?”</p>
+                <p class="mb-6">Mina finally stood up.</p>
+                <p class="mb-6">“Chris, stop. Please stop asking me things you can figure out yourself. If the phone rings, answer it. If a form says anesthesia, file it. If it says no anesthesia, don’t file it there. You do not need permission for every normal step.”</p>
+                <p class="mb-6">The clinic became quiet.</p>
+                <p class="mb-6">Chris nodded politely.</p>
+                <p class="mb-6">“Understood,” he said. “Just to clarify, should I stop asking permission now, or after I finish writing that down?”</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>미나는 작은 병원의 접수 데스크를 관리했다. 그 일에는 인내심, 차분한 목소리, 그리고 울리는 전화를 언제 받아야 하는지 아는 능력이 필요했다.</p>
+                <p>그녀의 새 보조 직원 크리스는 그중 두 가지 능력은 가지고 있었다.</p>
+                <p>첫날 아침, 미나는 그에게 환자 전화 목록을 건넸다. “이 예약들을 확인하고, 취소하는 사람이 있으면 알려 주세요.”</p>
+                <p>크리스는 종이를 조심스럽게 들었다. “확인차 여쭤보면, 첫 번째 사람에게 먼저 전화하면 되나요?”</p>
+                <p>“네,” 미나가 말했다.</p>
+                <p>“그리고 전화를 받으면, 안녕하세요라고 해야 하나요?”</p>
+                <p>미나는 그를 바라보았다. “네.”</p>
+                <p>“제가 이름을 묻기 전에 병원이라고 말해야 하나요, 아니면 이름을 물은 후에 말해야 하나요?”</p>
+                <p>“전에요.”</p>
+                <p>크리스는 고개를 끄덕이고 그것을 적었다.</p>
+                <p>첫 번째 통화는 8분이나 걸렸다. 한 환자가 <b class="highlight">담석</b>이 있는데, 이 병원에서 <b class="highlight">담낭</b>을 확인하는지 묻고 싶다고 했다. 크리스는 수화기를 막고 미나에게 물었다. “모른다고 해야 하나요, 아니면 먼저 여쭤봐야 하나요?”</p>
+                <p>“이미 저한테 묻고 있잖아요,” 미나가 말했다. “제가 확인해 보겠다고 말하세요.”</p>
+                <p>10시가 되자, 다른 환자가 <b class="highlight">격리</b>가 끝난 후에도 병원에 와야 하는지 물었다.</p>
+                <p>크리스는 다시 수화기를 막았다. “무슨 병이었는지 물어봐야 하나요?”</p>
+                <p>“아니요. 그냥 격리가 언제 끝났는지 물어보세요.”</p>
+                <p>“격리라는 말을 다시 말해도 되나요?”</p>
+                <p>미나는 안경을 벗었다. “네, 크리스.”</p>
+                <p>점심시간이 될 무렵, 미나는 크리스에 대해 너무 많은 것을 알게 되었다. 그의 삼촌 가게는 <b class="highlight">파산했고</b>, 그의 사촌은 <b class="highlight">소아과 의사</b>였으며, 그는 한때 <b class="highlight">검안사</b>가 되고 싶었지만 눈이 자신을 긴장하게 만든다는 사실을 알게 되었다. 그는 <b class="highlight">안과학</b>이 흥미롭게 들리지만, 안전한 거리에서만 그렇다고 말했다.</p>
+                <p>박 의사가 지나가자 크리스는 미소 지으며 말했다. “첫날을 무사히 넘기면 제가 모두에게 커피 <b class="highlight">한턱낼게요</b>.”</p>
+                <p>“좋네요,” 미나가 말했다.</p>
+                <p>“내일 출근 전에 커피를 사 와야 하나요, 아니면 누가 원한다고 말할 때까지 기다려야 하나요?”</p>
+                <p>“크리스.”</p>
+                <p>“맞다. 나중에요.”</p>
+                <p>2시 30분, 미나는 그에게 수술 서류를 정리하라고 했다. “<b class="highlight">마취</b> 관련 내용은 이 폴더에 넣으세요.”</p>
+                <p>크리스는 서류 하나를 집어 들었다. “여기 국소 마취라고 쓰여 있습니다. 이것도 해당되나요?”</p>
+                <p>“네.”</p>
+                <p>이건 마취 없음이라고 쓰여 있습니다.</p>
+                <p>“그럼 아니죠.”</p>
+                <p>“그러면 마취 폴더에 넣지 말아야 하나요?”</p>
+                <p>마침내 미나가 자리에서 일어났다.</p>
+                <p>“크리스, 그만해요. 스스로 알 수 있는 것들을 제발 그만하세요. 전화가 울리면 받고, 서류에 마취라고 쓰여 있으면 정리하고, 마취 없음이라고 쓰여 있으면 거기에 넣지 마세요. 모든 평범한 단계마다 허락을 받을 필요는 없어요.”</p>
+                <p>병원은 조용해졌다.</p>
+                <p>크리스는 예의 바르게 고개를 끄덕였다.</p>
+                <p>“알겠습니다,” 그가 말했다. “확인차 여쭤보면, 허락을 구하는 걸 지금 그만해야 하나요, 아니면 그걸 적은 후에 그만해야 하나요?”</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "611200.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

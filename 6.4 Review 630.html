@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Bus I Missed</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">☔</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Bus I Missed</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">when it rains, it pours</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">안 좋은 일이 생기면 한꺼번에 몰려온다</td></tr>
+                <tr><td class="p-4"><b class="text-white">patio</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">파티오 / 야외 테라스</td></tr>
+                <tr><td class="p-4"><b class="text-white">tailbone</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">꼬리뼈</td></tr>
+                <tr><td class="p-4"><b class="text-white">hyped up</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">들뜬 / 신난 / 잔뜩 기대한</td></tr>
+                <tr><td class="p-4"><b class="text-white">play a round of golf</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">골프 한 라운드를 치다</td></tr>
+                <tr><td class="p-4"><b class="text-white">SNAFU</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">엉망진창인 상황 / 대혼란</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-3xl p-6 space-y-2 border border-white/5">
+                <h3 class="text-xl font-bold text-white">when it rains, it pours</h3>
+                <p class="text-slate-400 text-sm leading-relaxed">안 좋은 일이 하나 생기면 다른 문제들이 줄줄이 생긴다는 뜻의 관용표현입니다.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2 border border-white/5">
+                <h3 class="text-xl font-bold text-white">hyped up</h3>
+                <p class="text-slate-400 text-sm leading-relaxed">단순히 “신난” 느낌도 있지만, 기대감이나 에너지가 너무 올라간 상태를 말할 때도 씁니다.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2 border border-white/5">
+                <h3 class="text-xl font-bold text-white">play a round of golf</h3>
+                <p class="text-slate-400 text-sm leading-relaxed">골프를 “한 게임 하다”보다 자연스럽게 “한 라운드 치다”라고 표현합니다.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2 border border-white/5">
+                <h3 class="text-xl font-bold text-white">SNAFU</h3>
+                <p class="text-slate-400 text-sm leading-relaxed">계획이나 상황이 완전히 꼬인 상태를 비격식적으로 말할 때 씁니다. 수업 주제와 잘 맞는 표현입니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">I woke up to the sound of rain hitting my window, and my first thought was, “Of course. <b class="highlight quiz-target" data-ans="When it rains, it pours" data-kor="안 좋은 일은 한꺼번에 몰려오지">When it rains, it pours</b>.”</p>
+                <p class="mb-6">I had planned a perfect Saturday. I was going to meet my old college friend Daniel and <b class="highlight quiz-target" data-ans="play a round of golf" data-kor="골프 한 라운드를 칠">play a round of golf</b> at a course outside the city. I had been <b class="highlight quiz-target" data-ans="hyped up" data-kor="잔뜩 기대하고">hyped up</b> about it all week. I had cleaned my clubs, checked the weather, and packed an extra pair of socks like a responsible adult.</p>
+                <p class="mb-6">Then my phone showed me the truth. It was dead. My alarm had never gone off.</p>
+                <p class="mb-6">Great. Wonderful start.</p>
+                <p class="mb-6">I jumped out of bed, ran toward the kitchen, and slipped on a puddle near the back door. My feet flew forward, my pride flew somewhere else, and I landed hard on my <b class="highlight quiz-target" data-ans="tailbone" data-kor="꼬리뼈를">tailbone</b>.</p>
+                <p class="mb-6">For a moment, I just stared at the ceiling.</p>
+                <p class="mb-6">“A grown man,” I thought, “defeated by his own <b class="highlight quiz-target" data-ans="patio" data-kor="파티오">patio</b>.”</p>
+                <p class="mb-6">I limped to the bathroom, but there was no hot water. I burned my toast. I spilled coffee on my clean shirt. My umbrella had somehow broken inside the closet, which felt personal. By the time I reached the bus stop, I was wet, sore, late, and angry at objects that had no legal right to fight back.</p>
+                <p class="mb-6">Then I saw the bus pulling away.</p>
+                <p class="mb-6">I tried to run, but my <b class="highlight quiz-target" data-ans="tailbone" data-kor="꼬리뼈에서">tailbone</b> sent a sharp pain up my back. I stopped after three steps and watched the bus disappear around the corner.</p>
+                <p class="mb-6">“Perfect,” I thought. “A complete <b class="highlight quiz-target" data-ans="SNAFU" data-kor="완전 대혼란이야">SNAFU</b>.”</p>
+                <p class="mb-6">I called Daniel and explained the whole disaster. He laughed for two seconds, then heard my voice and said, “Go home. We’ll do it another day.”</p>
+                <p class="mb-6">I sat on the bench under the leaking shelter. I was still thinking, “If I had caught that bus, at least I’d be moving.”</p>
+                <p class="mb-6">Ten minutes later, sirens screamed down the road. A police car passed. Then an ambulance. Then another one.</p>
+                <p class="mb-6">A woman beside me looked at her phone and gasped. “There was an accident on Route 14,” she said. “A truck hit a city bus.”</p>
+                <p class="mb-6">I felt the rain running down my face, but I stopped caring. My dead phone, missed alarm, bruised <b class="highlight quiz-target" data-ans="tailbone" data-kor="멍든 꼬리뼈">tailbone</b>, broken umbrella, and missed bus all lined up in my mind like rude little miracles.</p>
+                <p class="mb-6">That bus had been my bus.</p>
+                <p class="mb-6">I looked up at the gray sky and whispered, “Well, that is one strange silver lining.”</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">나는 창문을 때리는 빗소리에 잠에서 깼고, 가장 먼저 이런 생각이 들었다.</p>
+                <p class="mb-6">“역시. <b class="highlight">안 좋은 일은 한꺼번에 몰려오지</b>.”</p>
+                <p class="mb-6">나는 완벽한 토요일을 계획해 두었다. 대학 시절 친구 대니얼을 만나 도시 밖 골프장에서 <b class="highlight">골프 한 라운드를 칠</b> 예정이었다. 나는 일주일 내내 그것을 <b class="highlight">잔뜩 기대하고</b> 있었다. 책임감 있는 어른처럼 골프채도 닦아 두었고, 날씨도 확인했으며, 여분의 양말도 챙겨 두었다.</p>
+                <p class="mb-6">그런데 내 휴대폰이 진실을 보여 주었다. 배터리가 다 닳아 있었다. 알람은 전혀 울리지 않았던 것이다.</p>
+                <p class="mb-6">좋아. 아주 훌륭한 시작이군.</p>
+                <p class="mb-6">나는 침대에서 벌떡 일어나 부엌 쪽으로 뛰어갔다가 뒷문 근처의 물웅덩이에 미끄러졌다. 발은 앞으로 날아갔고, 자존심은 어딘가 다른 곳으로 날아갔고, 나는 <b class="highlight">꼬리뼈를</b> 세게 찧으며 넘어졌다.</p>
+                <p class="mb-6">잠시 동안 나는 그저 천장을 바라보았다.</p>
+                <p class="mb-6">“다 큰 남자가,” 나는 생각했다. “자기 집 <b class="highlight">파티오</b>한테 졌네.”</p>
+                <p class="mb-6">나는 절뚝거리며 욕실로 갔지만, 뜨거운 물이 나오지 않았다. 토스트는 태웠다. 깨끗한 셔츠에는 커피를 쏟았다. 우산은 어떻게 된 일인지 옷장 안에서 부러져 있었는데, 그건 왠지 나를 겨냥한 일처럼 느껴졌다. 버스 정류장에 도착했을 때 나는 젖어 있었고, 아팠고, 늦었고, 반격할 법적 권리도 없는 물건들에게 화가 나 있었다.</p>
+                <p class="mb-6">그때 버스가 떠나는 것이 보였다.</p>
+                <p class="mb-6">나는 뛰려고 했지만, <b class="highlight">꼬리뼈에서</b> 날카로운 통증이 등 위로 올라왔다. 나는 세 걸음 만에 멈춰 서서 버스가 모퉁이를 돌아 사라지는 것을 바라보았다.</p>
+                <p class="mb-6">“완벽하군.” 나는 생각했다. “<b class="highlight">완전 대혼란이야</b>.”</p>
+                <p class="mb-6">나는 대니얼에게 전화해 모든 재앙을 설명했다. 그는 2초 정도 웃더니 내 목소리를 듣고 말했다.</p>
+                <p class="mb-6">“집에 가. 다른 날 하자.”</p>
+                <p class="mb-6">나는 물이 새는 정류장 지붕 아래 벤치에 앉았다. 나는 여전히 이렇게 생각하고 있었다.</p>
+                <p class="mb-6">“저 버스를 탔더라면, 적어도 움직이고는 있었을 텐데.”</p>
+                <p class="mb-6">10분 뒤, 도로 아래쪽에서 사이렌 소리가 울려 퍼졌다. 경찰차 한 대가 지나갔다. 그다음 구급차 한 대가 지나갔다. 또 한 대가 지나갔다.</p>
+                <p class="mb-6">내 옆에 있던 여자가 휴대폰을 보고 숨을 삼켰다.</p>
+                <p class="mb-6">“14번 도로에서 사고가 났대요.” 그녀가 말했다. “트럭이 시내버스를 들이받았대요.”</p>
+                <p class="mb-6">나는 빗물이 얼굴을 타고 흐르는 것을 느꼈지만, 더는 신경 쓰이지 않았다. 죽은 휴대폰, 울리지 않은 알람, <b class="highlight">멍든 꼬리뼈</b>, 부러진 우산, 놓친 버스가 모두 내 머릿속에 줄지어 섰다. 무례하지만 작은 기적들처럼.</p>
+                <p class="mb-6">그 버스는 내가 탔어야 했던 버스였다.</p>
+                <p class="mb-6">나는 회색 하늘을 올려다보며 속삭였다.</p>
+                <p class="mb-6">“음, 정말 이상한 긍정적인 면이네.”</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "64630.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

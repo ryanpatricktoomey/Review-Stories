@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Mountain I Didn’t Climb</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🏔️</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Mountain I Didn’t Climb</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">when it rains, it pours</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">안 좋은 일이 생기면 한꺼번에 몰려온다</td></tr>
+                <tr><td class="p-4"><b class="text-white">altitude sickness</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">고산병</td></tr>
+                <tr><td class="p-4"><b class="text-white">high altitude</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">높은 고도</td></tr>
+                <tr><td class="p-4"><b class="text-white">take a gap year</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">갭이어를 가지다 / 진학·취업 전 1년 정도 쉬다</td></tr>
+                <tr><td class="p-4"><b class="text-white">took a year off</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">1년을 쉬었다</td></tr>
+                <tr><td class="p-4"><b class="text-white">it's a hassle</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">번거롭다 / 귀찮다</td></tr>
+                <tr><td class="p-4"><b class="text-white">I'm not feeling it today</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">오늘은 별로 내키지 않는다</td></tr>
+                <tr><td class="p-4"><b class="text-white">hung out</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">시간을 보냈다 / 어울렸다</td></tr>
+                <tr><td class="p-4"><b class="text-white">ran for my life</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">살기 위해 필사적으로 도망쳤다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-3xl p-6 space-y-2 border border-white/5">
+                <h3 class="text-xl font-bold text-white">when it rains, it pours</h3>
+                <p class="text-slate-400 text-sm leading-relaxed">나쁜 일이 하나 생기면 다른 문제들이 한꺼번에 계속 생긴다는 뜻입니다.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2 border border-white/5">
+                <h3 class="text-xl font-bold text-white">altitude sickness</h3>
+                <p class="text-slate-400 text-sm leading-relaxed">높은 곳에 올라갔을 때 산소 부족 등으로 생기는 고산병을 말합니다.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2 border border-white/5">
+                <h3 class="text-xl font-bold text-white">take a gap year / took a year off</h3>
+                <p class="text-slate-400 text-sm leading-relaxed">둘 다 일정 기간 쉬는 것을 말하지만, take a gap year는 보통 학교 진학이나 취업 전 1년을 쉬는 상황에서 자주 쓰입니다. took a year off는 더 일반적으로 일이나 학교를 1년 쉬었다는 뜻입니다.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2 border border-white/5">
+                <h3 class="text-xl font-bold text-white">it's a hassle</h3>
+                <p class="text-slate-400 text-sm leading-relaxed">어떤 일이 어렵다기보다 절차가 많고 귀찮고 번거롭다는 느낌입니다.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2 border border-white/5">
+                <h3 class="text-xl font-bold text-white">I'm not feeling it today</h3>
+                <p class="text-slate-400 text-sm leading-relaxed">“오늘 그걸 하고 싶은 기분이 아니다”라는 자연스러운 회화 표현입니다.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2 border border-white/5">
+                <h3 class="text-xl font-bold text-white">ran for my life</h3>
+                <p class="text-slate-400 text-sm leading-relaxed">정말 죽을 위험에서 도망칠 때도 쓰지만, 아주 필사적으로 뛰었다는 과장된 표현으로도 씁니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">I should have known the day was trouble when my backpack zipper broke before sunrise.</p>
+                <p class="mb-6">“Perfect,” I thought, holding my socks in one hand and my dignity in the other. “<b class="highlight quiz-target" data-ans="When it rains, it pours" data-kor="안 좋은 일은 한꺼번에 몰려오지">When it rains, it pours</b>.”</p>
+                <p class="mb-6">I was in a small mountain town, preparing for a guided hike to a famous viewpoint. The trail went up to a <b class="highlight quiz-target" data-ans="high altitude" data-kor="높은 고도까지">high altitude</b>, and the guide had warned us about <b class="highlight quiz-target" data-ans="altitude sickness" data-kor="고산병에">altitude sickness</b>. I had nodded seriously, as if I were the kind of person who always listened to warnings. In truth, I had spent the night eating chips in my room and reading old messages from college friends.</p>
+                <p class="mb-6">One friend had just decided to <b class="highlight quiz-target" data-ans="take a gap year" data-kor="갭이어를 가지기로">take a gap year</b>. Another had <b class="highlight quiz-target" data-ans="taken a year off" data-kor="1년을 쉬었었다">taken a year off</b> after burning out at work. I had smiled at their courage, then booked this trip to prove I was still adventurous.</p>
+                <p class="mb-6">Now I was standing in the hotel hallway with one shoe untied, a broken zipper, and a stomach that was beginning to complain.</p>
+                <p class="mb-6">“Maybe adventure is overrated,” I thought.</p>
+                <p class="mb-6">At breakfast, the coffee machine broke right after the person before me filled his cup. Then I dropped my boiled egg. It rolled under a table and stopped beside a stranger’s hiking boot. I considered leaving it there and starting a new life.</p>
+                <p class="mb-6">The guide waved from the lobby. “Ready?”</p>
+                <p class="mb-6">I looked at my backpack, my eggless plate, and the steep road outside. “Honestly, <b class="highlight quiz-target" data-ans="I'm not feeling it today" data-kor="오늘은 별로 내키지 않네요">I'm not feeling it today</b>.”</p>
+                <p class="mb-6">He frowned. “You paid already.”</p>
+                <p class="mb-6">“Yes,” I thought. “And now my money is hiking without me.”</p>
+                <p class="mb-6">I tried to join the group anyway, but after ten minutes, my head hurt and my chest felt tight. Was it <b class="highlight quiz-target" data-ans="altitude sickness" data-kor="고산병이었을까">altitude sickness</b>, or was my body simply voting against my personality? Either way, I stopped.</p>
+                <p class="mb-6">The guide said I could wait at a small café near the lower trail. “It’s close, but <b class="highlight quiz-target" data-ans="it's a hassle" data-kor="번거로워요">it's a hassle</b> to come back for you later.”</p>
+                <p class="mb-6">“Wonderful,” I thought. “Even rescue has customer complaints.”</p>
+                <p class="mb-6">At the café, I <b class="highlight quiz-target" data-ans="hung out" data-kor="시간을 보냈다">hung out</b> with an old man who owned the place. He told me stories, gave me tea, and laughed when I said I had failed at hiking before the hike had properly started.</p>
+                <p class="mb-6">Then the ground shook.</p>
+                <p class="mb-6">A roar came from the mountain. Rocks rolled down the slope above the trail. People screamed. The old man grabbed my arm, and we <b class="highlight quiz-target" data-ans="ran for our lives" data-kor="살기 위해 필사적으로 도망쳤다">ran for our lives</b> behind the stone wall of the café.</p>
+                <p class="mb-6">Later, I learned that the rockslide had crossed the exact part of the trail where I would have been walking.</p>
+                <p class="mb-6">I sat there with cold tea in my hands, ashamed no longer.</p>
+                <p class="mb-6">For once, my bad luck had better judgment than I did.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">나는 해가 뜨기도 전에 배낭 지퍼가 고장 났을 때, 그날이 문제라는 걸 알아차렸어야 했다.</p>
+                <p class="mb-6">“완벽하군.” 나는 한 손에는 양말을, 다른 한 손에는 자존심을 들고 생각했다. “<b class="highlight">안 좋은 일은 한꺼번에 몰려오지</b>.”</p>
+                <p class="mb-6">나는 작은 산악 마을에 있었고, 유명한 전망대까지 가는 가이드 하이킹을 준비하고 있었다. 그 길은 <b class="highlight">높은 고도까지</b> 올라가는 코스였고, 가이드는 우리에게 <b class="highlight">고산병에</b> 대해 경고했었다. 나는 마치 경고를 항상 잘 듣는 사람인 것처럼 진지하게 고개를 끄덕였었다. 사실 나는 전날 밤 방에서 감자칩을 먹으며 대학 친구들의 오래된 메시지를 읽고 있었다.</p>
+                <p class="mb-6">한 친구는 막 <b class="highlight">갭이어를 가지기로</b> 했다. 또 다른 친구는 일에 지쳐 <b class="highlight">1년을 쉬었었어</b>. 나는 그들의 용기에 미소를 지었고, 내가 아직도 모험적인 사람이라는 것을 증명하기 위해 이 여행을 예약했다.</p>
+                <p class="mb-6">이제 나는 호텔 복도에 서 있었다. 신발끈 하나는 풀려 있었고, 지퍼는 고장 났고, 배는 불평을 시작하고 있었다.</p>
+                <p class="mb-6">“어쩌면 모험은 과대평가된 걸지도 몰라.” 나는 생각했다.</p>
+                <p class="mb-6">아침 식사 시간에는 내 앞사람이 커피를 따르자마자 커피 머신이 고장 났다. 그러고는 삶은 달걀을 떨어뜨렸다. 달걀은 테이블 아래로 굴러가 낯선 사람의 등산화 옆에서 멈췄다. 나는 그것을 그냥 두고 새 인생을 시작할까 생각했다.</p>
+                <p class="mb-6">가이드가 로비에서 손을 흔들었다. “준비됐나요?”</p>
+                <p class="mb-6">나는 내 배낭, 달걀이 사라진 접시, 그리고 밖의 가파른 길을 바라보았다. “솔직히 <b class="highlight">오늘은 별로 내키지 않네요</b>.”</p>
+                <p class="mb-6">그가 인상을 찌푸렸다. “이미 돈 내셨잖아요.”</p>
+                <p class="mb-6">“네.” 나는 생각했다. “그리고 이제 내 돈은 나 없이 등산을 하겠군.”</p>
+                <p class="mb-6">그래도 나는 무리에 합류하려고 했다. 하지만 10분 뒤, 머리가 아프고 가슴이 답답해졌다. 이게 <b class="highlight">고산병이었을까</b>, 아니면 내 몸이 내 성격에 반대표를 던지고 있었던 걸까? 어느 쪽이든 나는 멈췄다.</p>
+                <p class="mb-6">가이드는 낮은 등산로 근처의 작은 카페에서 기다려도 된다고 말했다. “가깝긴 한데, 나중에 다시 데리러 오는 건 좀 <b class="highlight">번거로워요</b>.”</p>
+                <p class="mb-6">“훌륭하군.” 나는 생각했다. “구조에도 고객 불만이 있네.”</p>
+                <p class="mb-6">카페에서 나는 그곳을 운영하는 노인과 <b class="highlight">시간을 보냈다</b>. 그는 내게 이야기를 들려주고, 차를 내주었고, 내가 하이킹이 제대로 시작되기도 전에 실패했다고 말하자 웃었다.</p>
+                <p class="mb-6">그때 땅이 흔들렸다.</p>
+                <p class="mb-6">산 쪽에서 굉음이 들려왔다. 바위들이 등산로 위쪽 경사면을 따라 굴러 내려왔다. 사람들이 소리쳤다. 노인은 내 팔을 붙잡았고, 우리는 카페의 돌담 뒤로 <b class="highlight">살기 위해 필사적으로 도망쳤다</b>.</p>
+                <p class="mb-6">나중에 나는 그 낙석이 내가 걷고 있었을 바로 그 등산로 구간을 지나갔다는 것을 알게 되었다.</p>
+                <p class="mb-6">나는 식은 차를 손에 든 채 그곳에 앉아 있었고, 더 이상 부끄럽지 않았다.</p>
+                <p class="mb-6">이번만큼은 내 불운이 나보다 판단력이 좋았다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "641020.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

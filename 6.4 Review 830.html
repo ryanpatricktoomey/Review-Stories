@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Wrong Train</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🚇</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Wrong Train</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">when it rains, it pours</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">안 좋은 일이 생기면 한꺼번에 몰려온다</td></tr>
+                <tr><td class="p-4"><b class="text-white">mind went blank</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">머릿속이 하얘졌다</td></tr>
+                <tr><td class="p-4"><b class="text-white">zone out</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">멍해지다 / 딴생각하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">still half asleep</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">아직 잠이 덜 깬</td></tr>
+                <tr><td class="p-4"><b class="text-white">ashamed</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">부끄러운 / 창피한</td></tr>
+                <tr><td class="p-4"><b class="text-white">as fast as I could</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">내가 할 수 있는 한 빨리</td></tr>
+                <tr><td class="p-4"><b class="text-white">know-how</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">실무 지식 / 노하우</td></tr>
+                <tr><td class="p-4"><b class="text-white">practice drill</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">연습 훈련 / 모의 훈련</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-3xl p-6 space-y-2 border border-white/5">
+                <h3 class="text-xl font-bold text-white">when it rains, it pours</h3>
+                <p class="text-slate-400 text-sm leading-relaxed">안 좋은 일이 하나 생기면 다른 문제들이 계속 따라오는 상황을 말합니다.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2 border border-white/5">
+                <h3 class="text-xl font-bold text-white">mind went blank</h3>
+                <p class="text-slate-400 text-sm leading-relaxed">긴장하거나 당황해서 아는 것도 갑자기 생각나지 않는 상태를 말합니다.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2 border border-white/5">
+                <h3 class="text-xl font-bold text-white">zone out</h3>
+                <p class="text-slate-400 text-sm leading-relaxed">집중하지 못하고 멍해지거나 정신이 다른 데 가 있는 상태입니다.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2 border border-white/5">
+                <h3 class="text-xl font-bold text-white">still half asleep</h3>
+                <p class="text-slate-400 text-sm leading-relaxed">완전히 잠에서 깨지 않아서 정신이 흐릿한 상태를 자연스럽게 표현합니다.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2 border border-white/5">
+                <h3 class="text-xl font-bold text-white">know-how</h3>
+                <p class="text-slate-400 text-sm leading-relaxed">단순한 지식보다 실제로 어떻게 해야 하는지 아는 실무적인 능력이나 경험을 뜻합니다.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2 border border-white/5">
+                <h3 class="text-xl font-bold text-white">practice drill</h3>
+                <p class="text-slate-400 text-sm leading-relaxed">실제 상황에 대비해서 반복적으로 하는 연습이나 훈련을 말합니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">I woke up with my face stuck to my pillow and one thought in my head: I was late.</p>
+                <p class="mb-6">Not a little late. Not “maybe I can still make it” late. I was the kind of late that makes a man question every life choice he has ever made.</p>
+                <p class="mb-6">“Of course,” I thought, jumping out of bed. “<b class="highlight quiz-target" data-ans="When it rains, it pours" data-kor="안 좋은 일은 한꺼번에 몰려오지">When it rains, it pours</b>.”</p>
+                <p class="mb-6">I had an important safety training at work that morning. Our company was doing a subway emergency <b class="highlight quiz-target" data-ans="practice drill" data-kor="연습 훈련을">practice drill</b>, and I was supposed to help guide the new employees. The embarrassing part was that I had been chosen because I had the most <b class="highlight quiz-target" data-ans="know-how" data-kor="노하우가">know-how</b>. At least, that was what my manager had said.</p>
+                <p class="mb-6">Unfortunately, my know-how was still lying in bed somewhere. I was <b class="highlight quiz-target" data-ans="still half asleep" data-kor="아직 잠이 덜 깬">still half asleep</b> when I brushed my teeth with face wash. I put on two different socks. I poured orange juice into my coffee. Then I stood in the kitchen and began to <b class="highlight quiz-target" data-ans="zone out" data-kor="멍해지기">zone out</b> while staring at a piece of toast.</p>
+                <p class="mb-6">“Move,” I told myself. “You are a human being, not furniture.”</p>
+                <p class="mb-6">I grabbed my bag and ran <b class="highlight quiz-target" data-ans="as fast as I could" data-kor="내가 할 수 있는 한 빨리">as fast as I could</b> to the station. My shirt was half tucked in, my hair looked like it had lost an argument, and my breath was already gone. Still, I made it onto a train just before the doors closed.</p>
+                <p class="mb-6">For three beautiful seconds, I felt proud.</p>
+                <p class="mb-6">Then I heard the announcement.</p>
+                <p class="mb-6">Wrong direction.</p>
+                <p class="mb-6">My <b class="highlight quiz-target" data-ans="mind went blank" data-kor="머릿속이 하얘졌다">mind went blank</b>. I stared at the subway map like it had personally betrayed me. I got off at the next stop, crossed to the other side, and waited. Five minutes. Seven minutes. Ten minutes.</p>
+                <p class="mb-6">By the time I reached the training site, everyone was already wearing orange safety vests. My manager looked at me. The new employees looked at me. Even the coffee machine seemed disappointed.</p>
+                <p class="mb-6">I felt deeply <b class="highlight quiz-target" data-ans="ashamed" data-kor="창피했다">ashamed</b>.</p>
+                <p class="mb-6">“I’m sorry,” I said. “I completely messed up.”</p>
+                <p class="mb-6">Because I had missed the opening instructions, my manager sent me to the old platform downstairs to check the emergency signs alone. Perfect. Punishment with stairs.</p>
+                <p class="mb-6">I was checking a dusty exit sign when I heard a terrible sound above me. Metal screamed. People shouted. Then the lights flickered.</p>
+                <p class="mb-6">Later, I learned that a ceiling panel had fallen during the drill. It landed exactly where I would have been standing if I had arrived on time.</p>
+                <p class="mb-6">I sat on the lower platform, shaking.</p>
+                <p class="mb-6">All morning, I had thought my mistakes were ruining everything. But somehow, every wrong step had moved me away from danger.</p>
+                <p class="mb-6">I looked at my mismatched socks and whispered, “Maybe you two knew something I didn’t.”</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">나는 얼굴이 베개에 붙은 채로 잠에서 깼고, 머릿속에는 한 가지 생각밖에 없었다. 늦었다.</p>
+                <p class="mb-6">조금 늦은 게 아니었다. “아직 갈 수 있을지도 몰라” 정도도 아니었다. 한 남자가 지금까지의 모든 인생 선택을 의심하게 되는 그런 늦음이었다.</p>
+                <p class="mb-6">“역시.” 나는 침대에서 벌떡 일어나며 생각했다. “<b class="highlight">안 좋은 일은 한꺼번에 몰려오지</b>.”</p>
+                <p class="mb-6">그날 아침 회사에서 중요한 안전 교육이 있었다. 우리 회사는 지하철 비상 상황 <b class="highlight">연습 훈련을</b> 하고 있었고, 나는 신입 직원들을 안내하는 일을 맡기로 되어 있었다. 창피한 점은 내가 가장 <b class="highlight">노하우가</b> 많다는 이유로 뽑혔다는 것이었다. 적어도 우리 매니저는 그렇게 말했다.</p>
+                <p class="mb-6">불행히도 내 노하우는 아직 어딘가 침대에 누워 있었다. 나는 <b class="highlight">아직 잠이 덜 깬</b> 상태로 세안제로 이를 닦았다. 서로 다른 양말 두 짝을 신었다. 오렌지 주스를 커피에 부었다. 그러고는 부엌에 서서 토스트 한 조각을 바라보며 <b class="highlight">멍해지기</b> 시작했다.</p>
+                <p class="mb-6">“움직여.” 나는 나 자신에게 말했다. “너는 인간이지, 가구가 아니야.”</p>
+                <p class="mb-6">나는 가방을 붙잡고 역까지 <b class="highlight">내가 할 수 있는 한 빨리</b> 뛰었다. 셔츠는 반쯤만 바지 안에 들어가 있었고, 머리는 누군가와 싸워 진 것처럼 보였으며, 숨은 이미 다 떨어져 있었다. 그래도 문이 닫히기 직전에 전철에 올라탔다.</p>
+                <p class="mb-6">아름다운 3초 동안, 나는 스스로가 자랑스러웠다.</p>
+                <p class="mb-6">그런데 안내 방송이 들렸다.</p>
+                <p class="mb-6">반대 방향이었다.</p>
+                <p class="mb-6"><b class="highlight">머릿속이 하얘졌다</b>. 나는 지하철 노선도를 마치 그것이 나를 개인적으로 배신한 것처럼 바라보았다. 다음 역에서 내려 반대편 승강장으로 건너가 기다렸다. 5분. 7분. 10분.</p>
+                <p class="mb-6">훈련 장소에 도착했을 때는 모두가 이미 주황색 안전 조끼를 입고 있었다. 매니저가 나를 보았다. 신입 직원들이 나를 보았다. 심지어 커피 머신마저 실망한 것 같았다.</p>
+                <p class="mb-6">나는 몹시 <b class="highlight">창피했다</b>.</p>
+                <p class="mb-6">“죄송합니다.” 내가 말했다. “제가 완전히 망쳤습니다.”</p>
+                <p class="mb-6">첫 안내를 놓쳤기 때문에 매니저는 나를 아래층 오래된 승강장으로 보내 비상 표지판을 혼자 확인하게 했다. 완벽했다. 계단이 포함된 벌이었다.</p>
+                <p class="mb-6">나는 먼지 낀 출구 표지판을 확인하고 있었는데, 그때 위쪽에서 끔찍한 소리가 들렸다. 금속이 찢어지는 소리가 났다. 사람들이 소리쳤다. 그러고는 불빛이 깜박였다.</p>
+                <p class="mb-6">나중에 알게 되었지만, 훈련 중에 천장 패널 하나가 떨어졌다고 했다. 그것은 내가 제시간에 도착했더라면 서 있었을 바로 그 자리에 떨어졌다.</p>
+                <p class="mb-6">나는 아래쪽 승강장에 앉아 떨고 있었다.</p>
+                <p class="mb-6">아침 내내 나는 내 실수들이 모든 것을 망치고 있다고 생각했다. 하지만 이상하게도, 잘못 내디딘 모든 걸음이 나를 위험에서 멀어지게 하고 있었다.</p>
+                <p class="mb-6">나는 짝짝이 양말을 내려다보며 속삭였다. “어쩌면 너희 둘은 내가 모르는 걸 알고 있었나 보네.”</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "64830.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

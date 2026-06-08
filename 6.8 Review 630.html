@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Rule Board</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🏢</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Rule Board</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">equality</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">평등</td></tr>
+                <tr><td class="p-4"><b class="text-white">animal rights</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">동물권</td></tr>
+                <tr><td class="p-4"><b class="text-white">libertarian</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">자유지상주의자 / 자유지상주의적인</td></tr>
+                <tr><td class="p-4"><b class="text-white">opposed</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">반대하는</td></tr>
+                <tr><td class="p-4"><b class="text-white">altruistic</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">이타적인</td></tr>
+                <tr><td class="p-4"><b class="text-white">using your real name</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">실명을 사용하는 것</td></tr>
+                <tr><td class="p-4"><b class="text-white">anonymous</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">익명의</td></tr>
+                <tr><td class="p-4"><b class="text-white">feel deprived</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">박탈감을 느끼다</td></tr>
+                <tr><td class="p-4"><b class="text-white">relative deprivation</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">상대적 박탈감</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">libertarian</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">개인의 자유와 선택을 아주 중요하게 생각하는 정치적·사회적 입장을 말해요. 규칙이나 정부의 개입을 싫어하는 느낌이 강할 수 있어요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">altruistic</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">자기 이익보다 다른 사람을 돕는 마음을 뜻해요. 단순히 “kind”보다 조금 더 원칙적이고 희생적인 느낌이에요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">feel deprived</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">무언가를 빼앗겼거나, 남들은 누리는데 나는 못 누린다고 느낄 때 써요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">relative deprivation</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">절대적으로 가난하거나 부족한 것이 아니라, 다른 사람과 비교했을 때 자신이 덜 가진 것처럼 느끼는 상태를 말해요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">At first, Building 104 only had one problem: noise.</p>
+                <p class="mb-6">Mrs. Han from 1203 said the child above her ran across the floor every night. Mr. Park from 803 said someone used a washing machine after 10 p.m. The woman in 506 said a dog barked whenever the delivery bell rang. So at the monthly residents’ meeting, Mr. Choi stood up and said, “For <b class="highlight quiz-target" data-ans="equality" data-kor="평등">equality</b>, everyone should follow the same quiet hours.”</p>
+                <p class="mb-6">Many people nodded. It sounded fair.</p>
+                <p class="mb-6">Then Ms. Kang raised her hand. “What about <b class="highlight quiz-target" data-ans="animal rights" data-kor="동물권">animal rights</b>? My dog gets nervous if people bang on the wall.”</p>
+                <p class="mb-6">Someone shouted, “Your dog is the wall-banging reason!”</p>
+                <p class="mb-6">Mr. Lee, who always called himself <b class="highlight quiz-target" data-ans="libertarian" data-kor="자유지상주의자">libertarian</b>, crossed his arms. “I’m <b class="highlight quiz-target" data-ans="opposed" data-kor="반대하는">opposed</b> to more rules. People should be free in their own homes.”</p>
+                <p class="mb-6">“But your freedom ends at my ceiling,” Mrs. Han said.</p>
+                <p class="mb-6">The first rule passed: no loud noise after 9 p.m. But the next morning, three new complaints appeared on the notice board. If washing machines were banned after 9, then chairs should have felt pads. If dogs had quiet hours, then children should have quiet hours too. If children had quiet hours, then adults should not laugh loudly during soccer games.</p>
+                <p class="mb-6">Soon, the building had rules about everything. No shoes outside the door. No kimchi containers in the hallway. No balcony plants dripping water. No recycling before the official time. No delivery drivers in the residents’ elevator.</p>
+                <p class="mb-6">One resident suggested <b class="highlight quiz-target" data-ans="using your real name" data-kor="실명을 사용하는 것">using your real name</b> in the apartment group chat, “to make people responsible.” The next day, someone created an <b class="highlight quiz-target" data-ans="anonymous" data-kor="익명의">anonymous</b> account called “Truth of 104” and posted photos of crooked parking, wet umbrellas, and one suspicious bag of trash.</p>
+                <p class="mb-6">Everyone began to <b class="highlight quiz-target" data-ans="feel deprived" data-kor="박탈감을 느끼다">feel deprived</b>. People on lower floors said upper floors had better views and more sunlight. People on upper floors said lower floors had faster elevator service. Someone used the phrase <b class="highlight quiz-target" data-ans="relative deprivation" data-kor="상대적 박탈감">relative deprivation</b> in a complaint about parking spaces, and after that, everyone used it for everything.</p>
+                <p class="mb-6">“My child has <b class="highlight quiz-target" data-ans="relative deprivation" data-kor="상대적 박탈감">relative deprivation</b> because other children can ride scooters!”</p>
+                <p class="mb-6">“My mother has <b class="highlight quiz-target" data-ans="relative deprivation" data-kor="상대적 박탈감">relative deprivation</b> because the bench faces the wrong direction!”</p>
+                <p class="mb-6">Mr. Choi tried to sound <b class="highlight quiz-target" data-ans="altruistic" data-kor="이타적인">altruistic</b>. “I only wanted peace.”</p>
+                <p class="mb-6">Nobody believed him.</p>
+                <p class="mb-6">At the final meeting, residents brought phone recordings, parking videos, dog-bark charts, and a plastic bag of balcony water. Someone accused 701 of illegal chair scraping. Someone accused 912 of emotional elevator coughing. Someone threw a rule poster. It hit the coffee table, knocked over six paper cups, and started a chain reaction of shouting, pushing, and broken folding chairs.</p>
+                <p class="mb-6">By midnight, the community room was ruined. The notice board hung from one screw. The new rule book lay in a puddle of coffee.</p>
+                <p class="mb-6">After that, Building 104 became very quiet.</p>
+                <p class="mb-6">Not peaceful. Just quiet.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>처음에 104동에는 단 하나의 문제만 있었다. 소음이었다.</p>
+                <p>1203호 한 씨는 윗집 아이가 매일 밤 바닥을 뛰어다닌다고 말했다. 803호 박 씨는 누군가 밤 10시 이후에 세탁기를 돌린다고 말했다. 506호 여자는 배달 벨이 울릴 때마다 개가 짖는다고 말했다. 그래서 월례 주민 회의에서 최 씨가 일어나 말했다. “<b class="highlight">평등</b>을 위해서 모두가 같은 조용한 시간을 지켜야 합니다.”</p>
+                <p>많은 사람들이 고개를 끄덕였다. 공평하게 들렸다.</p>
+                <p>그때 강 씨가 손을 들었다. “<b class="highlight">동물권</b>은요? 우리 개는 사람들이 벽을 치면 불안해해요.”</p>
+                <p>누군가 소리쳤다. “당신 개 때문에 벽을 치는 거잖아요!”</p>
+                <p>항상 자신을 <b class="highlight">자유지상주의자</b>라고 부르던 이 씨가 팔짱을 꼈다. “저는 규칙이 더 많아지는 것에 <b class="highlight">반대합니다</b>. 사람들은 자기 집에서 자유로워야 해요.”</p>
+                <p>“하지만 당신의 자유는 제 천장에서 끝납니다,” 한 씨가 말했다.</p>
+                <p>첫 번째 규칙은 통과되었다. 밤 9시 이후에는 큰 소리를 내지 말 것. 하지만 다음 날 아침, 게시판에는 새로운 민원이 세 개 붙어 있었다. 세탁기를 밤 9시 이후에 금지한다면, 의자에는 소음 방지 패드를 붙여야 했다. 개에게 조용한 시간이 있다면, 아이들에게도 조용한 시간이 있어야 했다. 아이들에게 조용한 시간이 있다면, 어른들도 축구 경기를 보며 크게 웃으면 안 되었다.</p>
+                <p>곧 그 건물에는 모든 것에 대한 규칙이 생겼다. 문밖에 신발을 두면 안 된다. 복도에 김치통을 두면 안 된다. 베란다 식물에서 물이 떨어지면 안 된다. 정해진 시간 전에 재활용을 하면 안 된다. 배달 기사는 주민용 엘리베이터를 타면 안 된다.</p>
+                <p>한 주민은 아파트 단체 채팅방에서 “사람들이 책임감을 갖도록” <b class="highlight">실명을 사용하는 것</b>을 제안했다. 다음 날, 누군가 “104의 진실”이라는 <b class="highlight">익명</b> 계정을 만들고 삐뚤게 주차된 차, 젖은 우산, 수상한 쓰레기봉투 사진을 올렸다.</p>
+                <p>모두가 <b class="highlight">박탈감을 느끼기</b> 시작했다. 저층 사람들은 고층이 더 좋은 전망과 더 많은 햇빛을 누린다고 말했다. 고층 사람들은 저층이 엘리베이터를 더 빨리 탄다고 말했다. 누군가 주차 공간에 대한 민원에서 <b class="highlight">상대적 박탈감</b>이라는 표현을 썼고, 그 후 모두가 그 표현을 모든 일에 사용했다.</p>
+                <p>“우리 아이는 다른 아이들이 킥보드를 탈 수 있어서 <b class="highlight">상대적 박탈감</b>을 느껴요!”</p>
+                <p>“우리 어머니는 벤치가 잘못된 방향을 보고 있어서 <b class="highlight">상대적 박탈감</b>을 느끼세요!”</p>
+                <p>최 씨는 <b class="highlight">이타적으로</b> 들리려고 했다. “저는 그저 평화를 원했을 뿐입니다.”</p>
+                <p>아무도 그를 믿지 않았다.</p>
+                <p>마지막 회의에서 주민들은 휴대폰 녹음, 주차 영상, 개 짖는 소리 기록표, 그리고 베란다 물이 담긴 비닐봉지를 가져왔다. 누군가는 701호를 불법 의자 끌기 혐의로 비난했다. 누군가는 912호를 감정적인 엘리베이터 기침 혐의로 비난했다. 누군가 규칙 포스터를 던졌다. 그것은 커피 테이블에 맞고 종이컵 여섯 개를 넘어뜨렸고, 고함, 밀침, 부러진 접이식 의자로 이어지는 연쇄 반응을 일으켰다.</p>
+                <p>자정이 되었을 때, 주민 회의실은 엉망이 되어 있었다. 게시판은 나사 하나에 매달려 있었다. 새 규칙 책자는 커피 웅덩이 속에 놓여 있었다.</p>
+                <p>그 후 104동은 아주 조용해졌다.</p>
+                <p>평화로운 것은 아니었다. 그저 조용할 뿐이었다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "68630.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Great Escape of Mr. Miller</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🎭</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Great Escape of Mr. Miller</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">homegrown</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">집에서 직접 기른 / 국내산의 / 토종의</td></tr>
+                <tr><td class="p-4"><b class="text-white">ginseng</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">인삼</td></tr>
+                <tr><td class="p-4"><b class="text-white">medicinal effects</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">약효 / 의학적 효과</td></tr>
+                <tr><td class="p-4"><b class="text-white">benefits of</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">~의 장점 / ~의 효능</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">homegrown</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">상황에 따라 “집에서 직접 기른”이라는 뜻도 되고, “그 지역에서 생겨난 / 국내산의”라는 뜻도 됩니다.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">medicinal effects</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">단순히 “몸에 좋다”보다 더 의학적이고 공식적인 느낌이 있습니다. 실제 효과를 말할 때는 근거가 필요할 수 있습니다.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">benefits of</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">뒤에 명사나 동명사가 와야 자연스럽습니다. 예: “the benefits of ginseng,” “the benefits of exercising.”</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Daniel closed the office door and pointed at the chair.</p>
+                <p class="mb-6">“Sit down, Kevin.”</p>
+                <p class="mb-6">Kevin smiled. “That chair? Nice choice. Is it new?”</p>
+                <p class="mb-6">“No. Sit down.”</p>
+                <p class="mb-6">Kevin sat, then touched the wooden armrest. “It has a warm feeling. Almost <b class="highlight quiz-target" data-ans="homegrown" data-kor="집에서 직접 기른">homegrown</b>, you know? Like something made by a friendly old man in the mountains.”</p>
+                <p class="mb-6">Daniel took a slow breath. “Kevin, we need to talk about the client report.”</p>
+                <p class="mb-6">“Speaking of mountains,” Kevin said, “have you ever tried <b class="highlight quiz-target" data-ans="ginseng" data-kor="인삼">ginseng</b> tea from a mountain market?”</p>
+                <p class="mb-6">Daniel blinked. “No. And that is not the point.”</p>
+                <p class="mb-6">“It wakes you up,” Kevin said. “Not too much. Just enough to make you feel like answering emails without hating your life.”</p>
+                <p class="mb-6">“Kevin.”</p>
+                <p class="mb-6">“Yes?”</p>
+                <p class="mb-6">“You sent the wrong report to Mr. Park.”</p>
+                <p class="mb-6">Kevin looked shocked, but not guilty. “Mr. Park drinks tea, right?”</p>
+                <p class="mb-6">“I don’t know.”</p>
+                <p class="mb-6">“He looks like a tea person.”</p>
+                <p class="mb-6">“Kevin, focus. The report had private numbers in it.”</p>
+                <p class="mb-6">Kevin nodded seriously. “Private numbers are important. You know what else is important? Knowing the <b class="highlight quiz-target" data-ans="medicinal effects" data-kor="약효">medicinal effects</b> of things before you drink them. Some people think every healthy-looking root is magic.”</p>
+                <p class="mb-6">Daniel rubbed his forehead. “You are doing it again.”</p>
+                <p class="mb-6">“Doing what?”</p>
+                <p class="mb-6">“Changing the subject.”</p>
+                <p class="mb-6">Kevin placed a hand on his chest. “I am connecting ideas. That is different.”</p>
+                <p class="mb-6">“No, it isn’t.”</p>
+                <p class="mb-6">“It is very different. A bad subject change is rude. A good subject change is art.”</p>
+                <p class="mb-6">Daniel leaned forward. “Fine. Let’s talk about art after you explain why you sent the wrong file.”</p>
+                <p class="mb-6">Kevin snapped his fingers. “Art! That reminds me. The poster in the hallway is crooked.”</p>
+                <p class="mb-6">Daniel stood up. “Kevin.”</p>
+                <p class="mb-6">“It is. Everyone sees it, but nobody says anything. That is how office problems begin.”</p>
+                <p class="mb-6">“The office problem began when you sent the wrong file!”</p>
+                <p class="mb-6">“Exactly,” Kevin said. “Small mistakes. Big results. Like crooked posters. Or weak coffee. Or people ignoring the <b class="highlight quiz-target" data-ans="benefits of" data-kor="~의 장점">benefits of</b> checking email attachments twice.”</p>
+                <p class="mb-6">Daniel opened his mouth, then stopped. “Wait. That was my point.”</p>
+                <p class="mb-6">Kevin stood and smiled. “And I agree with you completely. Great talk.”</p>
+                <p class="mb-6">“No, we are not done.”</p>
+                <p class="mb-6">Kevin checked his watch. “Oh, before I forget, I have a meeting with Mr. Park.”</p>
+                <p class="mb-6">Daniel stared at him. “You do?”</p>
+                <p class="mb-6">“Yes. To apologize.”</p>
+                <p class="mb-6">Daniel relaxed a little. “Really?”</p>
+                <p class="mb-6">Kevin opened the door. “And possibly to ask if he drinks tea.”</p>
+                <p class="mb-6">Before Daniel could answer, Kevin disappeared down the hall.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>다니엘은 사무실 문을 닫고 의자를 가리켰다.</p>
+                <p>“앉아, 케빈.”</p>
+                <p>케빈은 미소를 지었다. “그 의자요? 좋은 선택이네요. 새 거예요?”</p>
+                <p>“아니. 앉아.”</p>
+                <p>케빈은 앉더니 나무 팔걸이를 만졌다. “따뜻한 느낌이 있네요. 거의 <b class="highlight">집에서 직접 만든</b> 느낌이에요. 산속의 친절한 할아버지가 만든 것처럼요.”</p>
+                <p>다니엘은 천천히 숨을 들이쉬었다. “케빈, 우리 고객 보고서 얘기를 해야 해.”</p>
+                <p>“산 얘기가 나와서 말인데요,” 케빈이 말했다. “산 시장에서 파는 <b class="highlight">인삼</b>차 마셔 본 적 있어요?”</p>
+                <p>다니엘은 눈을 깜빡였다. “아니. 그리고 그게 중요한 게 아니야.”</p>
+                <p>“잠이 깨요,” 케빈이 말했다. “너무 과하지 않게요. 딱 이메일에 답장하고 싶어질 정도로요. 인생이 싫어지지 않을 만큼요.”</p>
+                <p>“케빈.”</p>
+                <p>“네?”</p>
+                <p>“네가 박 씨에게 잘못된 보고서를 보냈어.”</p>
+                <p>케빈은 충격받은 표정을 지었지만, 죄책감은 없어 보였다. “박 씨는 차 마시죠?”</p>
+                <p>“몰라.”</p>
+                <p>“차 마시는 사람처럼 보이잖아요.”</p>
+                <p>“케빈, 집중해. 그 보고서에는 비공개 숫자들이 들어 있었어.”</p>
+                <p>케빈은 진지하게 고개를 끄덕였다. “비공개 숫자는 중요하죠. 또 뭐가 중요한지 아세요? 뭔가를 마시기 전에 그것의 <b class="highlight">약효</b>를 아는 거요. 어떤 사람들은 건강해 보이는 뿌리는 전부 마법이라고 생각하거든요.”</p>
+                <p>다니엘은 이마를 문질렀다. “너 또 그러고 있어.”</p>
+                <p>“제가 뭘요?”</p>
+                <p>“주제를 바꾸고 있잖아.”</p>
+                <p>케빈은 가슴에 손을 얹었다. “저는 생각들을 연결하고 있는 겁니다. 그건 달라요.”</p>
+                <p>“아니, 안 달라.”</p>
+                <p>“아주 달라요. 나쁜 주제 전환은 무례하지만, 좋은 주제 전환은 예술이에요.”</p>
+                <p>다니엘은 몸을 앞으로 기울였다. “좋아. 네가 왜 잘못된 파일을 보냈는지 설명한 다음에 예술 얘기하자.”</p>
+                <p>케빈은 손가락을 튕겼다. “예술! 그러고 보니 복도에 있는 포스터가 비뚤어져 있어요.”</p>
+                <p>다니엘은 일어섰다. “케빈.”</p>
+                <p>“정말이에요. 모두가 보지만 아무도 말하지 않죠. 사무실 문제는 그렇게 시작되는 거예요.”</p>
+                <p>“사무실 문제는 네가 잘못된 파일을 보냈을 때 시작됐어!”</p>
+                <p>“맞아요,” 케빈이 말했다. “작은 실수. 큰 결과. 비뚤어진 포스터처럼요. 약한 커피처럼요. 또는 이메일 첨부 파일을 두 번 확인하는 <b class="highlight">장점</b>을 무시하는 사람들처럼요.”</p>
+                <p>다니엘은 입을 열었다가 멈췄다. “잠깐. 그건 내가 하려던 말이잖아.”</p>
+                <p>케빈은 일어나서 미소를 지었다. “그리고 저는 전적으로 동의합니다. 좋은 대화였어요.”</p>
+                <p>“아니, 아직 안 끝났어.”</p>
+                <p>케빈은 시계를 확인했다. “아, 까먹기 전에 박 씨와 회의가 있어요.”</p>
+                <p>다니엘은 그를 빤히 쳐다보았다. “있다고?”</p>
+                <p>“네. 사과하려고요.”</p>
+                <p>다니엘은 조금 긴장을 풀었다. “정말?”</p>
+                <p>케빈은 문을 열었다. “그리고 아마 그분이 차를 마시는지도 물어보려고요.”</p>
+                <p>다니엘이 대답하기도 전에 케빈은 복도 저편으로 사라졌다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "69630.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

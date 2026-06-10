@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Last Polite Man in the Office</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">👔</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Last Polite Man in the Office</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">born in a barn</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">예의가 없게 행동하다 / 문을 열어 두다</td></tr>
+                <tr><td class="p-4"><b class="text-white">steep tea</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">차를 우리다</td></tr>
+                <tr><td class="p-4"><b class="text-white">bow</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">절하다 / 고개 숙여 인사하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">turn your head and drink</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">고개를 돌리고 마시다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">born in a barn</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">직역하면 “헛간에서 태어났다”이지만, 실제로는 보통 문을 열어 두거나 예의 없이 행동할 때 농담처럼 쓰는 표현이에요. “Were you born in a barn?”처럼 많이 씁니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">steep tea</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">차를 그냥 “make”한다고 할 수도 있지만, 찻잎이나 티백을 뜨거운 물에 담가 우러나게 하는 정확한 표현은 steep tea예요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">turn your head and drink</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">한국식 술자리 예절을 설명할 때 쓸 수 있는 표현이에요. 어른 앞에서 술을 마실 때 고개를 살짝 돌리는 행동을 말해요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Mr. Park believed that manners were disappearing from the world, and he believed his office was the place where they had gone to die.</p>
+                <p class="mb-6">He was fifty-eight and worked at a small design company filled with people in their twenties. They wore hoodies to meetings. They called the team leader “Jin” instead of “Manager Kim.” They ate sandwiches while discussing serious projects. One employee even walked into a meeting room, left the door wide open, and sat down as if nothing had happened.</p>
+                <p class="mb-6">Mr. Park stared at the door.</p>
+                <p class="mb-6">“Were you <b class="highlight quiz-target" data-ans="born in a barn" data-kor="헛간에서 태어났니">born in a barn</b>?” he asked.</p>
+                <p class="mb-6">The young employee, Leo, blinked. “No. Busan.”</p>
+                <p class="mb-6">Nobody laughed, which made Mr. Park feel even older.</p>
+                <p class="mb-6">At lunch, the team ordered tea. Mr. Park watched another employee drop a tea bag into hot water and pull it out after three seconds.</p>
+                <p class="mb-6">“You have to <b class="highlight quiz-target" data-ans="steep tea" data-kor="차를 우려야 해요">steep tea</b>,” he said. “Tea needs time. People need patience.”</p>
+                <p class="mb-6">“That sounds deep,” said Mina. “But I just need caffeine.”</p>
+                <p class="mb-6">Mr. Park sighed. To him, everything they did seemed too casual. They did not <b class="highlight quiz-target" data-ans="bow" data-kor="깊이 절하지">bow</b> deeply when senior workers arrived. They said “I disagree” in meetings without looking nervous. They left work at six because their contracts said they could.</p>
+                <p class="mb-6">Technically, they were not breaking any rules. But socially, Mr. Park felt they were breaking all of them.</p>
+                <p class="mb-6">The worst moment came at a company dinner. Mr. Park poured beer for Leo, expecting him to receive it with two hands. Leo took it with one hand while checking his phone.</p>
+                <p class="mb-6">Mr. Park nearly dropped the bottle.</p>
+                <p class="mb-6">“Young man,” he said, “when someone older pours you a drink, you <b class="highlight quiz-target" data-ans="turn your head and drink" data-kor="고개를 돌리고 마시는 거예요">turn your head and drink</b>. It’s a way of showing respect.”</p>
+                <p class="mb-6">Leo put his phone down. “I’m sorry. I didn’t know it mattered that much.”</p>
+                <p class="mb-6">The table became quiet. Mina looked at Mr. Park and said gently, “Some rules help people feel respected. But some rules just make people scared of making mistakes.”</p>
+                <p class="mb-6">Mr. Park wanted to argue, but he noticed Leo’s embarrassed face. He remembered being young and afraid in his first office, laughing at bad jokes and joining dinners out of pressure.</p>
+                <p class="mb-6">The next day, Leo closed the meeting room door without being asked. Mr. Park noticed.</p>
+                <p class="mb-6">At the same meeting, Mr. Park disagreed with Mina’s idea. Then he added, “But maybe I should be more flexible about it.”</p>
+                <p class="mb-6">Everyone looked surprised.</p>
+                <p class="mb-6">Mr. Park smiled a little. Manners were not dead after all. They were just under review.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>박 부장은 세상에서 예의가 사라지고 있다고 믿었고, 자기 회사가 바로 그 예의가 죽으러 간 장소라고 생각했다.</p>
+                <p>그는 쉰여덟 살이었고, 20대 직원들로 가득한 작은 디자인 회사에서 일했다. 그들은 회의에 후드티를 입고 왔다. 팀장을 “김 매니저님”이 아니라 “진”이라고 불렀다. 중요한 프로젝트를 논의하면서 샌드위치를 먹었다. 어떤 직원은 회의실에 들어와 문을 활짝 열어 둔 채 아무 일도 아니라는 듯 앉기까지 했다.</p>
+                <p>박 부장은 그 문을 빤히 바라보았다.</p>
+                <p>“너 <b class="highlight">헛간에서 태어났니</b>?” 그가 물었다.</p>
+                <p>젊은 직원 레오는 눈을 깜빡였다. “아니요. 부산에서 태어났는데요.”</p>
+                <p>아무도 웃지 않았고, 그 때문에 박 부장은 자신이 더 늙게 느껴졌다.</p>
+                <p>점심시간에 팀은 차를 주문했다. 박 부장은 다른 직원이 티백을 뜨거운 물에 넣고 3초 만에 꺼내는 모습을 보았다.</p>
+                <p>“<b class="highlight">차는 제대로 우려야 해요</b>,” 그가 말했다. “차에는 시간이 필요해요. 사람에게는 인내심이 필요하고요.”</p>
+                <p>“되게 깊은 말 같네요,” 미나가 말했다. “근데 저는 그냥 카페인이 필요해요.”</p>
+                <p>박 부장은 한숨을 쉬었다. 그가 보기에는 그들이 하는 모든 일이 너무 가벼워 보였다. 그들은 선배 직원들이 와도 <b class="highlight">깊이 절하지</b> 않았다. 회의에서 긴장한 기색 없이 “저는 동의하지 않습니다”라고 말했다. 계약서에 그렇게 되어 있다며 여섯 시에 퇴근했다.</p>
+                <p>엄밀히 말하면 그들은 어떤 규칙도 어기고 있지 않았다. 하지만 사회적으로는 박 부장에게 모든 규칙을 어기고 있는 것처럼 느껴졌다.</p>
+                <p>최악의 순간은 회사 회식에서 찾아왔다. 박 부장은 레오에게 맥주를 따라 주었고, 레오가 두 손으로 받을 거라고 기대했다. 하지만 레오는 휴대폰을 보면서 한 손으로 잔을 받았다.</p>
+                <p>박 부장은 거의 병을 떨어뜨릴 뻔했다.</p>
+                <p>“젊은이,” 그가 말했다. “어른이 술을 따라 주면 <b class="highlight">고개를 돌리고 마시는 거예요</b>. 그건 존중을 보여 주는 방법이에요.”</p>
+                <p>레오는 휴대폰을 내려놓았다. “죄송합니다. 그게 그렇게 중요한 줄 몰랐어요.”</p>
+                <p>테이블은 조용해졌다. 미나가 박 부장을 바라보며 부드럽게 말했다. “어떤 규칙은 사람들이 존중받는다고 느끼게 해 줘요. 하지만 어떤 규칙은 사람들이 실수할까 봐 두려워하게 만들 뿐이에요.”</p>
+                <p>박 부장은 반박하고 싶었지만, 레오의 당황한 얼굴을 보았다. 그는 자신이 처음 회사에 들어갔을 때, 나쁜 농담에도 웃고 압박감 때문에 회식에 참석하던 젊은 시절을 떠올렸다.</p>
+                <p>다음 날, 레오는 누가 말하지 않아도 회의실 문을 닫았다. 박 부장은 그것을 알아차렸다.</p>
+                <p>같은 회의에서 박 부장은 미나의 아이디어에 동의하지 않았다. 그러고 나서 덧붙였다. “하지만 이 문제는 제가 좀 더 유연하게 생각해야 할지도 모르겠네요.”</p>
+                <p>모두가 놀란 표정으로 그를 바라보았다.</p>
+                <p>박 부장은 살짝 미소 지었다. 예의는 결국 죽지 않았다. 그저 검토 중일 뿐이었다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "610630.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

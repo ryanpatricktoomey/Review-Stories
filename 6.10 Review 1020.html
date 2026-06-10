@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Noodle Crime</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🍜</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Noodle Crime</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">slurp</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">후루룩 소리를 내며 먹다 / 마시다</td></tr>
+                <tr><td class="p-4"><b class="text-white">make eye contact</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">눈을 마주치다</td></tr>
+                <tr><td class="p-4"><b class="text-white">have my own problems</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">나도 내 문제가 있다</td></tr>
+                <tr><td class="p-4"><b class="text-white">have my own shit to deal with</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">나도 처리해야 할 골치 아픈 일이 있다</td></tr>
+                <tr><td class="p-4"><b class="text-white">I shouldn't talk</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">나도 남 말할 처지가 아니다</td></tr>
+                <tr><td class="p-4"><b class="text-white">fresh off the boat</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">막 온 사람 / 현지 문화에 아직 익숙하지 않은 사람</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">slurp</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">국수나 국물을 소리 내어 먹는 것을 말해요. 문화에 따라 자연스럽게 보일 수도 있고 무례하게 보일 수도 있어요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">have my own shit to deal with</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">“나도 처리해야 할 일이 많다”라는 뜻이지만, 거친 표현이에요. 친한 사이가 아니면 피하는 게 좋아요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">I shouldn’t talk</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">“나도 남 말할 처지가 아니다”라는 뜻이에요. 다른 사람을 비판하려다가 자기에게도 비슷한 문제가 있다는 걸 인정할 때 씁니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">fresh off the boat</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">외국이나 다른 환경에서 막 와서 아직 적응하지 못한 사람을 뜻하지만, 무례하거나 차별적으로 들릴 수 있어요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Mr. Seo was moved from the audit department to the brand team on a rainy Monday, and by noon he believed the company had punished him for a crime he did not remember committing.</p>
+                <p class="mb-6">In audit, people used indoor voices. They sent files with clear names. They did not sit on desks. Most importantly, they did not eat lunch like wild animals.</p>
+                <p class="mb-6">The brand team did all of these things.</p>
+                <p class="mb-6">At 12:10, Mr. Seo entered the lunch area and saw a young copywriter named Dami eating noodles from a plastic bowl. She leaned over the table and began to <b class="highlight quiz-target" data-ans="slurp" data-kor="후루룩 소리를 내며 먹기">slurp</b> so loudly that Mr. Seo stopped walking.</p>
+                <p class="mb-6">Dami looked up. “What?”</p>
+                <p class="mb-6">“Nothing,” Mr. Seo said, although his face clearly said everything.</p>
+                <p class="mb-6">A designer beside her was talking to him without looking up from his tablet.</p>
+                <p class="mb-6">“When you speak to someone,” Mr. Seo said, “you should <b class="highlight quiz-target" data-ans="make eye contact" data-kor="눈을 마주치야 합니다">make eye contact</b>.”</p>
+                <p class="mb-6">The designer finally looked up. “Sorry. I was checking whether your slide font was destroying the brand.”</p>
+                <p class="mb-6">Mr. Seo sat down very slowly.</p>
+                <p class="mb-6">Then a junior employee walked in, saw him, and whispered, “Is he <b class="highlight quiz-target" data-ans="fresh off the boat" data-kor="막 온 사람인가">fresh off the boat</b> from audit?”</p>
+                <p class="mb-6">Mr. Seo put down his chopsticks.</p>
+                <p class="mb-6">“I am not deaf,” he said.</p>
+                <p class="mb-6">The room went quiet for half a second. Then Dami said, “Sorry. That was rude.”</p>
+                <p class="mb-6">“Yes,” Mr. Seo said. “It was.”</p>
+                <p class="mb-6">A manager rushed in with bad news. A client had rejected their campaign and wanted a new idea by five. Everyone started talking at once. Dami said the client’s comment was stupid. The designer said the old idea was dead. Someone knocked over a coffee.</p>
+                <p class="mb-6">Mr. Seo hated the noise, but he noticed something strange. Nobody was pretending. Nobody wasted time protecting a bad idea. They argued, but they fixed things quickly.</p>
+                <p class="mb-6">When Mr. Seo pointed out that the new slogan could create a legal problem, everyone stopped.</p>
+                <p class="mb-6">Dami nodded. “He’s right. Change it.”</p>
+                <p class="mb-6">No one questioned his age. No one mocked his department. They just listened.</p>
+                <p class="mb-6">At four-thirty, the new campaign was ready.</p>
+                <p class="mb-6">Dami dropped into a chair and rubbed her eyes. “Sorry about lunch. I <b class="highlight quiz-target" data-ans="have my own problems" data-kor="나도 내 문제가 있지만">have my own problems</b>, but that’s not an excuse.”</p>
+                <p class="mb-6">The designer sighed. “Same. I <b class="highlight quiz-target" data-ans="have my own shit to deal with" data-kor="나도 처리해야 할 골치 아픈 일이 있지만">have my own shit to deal with</b>, but I was still rude.”</p>
+                <p class="mb-6">Mr. Seo looked at them. They were messy, loud, and too direct. But they were not careless.</p>
+                <p class="mb-6">The next day, Dami ate her noodles more quietly.</p>
+                <p class="mb-6">Mr. Seo smiled, lifted his soup, and accidentally made a terrible noise.</p>
+                <p class="mb-6">Everyone stared.</p>
+                <p class="mb-6">He cleared his throat. “Well, <b class="highlight quiz-target" data-ans="I shouldn't talk" data-kor="나도 남 말할 처지는 아니네요">I shouldn't talk</b>.”</p>
+                <p class="mb-6">For the first time, the brand team laughed with him instead of at him.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>서 부장은 비 오는 월요일에 감사팀에서 브랜드팀으로 이동하게 되었고, 점심시간이 되자 회사가 자신이 기억하지 못하는 죄를 벌하고 있다고 믿게 되었다.</p>
+                <p>감사팀에서는 사람들이 조용한 목소리로 말했다. 파일 이름도 분명하게 적었다. 책상 위에 앉지도 않았다. 무엇보다도, 점심을 야생동물처럼 먹지 않았다.</p>
+                <p>브랜드팀은 이 모든 것을 했다.</p>
+                <p>12시 10분, 서 부장은 점심 공간에 들어갔다가 다미라는 젊은 카피라이터가 플라스틱 그릇에 담긴 국수를 먹고 있는 것을 보았다. 그녀는 테이블 위로 몸을 숙이고 너무 크게 <b class="highlight">후루룩 먹기</b> 시작해서, 서 부장은 걸음을 멈췄다.</p>
+                <p>다미가 고개를 들었다. “왜요?”</p>
+                <p>“아무것도 아닙니다,” 서 부장이 말했다. 하지만 그의 얼굴은 모든 것을 말하고 있었다.</p>
+                <p>그녀 옆에 있던 디자이너는 태블릿에서 눈을 떼지 않은 채 그에게 말하고 있었다.</p>
+                <p>“누군가와 이야기할 때는,” 서 부장이 말했다. “<b class="highlight">눈을 마주쳐야 합니다</b>.”</p>
+                <p>디자이너가 마침내 고개를 들었다. “죄송해요. 부장님 슬라이드 글꼴이 브랜드를 망치고 있는지 확인 중이었어요.”</p>
+                <p>서 부장은 아주 천천히 자리에 앉았다.</p>
+                <p>그때 한 주니어 직원이 들어와 그를 보더니 속삭였다. “감사팀에서 <b class="highlight">막 온 사람인가</b>?”</p>
+                <p>서 부장은 젓가락을 내려놓았다.</p>
+                <p>“제가 귀가 안 들리는 건 아닙니다,” 그가 말했다.</p>
+                <p>방은 반초 정도 조용해졌다. 그러고 나서 다미가 말했다. “죄송합니다. 그건 무례했어요.”</p>
+                <p>“맞습니다,” 서 부장이 말했다. “무례했습니다.”</p>
+                <p>그때 매니저가 나쁜 소식을 들고 뛰어 들어왔다. 고객이 캠페인을 거절했고, 다섯 시까지 새 아이디어를 원한다는 것이었다. 모두가 동시에 말하기 시작했다. 다미는 고객의 의견이 멍청하다고 말했다. 디자이너는 기존 아이디어가 끝났다고 말했다. 누군가는 커피를 엎었다.</p>
+                <p>서 부장은 그 소음이 싫었다. 하지만 이상한 점을 알아차렸다. 아무도 꾸며내지 않았다. 아무도 나쁜 아이디어를 지키느라 시간을 낭비하지 않았다. 그들은 말다툼을 했지만, 일을 빠르게 고쳤다.</p>
+                <p>서 부장이 새 슬로건에 법적 문제가 생길 수 있다고 지적하자 모두가 멈췄다.</p>
+                <p>다미가 고개를 끄덕였다. “부장님 말이 맞아요. 바꿔요.”</p>
+                <p>아무도 그의 나이를 문제 삼지 않았다. 아무도 그의 부서를 놀리지 않았다. 그들은 그냥 들었다.</p>
+                <p>4시 30분, 새 캠페인이 준비되었다.</p>
+                <p>다미는 의자에 털썩 앉아 눈을 문질렀다. “점심 때 죄송했어요. 저도 <b class="highlight">제 문제가 있지만</b>, 그게 변명은 아니죠.”</p>
+                <p>디자이너가 한숨을 쉬었다. “저도요. 저도 <b class="highlight">처리해야 할 골치 아픈 일이 있지만</b>, 그래도 무례했어요.”</p>
+                <p>서 부장은 그들을 바라보았다. 그들은 정신없고, 시끄럽고, 너무 직접적이었다. 하지만 무심한 사람들은 아니었다.</p>
+                <p>다음 날, 다미는 국수를 조금 더 조용히 먹었다.</p>
+                <p>서 부장은 미소를 짓고 국을 떠먹다가 실수로 끔찍한 소리를 냈다.</p>
+                <p>모두가 그를 바라보았다.</p>
+                <p>그는 헛기침을 했다. “뭐, 저도 <b class="highlight">남 말할 처지는 아니네요</b>.”</p>
+                <p>처음으로 브랜드팀은 그를 비웃은 것이 아니라 그와 함께 웃었다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "6101020.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Fish Scale Theory</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🐟</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Fish Scale Theory</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">personal development</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">자기계발</td></tr>
+                <tr><td class="p-4"><b class="text-white">self help</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">자기계발 / 자조서 분야</td></tr>
+                <tr><td class="p-4"><b class="text-white">hard to read</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">읽기 어렵다</td></tr>
+                <tr><td class="p-4"><b class="text-white">incomprehensible</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">이해할 수 없는 / 난해한</td></tr>
+                <tr><td class="p-4"><b class="text-white">scales</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">비늘</td></tr>
+                <tr><td class="p-4"><b class="text-white">masseuse</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">여성 마사지사</td></tr>
+                <tr><td class="p-4"><b class="text-white">clients</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">고객들</td></tr>
+                <tr><td class="p-4"><b class="text-white">life screws you over</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">인생이 사람을 엉망으로 만들다 / 인생이 억울하게 힘들게 하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">life shits on you</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">인생이 사람을 심하게 괴롭히다 / 인생이 더럽게 굴다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">personal development</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">자신의 습관, 사고방식, 능력 등을 더 좋게 만들려는 분야나 활동을 말해요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">self help</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">책 장르로는 “자기계발서”에 가까워요. 스스로 문제를 해결하고 성장하도록 돕는 내용이에요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">hard to read</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">단순히 글이 어렵다는 뜻일 수도 있지만, 내용이 감정적으로 무겁거나 불편해서 읽기 힘들다는 뜻도 될 수 있어요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">incomprehensible</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">너무 어렵거나 복잡해서 이해가 안 된다는 강한 표현이에요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">scales</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">여기서는 저울이 아니라 생선이나 뱀 같은 동물의 “비늘”을 뜻해요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">masseuse</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">여성 마사지사를 뜻하지만, 요즘은 성별과 상관없이 “massage therapist”가 더 중립적이고 자연스러운 표현이에요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">clients</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">고객들</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">life screws you over</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">삶이 불공평하게 사람을 힘들게 만든다는 구어체 표현이에요. 문장 속에서는 “when life screws you over”처럼 자연스럽게 붙여 써요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">life shits on you</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">더 거칠고 강한 표현이에요. 친한 사람끼리 감정적으로 말할 수는 있지만, 공식적인 상황에서는 피하는 게 좋아요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Yuna had not read Stand Up Straight, Even When the Sky Falls.</p>
+                <p class="mb-6">She knew it was a famous <b class="highlight quiz-target" data-ans="self help" data-kor="자기계발서">self help</b> book because the cover had a mountain, a sunrise, and a man standing with his arms open. She also knew it was about <b class="highlight quiz-target" data-ans="personal development" data-kor="자기계발">personal development</b>, because every book with a mountain and a sunrise seemed to be about <b class="highlight quiz-target" data-ans="personal development" data-kor="자기계발">personal development</b>.</p>
+                <p class="mb-6">That was all she knew.</p>
+                <p class="mb-6">The problem was Ms. Park’s class. Everyone had to explain why the book had stayed with them. Yuna had meant to read it, but her aunt’s massage shop had needed help all week. Her aunt was a <b class="highlight quiz-target" data-ans="masseuse" data-kor="마사지사">masseuse</b>, and Yuna helped by answering phone calls, folding towels, cleaning oil bottles, and smiling at difficult <b class="highlight quiz-target" data-ans="clients" data-kor="고객들">clients</b> who complained that the room was too warm, too cold, or “too peaceful.”</p>
+                <p class="mb-6">Ms. Park looked around the classroom. “Yuna, why don’t you start?”</p>
+                <p class="mb-6">Yuna opened the book to a random page. There was a sentence about pain, discipline, and breakfast.</p>
+                <p class="mb-6">Perfect.</p>
+                <p class="mb-6">“I’ll be honest,” Yuna said. “At first, I found it <b class="highlight quiz-target" data-ans="hard to read" data-kor="읽기 어렵다">hard to read</b>.”</p>
+                <p class="mb-6">Ms. Park nodded. “Because of the language?”</p>
+                <p class="mb-6">“Partly,” Yuna said. “Some sections felt almost <b class="highlight quiz-target" data-ans="incomprehensible" data-kor="이해할 수 없을 정도">incomprehensible</b>. But I think that was intentional. Growth is confusing.”</p>
+                <p class="mb-6">Two students wrote that down.</p>
+                <p class="mb-6">Yuna became braver.</p>
+                <p class="mb-6">“The author seems to say that when <b class="highlight quiz-target" data-ans="life screws you over" data-kor="인생이 사람을 억울하게 힘들게 만들 때">life screws you over</b>, you still have to decide what kind of person you’re going to become.”</p>
+                <p class="mb-6">Ms. Park’s eyebrows lifted, but not in a bad way.</p>
+                <p class="mb-6">Yuna continued, “And sometimes, when <b class="highlight quiz-target" data-ans="life shits on you" data-kor="인생이 사람을 심하게 괴롭힐 때">life shits on you</b>—sorry, when life treats you unfairly—you can’t control the situation. But you can control your response.”</p>
+                <p class="mb-6">A boy in the back whispered, “That’s deep.”</p>
+                <p class="mb-6">Yuna tried not to smile.</p>
+                <p class="mb-6">Ms. Park asked, “Was there a specific image that stayed with you?”</p>
+                <p class="mb-6">Yuna looked at the cover again. Mountain. Sunrise. Open arms. Nothing useful.</p>
+                <p class="mb-6">Then she remembered walking past the fish market every morning on the way to her aunt’s shop. Tiny silver <b class="highlight quiz-target" data-ans="scales" data-kor="비늘">scales</b> stuck to the floor, the counters, even people’s shoes. No matter how much the workers cleaned, a few always remained.</p>
+                <p class="mb-6">“The scales,” Yuna said.</p>
+                <p class="mb-6">Ms. Park tilted her head. “The scales?”</p>
+                <p class="mb-6">“Yes,” Yuna said slowly. “I saw them as a symbol. The character wants to become clean and perfect, but life leaves marks on you. You can wash your hands, change your habits, even start over, but some things still stick. Maybe growth isn’t about removing every mark. Maybe it’s about understanding what they mean.”</p>
+                <p class="mb-6">The room became silent.</p>
+                <p class="mb-6">Ms. Park smiled. “That’s a beautiful interpretation.”</p>
+                <p class="mb-6">After class, Hana grabbed Yuna’s arm.</p>
+                <p class="mb-6">“You didn’t read it.”</p>
+                <p class="mb-6">Yuna sighed. “No.”</p>
+                <p class="mb-6">“There are no fish scales in the book.”</p>
+                <p class="mb-6">Yuna froze.</p>
+                <p class="mb-6">Hana grinned. “But honestly? That was better than the book.”</p>
+                <p class="mb-6">Yuna looked down at the cover.</p>
+                <p class="mb-6">“Great,” she said. “Now I have to write my own self-help book.”</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">유나는 하늘이 무너져도 똑바로 서라를 읽지 않았다.</p>
+                <p class="mb-6">그 책이 유명한 <b class="highlight">자기계발서라는</b> 것은 알고 있었다. 표지에 산과 일출, 그리고 두 팔을 벌리고 서 있는 남자가 있었기 때문이다. 또한 <b class="highlight">자기계발에</b> 관한 책이라는 것도 알고 있었다. 산과 일출이 있는 책은 전부 <b class="highlight">자기계발에</b> 관한 책처럼 보였으니까.</p>
+                <p class="mb-6">그게 유나가 아는 전부였다.</p>
+                <p class="mb-6">문제는 박 선생님의 수업이었다. 모두가 그 책이 왜 마음에 남았는지 설명해야 했다. 유나는 읽으려고 했지만, 한 주 내내 이모의 마사지 가게 일을 도와야 했다. 이모는 <b class="highlight">마사지사였고</b>, 유나는 전화를 받고, 수건을 접고, 오일 병을 닦고, 방이 너무 덥다, 너무 춥다, 또는 “너무 평화롭다”고 불평하는 까다로운 <b class="highlight">고객들에게</b> 웃으며 응대했다.</p>
+                <p class="mb-6">박 선생님이 교실을 둘러보았다. “유나가 먼저 시작해 볼래요?”</p>
+                <p class="mb-6">유나는 책을 아무 페이지나 펼쳤다. 고통, 훈련, 아침 식사에 관한 문장이 있었다.</p>
+                <p class="mb-6">완벽했다.</p>
+                <p class="mb-6">“솔직히 말하면,” 유나가 말했다. “처음에는 <b class="highlight">읽기 어렵다고</b> 느꼈어요.”</p>
+                <p class="mb-6">박 선생님이 고개를 끄덕였다. “문체 때문에요?”</p>
+                <p class="mb-6">“부분적으로는요.” 유나가 말했다. “어떤 부분은 거의 <b class="highlight">이해할 수 없을 정도였어요</b>. 하지만 저는 그게 의도적이었다고 생각해요. 성장은 혼란스러운 거니까요.”</p>
+                <p class="mb-6">학생 두 명이 그 말을 적었다.</p>
+                <p class="mb-6">유나는 더 대담해졌다.</p>
+                <p class="mb-6">“작가는 <b class="highlight">인생이 사람을 억울하게 힘들게 만들 때도</b>, 자신이 어떤 사람이 될지는 스스로 결정해야 한다고 말하는 것 같아요.”</p>
+                <p class="mb-6">박 선생님의 눈썹이 올라갔다. 하지만 나쁜 의미는 아니었다.</p>
+                <p class="mb-6">유나는 계속 말했다. “그리고 가끔 <b class="highlight">인생이 사람을 심하게 괴롭힐 때도</b>—죄송해요, 인생이 불공평하게 굴 때도—상황은 통제할 수 없잖아요. 하지만 자신의 반응은 통제할 수 있어요.”</p>
+                <p class="mb-6">뒤쪽에 있던 남학생이 속삭였다. “깊다.”</p>
+                <p class="mb-6">유나는 웃지 않으려고 애썼다.</p>
+                <p class="mb-6">박 선생님이 물었다. “특별히 마음에 남은 이미지가 있었나요?”</p>
+                <p class="mb-6">유나는 표지를 다시 보았다. 산. 일출. 벌린 두 팔. 쓸 만한 것이 없었다.</p>
+                <p class="mb-6">그때 유나는 이모의 가게로 가는 길에 매일 아침 지나가던 생선 시장을 떠올렸다. 작은 은색 <b class="highlight">비늘들이</b> 바닥, 계산대, 심지어 사람들의 신발에도 붙어 있었다. 일하는 사람들이 아무리 깨끗이 닦아도 몇 개는 항상 남아 있었다.</p>
+                <p class="mb-6">“비늘이요.” 유나가 말했다.</p>
+                <p class="mb-6">박 선생님이 고개를 갸웃했다. “비늘이요?”</p>
+                <p class="mb-6">“네.” 유나가 천천히 말했다. “저는 그것을 상징으로 봤어요. 주인공은 깨끗하고 완벽한 사람이 되고 싶어 하지만, 인생은 사람에게 흔적을 남기잖아요. 손을 씻고, 습관을 바꾸고, 다시 시작할 수도 있지만, 어떤 것들은 계속 남아요. 어쩌면 성장은 모든 흔적을 없애는 게 아니라, 그 흔적들이 무엇을 의미하는지 이해하는 것일지도 몰라요.”</p>
+                <p class="mb-6">교실이 조용해졌다.</p>
+                <p class="mb-6">박 선생님이 미소 지었다. “아름다운 해석이네요.”</p>
+                <p class="mb-6">수업이 끝난 뒤, 하나가 유나의 팔을 붙잡았다.</p>
+                <p class="mb-6">“너 그 책 안 읽었지.”</p>
+                <p class="mb-6">유나가 한숨을 쉬었다. “응.”</p>
+                <p class="mb-6">“그 책에 생선 비늘은 안 나와.”</p>
+                <p class="mb-6">유나는 얼어붙었다.</p>
+                <p class="mb-6">하나가 씩 웃었다. “근데 솔직히? 네 해석이 책보다 나았어.”</p>
+                <p class="mb-6">유나는 표지를 내려다보았다.</p>
+                <p class="mb-6">“좋아.” 유나가 말했다. “이제 내가 자기계발서를 써야겠네.”</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "611830.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

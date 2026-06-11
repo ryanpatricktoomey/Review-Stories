@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Girl Who Read the Room</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🎭</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Girl Who Read the Room</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">have my hands full</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">너무 바쁘다 / 감당할 일이 많다</td></tr>
+                <tr><td class="p-4"><b class="text-white">have no room in my life</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">내 삶에 ~을 들일 여유가 없다</td></tr>
+                <tr><td class="p-4"><b class="text-white">bookworm</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">책벌레 / 책을 아주 좋아하는 사람</td></tr>
+                <tr><td class="p-4"><b class="text-white">TMI</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">너무 자세한 정보 / 굳이 알고 싶지 않은 정보</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">have my hands full</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">직역하면 “손이 가득 차 있다”이지만, 실제로는 해야 할 일이 너무 많아서 여유가 없다는 뜻이에요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">have no room in my life</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">물리적인 공간이 아니라 마음, 시간, 에너지의 여유가 없다는 뜻으로 자주 써요. 문맥에 따라 “had no room in her life,” “have no room in my life for that,”처럼 바꿔 써야 자연스러워요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">bookworm</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">책을 많이 읽고 좋아하는 사람을 말해요. 보통 부정적이라기보다는 귀엽거나 친근한 표현이에요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">TMI</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">“Too Much Information”의 줄임말이에요. 너무 사적인 이야기나 불필요하게 자세한 정보를 들었을 때 써요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Minji had not read the book.</p>
+                <p class="mb-6">She had planned to, but her part-time job changed her schedule, her little brother got the flu, and her group project needed fixing at midnight. By Wednesday morning, she could honestly say she <b class="highlight quiz-target" data-ans="had her hands full" data-kor="너무 바빴다">had her hands full</b>. Unfortunately, honesty was not going to help her in Mr. Han’s literature class.</p>
+                <p class="mb-6">The book was called The Blue Door. Minji knew three things from an online review: there was a woman, there was a door, and people online said it was “about regret.”</p>
+                <p class="mb-6">That was enough, she hoped.</p>
+                <p class="mb-6">Mr. Han smiled at the class. “Today, I don’t want a summary. I want to know why this book stayed with you.”</p>
+                <p class="mb-6">Minji sat very still.</p>
+                <p class="mb-6">Jisoo went first. “I liked how the main character kept avoiding the truth.”</p>
+                <p class="mb-6">Good, Minji thought. Avoiding the truth. Useful.</p>
+                <p class="mb-6">Then Daniel said, “The blue door wasn’t really a door. It was more like a choice.”</p>
+                <p class="mb-6">Excellent. Door equals choice.</p>
+                <p class="mb-6">Mr. Han turned to Minji. “What about you?”</p>
+                <p class="mb-6">Minji gave a slow, thoughtful nod, the kind she used when she had absolutely no idea what was happening.</p>
+                <p class="mb-6">“I think it spoke to me because the main character acted like she <b class="highlight quiz-target" data-ans="had no room in her life" data-kor="자기 삶에 ~을 들일 여유가 없는">had no room in her life</b> for the truth,” Minji said. “But actually, she was just scared of opening the door.”</p>
+                <p class="mb-6">The room became quiet.</p>
+                <p class="mb-6">Mr. Han leaned forward. “Interesting. Can you say more?”</p>
+                <p class="mb-6">Minji’s heart jumped, but her face stayed calm. “Sure. I mean, everyone thinks the main character is weak, but I didn’t see her that way. She’s overwhelmed. She has responsibilities. She’s not lazy. She just… <b class="highlight quiz-target" data-ans="has her hands full" data-kor="너무 바쁜">has her hands full</b>.”</p>
+                <p class="mb-6">Jisoo nodded. Daniel wrote something down.</p>
+                <p class="mb-6">Minji nearly smiled.</p>
+                <p class="mb-6">Then Mr. Han asked, “What did you think of the ending?”</p>
+                <p class="mb-6">The ending. Of course.</p>
+                <p class="mb-6">Minji looked down at her notebook. It was completely blank except for the words “door = choice???”</p>
+                <p class="mb-6">“I thought it was brave,” she said carefully. “Not happy. Not sad. Just honest.”</p>
+                <p class="mb-6">Mr. Han’s eyes softened. “That’s a mature reading.”</p>
+                <p class="mb-6">Across the room, Sora stared at Minji. Sora was a real <b class="highlight quiz-target" data-ans="bookworm" data-kor="책벌레">bookworm</b>. She had read the book twice. She knew Minji was floating on pure confidence and stolen comments.</p>
+                <p class="mb-6">After class, Sora caught up with her.</p>
+                <p class="mb-6">“You didn’t read it, did you?”</p>
+                <p class="mb-6">Minji sighed. “No.”</p>
+                <p class="mb-6">Sora shook her head. “Your answer about the truth was actually good.”</p>
+                <p class="mb-6">“Thank you.”</p>
+                <p class="mb-6">“But the blue door is only mentioned once. It’s a bathroom door.”</p>
+                <p class="mb-6">Minji froze.</p>
+                <p class="mb-6">Sora grinned. “Also, the ending is extremely happy.”</p>
+                <p class="mb-6">Minji covered her face. “That is <b class="highlight quiz-target" data-ans="TMI" data-kor="너무 자세한 정보">TMI</b>. Please let me enjoy surviving.”</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">민지는 그 책을 읽지 않았다.</p>
+                <p class="mb-6">읽으려고는 했다. 하지만 아르바이트 일정이 바뀌었고, 남동생은 독감에 걸렸고, 조별 과제는 밤 12시에 고쳐야 했다. 수요일 아침이 되었을 때, 민지는 정말로 자신이 <b class="highlight">너무 바빴다고</b> 말할 수 있었다. 안타깝게도 한 선생님의 문학 수업에서는 솔직함이 별 도움이 되지 않을 것 같았다.</p>
+                <p class="mb-6">책 제목은 파란 문이었다. 민지가 온라인 리뷰에서 알아낸 것은 세 가지뿐이었다. 여자가 나온다, 문이 나온다, 그리고 사람들이 “후회에 관한 이야기”라고 말한다.</p>
+                <p class="mb-6">그 정도면 충분하길 바랐다.</p>
+                <p class="mb-6">한 선생님이 반을 보며 웃었다. “오늘은 줄거리를 듣고 싶지 않아요. 이 책이 왜 여러분 마음에 남았는지 알고 싶어요.”</p>
+                <p class="mb-6">민지는 아주 가만히 앉아 있었다.</p>
+                <p class="mb-6">지수가 먼저 말했다. “저는 주인공이 계속 진실을 피하는 방식이 좋았어요.”</p>
+                <p class="mb-6">좋아, 민지는 생각했다. 진실을 피한다. 쓸 만하네.</p>
+                <p class="mb-6">그다음 다니엘이 말했다. “파란 문은 사실 진짜 문이라기보다는 선택에 가까웠던 것 같아요.”</p>
+                <p class="mb-6">훌륭해. 문은 선택이다.</p>
+                <p class="mb-6">한 선생님이 민지를 바라보았다. “민지는요?”</p>
+                <p class="mb-6">민지는 천천히, 생각이 깊어 보이게 고개를 끄덕였다. 자신이 무슨 일이 일어나는지 전혀 모를 때 쓰는 표정이었다.</p>
+                <p class="mb-6">“저는 주인공이 자기 삶에 <b class="highlight">진실을 들일 여유가 없는</b> 것처럼 행동해서 와닿았어요.” 민지가 말했다. “하지만 사실은 그냥 그 문을 여는 게 무서웠던 거죠.”</p>
+                <p class="mb-6">교실이 조용해졌다.</p>
+                <p class="mb-6">한 선생님이 몸을 앞으로 기울였다. “흥미롭네요. 조금 더 말해 볼래요?”</p>
+                <p class="mb-6">민지의 심장은 덜컥했지만, 얼굴은 침착했다.</p>
+                <p class="mb-6">“네. 제 말은, 모두가 주인공을 약하다고 생각하지만 저는 그렇게 보지 않았어요. 그 사람은 감당할 일이 너무 많은 거예요. 책임도 많고요. 게으른 게 아니라 그냥… <b class="highlight">너무 바쁜</b> 거죠.”</p>
+                <p class="mb-6">지수가 고개를 끄덕였다. 다니엘은 뭔가를 적었다.</p>
+                <p class="mb-6">민지는 거의 웃을 뻔했다.</p>
+                <p class="mb-6">그때 한 선생님이 물었다. “결말은 어떻게 생각했나요?”</p>
+                <p class="mb-6">결말. 당연히 그걸 물어보겠지.</p>
+                <p class="mb-6">민지는 노트를 내려다보았다. 거기에는 “문 = 선택???”이라는 말 말고는 아무것도 적혀 있지 않았다.</p>
+                <p class="mb-6">“용감한 결말이었다고 생각했어요.” 민지가 조심스럽게 말했다. “행복하지도 않고, 슬프지도 않고. 그냥 솔직했어요.”</p>
+                <p class="mb-6">한 선생님의 눈빛이 부드러워졌다. “성숙한 해석이네요.”</p>
+                <p class="mb-6">교실 건너편에서 소라가 민지를 빤히 쳐다보았다. 소라는 진짜 <b class="highlight">책벌레</b>였다. 그 책을 두 번이나 읽었다. 그리고 민지가 순수한 자신감과 훔쳐 들은 말들만으로 버티고 있다는 것을 알고 있었다.</p>
+                <p class="mb-6">수업이 끝난 뒤, 소라가 민지를 따라잡았다.</p>
+                <p class="mb-6">“너 그 책 안 읽었지?”</p>
+                <p class="mb-6">민지가 한숨을 쉬었다. “응.”</p>
+                <p class="mb-6">소라가 고개를 저었다. “진실에 대한 네 답은 사실 괜찮았어.”</p>
+                <p class="mb-6">“고마워.”</p>
+                <p class="mb-6">“근데 파란 문은 한 번밖에 안 나와. 화장실 문이야.”</p>
+                <p class="mb-6">민지가 얼어붙었다.</p>
+                <p class="mb-6">소라가 씩 웃었다. “그리고 결말은 엄청 행복해.”</p>
+                <p class="mb-6">민지가 얼굴을 가렸다. “그건 <b class="highlight">너무 자세한 정보야</b>. 나 그냥 살아남은 기분을 즐기게 해줘.”</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "611630.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

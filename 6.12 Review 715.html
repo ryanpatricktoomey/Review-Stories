@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Midnight Reality Check</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🎧</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Midnight Reality Check</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">willpower</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">의지력</td></tr>
+                <tr><td class="p-4"><b class="text-white">brain fog</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">머리가 멍한 상태 / 머리가 잘 안 돌아가는 느낌</td></tr>
+                <tr><td class="p-4"><b class="text-white">so far</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">지금까지는 / 아직까지는</td></tr>
+                <tr><td class="p-4"><b class="text-white">stay on top of the trends</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">최신 트렌드를 잘 따라가다 / 유행을 놓치지 않다</td></tr>
+                <tr><td class="p-4"><b class="text-white">fossil</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">화석 / 시대에 뒤처진 사람</td></tr>
+                <tr><td class="p-4"><b class="text-white">the prime of my life</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">내 인생의 전성기</td></tr>
+                <tr><td class="p-4"><b class="text-white">patience</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">인내심</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-2xl p-5 border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-extrabold text-lg">brain fog</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">머리가 멍하고 집중이 잘 안 되는 상태를 말합니다. 피곤하거나 잠이 부족할 때 자주 씁니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-extrabold text-lg">so far</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">“지금까지는”이라는 뜻입니다. 아직 상황이 끝나지 않았고, 나중에 바뀔 수도 있다는 느낌이 있습니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-extrabold text-lg">stay on top of the trends</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">최신 유행이나 변화들을 계속 알고 따라간다는 뜻입니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-extrabold text-lg">fossil</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">원래는 “화석”이지만, 농담으로 시대에 뒤처진 사람을 가리킬 때도 씁니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-extrabold text-lg">the prime of my life</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">인생에서 가장 좋고 활발한 전성기를 뜻합니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">At 8:30 p.m., four high school friends met outside a music lounge in Hongdae. They had not all been together in years. Back in school, they had promised that when they turned forty-five, they would stay out until sunrise and prove they were still fun.</p>
+                <p class="mb-6">Jae arrived first, wearing a denim jacket from 2001.</p>
+                <p class="mb-6">“This jacket has history,” he said.</p>
+                <p class="mb-6">Sumin touched the sleeve. “This jacket has back pain.”</p>
+                <p class="mb-6">Leo checked the time. “I’m excited, but I also brought stomach medicine.”</p>
+                <p class="mb-6">Yebin held up a small bottle. “Eye drops.”</p>
+                <p class="mb-6">Jae clapped his hands. “No fear. Tonight is about <b class="highlight quiz-target" data-ans="willpower" data-kor="의지력">willpower</b>.”</p>
+                <p class="mb-6">They started with fried chicken and beer. For the first hour, everything felt easy. They told old stories, laughed at their old hairstyles, and argued about who had been the best dancer.</p>
+                <p class="mb-6">Jae raised his glass. “I’m telling you, I’m in <b class="highlight quiz-target" data-ans="the prime of my life" data-kor="내 인생의 전성기">the prime of my life</b>.”</p>
+                <p class="mb-6">Sumin looked at his comfortable shoes. “Your knees seem to have a different opinion.”</p>
+                <p class="mb-6">At 9:40, Leo stared at the menu for a long time.</p>
+                <p class="mb-6">“Are dried squid and fries the same thing?” he asked.</p>
+                <p class="mb-6">“No,” Yebin said. “Are you okay?”</p>
+                <p class="mb-6">“I have <b class="highlight quiz-target" data-ans="brain fog" data-kor="머리가 멍한 상태">brain fog</b>. I spent ten minutes looking for my phone while I was holding it.”</p>
+                <p class="mb-6">Jae tapped the table. “Focus. We’re doing great <b class="highlight quiz-target" data-ans="so far" data-kor="지금까지는">so far</b>.”</p>
+                <p class="mb-6">At 10:15, they moved into the music lounge. A staff member handed them a tablet for song requests. Jae wanted to choose something new and impressive, but he did not recognize a single name.</p>
+                <p class="mb-6">“Who are these people?” he asked.</p>
+                <p class="mb-6">“They’re famous,” Yebin said. “You need to <b class="highlight quiz-target" data-ans="stay on top of the trends" data-kor="최신 트렌드를 잘 따라가다">stay on top of the trends</b>.”</p>
+                <p class="mb-6">“I know trends,” Jae said. “I watched a short video yesterday.”</p>
+                <p class="mb-6">“Was it sent by your daughter?”</p>
+                <p class="mb-6">“Yes.”</p>
+                <p class="mb-6">Sumin laughed. “You’re becoming a <b class="highlight quiz-target" data-ans="fossil" data-kor="화석">fossil</b>.”</p>
+                <p class="mb-6">Jae put a hand on his chest. “That hurt more than my shoulder.”</p>
+                <p class="mb-6">DJ played a fast song. Sumin stood up to dance, but her knees moved carefully, like they were asking for legal advice. Leo drank water and whispered that spicy food had become a dangerous hobby. Yebin took one photo, looked at it, and quietly turned off the flash.</p>
+                <p class="mb-6">At 11:00, Jae checked the time and frowned. “We still have six hours until sunrise.”</p>
+                <p class="mb-6">No one spoke.</p>
+                <p class="mb-6">Yebin smiled kindly. “Maybe aging teaches <b class="highlight quiz-target" data-ans="patience" data-kor="인내심">patience</b>.”</p>
+                <p class="mb-6">“Patience for what?” Leo asked.</p>
+                <p class="mb-6">“For accepting reality.”</p>
+                <p class="mb-6">Jae looked at his old jacket, his tired friends, and the untouched second beer on the table.</p>
+                <p class="mb-6">“New plan,” he said. “Convenience-store ramyeon, taxi home, sleep before midnight.”</p>
+                <p class="mb-6">Sumin stood up slowly. “Honestly, that is the most exciting idea you’ve had all night.”</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">밤 8시 30분, 고등학교 친구 네 명이 홍대의 음악 라운지 앞에서 만났다. 네 사람이 모두 함께 모인 것은 몇 년 만이었다. 학창 시절, 그들은 마흔다섯 살이 되면 해 뜰 때까지 놀면서 아직도 재미있는 사람들이라는 걸 증명하자고 약속했었다.</p>
+                <p class="mb-6">재가 가장 먼저 도착했다. 그는 2001년에 입던 청재킷을 입고 있었다.</p>
+                <p class="mb-6">“이 재킷에는 역사가 있어.” 그가 말했다.</p>
+                <p class="mb-6">수민이 소매를 만졌다. “이 재킷에는 허리 통증도 있겠는데.”</p>
+                <p class="mb-6">레오가 시간을 확인했다. “나 기대되긴 하는데, 위장약도 가져왔어.”</p>
+                <p class="mb-6">예빈이 작은 병을 들어 보였다. “안약.”</p>
+                <p class="mb-6">재가 손뼉을 쳤다. “두려움은 없어. 오늘 밤은 <b class="highlight">의지력</b>의 문제야.”</p>
+                <p class="mb-6">그들은 치킨과 맥주로 시작했다. 처음 한 시간은 모든 게 쉬워 보였다. 그들은 옛날이야기를 하고, 과거의 헤어스타일을 보며 웃고, 누가 제일 춤을 잘 췄는지 다투었다.</p>
+                <p class="mb-6">재가 잔을 들었다. “진심으로 말하는데, 나는 <b class="highlight">내 인생의 전성기</b>야.”</p>
+                <p class="mb-6">수민이 그의 편한 신발을 보았다. “네 무릎은 다른 의견을 가진 것 같은데.”</p>
+                <p class="mb-6">9시 40분, 레오가 메뉴를 한참 동안 바라보았다.</p>
+                <p class="mb-6">“마른오징어랑 감자튀김이 같은 거야?” 그가 물었다.</p>
+                <p class="mb-6">“아니.” 예빈이 말했다. “괜찮아?”</p>
+                <p class="mb-6">“<b class="highlight">머리가 멍해</b>. 휴대폰을 손에 들고 있으면서 10분 동안 찾고 있었어.”</p>
+                <p class="mb-6">재가 테이블을 톡톡 쳤다. “집중해. 우리는 <b class="highlight">지금까지는</b> 아주 잘하고 있어.”</p>
+                <p class="mb-6">10시 15분, 그들은 음악 라운지 안으로 들어갔다. 직원이 신청곡용 태블릿을 건넸다. 재는 새롭고 멋진 노래를 고르고 싶었지만, 이름을 하나도 알아보지 못했다.</p>
+                <p class="mb-6">“이 사람들 누구야?” 그가 물었다.</p>
+                <p class="mb-6">“유명한 사람들이야.” 예빈이 말했다. “너도 <b class="highlight">최신 트렌드를 잘 따라가야지</b>.”</p>
+                <p class="mb-6">“나도 트렌드 알아.” 재가 말했다. “어제 짧은 영상 봤어.”</p>
+                <p class="mb-6">“네 딸이 보내준 거였어?”</p>
+                <p class="mb-6">“응.”</p>
+                <p class="mb-6">수민이 웃었다. “너 점점 <b class="highlight">화석</b>이 되어가고 있어.”</p>
+                <p class="mb-6">재는 가슴에 손을 얹었다. “그 말이 어깨보다 더 아프다.”</p>
+                <p class="mb-6">DJ가 빠른 노래를 틀었다. 수민은 춤추려고 일어났지만, 무릎이 법률 자문이라도 구하는 것처럼 조심스럽게 움직였다. 레오는 물을 마시며 매운 음식이 위험한 취미가 되었다고 속삭였다. 예빈은 사진을 한 장 찍고 확인한 뒤 조용히 플래시를 껐다.</p>
+                <p class="mb-6">11시, 재가 시간을 확인하고 얼굴을 찡그렸다. “해 뜰 때까지 아직 여섯 시간 남았어.”</p>
+                <p class="mb-6">아무도 말하지 않았다.</p>
+                <p class="mb-6">예빈이 다정하게 웃었다. “어쩌면 나이 드는 건 <b class="highlight">인내심</b>을 가르쳐주는지도 몰라.”</p>
+                <p class="mb-6">“무엇에 대한 인내심?” 레오가 물었다.</p>
+                <p class="mb-6">“현실을 받아들이는 데 필요한 인내심.”</p>
+                <p class="mb-6">재는 자신의 낡은 재킷, 지친 친구들, 그리고 테이블 위에 그대로 남은 두 번째 맥주를 바라보았다.</p>
+                <p class="mb-6">“새 계획.” 그가 말했다. “편의점 라면, 택시 귀가, 자정 전 취침.”</p>
+                <p class="mb-6">수민이 천천히 일어섰다. “솔직히 그게 네가 오늘 밤 낸 아이디어 중에 제일 신난다.”</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "612715.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

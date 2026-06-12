@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Sunrise Schedule</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🕺</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Sunrise Schedule</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">center of the universe</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">세상의 중심</td></tr>
+                <tr><td class="p-4"><b class="text-white">more considerate of others</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">다른 사람을 더 배려하는</td></tr>
+                <tr><td class="p-4"><b class="text-white">people please</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">남의 비위를 맞추는 사람 / 남을 실망시키기 싫어하는 사람</td></tr>
+                <tr><td class="p-4"><b class="text-white">my body can't keep up</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">몸이 따라주지 않아요</td></tr>
+                <tr><td class="p-4"><b class="text-white">dictator</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">독재자</td></tr>
+                <tr><td class="p-4"><b class="text-white">flexible</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">유연한</td></tr>
+                <tr><td class="p-4"><b class="text-white">sharp</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">날카로운 / 정신이 또렷한 / 감이 좋은</td></tr>
+                <tr><td class="p-4"><b class="text-white">resilient</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">회복력이 있는 / 잘 버티는</td></tr>
+                <tr><td class="p-4"><b class="text-white">make the best out of it</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">상황을 최대한 좋게 만들다 / 주어진 상황에서 최선을 다하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">draw the line</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">선을 긋다 / 한계를 정하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">set boundaries</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">경계를 정하다 / 선을 분명히 하다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-2xl p-5 border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-extrabold text-lg">center of the universe</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">자기 자신이 가장 중요하다고 생각하는 사람을 비판적으로 말할 때 자주 씁니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-extrabold text-lg">people pleaser</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">남을 기쁘게 하려고 자기 마음이나 필요를 자주 희생하는 사람을 뜻합니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-extrabold text-lg">my body can't keep up</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">마음은 하고 싶은데 몸이 따라주지 않는다는 느낌입니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-extrabold text-lg">sharp</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">사람에게 쓰면 머리가 잘 돌아가거나 감각이 좋다는 뜻입니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-extrabold text-lg">draw the line / set boundaries</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">둘 다 한계를 정한다는 뜻입니다. 특히 인간관계나 부탁을 거절할 때 자주 씁니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">For his fiftieth birthday, Brian invited four friends to a hotel lounge and handed each person a printed schedule.<br>8:00 dinner.<br>9:30 cocktails.<br>11:00 dancing.<br>1:00 karaoke.<br>4:30 riverside walk.<br>5:20 sunrise photo.</p>
+                <p class="mb-6">Clara read the paper twice. “Brian, this is not a birthday party. This is a military operation.”</p>
+                <p class="mb-6">Brian smiled. “I planned everything.”</p>
+                <p class="mb-6">“You planned our pain,” Clara said.</p>
+                <p class="mb-6">Tom pointed at the schedule. “Who made you the <b class="highlight quiz-target" data-ans="dictator" data-kor="독재자">dictator</b> of bedtime?”</p>
+                <p class="mb-6">Brian tapped the paper. “Nobody is leaving early. For one night, we are young.”</p>
+                <p class="mb-6">Maya sat down carefully. “I support fun, but <b class="highlight quiz-target" data-ans="my body can't keep up" data-kor="몸이 따라주지 않아요">my body can't keep up</b> with a nine-hour festival.”</p>
+                <p class="mb-6">Brian waved his hand. “You do Pilates. You’re <b class="highlight quiz-target" data-ans="flexible" data-kor="유연한">flexible</b>.”</p>
+                <p class="mb-6">“My legs are flexible,” Maya said. “My need for sleep is not.”</p>
+                <p class="mb-6">At dinner, Brian kept ordering more food. He wanted everyone to feel excited, but he also wanted the night to happen exactly his way. When Clara asked for a quieter table, he said the music created atmosphere. When Tom asked for water, Brian ordered cocktails.</p>
+                <p class="mb-6">Clara leaned toward Maya. “He thinks he’s the <b class="highlight quiz-target" data-ans="center of the universe" data-kor="세상의 중심">center of the universe</b> tonight.”</p>
+                <p class="mb-6">Brian heard her. “I’m hosting.”</p>
+                <p class="mb-6">“You’re controlling,” Clara said.</p>
+                <p class="mb-6">Brian looked surprised. “I’m trying to make everyone happy.”</p>
+                <p class="mb-6">“No,” Maya said gently. “That’s what a <b class="highlight quiz-target" data-ans="people pleaser" data-kor="남의 비위를 맞추는 사람">people pleaser</b> says right before ignoring what people actually want.”</p>
+                <p class="mb-6">Brian was quiet for a moment.</p>
+                <p class="mb-6">By 10:20, the signs were clear. Tom could not read the cocktail menu without turning on his phone light. Clara forgot why she had opened her bag. Maya stretched beside the table because her hip felt strange. Brian tried to stand quickly and made a small sound that everyone politely ignored.</p>
+                <p class="mb-6">Tom raised his glass of water. “We are <b class="highlight quiz-target" data-ans="resilient" data-kor="회복력이 있는">resilient</b>.”</p>
+                <p class="mb-6">“We are surviving dinner,” Clara said. “Let’s not exaggerate.”</p>
+                <p class="mb-6">Brian looked at his schedule. “Maybe we can <b class="highlight quiz-target" data-ans="make the best out of it" data-kor="상황을 최대한 좋게 만들다">make the best out of it</b> by skipping cocktails and going directly to dancing.”</p>
+                <p class="mb-6">Maya shook her head. “I need to <b class="highlight quiz-target" data-ans="draw the line" data-kor="선을 긋다">draw the line</b> at dancing after midnight.”</p>
+                <p class="mb-6">Clara nodded. “I’m trying to be <b class="highlight quiz-target" data-ans="more considerate of others" data-kor="다른 사람을 더 배려하는">more considerate of others</b>, but I also need to be honest with myself.”</p>
+                <p class="mb-6">Maya smiled. “That’s called <b class="highlight quiz-target" data-ans="setting boundaries" data-kor="경계를 정하는 것">setting boundaries</b>.”</p>
+                <p class="mb-6">Brian sighed. “So the schedule is dead?”</p>
+                <p class="mb-6">Tom checked his phone. “Not dead. Shorter.”</p>
+                <p class="mb-6">Maya said, “Dinner, one slow song, convenience-store ramyeon, home.”</p>
+                <p class="mb-6">Brian looked disappointed, but then he folded the schedule and put it away.</p>
+                <p class="mb-6">“Fine,” he said. “I’m still <b class="highlight quiz-target" data-ans="sharp" data-kor="정신이 또렷한">sharp</b> enough to recognize a better plan.”</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">쉰 번째 생일을 맞아 브라이언은 친구 네 명을 호텔 라운지로 초대하고 각자에게 인쇄된 일정을 나누어 주었다.<br>8시 저녁 식사.<br>9시 30분 칵테일.<br>11시 춤.<br>1시 노래방.<br>4시 30분 강변 산책.<br>5시 20분 일출 사진.</p>
+                <p class="mb-6">클라라는 종이를 두 번 읽었다. “브라이언, 이건 생일 파티가 아니야. 군사 작전이야.”</p>
+                <p class="mb-6">브라이언은 웃었다. “내가 다 계획했어.”</p>
+                <p class="mb-6">“우리의 고통을 계획했네.” 클라라가 말했다.</p>
+                <p class="mb-6">톰이 일정표를 가리켰다. “누가 너를 취침 시간의 <b class="highlight">독재자</b>로 만들었어?”</p>
+                <p class="mb-6">브라이언은 종이를 톡톡 두드렸다. “아무도 일찍 안 가. 오늘 밤 하루만큼은 우리는 젊은 거야.”</p>
+                <p class="mb-6">마야는 조심스럽게 앉았다. “재미는 찬성인데, 아홉 시간짜리 축제는 <b class="highlight">몸이 따라주지 않아</b>.”</p>
+                <p class="mb-6">브라이언이 손을 저었다. “너 필라테스 하잖아. <b class="highlight">유연하잖아</b>.”</p>
+                <p class="mb-6">“내 다리는 유연해.” 마야가 말했다. “수면 욕구는 아니야.”</p>
+                <p class="mb-6">저녁 식사 중에 브라이언은 음식을 계속 더 주문했다. 그는 모두가 신나기를 바랐지만, 동시에 밤이 정확히 자기 방식대로 흘러가기를 원했다. 클라라가 더 조용한 테이블을 부탁하자 그는 음악이 분위기를 만든다고 말했다. 톰이 물을 부탁하자 브라이언은 칵테일을 주문했다.</p>
+                <p class="mb-6">클라라가 마야 쪽으로 몸을 기울였다. “오늘 밤 쟤는 자기가 <b class="highlight">세상의 중심</b>이라고 생각하네.”</p>
+                <p class="mb-6">브라이언이 그 말을 들었다. “나는 주최자야.”</p>
+                <p class="mb-6">“너는 통제하고 있어.” 클라라가 말했다.</p>
+                <p class="mb-6">브라이언은 놀란 표정을 지었다. “나는 모두를 행복하게 해주려고 하는 거야.”</p>
+                <p class="mb-6">“아니.” 마야가 부드럽게 말했다. “그건 <b class="highlight">남의 비위를 맞추는 사람</b>이 사람들이 실제로 원하는 걸 무시하기 직전에 하는 말이야.”</p>
+                <p class="mb-6">브라이언은 잠시 조용해졌다.</p>
+                <p class="mb-6">10시 20분쯤에는 신호가 분명했다. 톰은 휴대폰 조명을 켜지 않고는 칵테일 메뉴를 읽을 수 없었다. 클라라는 왜 가방을 열었는지 잊어버렸다. 마야는 엉덩이가 이상해서 테이블 옆에서 스트레칭을 했다. 브라이언은 빨리 일어서려다가 모두가 예의상 못 들은 척한 작은 소리를 냈다.</p>
+                <p class="mb-6">톰이 물잔을 들었다. “우리는 <b class="highlight">회복력이 있어</b>.”</p>
+                <p class="mb-6">“우리는 저녁 식사를 버티는 중이야.” 클라라가 말했다. “과장하지 말자.”</p>
+                <p class="mb-6">브라이언은 일정표를 보았다. “칵테일은 건너뛰고 바로 춤추러 가면 <b class="highlight">이 상황을 최대한 좋게 만들 수</b> 있을지도 몰라.”</p>
+                <p class="mb-6">마야가 고개를 저었다. “나는 자정 이후 춤추는 건 <b class="highlight">선을 그어야겠어</b>.”</p>
+                <p class="mb-6">클라라가 고개를 끄덕였다. “나는 <b class="highlight">다른 사람을 더 배려하려고</b> 하지만, 나 자신에게도 솔직해야 해.”</p>
+                <p class="mb-6">마야가 웃었다. “그걸 <b class="highlight">경계를 정하는 것</b>이라고 해.”</p>
+                <p class="mb-6">브라이언이 한숨을 쉬었다. “그럼 일정표는 끝난 거야?”</p>
+                <p class="mb-6">톰이 휴대폰을 확인했다. “끝난 건 아니야. 짧아진 거지.”</p>
+                <p class="mb-6">마야가 말했다. “저녁, 느린 노래 한 곡, 편의점 라면, 귀가.”</p>
+                <p class="mb-6">브라이언은 실망한 표정이었지만, 곧 일정표를 접어 넣었다.</p>
+                <p class="mb-6">“좋아.” 그가 말했다. “나는 아직 더 나은 계획을 알아볼 만큼 <b class="highlight">정신이 또렷해</b>.”</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "612830.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

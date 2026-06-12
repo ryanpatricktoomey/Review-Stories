@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Noise Complaint</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🌙</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Noise Complaint</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">Pokemon</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">포켓몬</td></tr>
+                <tr><td class="p-4"><b class="text-white">desensitized</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">무감각해진 / 둔감해진</td></tr>
+                <tr><td class="p-4"><b class="text-white">easygoing</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">느긋한 / 까다롭지 않은</td></tr>
+                <tr><td class="p-4"><b class="text-white">choose your battles</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">싸울 일을 골라라 / 모든 일에 일일이 반응하지 마라</td></tr>
+                <tr><td class="p-4"><b class="text-white">fiery</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">불같은 / 열정적이고 성격이 강한</td></tr>
+                <tr><td class="p-4"><b class="text-white">speak up</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">목소리를 내다 / 의견을 분명히 말하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">argue</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">말다툼하다 / 논쟁하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">mellowed out</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">성격이 부드러워졌다 / 차분해졌다</td></tr>
+                <tr><td class="p-4"><b class="text-white">this too shall pass</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">이 또한 지나가리라</td></tr>
+                <tr><td class="p-4"><b class="text-white">resilience</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">회복력 / 다시 일어서는 힘</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-2xl p-5 border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-extrabold text-lg">desensitized</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">반복해서 많이 겪다 보니 예전만큼 강하게 반응하지 않게 된 상태를 말합니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-extrabold text-lg">choose your battles</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">모든 문제에 다 싸우듯이 반응하지 말고, 정말 중요한 문제만 골라 대응하라는 뜻입니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-extrabold text-lg">fiery</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">성격이나 감정 표현이 강하고 열정적인 사람에게 씁니다. 화를 잘 내는 느낌도 있을 수 있습니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-extrabold text-lg">speak up</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">그냥 크게 말하라는 뜻도 있지만, 의견이나 불만을 분명히 표현하라는 뜻으로도 자주 씁니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-extrabold text-lg">mellowed out</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">예전보다 성격이 부드러워지고 덜 예민해졌다는 뜻입니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-extrabold text-lg">this too shall pass</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">힘든 일도 결국 지나간다는 뜻의 표현입니다. 위로하거나 스스로 마음을 다잡을 때 씁니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">At 8:00 p.m., four old friends met at a chicken restaurant near their old university. Twenty years earlier, they had promised each other that when they turned forty-five, they would stay out until sunrise.</p>
+                <p class="mb-6">Sunho raised his glass. “Tonight, we prove we’re still fun.”</p>
+                <p class="mb-6">Jina smiled. “Tonight, we prove we can digest fried food after 9 p.m.”</p>
+                <p class="mb-6">Across the table, David was trying to open a pain relief patch for his shoulder. “Both are important.”</p>
+                <p class="mb-6">For the first hour, the plan seemed possible. They ate chicken, drank beer, and talked about the games they used to play. When someone mentioned <b class="highlight quiz-target" data-ans="Pokemon" data-kor="포켓몬">Pokemon</b>, Sunho immediately listed every character he could remember.</p>
+                <p class="mb-6">“You still know all that?” Jina asked.</p>
+                <p class="mb-6">“My knees are weak,” he said, “but my memory for useless things is strong.”</p>
+                <p class="mb-6">At the next table, a group of younger people was laughing loudly and filming short videos. One of them knocked into Jina’s chair twice without apologizing.</p>
+                <p class="mb-6">Old Jina would have turned around immediately. In her twenties, she had been <b class="highlight quiz-target" data-ans="fiery" data-kor="불같은 성격이었고">fiery</b> and quick to <b class="highlight quiz-target" data-ans="argue" data-kor="말다툼했다">argue</b>. She never let anything go.</p>
+                <p class="mb-6">But now she only took a slow breath.</p>
+                <p class="mb-6">David noticed. “You’re calm.”</p>
+                <p class="mb-6">“I’ve <b class="highlight quiz-target" data-ans="mellowed out" data-kor="성격이 부드러워졌어">mellowed out</b>,” Jina said. “Also, I don’t have the energy for a public fight.”</p>
+                <p class="mb-6">Sunho leaned forward. “No, you should <b class="highlight quiz-target" data-ans="speak up" data-kor="목소리를 내야 해">speak up</b>. They’re being rude.”</p>
+                <p class="mb-6">“I will if it gets worse,” Jina said. “But I’ve learned to <b class="highlight quiz-target" data-ans="choose your battles" data-kor="싸울 일을 고르는 법">choose your battles</b>.”</p>
+                <p class="mb-6">Mina nodded. “That’s wisdom. I used to complain about everything. Now I’m more <b class="highlight quiz-target" data-ans="easygoing" data-kor="느긋해졌어">easygoing</b>.”</p>
+                <p class="mb-6">Just then, someone at the next table shouted into a phone, “No, bro, listen!” Everyone in the restaurant turned.</p>
+                <p class="mb-6">Mina closed her eyes. “I may be easygoing, but I’m not dead.”</p>
+                <p class="mb-6">Jina finally stood up and walked over. Her friends watched nervously.</p>
+                <p class="mb-6">“Excuse me,” she said politely. “Could you lower your voice a little? We’re trying to enjoy our night.”</p>
+                <p class="mb-6">The young man looked embarrassed. “Oh, sorry.”</p>
+                <p class="mb-6">Jina returned to the table like a diplomat.</p>
+                <p class="mb-6">Sunho whispered, “That was beautiful.”</p>
+                <p class="mb-6">“That was basic communication,” she said.</p>
+                <p class="mb-6">At 10:40, they moved to a quiet bar. By 11:15, the sunrise plan was in danger. David was drinking hot tea. Mina had put on reading glasses to check the dessert menu. Sunho said loud music no longer excited him because he had become <b class="highlight quiz-target" data-ans="desensitized" data-kor="둔감해져서">desensitized</b> to noise after raising two children.</p>
+                <p class="mb-6">Jina looked at their tired faces and laughed. “We have great <b class="highlight quiz-target" data-ans="resilience" data-kor="회복력">resilience</b>, but maybe not great nightlife skills.”</p>
+                <p class="mb-6">Sunho checked the time. “Six more hours.”</p>
+                <p class="mb-6">Mina held up her tea. “<b class="highlight quiz-target" data-ans="This too shall pass" data-kor="이 또한 지나가리라">This too shall pass</b>.”</p>
+                <p class="mb-6">David stood slowly. “Yes. But let’s let it pass at home.”</p>
+                <p class="mb-6">Nobody argued.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">밤 8시, 오랜 친구 네 명이 예전 대학교 근처의 치킨집에서 만났다. 20년 전, 그들은 마흔다섯 살이 되면 해 뜰 때까지 놀자고 서로 약속했었다.</p>
+                <p class="mb-6">선호가 잔을 들었다. “오늘 밤, 우리가 아직 재미있는 사람들이라는 걸 증명하는 거야.”</p>
+                <p class="mb-6">지나가 웃었다. “오늘 밤, 우리가 밤 9시 이후에도 튀긴 음식을 소화할 수 있다는 걸 증명하는 거지.”</p>
+                <p class="mb-6">테이블 건너편에서 데이비드는 어깨에 붙일 파스를 뜯으려고 애쓰고 있었다. “둘 다 중요해.”</p>
+                <p class="mb-6">처음 한 시간 동안은 계획이 가능해 보였다. 그들은 치킨을 먹고 맥주를 마시며 예전에 하던 게임 이야기를 했다. 누군가 포켓몬을 언급하자, 선호는 즉시 기억나는 캐릭터 이름을 줄줄이 말했다.</p>
+                <p class="mb-6">“아직도 그걸 다 알아?” 지나가 물었다.</p>
+                <p class="mb-6">“무릎은 약해졌지만,” 그가 말했다. “쓸데없는 것에 대한 기억력은 강해.”</p>
+                <p class="mb-6">옆 테이블에서는 젊은 사람들이 크게 웃으며 짧은 영상을 찍고 있었다. 그중 한 명이 지나의 의자를 두 번이나 치고도 사과하지 않았다.</p>
+                <p class="mb-6">예전의 지나였다면 바로 뒤돌아봤을 것이다. 20대 때 그녀는 <b class="highlight">불같은 성격이었고</b>, 쉽게 <b class="highlight">말다툼했다</b>. 그녀는 어떤 일도 그냥 넘기지 않았다.</p>
+                <p class="mb-6">하지만 이제 그녀는 천천히 숨을 들이마셨을 뿐이었다.</p>
+                <p class="mb-6">데이비드가 알아차렸다. “너 차분하네.”</p>
+                <p class="mb-6">“나 <b class="highlight">성격이 부드러워졌어</b>.” 지나가 말했다. “그리고 공개적으로 싸울 에너지도 없어.”</p>
+                <p class="mb-6">선호가 몸을 앞으로 기울였다. “아니야, 너 <b class="highlight">목소리를 내야 해</b>. 저 사람들 무례하잖아.”</p>
+                <p class="mb-6">“더 심해지면 말할 거야.” 지나가 말했다. “하지만 이제는 <b class="highlight">싸울 일을 고르는 법</b>을 배웠어.”</p>
+                <p class="mb-6">미나가 고개를 끄덕였다. “그게 지혜지. 나도 예전에는 모든 일에 불평했어. 이제는 더 <b class="highlight">느긋해졌어</b>.”</p>
+                <p class="mb-6">바로 그때, 옆 테이블의 누군가가 전화기에 대고 외쳤다. “아니, 형, 들어봐!” 식당 안의 모두가 돌아보았다.</p>
+                <p class="mb-6">미나가 눈을 감았다. “내가 느긋해졌다고 해서 죽은 건 아니야.”</p>
+                <p class="mb-6">지나는 마침내 일어나 그쪽으로 걸어갔다. 친구들은 긴장한 채 지켜보았다.</p>
+                <p class="mb-6">“실례합니다.” 그녀가 정중하게 말했다. “목소리를 조금만 낮춰주실 수 있을까요? 저희도 밤을 즐기려고 해서요.”</p>
+                <p class="mb-6">그 젊은 남자는 당황한 표정을 지었다. “아, 죄송합니다.”</p>
+                <p class="mb-6">지나는 외교관처럼 테이블로 돌아왔다.</p>
+                <p class="mb-6">선호가 속삭였다. “아름다웠다.”</p>
+                <p class="mb-6">“기본적인 의사소통이었어.” 그녀가 말했다.</p>
+                <p class="mb-6">10시 40분, 그들은 조용한 바로 옮겼다. 11시 15분쯤에는 일출 계획이 위험해졌다. 데이비드는 따뜻한 차를 마시고 있었다. 미나는 디저트 메뉴를 보려고 돋보기를 썼다. 선호는 아이 둘을 키우고 나서 소음에 <b class="highlight">둔감해져서</b>, 시끄러운 음악이 더 이상 신나지 않는다고 말했다.</p>
+                <p class="mb-6">지나는 그들의 지친 얼굴을 보고 웃었다. “우리는 <b class="highlight">회복력</b>은 대단한데, 밤 문화 실력은 별로인가 봐.”</p>
+                <p class="mb-6">선호가 시간을 확인했다. “여섯 시간 더 남았어.”</p>
+                <p class="mb-6">미나가 찻잔을 들었다. “<b class="highlight">이 또한 지나가리라</b>.”</p>
+                <p class="mb-6">데이비드가 천천히 일어섰다. “맞아. 하지만 그게 집에서 지나가게 하자.”</p>
+                <p class="mb-6">아무도 반박하지 않았다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "6121200.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Sunrise Pact</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🌙</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Sunrise Pact</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">interrupt people</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">사람들 말을 끊다</td></tr>
+                <tr><td class="p-4"><b class="text-white">cut people off</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">말을 끊다 / 끼어들어 말을 막다</td></tr>
+                <tr><td class="p-4"><b class="text-white">opinionated</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">자기 의견이 강한 / 고집스럽게 주장하는</td></tr>
+                <tr><td class="p-4"><b class="text-white">when I was in my twenties</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">내가 20대였을 때</td></tr>
+                <tr><td class="p-4"><b class="text-white">considerate of others</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">다른 사람을 배려하는</td></tr>
+                <tr><td class="p-4"><b class="text-white">act your age</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">나잇값을 해라 / 나이에 맞게 행동해라</td></tr>
+                <tr><td class="p-4"><b class="text-white">braid</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">땋은 머리 / 머리를 땋다</td></tr>
+                <tr><td class="p-4"><b class="text-white">feel bitter</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">씁쓸하게 느끼다 / 억울하고 불만스럽다</td></tr>
+                <tr><td class="p-4"><b class="text-white">feel left behind</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">뒤처진 기분이 들다</td></tr>
+                <tr><td class="p-4"><b class="text-white">feel out of touch</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">세상 흐름을 모르는 것처럼 느끼다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-2xl p-5 border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-extrabold text-lg">cut people off</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">상대가 말하는 중간에 끼어들어 말을 막는 느낌입니다. “interrupt people”보다 조금 더 강하게 들릴 수 있습니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-extrabold text-lg">opinionated</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">단순히 의견이 있다는 뜻이 아니라, 자기 의견이 강하게 말하고 잘 굽히지 않는 느낌입니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-extrabold text-lg">act your age</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">상대가 너무 유치하거나 나이에 맞지 않게 행동할 때 쓰는 말입니다. 이야기에서는 “act our age”처럼 자연스럽게 바꾸어 쓸 수 있습니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-extrabold text-lg">feel left behind</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">남들은 앞으로 가는데 나만 제자리에 있는 것 같은 감정입니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-extrabold text-lg">feel out of touch</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">요즘 문화, 기술, 유행, 사람들의 생각을 잘 모르는 것 같은 느낌입니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Three former college roommates met at a small bar near their university. They had not spent a full night together in years, so Mira made a dramatic announcement.</p>
+                <p class="mb-6">“We are staying out until sunrise,” she said. “No excuses.”</p>
+                <p class="mb-6">Daniel lifted his beer. “I support this plan emotionally.”</p>
+                <p class="mb-6">“What does that mean?” Hana asked.</p>
+                <p class="mb-6">“It means my heart says yes, but my lower back has questions.”</p>
+                <p class="mb-6">Mira rolled her eyes. “Come on. <b class="highlight quiz-target" data-ans="When I was in my twenties" data-kor="내가 20대였을 때">When I was in my twenties</b>, we stayed out all night and ate soup at 6 a.m.”</p>
+                <p class="mb-6">“Yes,” Daniel said. “And now I take vitamins if I see stairs.”</p>
+                <p class="mb-6">For the first hour, they were cheerful. They talked about old professors, bad part-time jobs, and the terrible apartment they once shared. Then Hana held the menu far from her face.</p>
+                <p class="mb-6">“Is this font legal?” she asked.</p>
+                <p class="mb-6">Daniel handed her his glasses. “Use these.”</p>
+                <p class="mb-6">Mira pointed across the room at a group of students taking photos. One woman had a long blue <b class="highlight quiz-target" data-ans="braid" data-kor="땋은 머리">braid</b> and silver boots.</p>
+                <p class="mb-6">“They look amazing,” Mira said.</p>
+                <p class="mb-6">Hana smiled, but her voice became quiet. “Sometimes I <b class="highlight quiz-target" data-ans="feel left behind" data-kor="뒤처진 기분이 들다">feel left behind</b>. They know all the songs, all the apps, all the poses.”</p>
+                <p class="mb-6">Daniel nodded. “I <b class="highlight quiz-target" data-ans="feel out of touch" data-kor="세상 흐름을 모르는 것처럼 느끼다">feel out of touch</b> every time someone says a word and I don’t know if it’s slang or medicine.”</p>
+                <p class="mb-6">Mira tried to answer, but Daniel began telling a long story about a club from 2004. Hana opened her mouth twice, but he kept talking.</p>
+                <p class="mb-6">“Daniel,” Mira said, “you still <b class="highlight quiz-target" data-ans="interrupt people" data-kor="사람들 말을 끊다">interrupt people</b>.”</p>
+                <p class="mb-6">“I’m adding details.”</p>
+                <p class="mb-6">“You’re <b class="highlight quiz-target" data-ans="cutting people off" data-kor="말을 끊고 있어">cutting people off</b> with details.”</p>
+                <p class="mb-6">Daniel looked offended. “I’m not rude. I’m just <b class="highlight quiz-target" data-ans="opinionated" data-kor="자기 의견이 강한">opinionated</b>.”</p>
+                <p class="mb-6">“At least you admit it,” Hana said.</p>
+                <p class="mb-6">At 10:30, they moved to karaoke. Mira chose a dance song, jumped up, and immediately sat down.</p>
+                <p class="mb-6">“My ankle remembers this song differently,” she said.</p>
+                <p class="mb-6">Daniel laughed too hard and started coughing. Hana asked the staff to lower the volume.</p>
+                <p class="mb-6">“That was <b class="highlight quiz-target" data-ans="considerate of others" data-kor="다른 사람을 배려하는">considerate of others</b>,” Daniel said. “Especially my ears.”</p>
+                <p class="mb-6">A student in the next room shouted, “This place is dead!”</p>
+                <p class="mb-6">Mira’s face changed. “That makes me <b class="highlight quiz-target" data-ans="feel bitter" data-kor="씁쓸하게 느끼다">feel bitter</b>.”</p>
+                <p class="mb-6">Hana picked up her bag. “Then let’s <b class="highlight quiz-target" data-ans="act our age" data-kor="우리 나이에 맞게 행동하다">act our age</b> and get convenience-store ramyeon before we all fall asleep standing up.”</p>
+                <p class="mb-6">Daniel checked the time. “It’s only 11.”</p>
+                <p class="mb-6">Mira stood carefully. “Exactly. We’re leaving while we can still walk.”</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">세 명의 예전 대학 룸메이트가 대학 근처의 작은 술집에서 만났다. 그들은 몇 년 동안 밤새 함께 시간을 보낸 적이 없었기 때문에, 미라는 극적으로 선언했다.</p>
+                <p class="mb-6">“우리 해 뜰 때까지 밖에 있는 거야. 변명 없음.”</p>
+                <p class="mb-6">다니엘이 맥주잔을 들었다. “감정적으로는 이 계획을 지지해.”</p>
+                <p class="mb-6">“그게 무슨 뜻이야?” 하나가 물었다.</p>
+                <p class="mb-6">“마음은 좋다고 하는데, 허리는 질문이 있다는 뜻이야.”</p>
+                <p class="mb-6">미라는 눈을 굴렸다. “왜 그래. <b class="highlight">내가 20대였을 때</b> 우리는 밤새 놀고 새벽 6시에 국밥 먹었잖아.”</p>
+                <p class="mb-6">“맞아.” 다니엘이 말했다. “그리고 지금은 계단만 봐도 비타민을 먹어.”</p>
+                <p class="mb-6">처음 한 시간 동안은 분위기가 좋았다. 그들은 옛 교수들, 힘들었던 아르바이트, 함께 살던 끔찍한 아파트 이야기를 했다. 그러다 하나가 메뉴를 얼굴에서 멀리 떨어뜨렸다.</p>
+                <p class="mb-6">“이 글씨 크기 법적으로 괜찮은 거야?” 그녀가 물었다.</p>
+                <p class="mb-6">다니엘이 자기 안경을 건넸다. “이거 써.”</p>
+                <p class="mb-6">미라는 방 건너편에서 사진을 찍는 대학생들을 가리켰다. 한 여자는 긴 파란색 <b class="highlight">땋은 머리</b>에 은색 부츠를 신고 있었다.</p>
+                <p class="mb-6">“정말 멋지다.” 미라가 말했다.</p>
+                <p class="mb-6">하나는 웃었지만 목소리가 조용해졌다. “가끔은 내가 <b class="highlight">뒤처진 기분이 들어</b>. 저 사람들은 노래도, 앱도, 포즈도 다 알아.”</p>
+                <p class="mb-6">다니엘이 고개를 끄덕였다. “나는 누가 어떤 단어를 말할 때마다 그게 유행어인지 약 이름인지 몰라서 <b class="highlight">세상 흐름을 모르는 것 같아</b>.”</p>
+                <p class="mb-6">미라가 대답하려 했지만, 다니엘은 2004년에 다니던 클럽 이야기를 길게 하기 시작했다. 하나가 두 번이나 입을 열었지만, 그는 계속 말했다.</p>
+                <p class="mb-6">“다니엘.” 미라가 말했다. “너 아직도 <b class="highlight">사람들 말을 끊어</b>.”</p>
+                <p class="mb-6">“나는 세부 사항을 더하는 거야.”</p>
+                <p class="mb-6">“너는 세부 사항으로 <b class="highlight">사람들 말을 끊고 있어</b>.”</p>
+                <p class="mb-6">다니엘은 기분 상한 표정을 지었다. “나 무례한 거 아니야. 그냥 <b class="highlight">자기 의견이 강한 거야</b>.”</p>
+                <p class="mb-6">“그래도 인정은 하네.” 하나가 말했다.</p>
+                <p class="mb-6">10시 30분, 그들은 노래방으로 옮겼다. 미라는 댄스곡을 골라 벌떡 일어났다가 바로 다시 앉았다.</p>
+                <p class="mb-6">“내 발목은 이 노래를 다르게 기억하나 봐.” 그녀가 말했다.</p>
+                <p class="mb-6">다니엘은 너무 크게 웃다가 기침을 하기 시작했다. 하나는 직원에게 소리를 낮춰달라고 부탁했다.</p>
+                <p class="mb-6">“그거 <b class="highlight">다른 사람을 배려한</b> 행동이었어.” 다니엘이 말했다. “특히 내 귀를.”</p>
+                <p class="mb-6">옆방의 한 학생이 외쳤다. “여기 완전 죽었네!”</p>
+                <p class="mb-6">미라의 표정이 바뀌었다. “그 말 들으니까 <b class="highlight">씁쓸해</b>.”</p>
+                <p class="mb-6">하나가 가방을 집어 들었다. “그럼 이제 우리 <b class="highlight">나이에 맞게 행동하고</b>, 서서 잠들기 전에 편의점 라면 먹으러 가자.”</p>
+                <p class="mb-6">다니엘이 시간을 확인했다. “겨우 11시야.”</p>
+                <p class="mb-6">미라가 조심스럽게 일어섰다. “맞아. 아직 걸을 수 있을 때 나가는 거야.”</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "612630.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

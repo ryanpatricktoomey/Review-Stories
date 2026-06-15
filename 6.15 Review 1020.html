@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Bathroom Mat</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🧼</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Bathroom Mat</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">bathroom mat</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">욕실 매트</td></tr>
+                <tr><td class="p-4"><b class="text-white">his turn</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그의 차례</td></tr>
+                <tr><td class="p-4"><b class="text-white">part timer</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">아르바이트생</td></tr>
+                <tr><td class="p-4"><b class="text-white">flirting</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">추파를 던지는 것 / 작업 거는 것</td></tr>
+                <tr><td class="p-4"><b class="text-white">flirt</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">추파를 던지다 / 작업 거다</td></tr>
+                <tr><td class="p-4"><b class="text-white">stranger</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">낯선 사람</td></tr>
+                <tr><td class="p-4"><b class="text-white">made eye contact</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">눈을 마주쳤다</td></tr>
+                <tr><td class="p-4"><b class="text-white">in a pickle</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">곤란한 상황에 처한</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">his turn</h3>
+                <p class="text-sm text-slate-300">순서가 돌아왔다는 뜻이에요. 게임, 줄 서기, 역할 분담 등에서 자주 씁니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">part timer</h3>
+                <p class="text-sm text-slate-300">정규직이 아니라 시간제로 일하는 사람, 즉 아르바이트생을 말해요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">flirting / flirt</h3>
+                <p class="text-sm text-slate-300">호감을 보이거나 이성적으로 관심 있는 듯 말하고 행동하는 것을 말해요. 장난인지 진심인지 애매할 때도 많아요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">made eye contact</h3>
+                <p class="text-sm text-slate-300">서로 눈이 마주쳤다는 뜻이에요. 그냥 “봤다”보다 순간적인 교류 느낌이 있어요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">in a pickle</h3>
+                <p class="text-sm text-slate-300">직역하면 이상하지만, “곤란한 상황에 처했다”는 뜻의 캐주얼한 표현이에요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">On Wednesday morning, Nina told one small story in the staff room.</p>
+                <p class="mb-6">“I saw Mr. Lee at Home Plus yesterday,” she said. “He was holding a <b class="highlight quiz-target" data-ans="bathroom mat" data-kor="욕실 매트">bathroom mat</b>, and he looked really uncomfortable.”</p>
+                <p class="mb-6">Jared looked up from his sandwich. “Mr. Lee from HR?”</p>
+                <p class="mb-6">“Yes,” Nina said. “He was standing near the checkout. I think he was <b class="highlight quiz-target" data-ans="in a pickle" data-kor="곤란한 상황에 처한">in a pickle</b> because the self-checkout machine wasn’t working.”</p>
+                <p class="mb-6">Jared smiled. “Why was he uncomfortable?”</p>
+                <p class="mb-6">“I don’t know,” Nina said. “A young <b class="highlight quiz-target" data-ans="part timer" data-kor="아르바이트생">part timer</b> came over to help him. That’s all.”</p>
+                <p class="mb-6">That should have been the end of the story.</p>
+                <p class="mb-6">By lunch, Jared had told Mina that Nina had seen Mr. Lee buying a <b class="highlight quiz-target" data-ans="bathroom mat" data-kor="욕실 매트">bathroom mat</b> while looking nervous. Mina asked why that mattered. Jared said he wasn’t sure, but a young <b class="highlight quiz-target" data-ans="part timer" data-kor="아르바이트생">part timer</b> had helped him, and they had <b class="highlight quiz-target" data-ans="made eye contact" data-kor="눈을 마주쳤다">made eye contact</b> for a long time.</p>
+                <p class="mb-6">Mina repeated it to Paul near the elevator.</p>
+                <p class="mb-6">“Apparently, Mr. Lee was acting strange with a part-time worker at Home Plus.”</p>
+                <p class="mb-6">Paul raised his eyebrows. “Strange how?”</p>
+                <p class="mb-6">“I don’t know,” Mina said. “Jared said there was eye contact.”</p>
+                <p class="mb-6">By three o’clock, Paul had told two people from sales that Mr. Lee had been <b class="highlight quiz-target" data-ans="flirting" data-kor="추파를 던지는 것 / 작업 거는 것">flirting</b> with a <b class="highlight quiz-target" data-ans="part timer" data-kor="아르바이트생">part timer</b> while buying bathroom supplies. One of them asked if Mr. Lee knew her. Paul said someone had told him she was a <b class="highlight quiz-target" data-ans="stranger" data-kor="낯선 사람">stranger</b>, which made it sound worse.</p>
+                <p class="mb-6">Then the story found Kevin.</p>
+                <p class="mb-6">Kevin did not understand half of it, but he repeated all of it.</p>
+                <p class="mb-6">“I heard Mr. Lee tried to <b class="highlight quiz-target" data-ans="flirt" data-kor="추파를 던지다 / 작업 거다">flirt</b> with a <b class="highlight quiz-target" data-ans="stranger" data-kor="낯선 사람">stranger</b> at Home Plus,” he told Claire. “And something happened with a <b class="highlight quiz-target" data-ans="bathroom mat" data-kor="욕실 매트">bathroom mat</b>. Maybe it was <b class="highlight quiz-target" data-ans="his turn" data-kor="그의 차례">his turn</b> to pay, but he refused?”</p>
+                <p class="mb-6">By five o’clock, the rumor had become impossible. People were saying Mr. Lee had argued with a young worker, tried to get her number, refused to pay for a <b class="highlight quiz-target" data-ans="bathroom mat" data-kor="욕실 매트">bathroom mat</b>, and then claimed it was not <b class="highlight quiz-target" data-ans="his turn" data-kor="그의 차례">his turn</b>.</p>
+                <p class="mb-6">Nina heard the final version from Mr. Lee himself.</p>
+                <p class="mb-6">He walked into the staff room, holding his phone like evidence.</p>
+                <p class="mb-6">“Did you tell people I harassed a cashier over a <b class="highlight quiz-target" data-ans="bathroom mat" data-kor="욕실 매트">bathroom mat</b>?”</p>
+                <p class="mb-6">Nina stared at him. “What? No!”</p>
+                <p class="mb-6">Mr. Lee put the phone on the table. “My wife just called me. She heard I was <b class="highlight quiz-target" data-ans="flirting" data-kor="추파를 던지는 것 / 작업 거는 것">flirting</b> with some young <b class="highlight quiz-target" data-ans="part timer" data-kor="아르바이트생">part timer</b> in public.”</p>
+                <p class="mb-6">Nina stood up slowly. “I said you looked uncomfortable at the self-checkout. That’s all.”</p>
+                <p class="mb-6">The door opened, and Sumi from accounting stepped in.</p>
+                <p class="mb-6">“I can explain,” she said. “I was there.”</p>
+                <p class="mb-6">Everyone turned.</p>
+                <p class="mb-6">Sumi sighed. “The <b class="highlight quiz-target" data-ans="part timer" data-kor="아르바이트생">part timer</b> was my cousin. Mr. Lee didn’t try to <b class="highlight quiz-target" data-ans="flirt" data-kor="추파를 던지다 / 작업 거다">flirt</b> with her. He couldn’t scan the <b class="highlight quiz-target" data-ans="bathroom mat" data-kor="욕실 매트">bathroom mat</b> because the barcode was folded under the corner. He <b class="highlight quiz-target" data-ans="made eye contact" data-kor="눈을 마주쳤다">made eye contact</b> with her because she said, ‘Sir, you’re scanning the tag upside down.’”</p>
+                <p class="mb-6">Mr. Lee pointed at Nina. “And I was <b class="highlight quiz-target" data-ans="in a pickle" data-kor="곤란한 상황에 처한">in a pickle</b> because six people were waiting behind me, and yes, it was <b class="highlight quiz-target" data-ans="his turn" data-kor="그의 차례">his turn</b>.”</p>
+                <p class="mb-6">The room went quiet.</p>
+                <p class="mb-6">Then Mr. Lee added, “Also, the <b class="highlight quiz-target" data-ans="bathroom mat" data-kor="욕실 매트">bathroom mat</b> was for my mother-in-law.”</p>
+                <p class="mb-6">Nina looked at Jared. Jared looked at Mina. Mina looked at Paul. Paul looked at Kevin.</p>
+                <p class="mb-6">Kevin whispered, "So… no scandal?"</p>
+                <p class="mb-6">Mr. Lee picked up his phone. “The scandal is that none of you know how self-checkout works.”</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>수요일 아침, 니나는 직원 휴게실에서 작은 이야기를 하나 했다.</p>
+                <p>“어제 홈플러스에서 이 부장님을 봤어요,” 그녀가 말했다. “<b class="highlight">욕실 매트를</b> 들고 계셨는데, 정말 불편해 보이셨어요.”</p>
+                <p>재러드가 샌드위치에서 고개를 들었다. “HR의 이 부장님이요?”</p>
+                <p>“네,” 니나가 말했다. “계산대 근처에 서 계셨어요. 셀프 계산기가 안 돼서 <b class="highlight">곤란한 상황이었던</b> 것 같아요.”</p>
+                <p>재러드가 웃었다. “왜 불편해 보였는데요?”</p>
+                <p>“몰라요,” 니나가 말했다. “젊은 <b class="highlight">아르바이트생이</b> 와서 도와줬어요. 그게 다예요.”</p>
+                <p>그 이야기는 거기서 끝났어야 했다.</p>
+                <p>점심때쯤, 재러드는 미나에게 니나가 이 부장님이 긴장한 얼굴로 <b class="highlight">욕실 매트를</b> 사는 것을 봤다고 말했다. 미나는 그게 왜 중요하냐고 물었다. 재러드는 잘 모르겠지만, 젊은 <b class="highlight">아르바이트생이</b> 그를 도와줬고 둘이 오랫동안 <b class="highlight">눈을 마주쳤다고</b> 말했다.</p>
+                <p>미나는 엘리베이터 근처에서 폴에게 그 이야기를 다시 전했다.</p>
+                <p>“듣자 하니, 이 부장님이 홈플러스에서 아르바이트생에게 이상하게 행동하셨대요.”</p>
+                <p>폴이 눈썹을 올렸다. “어떻게 이상하게요?”</p>
+                <p>“몰라요,” 미나가 말했다. “재러드가 눈을 마주쳤다고 했어요.”</p>
+                <p>오후 3시쯤, 폴은 영업팀 두 명에게 이 부장님이 욕실용품을 사면서 아르바이트생에게 <b class="highlight">추파를 던지고 있었다고</b> 말했다. 그중 한 명이 이 부장님이 그녀를 아는 사람이냐고 물었다. 폴은 누가 그러는데 그녀가 <b class="highlight">낯선 사람이었다고</b> 했고, 그 말은 상황을 더 나쁘게 들리게 했다.</p>
+                <p>그러고 나서 그 이야기는 케빈에게 갔다.</p>
+                <p>케빈은 이야기의 절반도 이해하지 못했지만, 전부 다시 전했다.</p>
+                <p>“이 부장님이 홈플러스에서 <b class="highlight">낯선 사람한테 작업 걸려고</b> 했다고 들었어요,” 그가 클레어에게 말했다. “그리고 욕실 매트랑 관련된 일이 있었대요. 아마 계산할 <b class="highlight">차례였는데</b> 거부한 건가?”</p>
+                <p>오후 5시쯤, 소문은 말도 안 되는 수준이 되어 있었다. 사람들은 이 부장님이 젊은 직원과 말다툼했고, 그녀의 번호를 따려고 했고, 욕실 매트 값을 내지 않으려 했고, 그러고 나서 자기 <b class="highlight">차례가</b> 아니라고 주장했다고 말하고 있었다.</p>
+                <p>니나는 이 부장님 본인에게서 최종 버전을 들었다.</p>
+                <p>그는 증거라도 되는 것처럼 휴대폰을 들고 직원 휴게실로 들어왔다.</p>
+                <p>“제가 욕실 매트 때문에 계산원을 괴롭혔다고 사람들에게 말했나요?”</p>
+                <p>니나는 그를 빤히 쳐다봤다. “뭐라고요? 아니요!”</p>
+                <p>이 부장님은 휴대폰을 탁자 위에 놓았다. “방금 제 아내가 전화했어요. 제가 밖에서 젊은 <b class="highlight">아르바이트생에게 추파를 던지고 있었다고</b> 들었답니다.”</p>
+                <p>니나는 천천히 일어났다. “저는 부장님이 셀프 계산대에서 불편해 보였다고 했어요. 그게 전부예요.”</p>
+                <p>문이 열리고 회계팀 수미가 들어왔다.</p>
+                <p>“제가 설명할 수 있어요,” 그녀가 말했다. “저도 거기 있었어요.”</p>
+                <p>모두가 돌아봤다.</p>
+                <p>수미가 한숨을 쉬었다. “그 <b class="highlight">아르바이트생은</b> 제 사촌이에요. 이 부장님은 그녀에게 <b class="highlight">작업 걸려고 한 게</b> 아니에요. 욕실 매트의 바코드가 모서리 밑에 접혀 있어서 스캔을 못 하신 거예요. 그녀가 ‘손님, 태그를 거꾸로 스캔하고 계세요’라고 해서 <b class="highlight">눈을 마주친</b> 거고요.”</p>
+                <p>이 부장님이 니나를 가리켰다. “그리고 제 뒤에 여섯 명이 기다리고 있어서 <b class="highlight">곤란한 상황이었고</b>, 네, 제 <b class="highlight">차례가</b> 맞았습니다.”</p>
+                <p>방은 조용해졌다.</p>
+                <p>그러고 나서 이 부장님이 덧붙였다. “그리고 그 <b class="highlight">욕실 매트는</b> 장모님 드리려고 산 거였습니다.”</p>
+                <p>니나는 재러드를 봤다. 재러드는 미나를 봤다. 미나는 폴을 봤다. 폴은 케빈을 봤다.</p>
+                <p>케빈이 속삭였다. “그러면… 스캔들은 없는 거예요?”</p>
+                <p>이 부장님은 휴대폰을 집어 들었다. “스캔들은 여러분 중 아무도 셀프 계산기 사용법을 모른다는 겁니다.”</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "6151020.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

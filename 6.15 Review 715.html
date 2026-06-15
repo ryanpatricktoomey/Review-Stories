@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Rumor With Missing Details</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🧯</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Rumor With Missing Details</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">the day before</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">전날</td></tr>
+                <tr><td class="p-4"><b class="text-white">the day after</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">다음 날</td></tr>
+                <tr><td class="p-4"><b class="text-white">the rest of the story</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">이야기의 나머지 부분</td></tr>
+                <tr><td class="p-4"><b class="text-white">in a rush</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">급하게 / 서둘러서</td></tr>
+                <tr><td class="p-4"><b class="text-white">tickling</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">간지럽히는 것 / 간질거리는</td></tr>
+                <tr><td class="p-4"><b class="text-white">blamed me</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">나를 탓했다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">the day before / the day after</h3>
+                <p class="text-sm text-slate-300">기준이 되는 날이 따로 있을 때 쓰는 표현이에요. “yesterday / tomorrow”보다 이야기 전달이나 간접화법에서 더 자주 필요해요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">the rest of the story</h3>
+                <p class="text-sm text-slate-300">“나머지 이야기”라는 뜻이지만, 보통 앞부분만 들었거나 중요한 뒷부분이 빠졌을 때 씁니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">in a rush</h3>
+                <p class="text-sm text-slate-300">단순히 빠르다는 뜻이 아니라 시간이 없어서 서두르는 상태를 말해요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">blamed me</h3>
+                <p class="text-sm text-slate-300">“내 책임이라고 했다 / 나를 탓했다”는 뜻이에요. 실제 잘못이 있는지와는 상관없이 상대가 책임을 돌렸다는 느낌입니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">On Monday morning, Mina told one small story in the office kitchen.</p>
+                <p class="mb-6">“I saw Jiho and Elena outside a hotel restaurant on Friday,” she said. “Jiho looked nervous, and Elena was laughing. That’s all.”</p>
+                <p class="mb-6">Paul, who was making coffee, raised his eyebrows. “A hotel restaurant?”</p>
+                <p class="mb-6">“It was just a restaurant,” Mina said. “Don’t make it weird.”</p>
+                <p class="mb-6">But Paul was already walking away.</p>
+                <p class="mb-6">By lunch, he had told Nari that Mina had seen Jiho and Elena at a hotel <b class="highlight quiz-target" data-ans="the day before" data-kor="전날">the day before</b> the client presentation. Nari asked if they had been alone. Paul said he wasn’t sure, but Mina had sounded serious.</p>
+                <p class="mb-6">Nari repeated it to Kevin.</p>
+                <p class="mb-6">“Apparently, Jiho met Elena secretly <b class="highlight quiz-target" data-ans="the day before" data-kor="전날">the day before</b> the presentation,” she said.</p>
+                <p class="mb-6">Kevin leaned closer. “Did Mina say why?”</p>
+                <p class="mb-6">“She didn’t tell me <b class="highlight quiz-target" data-ans="the rest of the story" data-kor="이야기의 나머지 부분">the rest of the story</b>,” Nari said.</p>
+                <p class="mb-6">That missing part became dangerous.</p>
+                <p class="mb-6">Kevin told two designers that Mina had refused to share <b class="highlight quiz-target" data-ans="the rest of the story" data-kor="이야기의 나머지 부분">the rest of the story</b> because it was too sensitive. One designer said maybe Jiho had been <b class="highlight quiz-target" data-ans="in a rush" data-kor="급하게 / 서둘러서">in a rush</b> because someone almost saw him. The other designer said Elena had probably been laughing because the situation was exciting.</p>
+                <p class="mb-6">By three o’clock, the rumor had changed again.</p>
+                <p class="mb-6">Claire from HR stopped Mina near the printer. “Can I ask you something strange?”</p>
+                <p class="mb-6">“No,” Mina said, already tired.</p>
+                <p class="mb-6">Claire lowered her voice. “Did you tell people Jiho and Elena were caught in a hotel hallway?”</p>
+                <p class="mb-6">Mina stared at her. “What?”</p>
+                <p class="mb-6">Claire looked uncomfortable. “Someone said Jiho was <b class="highlight quiz-target" data-ans="in a rush" data-kor="급하게 / 서둘러서">in a rush</b>, Elena was laughing, and there was… some kind of <b class="highlight quiz-target" data-ans="tickling" data-kor="간지럽히는 것 / 간질거리는">tickling</b>?”</p>
+                <p class="mb-6">“Tickling?” Mina repeated.</p>
+                <p class="mb-6">Claire nodded sadly, as if this was now official evidence.</p>
+                <p class="mb-6">Mina walked straight to the meeting room, where five coworkers suddenly became very interested in their laptops.</p>
+                <p class="mb-6">“Okay,” Mina said loudly. “Who told HR that I said Jiho and Elena were secretly meeting at a hotel?”</p>
+                <p class="mb-6">Kevin pointed at Nari. Nari pointed at Paul. Paul pointed at Mina.</p>
+                <p class="mb-6">“You started it,” Paul said. “You <b class="highlight quiz-target" data-ans="blamed me" data-kor="나를 탓했다">blamed me</b> for making it weird, but you said they were outside a hotel.”</p>
+                <p class="mb-6">“I said they were outside a hotel restaurant,” Mina snapped. “And I didn’t say <b class="highlight quiz-target" data-ans="the day before" data-kor="전날">the day before</b> the presentation. I said Friday. The presentation was <b class="highlight quiz-target" data-ans="the day after" data-kor="다음 날">the day after</b>. I didn’t leave out <b class="highlight quiz-target" data-ans="the rest of the story" data-kor="이야기의 나머지 부분">the rest of the story</b>. There was no rest of the story.”</p>
+                <p class="mb-6">The door opened. Jiho and Elena walked in carrying a cake box.</p>
+                <p class="mb-6">Elena looked around. “Why is everyone quiet?”</p>
+                <p class="mb-6">Mina crossed her arms. “Please explain Friday.”</p>
+                <p class="mb-6">Jiho sighed. “We were picking up a retirement cake for Mr. Han. I was nervous because I was <b class="highlight quiz-target" data-ans="in a rush" data-kor="급하게 / 서둘러서">in a rush</b> and almost dropped it.”</p>
+                <p class="mb-6">Elena added, “I was laughing because the box ribbon was <b class="highlight quiz-target" data-ans="tickling" data-kor="간지럽히는 것 / 간질거리는">tickling</b> his neck.”</p>
+                <p class="mb-6">Mina turned back to the room.</p>
+                <p class="mb-6">“You people turned a cake pickup into a hotel scandal. Nobody speak to me until tomorrow.”</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>월요일 아침, 미나는 사무실 주방에서 아주 작은 이야기를 하나 했다.</p>
+                <p>“금요일에 지호랑 엘레나가 호텔 식당 밖에 있는 걸 봤어요,” 그녀가 말했다. “지호는 긴장해 보였고, 엘레나는 웃고 있었어요. 그게 다예요.”</p>
+                <p>커피를 만들고 있던 폴이 눈썹을 올렸다. “호텔 식당이요?”</p>
+                <p>“그냥 식당이었어요,” 미나가 말했다. “이상하게 만들지 마세요.”</p>
+                <p>하지만 폴은 이미 걸어가고 있었다.</p>
+                <p>점심때쯤, 그는 나리에게 미나가 고객 발표 <b class="highlight">전날</b> 지호와 엘레나를 호텔에서 봤다고 말했다. 나리는 둘이 단둘이 있었냐고 물었다. 폴은 확실하지 않지만, 미나가 심각하게 말한 것 같다고 했다.</p>
+                <p>나리는 그 이야기를 케빈에게 다시 전했다.</p>
+                <p>“듣자 하니, 지호가 발표 <b class="highlight">전날</b> 엘레나를 비밀리에 만났대요,” 그녀가 말했다.</p>
+                <p>케빈이 몸을 가까이 기울였다. “미나가 왜 그런지도 말했어요?”</p>
+                <p>“그녀가 <b class="highlight">이야기의 나머지 부분</b>은 말 안 해줬어요,” 나리가 말했다.</p>
+                <p>그 빠진 부분이 위험해졌다.</p>
+                <p>케빈은 디자이너 두 명에게 미나가 너무 민감해서 <b class="highlight">이야기의 나머지 부분</b>을 공유하지 않았다고 말했다. 한 디자이너는 지호가 누군가에게 들킬 뻔해서 <b class="highlight">급하게</b> 움직였던 것 같다고 말했다. 다른 디자이너는 엘레나가 웃고 있었던 이유가 상황이 짜릿했기 때문일 거라고 했다.</p>
+                <p>오후 3시쯤, 소문은 또 바뀌어 있었다.</p>
+                <p>HR의 클레어가 프린터 근처에서 미나를 멈춰 세웠다. “이상한 거 하나 물어봐도 돼요?”</p>
+                <p>“아니요,” 미나가 이미 지친 목소리로 말했다.</p>
+                <p>클레어가 목소리를 낮췄다. “지호랑 엘레나가 호텔 복도에서 들켰다고 사람들에게 말했나요?”</p>
+                <p>미나가 그녀를 빤히 쳐다봤다. “뭐라고요?”</p>
+                <p>클레어는 불편해 보였다. “누가 그러는데 지호는 <b class="highlight">급하게</b> 움직이고 있었고, 엘레나는 웃고 있었고, 무슨… <b class="highlight">간지럽히는</b> 일이 있었다고요?”</p>
+                <p>“<b class="highlight">간지럽히는</b> 일이요?” 미나가 되물었다.</p>
+                <p>클레어는 그것이 이제 공식 증거라도 된 것처럼 슬프게 고개를 끄덕였다.</p>
+                <p>미나는 곧장 회의실로 걸어갔다. 그 안에서는 동료 다섯 명이 갑자기 자기 노트북에 큰 관심을 보이고 있었다.</p>
+                <p>“좋아요,” 미나가 큰 소리로 말했다. “누가 HR에 제가 지호랑 엘레나가 호텔에서 비밀리에 만나고 있다고 말했다고 했어요?”</p>
+                <p>케빈은 나리를 가리켰다. 나리는 폴을 가리켰다. 폴은 미나를 가리켰다.</p>
+                <p>“네가 시작했잖아,” 폴이 말했다. “너는 내가 이상하게 만든다고 <b class="highlight">나를 탓했지만</b>, 네가 둘이 호텔 밖에 있었다고 말했잖아.”</p>
+                <p>“저는 호텔 식당 밖이라고 했어요,” 미나가 쏘아붙였다. “그리고 발표 <b class="highlight">전날</b>이라고도 안 했어요. 금요일이라고 했죠. 발표는 <b class="highlight">다음 날</b>이었고요. 저는 <b class="highlight">이야기의 나머지 부분</b>을 빼먹은 게 아니에요. 나머지 이야기가 없었다고요.”</p>
+                <p>문이 열렸다. 지호와 엘레나가 케이크 상자를 들고 들어왔다.</p>
+                <p>엘레나가 주위를 둘러봤다. “Why is everyone quiet?”</p>
+                <p>미나가 팔짱을 꼈다. “금요일 일 설명해 주세요.”</p>
+                <p>지호가 한숨을 쉬었다. “한 부장님 은퇴 케이크를 가지러 갔던 거예요. 제가 긴장했던 건 <b class="highlight">급하게</b> 움직이다가 케이크를 떨어뜨릴 뻔해서였고요.”</p>
+                <p>엘레나가 덧붙였다. “제가 웃은 건 상자 리본이 지호 목을 <b class="highlight">간지럽히고</b> 있었기 때문이에요.”</p>
+                <p>미나는 다시 회의실 사람들을 돌아봤다.</p>
+                <p>“여러분은 케이크 픽업을 호텔 스캔들로 만들었네요. 내일까지 아무도 저한테 말 걸지 마세요.”</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "615715.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

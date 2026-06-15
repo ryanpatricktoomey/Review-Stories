@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Compliment</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🫢</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Compliment</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">I can tell</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">딱 봐도 알 수 있어 / 알겠어</td></tr>
+                <tr><td class="p-4"><b class="text-white">tell them apart</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그것들을 구별하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">wasn't a compliment</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">칭찬이 아니었다</td></tr>
+                <tr><td class="p-4"><b class="text-white">high brow</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">고급 취향의 / 지적인 / 수준 높은</td></tr>
+                <tr><td class="p-4"><b class="text-white">went over my head</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">이해가 안 됐다 / 너무 어려워서 못 알아들었다</td></tr>
+                <tr><td class="p-4"><b class="text-white">low brow</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">저급한 / 대중적인 / 가벼운 취향의</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">I can tell</h3>
+                <p class="text-sm text-slate-300">직접 듣지 않아도 표정, 분위기, 행동을 보고 “알 수 있다”는 뜻이에요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">tell them apart</h3>
+                <p class="text-sm text-slate-300">비슷한 사람이나 물건을 구별할 수 있다는 뜻이에요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">wasn't a compliment</h3>
+                <p class="text-sm text-slate-300">겉으로는 칭찬처럼 들릴 수도 있지만 실제로는 칭찬이 아니었다는 뜻이에요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">high brow / low brow</h3>
+                <p class="text-sm text-slate-300">문화나 취향을 평가할 때 쓰는 표현이에요. high brow는 지적이고 고급스러운 느낌, low brow는 가볍고 대중적이거나 저급하다고 보는 느낌이에요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">went over my head</h3>
+                <p class="text-sm text-slate-300">설명, 농담, 말의 숨은 뜻 등이 너무 어렵거나 애매해서 이해하지 못했다는 뜻이에요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">On Monday morning, Lena made the mistake of saying one interesting sentence near the coffee machine.</p>
+                <p class="mb-6">“I saw Mr. Choi and Mina at the hotel bar on Saturday,” she said. “They were talking very seriously.”</p>
+                <p class="mb-6">Jared stopped pouring coffee. “Together?”</p>
+                <p class="mb-6">“Yes, together,” Lena said. “But not like that. It looked like a work conversation.”</p>
+                <p class="mb-6">Jared leaned closer. “What were they talking about?”</p>
+                <p class="mb-6">“I don’t know,” Lena said. “Some joke about <b class="highlight quiz-target" data-ans="high brow" data-kor="고급 취향의 / 지적인 / 수준 높은">high brow</b> and <b class="highlight quiz-target" data-ans="low brow" data-kor="저급한 / 대중적인 / 가벼운 취향의">low brow</b> humor. Honestly, most of it <b class="highlight quiz-target" data-ans="went over my head" data-kor="이해가 안 됐다 / 너무 어려워서 못 알아들었다">went over my head</b>.”</p>
+                <p class="mb-6">“So they were laughing?”</p>
+                <p class="mb-6">“Mina laughed once,” Lena said. “Then Mr. Choi said, ‘You always understand me.’”</p>
+                <p class="mb-6">Jared’s eyes widened.</p>
+                <p class="mb-6">Lena immediately pointed at him. “No. Don’t do that. It <b class="highlight quiz-target" data-ans="wasn't a compliment" data-kor="칭찬이 아니었다">wasn't a compliment</b>. His tone was weird. Like he was annoyed.”</p>
+                <p class="mb-6">Jared nodded, but his face said he had already chosen violence.</p>
+                <p class="mb-6">By lunch, Jared had told Claire that Lena had seen Mr. Choi and Mina drinking together at a hotel bar. Claire asked if it was romantic. Jared said he couldn’t be sure, but Mr. Choi had told Mina she was the only person who understood him.</p>
+                <p class="mb-6">Claire repeated it to Daniel.</p>
+                <p class="mb-6">“Apparently, Mr. Choi was flirting with Mina after hours.”</p>
+                <p class="mb-6">Daniel frowned. “Which Mina?”</p>
+                <p class="mb-6">“Mina from planning.”</p>
+                <p class="mb-6">“We have two Minas in planning,” Daniel said. “I can’t <b class="highlight quiz-target" data-ans="tell them apart" data-kor="그것들을 구별하다">tell them apart</b>.”</p>
+                <p class="mb-6">That small mistake made everything worse.</p>
+                <p class="mb-6">By three o’clock, people were saying Mr. Choi had been secretly meeting both Minas, telling one of them she understood his soul, and insulting his wife’s taste by calling it <b class="highlight quiz-target" data-ans="low brow" data-kor="저급한 / 대중적인 / 가벼운 취향의">low brow</b>. Someone added that Lena had watched the whole thing from across the bar and could <b class="highlight quiz-target" data-ans="I can tell" data-kor="딱 봐도 알 수 있어 / 알겠어">tell</b> it was an affair.</p>
+                <p class="mb-6">At five, Mr. Choi walked into the meeting room with Mina from planning, Mina from finance, and a face like stone.</p>
+                <p class="mb-6">“Lena,” he said, “did you tell people I’m dating two employees?”</p>
+                <p class="mb-6">Lena stood up slowly. “No. I said I saw you talking to one Mina at a hotel bar.”</p>
+                <p class="mb-6">Mina from planning crossed her arms. “I was there because Mr. Choi was reviewing my presentation for the Singapore client.”</p>
+                <p class="mb-6">Mr. Choi said, “The client had used the words <b class="highlight quiz-target" data-ans="high brow" data-kor="고급 취향의 / 지적인 / 수준 높은">high brow</b> and <b class="highlight quiz-target" data-ans="low brow" data-kor="저급한 / 대중적인 / 가벼운 취향의">low brow</b> in their feedback. Mina understood the reference. I said she understood me because everyone else on the team had misunderstood the slide.”</p>
+                <p class="mb-6">Lena looked at Jared. “I also said the joke <b class="highlight quiz-target" data-ans="went over my head" data-kor="이해가 안 됐다 / 너무 어려워서 못 알아들었다">went over my head</b>.”</p>
+                <p class="mb-6">Mina from finance raised her hand. “And I wasn’t there.”</p>
+                <p class="mb-6">Daniel looked down. “That part may have been my fault.”</p>
+                <p class="mb-6">Mr. Choi stared at the room. “My wife called me because someone told her I was having a hotel affair with two women named Mina.”</p>
+                <p class="mb-6">Jared swallowed.</p>
+                <p class="mb-6">Lena said, “I can <b class="highlight quiz-target" data-ans="I can tell" data-kor="딱 봐도 알 수 있어 / 알겠어">tell</b> this started with you.”</p>
+                <p class="mb-6">Jared whispered, “That <b class="highlight quiz-target" data-ans="wasn't a compliment" data-kor="칭찬이 아니었다">wasn't a compliment</b>, right?”</p>
+                <p class="mb-6">“No,” Lena said. “It was a warning.”</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>월요일 아침, 레나는 커피 머신 근처에서 흥미로운 문장 하나를 말하는 실수를 했다.</p>
+                <p>“토요일에 호텔 바에서 최 부장님이랑 미나 씨를 봤어요,” 그녀가 말했다. “두 사람이 아주 진지하게 이야기하고 있더라고요.”</p>
+                <p>재러드가 커피 따르는 것을 멈췄다. “같이요?”</p>
+                <p>“네, 같이요,” 레나가 말했다. “근데 그런 분위기는 아니었어요. 업무 이야기 같았어요.”</p>
+                <p>재러드가 몸을 가까이 기울였다. “무슨 얘기 하고 있었는데요?”</p>
+                <p>“몰라요,” 레나가 말했다. “<b class="highlight">고급</b> 유머랑 <b class="highlight">저급</b> 유머에 관한 농담 같았어요. 솔직히 대부분은 <b class="highlight">제가 이해 못 했어요</b>.”</p>
+                <p>“그래서 둘이 웃고 있었어요?”</p>
+                <p>“미나 씨가 한 번 웃었어요,” 레나가 말했다. “그러고 나서 최 부장님이 ‘당신은 항상 나를 이해하네요’라고 했고요.”</p>
+                <p>재러드의 눈이 커졌다.</p>
+                <p>레나는 바로 그를 가리켰다. “아니에요. 그런 식으로 생각하지 마세요. 그건 <b class="highlight">칭찬이 아니었어요</b>. 말투가 이상했어요. 약간 짜증 난 것처럼요.”</p>
+                <p>재러드는 고개를 끄덕였지만, 그의 얼굴은 이미 사고를 치기로 마음먹은 얼굴이었다.</p>
+                <p>점심때쯤, 재러드는 클레어에게 레나가 호텔 바에서 최 부장님과 미나가 함께 술을 마시는 것을 봤다고 말했다. 클레어는 로맨틱한 분위기였냐고 물었다. 재러드는 확실하진 않지만, 최 부장님이 미나에게 자기를 이해하는 유일한 사람이라고 말했다고 했다.</p>
+                <p>클레어는 그 이야기를 다니엘에게 전했다.
+                “듣자 하니, 최 부장님이 퇴근 후에 미나에게 작업을 걸었대요.”</p>
+                <p>다니엘이 눈살을 찌푸렸다. “어느 미나요?”</p>
+                <p>“기획팀 미나요.”</p>
+                <p>“기획팀에 미나가 두 명 있잖아요,” 다니엘이 말했다. “저는 둘을 <b class="highlight">구별 못 하겠어요</b>.”</p>
+                <p>그 작은 실수가 모든 것을 더 악화시켰다.</p>
+                <p>오후 3시쯤, 사람들은 최 부장님이 두 명의 미나를 몰래 만나고 있고, 그중 한 명에게 자기 영혼을 이해한다고 말했으며, 아내의 취향을 <b class="highlight">저급하다고</b> 모욕했다고 말하고 있었다. 누군가는 레나가 바 건너편에서 그 장면을 전부 봤고, <b class="highlight">딱 봐도 알 수 있었다고</b> 덧붙였다.</p>
+                <p>5시에 최 부장님이 기획팀 미나, 재무팀 미나와 함께 회의실로 들어왔다. 그의 얼굴은 돌처럼 굳어 있었다.</p>
+                <p>“레나 씨,” 그가 말했다. “제가 직원 두 명과 사귀고 있다고 사람들에게 말했습니까?”</p>
+                <p>레나는 천천히 일어났다. “아니요. 저는 호텔 바에서 부장님이 한 명의 미나 씨와 이야기하는 걸 봤다고 했어요.”</p>
+                <p>기획팀 미나가 팔짱을 꼈다. “저는 싱가포르 고객사 발표 자료를 최 부장님이 검토해 주셔서 거기 있었던 거예요.”</p>
+                <p>최 부장님이 말했다. “고객 피드백에 <b class="highlight">고급 취향과</b> <b class="highlight">저급 취향이라는</b> 표현이 들어 있었어요. 미나 씨가 그 표현을 이해했습니다. 제가 그녀가 저를 이해한다고 말한 건, 팀의 다른 사람들이 그 슬라이드를 잘못 이해했기 때문입니다.”</p>
+                <p>레나가 재러드를 바라봤다. “그리고 저는 그 농담이 <b class="highlight">이해가 안 됐다</b>고도 했어요.”</p>
+                <p>재무팀 미나가 손을 들었다. “그리고 저는 거기 없었습니다.”</p>
+                <p>다니엘이 아래를 내려다봤다. “그 부분은 제 잘못일 수도 있겠네요.”</p>
+                <p>최 부장님이 방 안을 노려봤다. “제 아내가 전화했습니다. 누군가 제가 호텔에서 미나라는 이름의 여자 두 명과 불륜을 저지르고 있다고 말했다더군요.”</p>
+                <p>재러드가 침을 삼켰다.</p>
+                <p>레나가 말했다. “이게 당신한테서 시작된 거, <b class="highlight">딱 알겠네요</b>.”</p>
+                <p>재러드가 속삭였다. “그거 <b class="highlight">칭찬은 아니죠</b>?”</p>
+                <p>“아니요,” 레나가 말했다. “경고예요.”</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "6151200.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

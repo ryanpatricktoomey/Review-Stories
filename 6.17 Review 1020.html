@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | Choose the Tuesday</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🥠</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">Choose the Tuesday</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">ecosystem</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">생태계 / 전체 환경</td></tr>
+                <tr><td class="p-4"><b class="text-white">the thing that's stressing me out</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">나를 스트레스받게 하는 것</td></tr>
+                <tr><td class="p-4"><b class="text-white">overthink</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">너무 깊게 생각하다 / 지나치게 고민하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">easily influenced</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">쉽게 영향을 받는</td></tr>
+                <tr><td class="p-4"><b class="text-white">impressionable</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">영향을 잘 받는 / 감수성이 예민한</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-3xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">ecosystem</h3>
+                <p class="text-slate-300 text-sm">원래는 자연 생태계를 뜻하지만, 회사나 사회에서는 여러 요소가 연결된 “환경”이나 “구조”를 뜻해요.</p>
+            </div>
+            <div class="glass rounded-3xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">the thing that's stressing me out</h3>
+                <p class="text-slate-300 text-sm">스트레스의 원인을 구체적으로 말할 때 쓰는 자연스러운 표현이에요.</p>
+            </div>
+            <div class="glass rounded-3xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">overthink</h3>
+                <p class="text-slate-300 text-sm">필요 이상으로 생각하다가 오히려 결정을 못 하거나 불안해지는 상황에 써요.</p>
+            </div>
+            <div class="glass rounded-3xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">easily influenced</h3>
+                <p class="text-slate-300 text-sm">다른 사람의 말이나 분위기에 쉽게 마음이 바뀌는 것을 뜻해요.</p>
+            </div>
+            <div class="glass rounded-3xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">impressionable</h3>
+                <p class="text-slate-300 text-sm">사람, 분위기, 말에 영향을 잘 받는 성향을 말해요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Mira had a real problem, but everyone kept treating it like a poster in a dentist’s office.</p>
+                <p class="mb-6">Her company had offered her a new role. The title sounded impressive, and the salary was better. But the job also meant managing a messy team, fixing broken systems, and answering calls from angry clients at night.</p>
+                <p class="mb-6">She had to decide by noon the next day.</p>
+                <p class="mb-6">First, she asked her boss for advice.</p>
+                <p class="mb-6">“Our company is an <b class="highlight quiz-target" data-ans="ecosystem" data-kor="생태계">ecosystem</b>,” he said, folding his hands like a professor. “Every tree must decide how tall it wants to grow.”</p>
+                <p class="mb-6">Mira waited for the useful part.</p>
+                <p class="mb-6">There was no useful part.</p>
+                <p class="mb-6">At lunch, she called her cousin. “I’m serious. <b class="highlight quiz-target" data-ans="The thing that's stressing me out" data-kor="나를 스트레스받게 하는 것">The thing that's stressing me out</b> is that I don’t know if this is a career opportunity or a trap.”</p>
+                <p class="mb-6">Her cousin said, “A trap is just a door you don’t understand yet.”</p>
+                <p class="mb-6">Mira rubbed her forehead. “That sounds dangerous.”</p>
+                <p class="mb-6">“It sounds deep,” her cousin said.</p>
+                <p class="mb-6">Then she asked her friend Daniel, who usually gave calm advice.</p>
+                <p class="mb-6">“You tend to <b class="highlight quiz-target" data-ans="overthink" data-kor="너무 깊게 생각하다">overthink</b>,” he said.</p>
+                <p class="mb-6">“I know that. What should I do?”</p>
+                <p class="mb-6">“Stop overthinking.”</p>
+                <p class="mb-6">“How?”</p>
+                <p class="mb-6">“By thinking less.”</p>
+                <p class="mb-6">Mira ended the call before her voice became rude.</p>
+                <p class="mb-6">By evening, she was exhausted and hungry, so she went to a Chinese restaurant near her apartment. She ordered noodles and tried to write a list of pros and cons on a napkin.</p>
+                <p class="mb-6">Pros: more money, better title, chance to grow.</p>
+                <p class="mb-6">Cons: stress, late nights, possibly losing my mind.</p>
+                <p class="mb-6">Her younger brother texted her: Don’t ask too many people. You’re <b class="highlight quiz-target" data-ans="easily influenced" data-kor="쉽게 영향을 받는다">easily influenced</b>.</p>
+                <p class="mb-6">She wanted to deny it, but she couldn’t. Yesterday, one confident coworker had said, “You were born for leadership,” and Mira had almost accepted the job immediately. Then another coworker had said, “That role destroys people,” and she had almost rejected it immediately.</p>
+                <p class="mb-6">Maybe she was too <b class="highlight quiz-target" data-ans="impressionable" data-kor="영향을 잘 받는 사람">impressionable</b>. Maybe everyone’s opinion entered her head and started rearranging the furniture.</p>
+                <p class="mb-6">The server brought the bill with a fortune cookie.</p>
+                <p class="mb-6">Mira laughed. “Great. More wisdom.”</p>
+                <p class="mb-6">She cracked it open anyway.</p>
+                <p class="mb-6">The paper said: “Do not choose the title. Choose the Tuesday.”</p>
+                <p class="mb-6">Mira sat still.</p>
+                <p class="mb-6">Tuesday. Not the announcement. Not the salary. Not the dramatic future version of herself. Just an ordinary Tuesday in that job.</p>
+                <p class="mb-6">Then she picked up her phone and emailed her boss.</p>
+                <p class="mb-6">I’m interested in the role, but before I accept, we need to discuss support, boundaries, and after-hours calls.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">미라는 진짜 문제를 안고 있었지만, 모두가 그 문제를 치과 벽에 붙은 포스터처럼 대하고 있었다.</p>
+                <p class="mb-6">그녀의 회사가 그녀에게 새로운 역할을 제안했다. 직함은 멋지게 들렸고, 월급도 더 좋았다. 하지만 그 일은 엉망인 팀을 관리하고, 망가진 시스템을 고치고, 밤에 화난 고객들의 전화를 받는 것도 의미했다.</p>
+                <p class="mb-6">그녀는 다음 날 정오까지 결정해야 했다.</p>
+                <p class="mb-6">먼저 그녀는 상사에게 조언을 구했다.</p>
+                <p class="mb-6">“우리 회사는 하나의 <b class="highlight">생태계예요</b>.” 그가 교수처럼 두 손을 모으며 말했다. “모든 나무는 자신이 얼마나 높이 자라고 싶은지 결정해야 하죠.”</p>
+                <p class="mb-6">미라는 유용한 부분을 기다렸다.</p>
+                <p class="mb-6">유용한 부분은 없었다.</p>
+                <p class="mb-6">점심시간에 그녀는 사촌에게 전화했다. “나 진지해. <b class="highlight">나를 스트레스받게 하는 건</b> 이게 커리어 기회인지 함정인지 모르겠다는 거야.”</p>
+                <p class="mb-6">사촌은 말했다. “함정은 아직 이해하지 못한 문일 뿐이야.”</p>
+                <p class="mb-6">미라는 이마를 문질렀다. “그거 위험하게 들리는데.”</p>
+                <p class="mb-6">“깊이 있게 들리지,” 사촌이 말했다.</p>
+                <p class="mb-6">그다음 그녀는 보통 차분하게 조언하는 친구 다니엘에게 물었다.</p>
+                <p class="mb-6">“너는 너무 <b class="highlight">지나치게 생각하는</b> 편이야,” 그가 말했다.</p>
+                <p class="mb-6">“그건 알아. 그래서 어떻게 해야 해?”</p>
+                <p class="mb-6">“너무 생각하지 마.”</p>
+                <p class="mb-6">“어떻게?”</p>
+                <p class="mb-6">“덜 생각하면 돼.”</p>
+                <p class="mb-6">미라는 목소리가 무례해지기 전에 전화를 끊었다.</p>
+                <p class="mb-6">저녁이 되자 그녀는 지치고 배가 고파져서 집 근처 중국집에 갔다. 그녀는 면을 주문하고 냅킨에 장단점 목록을 쓰려고 했다.</p>
+                <p class="mb-6">장점: 돈을 더 받는다, 직함이 좋아진다, 성장할 기회가 있다.</p>
+                <p class="mb-6">단점: 스트레스, 야근, 정신을 잃을 가능성.</p>
+                <p class="mb-6">남동생이 문자를 보냈다. 너무 많은 사람한테 묻지 마. 누나는 <b class="highlight">쉽게 영향을 받잖아</b>.</p>
+                <p class="mb-6">그녀는 부정하고 싶었지만 그럴 수 없었다. 어제 한 자신감 넘치는 동료가 “너는 리더십을 위해 태어났어”라고 말하자, 미라는 거의 바로 그 일을 받아들일 뻔했다. 그런데 다른 동료가 “그 역할은 사람을 망가뜨려”라고 말하자, 그녀는 거의 바로 거절할 뻔했다.</p>
+                <p class="mb-6">어쩌면 그녀는 <b class="highlight">영향을 너무 잘 받는 사람인지도</b> 몰랐다. 어쩌면 사람들의 의견이 그녀의 머릿속으로 들어와 가구 배치를 바꾸기 시작하는지도 몰랐다.</p>
+                <p class="mb-6">종업원이 계산서와 함께 포춘 쿠키를 가져왔다.</p>
+                <p class="mb-6">미라는 웃었다. “좋아. 또 지혜로운 말이네.”</p>
+                <p class="mb-6">그래도 그녀는 쿠키를 열었다.</p>
+                <p class="mb-6">종이에는 이렇게 적혀 있었다. “직함을 선택하지 말고, 화요일을 선택하라.”</p>
+                <p class="mb-6">미라는 가만히 앉아 있었다.</p>
+                <p class="mb-6">화요일. 발표도 아니고, 월급도 아니고, 극적인 미래의 자기 모습도 아니었다. 그냥 그 일을 하는 평범한 화요일이었다.</p>
+                <p class="mb-6">그리고 그녀는 휴대폰을 들어 상사에게 이메일을 보냈다.</p>
+                <p class="mb-6">그 역할에 관심이 있습니다. 하지만 받아들이기 전에 지원 체계, 업무 경계, 퇴근 후 연락에 대해 논의해야 합니다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "6171020.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

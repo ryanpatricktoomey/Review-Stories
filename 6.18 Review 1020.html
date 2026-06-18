@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Table by the Window</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🥢</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Table by the Window</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">was curious</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">궁금했다</td></tr>
+                <tr><td class="p-4"><b class="text-white">come with sauce</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">소스가 같이 나오다</td></tr>
+                <tr><td class="p-4"><b class="text-white">reunited</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">재회한 / 다시 만난</td></tr>
+                <tr><td class="p-4"><b class="text-white">endearing</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">정이 가는 / 사랑스럽고 귀여운</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">was curious</h3>
+                <p class="text-sm text-slate-300">단순한 호기심뿐 아니라, “왜 그런지 알고 싶었다”는 느낌으로 자연스럽게 씁니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">come with sauce</h3>
+                <p class="text-sm text-slate-300">음식 주문에서 “소스가 포함되어 나오나요?”라는 뜻으로 자주 써요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">reunited</h3>
+                <p class="text-sm text-slate-300">오래 떨어져 있던 사람, 가족, 친구 등이 다시 만나는 상황에 씁니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">endearing</h3>
+                <p class="text-sm text-slate-300">완벽해서 좋은 게 아니라, 어색하거나 소박한 모습 때문에 오히려 정이 가는 느낌이에요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">I still remember that meal because my mother looked scared before we even entered the restaurant.</p>
+                <p class="mb-6">It was raining hard that evening. I had just left work when she called and said, “Don’t go home yet. Meet me at the grilled fish place behind the old theater.”</p>
+                <p class="mb-6">“Why?”</p>
+                <p class="mb-6">“Just come,” she said.</p>
+                <p class="mb-6">My mother hated rain, old neighborhoods, and vague plans, so I <b class="highlight quiz-target" data-ans="was curious" data-kor="궁금했다">was curious</b> right away. When I arrived, she was standing outside a tiny restaurant with foggy windows and a blue plastic curtain over the door. She was holding her umbrella too tightly.</p>
+                <p class="mb-6">Inside, the place was warm and quiet. You could hear fish sizzling in the kitchen and rain hitting the windows. There were only four tables, a radio near the counter, and a handwritten menu taped to the wall.</p>
+                <p class="mb-6">We sat by the window. A server brought grilled fish, rice, soup, and two small dishes.</p>
+                <p class="mb-6">I pointed at them. “Does the fish usually <b class="highlight quiz-target" data-ans="come with sauce" data-kor="소스가 같이 나오다">come with sauce</b>?”</p>
+                <p class="mb-6">My mother looked at the kitchen. “One is normal. The other one is the way my brother used to make it.”</p>
+                <p class="mb-6">I stared at her. “Your brother?”</p>
+                <p class="mb-6">Before she could answer, an older man came out carrying more side dishes. He stopped when he saw her.</p>
+                <p class="mb-6">For a few seconds, nobody moved.</p>
+                <p class="mb-6">“Jiyoung,” he said.</p>
+                <p class="mb-6">My mother stood up so quickly her chair scraped the floor. “Oppa.”</p>
+                <p class="mb-6">I had never heard her call anyone that before.</p>
+                <p class="mb-6">The man looked at me, then back at her. His face changed slowly, like he was trying not to show too much. “This is your daughter?”</p>
+                <p class="mb-6">My mother nodded.</p>
+                <p class="mb-6">I looked between them. “I thought you didn’t have any siblings.”</p>
+                <p class="mb-6">She sat down again, but her hands were shaking. “I told you that because it was easier.”</p>
+                <p class="mb-6">The meal sat untouched between us. The fish smelled smoky and rich, but suddenly I couldn’t think about food.</p>
+                <p class="mb-6">My mother explained quietly. They had fought after their parents died. There had been money problems, anger, pride, and years of silence. He opened this restaurant with their father’s old recipes. She passed it many times but never came in.</p>
+                <p class="mb-6">“Why today?” I asked.</p>
+                <p class="mb-6">She looked embarrassed. “Because I turned sixty last week, and I got tired of pretending I wasn’t lonely.”</p>
+                <p class="mb-6">Her brother gave a small laugh. “That’s the most dramatic thing you’ve ever said.”</p>
+                <p class="mb-6">It was such an awkward, honest comment that it became strangely <b class="highlight quiz-target" data-ans="endearing" data-kor="정이 가는 / 사랑스럽고 귀여운">endearing</b>. My mother laughed too, and the room finally loosened.</p>
+                <p class="mb-6">We began eating. The fish was crisp outside and soft inside. The special sauce was salty, sharp, and a little sweet. My uncle watched my mother take the first bite.</p>
+                <p class="mb-6">“Same taste?” he asked.</p>
+                <p class="mb-6">She nodded. “Same.”</p>
+                <p class="mb-6">By the end of the meal, they were talking about childhood, their parents, and a kitchen I had never seen. They were not completely healed. But they were <b class="highlight quiz-target" data-ans="reunited" data-kor="재회한 / 다시 만난">reunited</b>, sitting at the same table, passing dishes back and forth like the years between them had become a little smaller.</p>
+                <p class="mb-6">Looking back, I remember that dinner because I met an uncle I never knew I had. But more than that, I saw my mother stop being only my mother. For one meal, she became a younger sister again.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">저는 아직도 그 식사를 기억해요. 식당에 들어가기도 전에 어머니가 겁먹은 표정을 하고 있었기 때문이에요.</p>
+                <p class="mb-6">그날 저녁에는 비가 세게 오고 있었어요. 제가 막 퇴근했을 때 어머니가 전화해서 말했어요. “아직 집에 가지 마. 예전 극장 뒤에 있는 생선구이집에서 만나자.”</p>
+                <p class="mb-6">“왜요?”</p>
+                <p class="mb-6">“그냥 와.” 어머니가 말했어요.</p>
+                <p class="mb-6">어머니는 비도 싫어하고, 오래된 동네도 싫어하고, 애매한 계획도 싫어하는 사람이었어요. 그래서 저는 바로 <b class="highlight">궁금해졌어요</b>. 도착했을 때 어머니는 뿌연 창문과 파란 비닐 커튼이 달린 작은 식당 앞에 서 있었어요. 우산을 너무 꽉 쥐고 있었고요.</p>
+                <p class="mb-6">안은 따뜻하고 조용했어요. 주방에서는 생선 굽는 소리가 들렸고, 창문에는 빗소리가 들렸어요. 테이블은 네 개뿐이었고, 계산대 근처에는 라디오가 있었고, 벽에는 손글씨 메뉴가 붙어 있었어요.</p>
+                <p class="mb-6">우리는 창가 자리에 앉았어요. 직원이 구운 생선, 밥, 국, 그리고 작은 접시 두 개를 가져왔어요.</p>
+                <p class="mb-6">제가 그 접시들을 가리켰어요. “생선에 원래 <b class="highlight">소스가 같이 나와요</b>?”</p>
+                <p class="mb-6">어머니는 주방 쪽을 바라봤어요. “하나는 원래 나오는 거야. 다른 하나는 우리 오빠가 예전에 만들던 방식이고.”</p>
+                <p class="mb-6">저는 어머니를 바라봤어요. “오빠요?”</p>
+                <p class="mb-6">어머니가 대답하기도 전에, 나이 든 남자 한 분이 반찬을 더 들고 나왔어요. 그는 어머니를 보자 멈췄어요.</p>
+                <p class="mb-6">몇 초 동안 아무도 움직이지 않았어요.</p>
+                <p class="mb-6">“지영아.” 그가 말했어요.</p>
+                <p class="mb-6">어머니는 의자가 바닥에 긁힐 만큼 빠르게 일어났어요. “오빠.”</p>
+                <p class="mb-6">저는 어머니가 누군가를 그렇게 부르는 걸 한 번도 들어 본 적이 없었어요.</p>
+                <p class="mb-6">그 남자는 저를 보고, 다시 어머니를 봤어요. 그의 표정이 천천히 변했어요. 너무 많은 감정을 드러내지 않으려고 애쓰는 것 같았어요. “이 아이가 네 딸이야?”</p>
+                <p class="mb-6">어머니는 고개를 끄덕였어요.</p>
+                <p class="mb-6">저는 두 사람을 번갈아 봤어요. “엄마는 형제자매 없다고 했잖아요.”</p>
+                <p class="mb-6">어머니는 다시 앉았지만 손이 떨리고 있었어요. “그렇게 말하는 게 더 쉬웠어.”</p>
+                <p class="mb-6">음식은 우리 사이에 그대로 놓여 있었어요. 생선은 훈연 향이 나고 진한 냄새가 났지만, 갑자기 음식 생각은 할 수 없었어요.</p>
+                <p class="mb-6">어머니는 조용히 설명했어요. 두 사람은 부모님이 돌아가신 뒤 싸웠다고 했어요. 돈 문제, 분노, 자존심, 그리고 몇 년의 침묵이 있었다고요. 외삼촌은 아버지의 오래된 레시피로 이 식당을 열었고, 어머니는 이 앞을 여러 번 지나갔지만 한 번도 들어오지 않았대요.</p>
+                <p class="mb-6">“왜 오늘이에요?” 제가 물었어요.</p>
+                <p class="mb-6">어머니는 쑥스러워 보였어요. “지난주에 예순이 됐는데, 외롭지 않은 척하는 게 지겨워졌어.”</p>
+                <p class="mb-6">외삼촌이 작게 웃었어요. “네가 한 말 중에 제일 극적이다.”</p>
+                <p class="mb-6">그 어색하고 솔직한 말이 이상하게 <b class="highlight">정이 갔어요</b>. 어머니도 웃었고, 방 안의 공기가 마침내 조금 풀렸어요.</p>
+                <p class="mb-6">우리는 먹기 시작했어요. 생선은 겉은 바삭하고 속은 부드러웠어요. 특별한 소스는 짭짤하고 산뜻하고 약간 달콤했어요. 외삼촌은 어머니가 첫입을 먹는 모습을 바라봤어요.</p>
+                <p class="mb-6">“맛이 같아?” 그가 물었어요.</p>
+                <p class="mb-6">어머니는 고개를 끄덕였어요. “같아.”</p>
+                <p class="mb-6">식사가 끝날 무렵, 두 사람은 어린 시절, 부모님, 그리고 제가 본 적 없는 부엌에 대해 이야기하고 있었어요. 완전히 해결된 것은 아니었어요. 하지만 두 사람은 <b class="highlight">다시 만났고</b>, 같은 식탁에 앉아 반찬을 주고받고 있었어요. 그들 사이의 세월이 조금은 작아진 것처럼요.</p>
+                <p class="mb-6">돌이켜 보면, 저는 그 저녁을 제가 존재조차 몰랐던 외삼촌을 만났기 때문에 기억해요. 하지만 그보다 더 큰 이유는, 어머니가 단지 제 어머니로만 보이지 않았기 때문이에요. 그 한 끼 동안, 어머니는 다시 누군가의 여동생이 되었어요.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "6181020.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

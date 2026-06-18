@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Rice Bowl Before I Was Born</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🍳</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Rice Bowl Before I Was Born</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">carbs</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">탄수화물</td></tr>
+                <tr><td class="p-4"><b class="text-white">challenging</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">힘든 / 어려운 / 도전적인</td></tr>
+                <tr><td class="p-4"><b class="text-white">that much food</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그렇게 많은 음식</td></tr>
+                <tr><td class="p-4"><b class="text-white">mistook me for</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">나를 …로 착각했다</td></tr>
+                <tr><td class="p-4"><b class="text-white">fried egg</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">달걀 프라이</td></tr>
+                <tr><td class="p-4"><b class="text-white">tried everything</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">모든 걸 다 먹어 봤다 / 전부 시도해 봤다</td></tr>
+                <tr><td class="p-4"><b class="text-white">someone I knew</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">내가 아는 사람</td></tr>
+                <tr><td class="p-4"><b class="text-white">acquaintance</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">지인</td></tr>
+                <tr><td class="p-4"><b class="text-white">hair stylist</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">헤어 스타일리스트</td></tr>
+                <tr><td class="p-4"><b class="text-white">multicultural</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">다문화적인</td></tr>
+                <tr><td class="p-4"><b class="text-white">it's worth +ing</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">…할 가치가 있다</td></tr>
+                <tr><td class="p-4"><b class="text-white">good question</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">좋은 질문이에요</td></tr>
+                <tr><td class="p-4"><b class="text-white">I get why you ask</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">왜 물어보는지 이해해요</td></tr>
+                <tr><td class="p-4"><b class="text-white">I get that all the time</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그런 말 자주 들어요</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">mistook me for</h3>
+                <p class="text-sm text-slate-300">A를 B로 착각했다는 뜻이에요. mistook A for B 구조로 씁니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">acquaintance</h3>
+                <p class="text-sm text-slate-300">friend보다 덜 가까운 “지인”이에요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">it’s worth +ing</h3>
+                <p class="text-sm text-slate-300">어떤 행동을 할 가치가 있다는 뜻이고, 뒤에는 동명사(-ing)가 와요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">I get why you ask</h3>
+                <p class="text-sm text-slate-300">상대의 질문이 이해된다고 부드럽게 말할 때 써요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">I get that all the time</h3>
+                <p class="text-sm text-slate-300">같은 말이나 질문을 자주 듣는다는 뜻이에요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">I still remember that meal because I went in wanting dinner and came out with a story about my mother.</p>
+                <p class="mb-6">It was right after a long Saturday shift at the salon. I was working as a <b class="highlight quiz-target" data-ans="hair stylist" data-kor="헤어 스타일리스트">hair stylist</b>, and by evening my feet hurt, my hands smelled like shampoo, and I wanted something warm and full of <b class="highlight quiz-target" data-ans="carbs" data-kor="탄수화물">carbs</b>. My coworker Hana took me to a small restaurant near the station.</p>
+                <p class="mb-6">The place was simple but lively. You could hear oil popping, spoons hitting metal bowls, and different languages moving between tables. A Korean family sat near the window, two exchange students shared noodles in the corner, and the owner explained the menu to a tourist in slow English. The whole place felt <b class="highlight quiz-target" data-ans="multicultural" data-kor="다문화적인">multicultural</b>, but in a natural, neighborhood way.</p>
+                <p class="mb-6">When the owner saw me, she froze.</p>
+                <p class="mb-6">“Sunhee?” she said.</p>
+                <p class="mb-6">I smiled awkwardly. “No, sorry.”</p>
+                <p class="mb-6">She blinked and laughed. “I’m sorry. I <b class="highlight quiz-target" data-ans="mistook me for" data-kor="나를 …로 착각했다">mistook you for</b> <b class="highlight quiz-target" data-ans="someone I knew" data-kor="내가 아는 사람">someone I knew</b>.”</p>
+                <p class="mb-6">Hana looked at me. “Do you know her?”</p>
+                <p class="mb-6">“I don’t think so,” I said. “Maybe she’s an <b class="highlight quiz-target" data-ans="acquaintance" data-kor="지인">acquaintance</b> of my mom’s.”</p>
+                <p class="mb-6">The owner kept looking at my face. “You look exactly like a woman who came here years ago. Same eyes. Same serious face before eating.”</p>
+                <p class="mb-6">That made Hana laugh. “She does look serious before eating.”</p>
+                <p class="mb-6">We ordered too much: spicy pork, dumplings, noodles, curry rice, soup, and a rice bowl with a perfect <b class="highlight quiz-target" data-ans="fried egg" data-kor="달걀 프라이">fried egg</b> on top.</p>
+                <p class="mb-6">I stared at the table. “Can we eat <b class="highlight quiz-target" data-ans="that much food" data-kor="그렇게 많은 음식">that much food</b>?”</p>
+                <p class="mb-6">Hana picked up her spoon. “It’ll be <b class="highlight quiz-target" data-ans="challenging" data-kor="힘든 / 어려운 / 도전적인">challenging</b>, but we trained for this.”</p>
+                <p class="mb-6">We <b class="highlight quiz-target" data-ans="tried everything" data-kor="모든 걸 다 먹어 봤다 / 전부 시도해 봤다">tried everything</b>. The dumplings were crisp, the noodles were messy and spicy, and the rice bowl was the best part. When the yolk broke into the sauce, it became rich and soft and comforting.</p>
+                <p class="mb-6">The owner came back with extra kimchi. “Can I ask you something? Is your mother’s name Sunhee?”</p>
+                <p class="mb-6">I stopped eating. “Yes. How do you know?”</p>
+                <p class="mb-6">She smiled gently. “She used to come here when she was pregnant. She always ordered rice with a <b class="highlight quiz-target" data-ans="fried egg" data-kor="달걀 프라이">fried egg</b>. She said the baby wanted it.”</p>
+                <p class="mb-6">For a moment, I couldn’t speak. I looked down at my bowl.</p>
+                <p class="mb-6">Hana asked quietly, “Is it weird to ask our parents about places they went before we were born?”</p>
+                <p class="mb-6">The owner nodded. “<b class="highlight quiz-target" data-ans="good question" data-kor="좋은 질문이에요">Good question</b>. Yes, <b class="highlight quiz-target" data-ans="it's worth +ing" data-kor="…할 가치가 있다">it’s worth asking</b>.”</p>
+                <p class="mb-6">I said, “I feel strange asking.”</p>
+                <p class="mb-6">She smiled. “<b class="highlight quiz-target" data-ans="I get why you ask" data-kor="왜 물어보는지 이해해요">I get why you ask</b>. Family stories don’t always come naturally. Sometimes food opens the door.”</p>
+                <p class="mb-6">I laughed nervously. “People say I look like my mom.”</p>
+                <p class="mb-6">The owner said, “<b class="highlight quiz-target" data-ans="I get that all the time" data-kor="그런 말 자주 들어요">I get that all the time</b> from children who find their parents here.”</p>
+                <p class="mb-6">After dinner, I called my mother outside and said, “Tell me about the rice bowl with the <b class="highlight quiz-target" data-ans="fried egg" data-kor="달걀 프라이">fried egg</b>.”</p>
+                <p class="mb-6">She was quiet. Then she laughed softly.</p>
+                <p class="mb-6">That meal stayed with me because I tasted something my mother had craved before she even knew me.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">저는 아직도 그 식사를 기억해요. 저녁을 먹으러 들어갔다가 어머니에 대한 이야기를 안고 나왔기 때문이에요.</p>
+                <p class="mb-6">그건 토요일에 미용실에서 긴 근무를 마친 직후였어요. 저는 <b class="highlight">헤어 스타일리스트로</b> 일하고 있었고, 저녁이 되자 발이 아프고 손에서는 샴푸 냄새가 났고, 따뜻하고 <b class="highlight">탄수화물이</b> 가득한 음식이 먹고 싶었어요. 직장 동료 하나가 저를 역 근처의 작은 식당으로 데려갔어요.</p>
+                <p class="mb-6">그곳은 소박했지만 활기가 있었어요. 기름이 튀는 소리, 숟가락이 금속 그릇에 부딪히는 소리, 테이블 사이로 오가는 여러 언어가 들렸어요. 창가에는 한국 가족이 앉아 있었고, 구석에서는 교환학생 두 명이 국수를 나눠 먹고 있었고, 사장님은 관광객에게 천천히 영어로 메뉴를 설명하고 있었어요. 공간 전체가 <b class="highlight">다문화적인</b> 느낌이었지만, 자연스럽고 동네다운 느낌이었어요.</p>
+                <p class="mb-6">사장님은 저를 보자 멈췄어요.</p>
+                <p class="mb-6">“선희 씨?” 그녀가 말했어요.</p>
+                <p class="mb-6">저는 어색하게 웃었어요. “아니에요, 죄송해요.”</p>
+                <p class="mb-6">그녀는 눈을 깜빡이고 웃었어요. “미안해요. 제가 <b class="highlight">아는 사람으로 착각했네요</b>.”</p>
+                <p class="mb-6">하나가 저를 봤어요. “아는 분이야?”</p>
+                <p class="mb-6">“아닌 것 같아.” 제가 말했어요. “엄마 <b class="highlight">지인일지도</b> 몰라.”</p>
+                <p class="mb-6">사장님은 계속 제 얼굴을 바라봤어요. “몇 년 전에 여기 오던 여자분이랑 정말 똑같이 생겼어요. 같은 눈, 먹기 전에 짓는 똑같은 진지한 표정까지요.”</p>
+                <p class="mb-6">그 말에 하나가 웃었어요. “얘 먹기 전에 진지해 보이긴 해요.”</p>
+                <p class="mb-6">우리는 <b class="highlight">그렇게 많은 음식을</b> 주문했어요. 제육, 만두, 국수, 카레라이스, 국, 그리고 완벽한 <b class="highlight">달걀 프라이가</b> 올라간 덮밥까지요.</p>
+                <p class="mb-6">저는 테이블을 바라봤어요. “우리 이렇게 많은 음식을 먹을 수 있을까?”</p>
+                <p class="mb-6">하나는 숟가락을 들었어요. “<b class="highlight">힘들겠지만</b>, 우린 이걸 위해 훈련했어.”</p>
+                <p class="mb-6">우리는 <b class="highlight">모든 걸 다 먹어 봤어요</b>. 만두는 바삭했고, 국수는 지저분하게 먹을 수밖에 없고 매웠고, 덮밥이 가장 좋았어요. 노른자가 소스에 터지자 진하고 부드럽고 편안한 맛이 되었어요.</p>
+                <p class="mb-6">사장님이 김치를 더 가져오며 다시 왔어요. “하나 물어봐도 돼요? 어머니 이름이 선희인가요?”</p>
+                <p class="mb-6">저는 먹던 걸 멈췄어요. “네. 어떻게 아세요?”</p>
+                <p class="mb-6">그녀는 부드럽게 웃었어요. “어머니가 임신했을 때 여기 자주 오셨어요. 항상 <b class="highlight">달걀 프라이가</b> 올라간 밥을 주문하셨죠. 아기가 그걸 먹고 싶어 한다고 하셨어요.”</p>
+                <p class="mb-6">잠시 동안 저는 말을 할 수 없었어요. 제 그릇을 내려다봤어요.</p>
+                <p class="mb-6">하나가 조용히 물었어요. “우리가 태어나기 전에 부모님이 다니던 곳에 대해 물어보는 게 이상한가요?”</p>
+                <p class="mb-6">사장님은 고개를 끄덕였어요. “<b class="highlight">좋은 질문이에요</b>. 네, <b class="highlight">물어볼 가치가 있어요</b>.”</p>
+                <p class="mb-6">제가 말했어요. “묻는 게 좀 이상하게 느껴져요.”</p>
+                <p class="mb-6">그녀가 웃었어요. “<b class="highlight">왜 물어보는지 이해해요</b>. 가족 이야기가 항상 자연스럽게 나오는 건 아니에요. 가끔 음식이 문을 열어 주죠.”</p>
+                <p class="mb-6">저는 어색하게 웃었어요. “사람들이 제가 엄마를 닮았다고 해요.”</p>
+                <p class="mb-6">사장님이 말했어요. “부모님을 여기서 찾는 자녀들에게 <b class="highlight">그런 말 자주 들어요</b>.”</p>
+                <p class="mb-6">식사 후 저는 밖에서 어머니에게 전화해서 말했어요. “달걀 프라이 올라간 덮밥 이야기 좀 해 주세요.”</p>
+                <p class="mb-6">어머니는 조용했어요. 그러더니 부드럽게 웃었어요.</p>
+                <p class="mb-6">그 식사가 기억에 남은 이유는, 어머니가 저를 알기도 전에 먹고 싶어 했던 음식을 제가 맛보았기 때문이에요.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "618830.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

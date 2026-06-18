@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Soup She Didn’t Like</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🍲</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Soup She Didn’t Like</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">it's not to my taste</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">제 취향은 아니에요 / 제 입맛에는 안 맞아요</td></tr>
+                <tr><td class="p-4"><b class="text-white">spices</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">향신료</td></tr>
+                <tr><td class="p-4"><b class="text-white">mussels</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">홍합</td></tr>
+                <tr><td class="p-4"><b class="text-white">julienned</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">가늘게 채 썬</td></tr>
+                <tr><td class="p-4"><b class="text-white">mandoline</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">채칼 / 만돌린 슬라이서</td></tr>
+                <tr><td class="p-4"><b class="text-white">look forward to</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">기대하다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">it’s not to my taste</h3>
+                <p class="text-sm text-slate-300">음식뿐 아니라 영화, 음악, 스타일에도 쓸 수 있어요. “싫다”보다 부드러운 표현입니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">julienned</h3>
+                <p class="text-sm text-slate-300">채소를 아주 가늘고 길게 썬 모양을 말하는 요리 표현이에요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">mandoline</h3>
+                <p class="text-sm text-slate-300">악기가 아니라, 채소를 얇고 일정하게 써는 주방 도구를 뜻할 수 있어요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">look forward to</h3>
+                <p class="text-sm text-slate-300">뒤에 명사나 동명사(-ing)가 와요. 예: I look forward to seeing you.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">I still remember that meal because my father finally told me a story about my mother that was not sad.</p>
+                <p class="mb-6">It was a cold evening in November. My father called me after work and said, “Don’t eat dinner yet. Meet me at the seafood noodle place near the old bus terminal.”</p>
+                <p class="mb-6">That was unusual. My father almost never suggested restaurants. Usually, when we met, he wanted something simple and quiet. So I didn’t know what to <b class="highlight quiz-target" data-ans="look forward to" data-kor="기대하다">look forward to</b>, but I went.</p>
+                <p class="mb-6">The restaurant was small, warm, and crowded. The windows were foggy, and the tables were close together. You could hear rain tapping the glass, bowls landing on tables, and the low sound of people talking over soup. From the open kitchen, I could smell garlic, seafood, and strong <b class="highlight quiz-target" data-ans="spices" data-kor="향신료">spices</b>.</p>
+                <p class="mb-6">My father was already sitting near the wall. He looked nervous, but not unhappy.</p>
+                <p class="mb-6">“What’s special about this place?” I asked.</p>
+                <p class="mb-6">He smiled a little. “This is where I had my first real date with your mother.”</p>
+                <p class="mb-6">I had never heard that before.</p>
+                <p class="mb-6">Before I could ask more, the owner brought out two huge bowls of spicy seafood noodle soup. The red broth was bubbling, and there were shrimp, noodles, green onions, and black <b class="highlight quiz-target" data-ans="mussels" data-kor="홍합">mussels</b> opened wide in the soup. On top were carrots and zucchini, neatly <b class="highlight quiz-target" data-ans="julienned" data-kor="가늘게 채 썬">julienned</b> into thin strips.</p>
+                <p class="mb-6">In the kitchen, a cook was slicing more vegetables quickly with a <b class="highlight quiz-target" data-ans="mandoline" data-kor="채칼 / 만돌린 슬라이서">mandoline</b>. The sound was sharp and steady.</p>
+                <p class="mb-6">My father pointed with his spoon. “Your mother noticed that sound too. She said it made the restaurant feel busier than it really was.”</p>
+                <p class="mb-6">I took a careful bite. The soup was hot, salty, spicy, and full of seafood flavor. It was good, but strong.</p>
+                <p class="mb-6">I laughed a little. “Honestly, <b class="highlight quiz-target" data-ans="it's not to my taste" data-kor="제 취향은 아니에요 / 제 입맛에는 안 맞아요">it's not to my taste</b>.”</p>
+                <p class="mb-6">My father’s face changed. For a second, I thought I had said the wrong thing. Then he laughed.</p>
+                <p class="mb-6">“She said exactly that.”</p>
+                <p class="mb-6">“Mom did?”</p>
+                <p class="mb-6">“Yes. I brought her here because I loved this soup. I thought she would be impressed. She took one bite, looked very serious, and said, ‘<b class="highlight quiz-target" data-ans="It's not to my taste" data-kor="제 취향은 아니에요 / 제 입맛에는 안 맞아요">It's not to my taste</b>.’”</p>
+                <p class="mb-6">I laughed too. “That sounds rude.”</p>
+                <p class="mb-6">“It was honest,” he said. “Then she ate half of mine because she liked the noodles but not the broth.”</p>
+                <p class="mb-6">For the first time in a long while, my father talked easily. He told me how my mother had complained about the spice, stolen his <b class="highlight quiz-target" data-ans="mussels" data-kor="홍합">mussels</b>, and teased him for sweating while pretending the soup was not too hot.</p>
+                <p class="mb-6">The soup never became my favorite. But that didn’t matter.</p>
+                <p class="mb-6">Looking back, I remember that meal because my father did not give me a perfect memory of my mother. He gave me a real one: funny, picky, warm, and alive. For one dinner, she felt close enough to laugh with us.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">저는 아직도 그 식사를 기억해요. 아버지가 마침내 어머니에 대한 슬프지 않은 이야기를 해 주었기 때문이에요.</p>
+                <p class="mb-6">11월의 추운 저녁이었어요. 퇴근 후에 아버지가 전화해서 말했어요. “아직 저녁 먹지 마라. 예전 버스터미널 근처 해산물 국수집에서 만나자.”</p>
+                <p class="mb-6">그건 이상한 일이었어요. 아버지는 거의 먼저 식당을 제안하지 않는 사람이었거든요. 보통 우리가 만나면 간단하고 조용한 음식을 원했어요. 그래서 저는 무엇을 <b class="highlight">기대해야 할지</b> 몰랐지만, 갔어요.</p>
+                <p class="mb-6">식당은 작고 따뜻하고 사람들로 붐볐어요. 창문에는 김이 서려 있었고, 테이블들은 가까이 붙어 있었어요. 빗방울이 유리창을 두드리는 소리, 그릇이 테이블에 놓이는 소리, 사람들이 국물 위로 낮게 이야기하는 소리가 들렸어요. 열린 주방에서는 마늘, 해산물, 강한 <b class="highlight">향신료</b> 냄새가 났어요.</p>
+                <p class="mb-6">아버지는 이미 벽 쪽 자리에 앉아 있었어요. 긴장해 보였지만, 불행해 보이지는 않았어요.</p>
+                <p class="mb-6">“여기가 뭐가 특별해요?” 제가 물었어요.</p>
+                <p class="mb-6">아버지는 살짝 웃었어요. “여기가 네 엄마와 내가 처음 제대로 데이트한 곳이야.”</p>
+                <p class="mb-6">저는 그 이야기를 한 번도 들어 본 적이 없었어요.</p>
+                <p class="mb-6">제가 더 묻기도 전에, 사장님이 커다란 매운 해산물 국수 두 그릇을 가져왔어요. 붉은 국물은 보글거리고 있었고, 그 안에는 새우, 면, 파, 그리고 입을 크게 벌린 검은 <b class="highlight">홍합</b>들이 들어 있었어요. 위에는 당근과 애호박이 얇고 가지런하게 <b class="highlight">채 썰려</b> 올라가 있었어요.</p>
+                <p class="mb-6">주방에서는 요리사가 <b class="highlight">채칼</b>로 채소를 빠르게 썰고 있었어요. 그 소리는 날카롭고 일정했어요.</p>
+                <p class="mb-6">아버지는 숟가락으로 그쪽을 가리켰어요. “네 엄마도 저 소리를 알아챘어. 그 소리 때문에 식당이 실제보다 더 바빠 보인다고 했지.”</p>
+                <p class="mb-6">저는 조심스럽게 한 입 먹었어요. 국물은 뜨겁고, 짭짤하고, 맵고, 해산물 맛이 진했어요. 맛있긴 했지만 강했어요.</p>
+                <p class="mb-6">저는 조금 웃으며 말했어요. “솔직히 <b class="highlight">제 입맛에는 안 맞아요</b>.”</p>
+                <p class="mb-6">아버지의 표정이 변했어요. 잠깐 제가 말을 잘못한 줄 알았어요. 그런데 아버지가 웃었어요.</p>
+                <p class="mb-6">“네 엄마도 정확히 그렇게 말했어.”</p>
+                <p class="mb-6">“엄마가요?”</p>
+                <p class="mb-6">“응. 내가 이 국수를 좋아해서 여기 데려왔거든. 네 엄마가 감탄할 줄 알았어. 그런데 한 입 먹고 아주 진지한 얼굴로 ‘<b class="highlight">제 입맛에는 안 맞네요</b>’라고 했지.”</p>
+                <p class="mb-6">저도 웃었어요. “좀 무례한데요.”</p>
+                <p class="mb-6">“솔직했던 거지.” 아버지가 말했어요. “그러고는 국물은 별로인데 면은 좋다면서 내 그릇에서 절반을 먹었어.”</p>
+                <p class="mb-6">오랜만에 아버지는 편하게 이야기했어요. 어머니가 매운맛에 불평했던 일, 아버지의 <b class="highlight">홍합</b>을 몰래 가져가 먹었던 일, 국물이 안 맵다고 버티면서 땀을 흘리던 아버지를 놀렸던 일을요.</p>
+                <p class="mb-6">그 국수가 제일 좋아하는 음식이 된 것은 아니었어요. 하지만 그건 중요하지 않았어요.</p>
+                <p class="mb-6">돌이켜 보면, 저는 그 식사를 기억해요. 아버지가 어머니에 대한 완벽한 기억을 준 것이 아니라, 진짜 기억을 주었기 때문이에요. 웃기고, 까다롭고, 따뜻하고, 살아 있는 기억이요. 그 저녁 한 끼 동안, 어머니는 우리와 함께 웃을 수 있을 만큼 가까이 느껴졌어요.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "618630.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Tip That Followed Him</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🍝</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Tip That Followed Him</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">leave me alone</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">나 좀 내버려 둬 / 혼자 있게 해 줘 / 그만 좀 해</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">leave me alone</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">상대가 귀찮게 하거나 간섭한다고 느낄 때 쓰는 표현입니다. 말투에 따라 차갑거나 화난 느낌이 날 수 있습니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Daniel did not think he was a cheap man. He thought he was a fair man.</p>
+                <p class="mb-6">At Maple Street Grill, he waited twenty minutes for water, forty minutes for food, and ten more minutes for a fork. His pasta came cold. When he asked the server about it, she said, “Oh, sorry,” and disappeared again.</p>
+                <p class="mb-6">So when the bill came, Daniel paid the exact amount and left no tip.</p>
+                <p class="mb-6">His friend Mark stared at the receipt. “Nothing?”</p>
+                <p class="mb-6">“Nothing,” Daniel said. “Bad service means no tip. That is the system.”</p>
+                <p class="mb-6">“I don’t think that’s the system.”</p>
+                <p class="mb-6">“It should be.”</p>
+                <p class="mb-6">On Friday night, Daniel went to a dinner party at his coworker Nina’s apartment. He brought wine and promised himself he would be normal. For twenty minutes, he was.</p>
+                <p class="mb-6">Then Nina said, “My cousin had the worst customer last weekend.”</p>
+                <p class="mb-6">Daniel continued chewing.</p>
+                <p class="mb-6">“She’s a server,” Nina said. “This guy left zero tip. Zero. After sitting there like a king.”</p>
+                <p class="mb-6">Daniel stopped chewing.</p>
+                <p class="mb-6">Mark, who was also at the party, slowly turned toward him.</p>
+                <p class="mb-6">Daniel said, “Maybe the service was bad.”</p>
+                <p class="mb-6">Everyone looked at him.</p>
+                <p class="mb-6">Nina frowned. “Why would you assume that?”</p>
+                <p class="mb-6">“I’m not assuming. I’m saying maybe there are facts.”</p>
+                <p class="mb-6">There are facts,” Nina said. “He left nothing.”</p>
+                <p class="mb-6">Daniel put down his fork. “Okay, but what if the water never came? What if the food was cold? What if the fork came after the food was already emotionally dead?”</p>
+                <p class="mb-6">A quiet man across the table asked, “Was this you?”</p>
+                <p class="mb-6">Daniel looked at Mark.</p>
+                <p class="mb-6">Mark looked at his plate.</p>
+                <p class="mb-6">Daniel sighed. “It may have been me.”</p>
+                <p class="mb-6">The room changed temperature.</p>
+                <p class="mb-6">Nina said, “That was my cousin.”</p>
+                <p class="mb-6">Daniel leaned forward. “Then please tell your cousin I had a reason.”</p>
+                <p class="mb-6">“You punished someone’s income because your pasta was cold?”</p>
+                <p class="mb-6">“No, because everything was wrong.”</p>
+                <p class="mb-6">Someone whispered, “Wow.”</p>
+                <p class="mb-6">Daniel felt trapped. “Why is everyone acting like I stole from her? I paid for the meal.”</p>
+                <p class="mb-6">Nina crossed her arms. “You made a point with a person who probably had a bad night.”</p>
+                <p class="mb-6">Daniel tried to laugh. “Can we talk about something else?”</p>
+                <p class="mb-6">“No,” Mark said quietly. “You started explaining.”</p>
+                <p class="mb-6">Daniel looked around the table. “Honestly, I wish this topic would <b class="highlight quiz-target" data-ans="leave me alone" data-kor="저를 좀 내버려 뒀으면">leave me alone</b>.”</p>
+                <p class="mb-6">Nobody laughed.</p>
+                <p class="mb-6">Nina’s cousin arrived twenty minutes later with dessert. She recognized him immediately.</p>
+                <p class="mb-6">“Oh,” she said. “Zero Tip Guy.”</p>
+                <p class="mb-6">Daniel stood up too fast. “Cold Pasta Guy, actually.”</p>
+                <p class="mb-6">The room went silent.</p>
+                <p class="mb-6">Daniel sat back down.</p>
+                <p class="mb-6">By the end of the night, nobody wanted his wine. Even Mark left without saying goodbye.</p>
+                <p class="mb-6">Daniel walked home thinking the same thing again and again: the service really had been terrible. Somehow, that was no longer helping him.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">다니엘은 자신이 짠 사람이라고 생각하지 않았다. 그는 자신이 공정한 사람이라고 생각했다.</p>
+                <p class="mb-6">메이플 스트리트 그릴에서 그는 물을 받기 위해 20분을 기다렸고, 음식을 받기 위해 40분을 기다렸고, 포크를 받기 위해 또 10분을 기다렸다. 파스타는 차갑게 나왔다. 그가 서버에게 말하자, 서버는 “아, 죄송해요”라고 말하고 다시 사라졌다.</p>
+                <p class="mb-6">그래서 계산서가 나왔을 때, 다니엘은 정확한 금액만 결제하고 팁을 남기지 않았다.</p>
+                <p class="mb-6">친구 마크가 영수증을 쳐다보았다. “아예 안 줘?”</p>
+                <p class="mb-6">“아예 안 줘,” 다니엘이 말했다. “서비스가 나쁘면 팁도 없어. 그게 시스템이지.”</p>
+                <p class="mb-6">“그게 시스템은 아닌 것 같은데.”</p>
+                <p class="mb-6">“그래야지.”</p>
+                <p class="mb-6">금요일 밤, 다니엘은 직장 동료 니나의 아파트에서 열리는 저녁 모임에 갔다. 그는 와인을 가져갔고, 오늘은 평범하게 행동하겠다고 스스로 약속했다. 20분 동안은 그랬다.</p>
+                <p class="mb-6">그때 니나가 말했다. “내 사촌이 지난 주말에 최악의 손님을 만났대.”</p>
+                <p class="mb-6">다니엘은 계속 씹었다.</p>
+                <p class="mb-6">“걔 서버거든,” 니나가 말했다. “어떤 남자가 팁을 0원 남겼대. 0원. 왕처럼 앉아 있다가.”</p>
+                <p class="mb-6">다니엘은 씹는 것을 멈췄다.</p>
+                <p class="mb-6">그 자리에 같이 있던 마크가 천천히 그를 바라보았다.</p>
+                <p class="mb-6">다니엘이 말했다. “서비스가 별로였을 수도 있지.”</p>
+                <p class="mb-6">모두가 그를 보았다.</p>
+                <p class="mb-6">니나가 인상을 찌푸렸다. “왜 그렇게 생각해?”</p>
+                <p class="mb-6">“생각하는 게 아니라, 사실이 있을 수도 있다는 거야.”</p>
+                <p class="mb-6">“사실은 있어,” 니나가 말했다. “그 남자가 아무것도 안 남겼다는 거.”</p>
+                <p class="mb-6">다니엘은 포크를 내려놓았다. “좋아, 근데 물이 안 왔다면? 음식이 차가웠다면? 포크가 음식이 이미 감정적으로 죽은 뒤에 왔다면?”</p>
+                <p class="mb-6">맞은편에 앉은 조용한 남자가 물었다. “그거 당신이었어요?”</p>
+                <p class="mb-6">다니엘은 마크를 보았다.</p>
+                <p class="mb-6">마크는 자기 접시를 보았다.</p>
+                <p class="mb-6">다니엘은 한숨을 쉬었다. “나였을 수도 있어요.”</p>
+                <p class="mb-6">방 안의 분위기가 달라졌다.</p>
+                <p class="mb-6">니나가 말했다. “그게 내 사촌이야.”</p>
+                <p class="mb-6">다니엘은 몸을 앞으로 기울였다. “그럼 당신 사촌에게 제가 이유가 있었다고 전해 주세요.”</p>
+                <p class="mb-6">“파스타가 차가웠다고 누군가의 수입을 벌준 거예요?”</p>
+                <p class="mb-6">“아니요, 모든 게 잘못됐기 때문이에요.”</p>
+                <p class="mb-6">누군가가 작게 말했다. “와…”</p>
+                <p class="mb-6">다니엘은 갇힌 기분이었다. “왜 다들 제가 그 사람한테서 훔친 것처럼 행동해요? 저는 음식값을 냈어요.”</p>
+                <p class="mb-6">니라는 팔짱을 꼈다. “당신은 아마 힘든 밤을 보낸 사람에게 자기 주장을 한 거예요.”</p>
+                <p class="mb-6">다니엘은 웃어 보이려 했다. “다른 얘기 하면 안 될까요?”</p>
+                <p class="mb-6">“안 돼,” 마크가 조용히 말했다. “네가 설명하기 시작했잖아.”</p>
+                <p class="mb-6">다니엘은 식탁을 둘러보았다. “솔직히 이 주제가 <b class="highlight">저를 좀 내버려 뒀으면</b> 좋겠네요.”</p>
+                <p class="mb-6">아무도 웃지 않았다.</p>
+                <p class="mb-6">20분 뒤, 니나의 사촌이 디저트를 들고 도착했다. 그녀는 그를 바로 알아보았다.</p>
+                <p class="mb-6">“아,” 그녀가 말했다. “팁 0원 남긴 사람.”</p>
+                <p class="mb-6">다니엘은 너무 빨리 일어났다. “사실은 차가운 파스타 받은 사람이죠.”</p>
+                <p class="mb-6">방 안이 조용해졌다.</p>
+                <p class="mb-6">다니엘은 다시 앉았다.</p>
+                <p class="mb-6">그날 밤이 끝날 때쯤, 아무도 그의 와인을 마시려 하지 않았다. 마크조차 인사 없이 떠났다.</p>
+                <p class="mb-6">다니엘은 집으로 걸어가며 같은 생각을 계속했다. 서비스는 정말 형편없었다. 이상하게도, 이제 그 사실은 아무 도움이 되지 않았다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "619630.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

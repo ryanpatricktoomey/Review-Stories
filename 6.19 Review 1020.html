@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | Everyone Had an Explanation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🍽️</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">Everyone Had an Explanation</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">look frazzled</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">정신없어 보이다 / 지쳐 보이다</td></tr>
+                <tr><td class="p-4"><b class="text-white">look really busy</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">정말 바빠 보이다</td></tr>
+                <tr><td class="p-4"><b class="text-white">look distracted</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">딴생각하는 것처럼 보이다</td></tr>
+                <tr><td class="p-4"><b class="text-white">look like you are somewhere else</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">마음이 다른 데 가 있는 것처럼 보이다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">look frazzled</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">스트레스와 피로 때문에 정신없고 지쳐 보일 때 씁니다.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">look distracted</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">다른 생각 때문에 지금 상황에 집중하지 못하는 것처럼 보일 때 씁니다.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">look like you are somewhere else</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">몸은 여기 있지만 마음은 다른 곳에 있는 듯 보인다는 뜻입니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Eric and his friend Sam waited twenty minutes before anyone took their order.</p>
+                <p class="mb-6">Their server moved quickly between tables and kept checking the kitchen door.</p>
+                <p class="mb-6">“She <b class="highlight quiz-target" data-ans="look really busy" data-kor="정말 바빠 보여">looks really busy</b>,” Sam said.</p>
+                <p class="mb-6">“She hasn’t even brought water,” Eric replied.</p>
+                <p class="mb-6">When she finally came over, she apologized and took their order. Thirty minutes later, Eric’s burger arrived cold, and his fries were missing.</p>
+                <p class="mb-6">The server rushed back to the kitchen before he could say anything.</p>
+                <p class="mb-6">“She <b class="highlight quiz-target" data-ans="look frazzled" data-kor="정신없어 보여">looks frazzled</b>,” Sam said.</p>
+                <p class="mb-6">“So do I.”</p>
+                <p class="mb-6">When she returned, Eric explained the problem.</p>
+                <p class="mb-6">She nodded, but her eyes moved toward another table while he was speaking.</p>
+                <p class="mb-6">“You <b class="highlight quiz-target" data-ans="look distracted" data-kor="딴생각하는 것처럼 보여요">look distracted</b>,” Eric said.</p>
+                <p class="mb-6">The server looked at him. “Sorry?”</p>
+                <p class="mb-6">“You <b class="highlight quiz-target" data-ans="look like you are somewhere else" data-kor="마음이 다른 데 가 있는 것처럼 보여요">look like you are somewhere else</b>. I’m trying to explain my order.”</p>
+                <p class="mb-6">She apologized and promised to fix it.</p>
+                <p class="mb-6">The fries came ten minutes later, but by then Eric had finished the burger.</p>
+                <p class="mb-6">When the bill arrived, he paid the total and left no tip.</p>
+                <p class="mb-6">Sam looked at the receipt. “Nothing?”</p>
+                <p class="mb-6">“She barely served us.”</p>
+                <p class="mb-6">“She was obviously having a bad night.”</p>
+                <p class="mb-6">“So were we.”</p>
+                <p class="mb-6">Two nights later, Eric attended a dinner party at his girlfriend Maya’s apartment. Sam was there, along with several of Maya’s coworkers.</p>
+                <p class="mb-6">During dinner, Chloe, one of Maya’s friends, said, “My sister had a horrible shift this week. Two servers called in sick, and she had to handle eight tables.”</p>
+                <p class="mb-6">Eric slowly stopped eating.</p>
+                <p class="mb-6">Chloe continued. “Then one customer told her she looked distracted and left no tip.”</p>
+                <p class="mb-6">Sam looked down at his plate.</p>
+                <p class="mb-6">Maya noticed. “Eric?”</p>
+                <p class="mb-6">Eric said, “That customer may have had a reason.”</p>
+                <p class="mb-6">Chloe stared at him. “Was it you?”</p>
+                <p class="mb-6">Eric sighed. “Yes, but you’re not hearing the whole story.”</p>
+                <p class="mb-6">He described the water, the cold burger, and the missing fries.</p>
+                <p class="mb-6">Chloe crossed her arms. “My sister had just received a call from the hospital. Our father had been admitted that afternoon.”</p>
+                <p class="mb-6">Eric’s expression changed.</p>
+                <p class="mb-6">“I didn’t know that.”</p>
+                <p class="mb-6">“No, you didn’t.”</p>
+                <p class="mb-6">“I only knew what was happening at my table.”</p>
+                <p class="mb-6">Maya said, “Then maybe you shouldn’t have decided what kind of person she was.”</p>
+                <p class="mb-6">“I didn’t decide what kind of person she was.”</p>
+                <p class="mb-6">“You told her she looked like she was somewhere else.”</p>
+                <p class="mb-6">“She did.”</p>
+                <p class="mb-6">The room became quiet.</p>
+                <p class="mb-6">Eric realized too late that he was defending the sentence instead of apologizing for it.</p>
+                <p class="mb-6">For the rest of the evening, nobody argued with him. They simply stopped including him in the conversation.</p>
+                <p class="mb-6">When he and Maya left, she said, “The service may have been bad.”</p>
+                <p class="mb-6">“It was.”</p>
+                <p class="mb-6">“But you could have handled it better.”</p>
+                <p class="mb-6">Eric knew she was right, but by then, nobody at the party wanted to hear that.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">에릭과 친구 샘은 주문을 받으러 올 때까지 20분을 기다렸다.</p>
+                <p class="mb-6">서버는 테이블 사이를 빠르게 움직이며 계속 주방 쪽을 확인했다.</p>
+                <p class="mb-6">“저분 <b class="highlight">정말 바빠 보여</b>,” 샘이 말했다.</p>
+                <p class="mb-6">“아직 물도 안 가져왔어,” 에릭이 대답했다.</p>
+                <p class="mb-6">서버는 마침내 다가와 사과하고 주문을 받았다. 30분 뒤, 에릭의 버거는 차갑게 나왔고 감자튀김은 없었다.</p>
+                <p class="mb-6">서버는 에릭이 말하기도 전에 다시 주방으로 급히 들어갔다.</p>
+                <p class="mb-6">“저분 <b class="highlight">정신없어 보여</b>,” 샘이 말했다.</p>
+                <p class="mb-6">“나도 그래.”</p>
+                <p class="mb-6">서버가 돌아오자, 에릭은 문제를 설명했다.</p>
+                <p class="mb-6">그녀는 고개를 끄덕였지만, 에릭이 말하는 동안 다른 테이블을 바라보고 있었다.</p>
+                <p class="mb-6">“좀 <b class="highlight">딴생각하는 것처럼 보여요</b>,” 에릭이 말했다.</p>
+                <p class="mb-6">서버가 그를 보았다. “죄송합니다?”</p>
+                <p class="mb-6">“<b class="highlight">마음이 다른 데 가 있는 것처럼 보여요</b>. 지금 주문 문제를 설명하고 있잖아요.”</p>
+                <p class="mb-6">그녀는 사과하고 바로 처리하겠다고 약속했다.</p>
+                <p class="mb-6">감자튀김은 10분 뒤에 나왔지만, 에릭은 이미 버거를 다 먹은 뒤였다.</p>
+                <p class="mb-6">계산서가 나오자, 그는 총액만 내고 팁을 남기지 않았다.</p>
+                <p class="mb-6">샘이 영수증을 보았다. “아무것도 안 줘?”</p>
+                <p class="mb-6">“제대로 서비스도 안 했잖아.”</p>
+                <p class="mb-6">“분명 힘든 밤을 보내고 있었어.”</p>
+                <p class="mb-6">“우리도 그랬어.”</p>
+                <p class="mb-6">이틀 뒤, 에릭은 여자친구 마야의 아파트에서 열리는 저녁 모임에 참석했다. 샘과 마야의 직장 동료들도 와 있었다.</p>
+                <p class="mb-6">식사 중 마야의 친구 클로이가 말했다. “우리 언니가 이번 주에 정말 힘든 근무를 했어. 서버 두 명이 아파서 못 나오는 바람에 테이블 여덟 개를 맡았대.”</p>
+                <p class="mb-6">에릭은 천천히 먹는 것을 멈췄다.</p>
+                <p class="mb-6">클로이가 계속 말했다. “그러다 어떤 손님이 언니한테 딴생각하는 것 같다고 말하고 팁도 안 줬대.”</p>
+                <p class="mb-6">샘은 자기 접시를 내려다보았다.</p>
+                <p class="mb-6">마야가 눈치챘다. “에릭?”</p>
+                <p class="mb-6">에릭이 말했다. “그 손님에게도 이유가 있었을 수 있죠.”</p>
+                <p class="mb-6">클로이가 그를 쳐다보았다. “그게 당신이었어요?”</p>
+                <p class="mb-6">에릭은 한숨을 쉬었다. “네, 하지만 이야기 전체를 못 들으신 거예요.”</p>
+                <p class="mb-6">그는 물, 차가운 버거, 나오지 않은 감자튀김에 대해 설명했다.</p>
+                <p class="mb-6">클로이는 팔짱을 꼈다. “언니는 방금 병원에서 전화를 받은 상태였어요. 그날 오후에 우리 아버지가 입원하셨거든요.”</p>
+                <p class="mb-6">에릭의 표정이 바뀌었다.</p>
+                <p class="mb-6">“저는 몰랐어요.”</p>
+                <p class="mb-6">“그래요. 몰랐죠.”</p>
+                <p class="mb-6">“저는 제 테이블에서 무슨 일이 벌어지는지만 알았어요.”</p>
+                <p class="mb-6">마야가 말했다. “그럼 그 사람이 어떤 사람인지 판단하지 말았어야지.”</p>
+                <p class="mb-6">“어떤 사람인지 판단한 건 아니야.”</p>
+                <p class="mb-6">“마음이 다른 데 가 있는 것 같다고 말했잖아.”</p>
+                <p class="mb-6">“실제로 그렇게 보였으니까.”</p>
+                <p class="mb-6">방 안이 조용해졌다.</p>
+                <p class="mb-6">에릭은 자신이 사과하는 대신 그 문장을 변호하고 있다는 것을 너무 늦게 깨달았다.</p>
+                <p class="mb-6">남은 시간 동안 아무도 그와 논쟁하지 않았다. 대신 대화에 그를 포함하지 않았다.</p>
+                <p class="mb-6">마야와 함께 집을 나설 때, 그녀가 말했다. “서비스가 나빴을 수도 있어.”</p>
+                <p class="mb-6">“실제로 나빴어.”</p>
+                <p class="mb-6">“그래도 당신이 더 잘 대처할 수 있었어.”</p>
+                <p class="mb-6">에릭도 그녀의 말이 맞다는 것을 알았다. 하지만 이제 파티에 있던 누구도 그의 말을 듣고 싶어 하지 않았다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "6191020.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

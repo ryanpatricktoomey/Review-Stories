@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | Five Minutes with Bori</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🐕</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">Five Minutes with Bori</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">so crowded</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">사람이 너무 많은 / 너무 붐비는</td></tr>
+                <tr><td class="p-4"><b class="text-white">well-behaved</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">얌전한, 말을 잘 듣는</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">so crowded</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">사람이나 물건이 지나치게 많아 움직이기 어려울 정도로 붐비는 상태예요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">well-behaved</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">아이나 동물이 얌전하고 규칙을 잘 따를 때 주로 사용하는 표현이에요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Mina was about to eat dinner when her neighbor knocked on the door.</p>
+                <p class="mb-6">Mr. Kim was holding a small brown dog.</p>
+                <p class="mb-6">“Could you watch Bori for five minutes?” he asked. “I left my wallet in the convenience store.”</p>
+                <p class="mb-6">Mina looked at the dog.</p>
+                <p class="mb-6">“Does he bite?”</p>
+                <p class="mb-6">“Never. He’s very <b class="highlight quiz-target" data-ans="well-behaved" data-kor="얌전한">well-behaved</b>.”</p>
+                <p class="mb-6">Five minutes seemed reasonable, so Mina agreed.</p>
+                <p class="mb-6">Mr. Kim ran downstairs. Bori sat quietly by the door.</p>
+                <p class="mb-6">Then Mina’s phone rang.</p>
+                <p class="mb-6">“The store doesn’t have my wallet,” Mr. Kim said. “Could you bring Bori downstairs? I need to check my car.”</p>
+                <p class="mb-6">Mina carried Bori outside.</p>
+                <p class="mb-6">Mr. Kim was standing beside a taxi.</p>
+                <p class="mb-6">“I think I left the wallet at the subway station,” he said. “Could you come with me? Bori gets nervous in taxis.”</p>
+                <p class="mb-6">“I haven’t eaten dinner.”</p>
+                <p class="mb-6">“It’ll take ten minutes.”</p>
+                <p class="mb-6">Mina got into the taxi with the dog.</p>
+                <p class="mb-6">The station was <b class="highlight quiz-target" data-ans="so crowded" data-kor="사람이 너무 많은">so crowded</b> that they could barely enter. Mr. Kim went to speak to the station employee and asked Mina to wait with Bori.</p>
+                <p class="mb-6">Bori immediately pulled free from his collar.</p>
+                <p class="mb-6">He ran through the ticket gate.</p>
+                <p class="mb-6">Mina had no transportation card, so she jumped over the gate to follow him. An employee shouted, but Mina kept running.</p>
+                <p class="mb-6">Bori entered a train just before the doors closed.</p>
+                <p class="mb-6">Mina got on behind him.</p>
+                <p class="mb-6">Mr. Kim did not.</p>
+                <p class="mb-6">Inside the packed train, Bori crawled under the seats. Mina apologized to several passengers while trying to catch him. At the next station, the dog jumped out.</p>
+                <p class="mb-6">Mina followed.</p>
+                <p class="mb-6">Bori ran into an underground shopping area, stole a sausage from a food sample tray, and knocked over a display of skin-care products. A security guard stopped Mina and demanded an explanation.</p>
+                <p class="mb-6">“He isn’t my dog,” she said.</p>
+                <p class="mb-6">At that moment, Mr. Kim called.</p>
+                <p class="mb-6">“Did you find him?”</p>
+                <p class="mb-6">“Yes. I’m being questioned by security.”</p>
+                <p class="mb-6">“That’s strange. He’s usually so <b class="highlight quiz-target" data-ans="well-behaved" data-kor="얌전한">well-behaved</b>.”</p>
+                <p class="mb-6">Mina looked at the broken display, the angry salesperson, and the sausage hanging from Bori’s mouth.</p>
+                <p class="mb-6">Two hours later, Mr. Kim arrived.</p>
+                <p class="mb-6">He had found his wallet in his coat pocket.</p>
+                <p class="mb-6">Bori sat beside him peacefully.</p>
+                <p class="mb-6">Mr. Kim smiled.</p>
+                <p class="mb-6">“See? He really likes you.”</p>
+                <p class="mb-6">Mina handed him the dog’s collar and the bill for the damaged products.</p>
+                <p class="mb-6">“I agreed to five minutes.”</p>
+                <p class="mb-6">“I know. I owe you one.”</p>
+                <p class="mb-6">“No,” Mina said. “You owe me 380,000 won.”</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">미나는 저녁을 먹으려던 중 이웃이 문을 두드리는 소리를 들었다.</p>
+                <p class="mb-6">김 씨는 작은 갈색 개를 안고 있었다.</p>
+                <p class="mb-6">“보리를 5분만 봐주실 수 있을까요?” 그가 물었다. “편의점에 지갑을 두고 온 것 같아서요.”</p>
+                <p class="mb-6">미나는 개를 바라봤다.</p>
+                <p class="mb-6">“물지는 않나요?”</p>
+                <p class="mb-6">“절대 안 물어요. 아주 <b class="highlight">얌전해요</b>.”</p>
+                <p class="mb-6">5분 정도라면 괜찮을 것 같아 미나는 승낙했다.</p>
+                <p class="mb-6">김 씨는 아래층으로 달려 내려갔다. 보리는 문 옆에 조용히 앉아 있었다.</p>
+                <p class="mb-6">그런데 미나의 전화가 울렸다.</p>
+                <p class="mb-6">“편의점에 지갑이 없대요.” 김 씨가 말했다. “보리를 아래로 데려다주실 수 있을까요? 차 안을 확인해야 해서요.”</p>
+                <p class="mb-6">미나는 보리를 데리고 밖으로 나갔다.</p>
+                <p class="mb-6">김 씨는 택시 옆에 서 있었다.</p>
+                <p class="mb-6">“지하철역에 지갑을 두고 온 것 같아요. 같이 가주실 수 있을까요? 보리가 택시를 타면 불안해하거든요.”</p>
+                <p class="mb-6">“저 아직 저녁도 못 먹었어요.”</p>
+                <p class="mb-6">“10분이면 돼요.”</p>
+                <p class="mb-6">미나는 개를 데리고 택시에 탔다.</p>
+                <p class="mb-6">역에는 <b class="highlight">사람이 너무 많아</b> 안으로 들어가기도 어려웠다. 김 씨는 역무원과 이야기하러 가면서 미나에게 보리와 함께 기다려 달라고 했다.</p>
+                <p class="mb-6">보리는 즉시 목줄에서 빠져나왔다.</p>
+                <p class="mb-6">그리고 개찰구를 통과해 달아났다.</p>
+                <p class="mb-6">미나는 교통카드가 없었기 때문에 개를 따라 개찰구를 뛰어넘었다. 직원이 소리쳤지만 미나는 계속 달렸다.</p>
+                <p class="mb-6">보리는 문이 닫히기 직전에 열차 안으로 들어갔다.</p>
+                <p class="mb-6">미나도 뒤따라 탔다.</p>
+                <p class="mb-6">김 씨는 타지 못했다.</p>
+                <p class="mb-6">붐비는 열차 안에서 보리는 좌석 아래로 기어 다녔다. 미나는 개를 잡으려고 애쓰며 여러 승객에게 사과했다. 다음 역에서 보리는 열차 밖으로 뛰어나갔다.</p>
+                <p class="mb-6">미나도 따라 내렸다.</p>
+                <p class="mb-6">보리는 지하상가로 달려가 시식대의 소시지를 훔쳤고, 화장품 진열대까지 쓰러뜨렸다. 보안 요원이 미나를 세우고 설명을 요구했다.</p>
+                <p class="mb-6">“제 개가 아니에요.” 미나가 말했다.</p>
+                <p class="mb-6">그때 김 씨에게서 전화가 왔다.</p>
+                <p class="mb-6">“보리 찾았어요?”</p>
+                <p class="mb-6">“네. 지금 보안 요원에게 조사를 받고 있어요.”</p>
+                <p class="mb-6">“이상하네요. 평소에는 정말 <b class="highlight">얌전한데</b>.”</p>
+                <p class="mb-6">미나는 부서진 진열대와 화가 난 판매원, 그리고 입에 소시지를 물고 있는 보리를 바라봤다.</p>
+                <p class="mb-6">두 시간 후, 김 씨가 도착했다.</p>
+                <p class="mb-6">그의 지갑은 코트 주머니 안에 있었다.</p>
+                <p class="mb-6">보리는 김 씨 옆에 평화롭게 앉았다.</p>
+                <p class="mb-6">김 씨가 웃었다.</p>
+                <p class="mb-6">“보세요. 보리가 미나 씨를 정말 좋아하네요.”</p>
+                <p class="mb-6">미나는 보리의 목줄과 파손된 상품의 계산서를 건넸다.</p>
+                <p class="mb-6">“저는 5분만 봐주기로 했어요.”</p>
+                <p class="mb-6">“알아요. 제가 신세졌네요.”</p>
+                <p class="mb-6">“아니요.” 미나가 말했다. “38만 원을 빚지셨어요.”</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "622715.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

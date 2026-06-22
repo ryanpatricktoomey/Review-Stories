@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Quick Delivery</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🚗</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Quick Delivery</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">rice paddy</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">논</td></tr>
+                <tr><td class="p-4"><b class="text-white">throw someone under the bus</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">자신을 보호하려고 남에게 책임을 뒤집어씌우다</td></tr>
+                <tr><td class="p-4"><b class="text-white">phrase</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">구절, 표현</td></tr>
+                <tr><td class="p-4"><b class="text-white">pass the buck</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">책임을 다른 사람에게 떠넘기다</td></tr>
+                <tr><td class="p-4"><b class="text-white">shortcut</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">지름길 / 편법</td></tr>
+                <tr><td class="p-4"><b class="text-white">cautious</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">조심스러운, 신중한</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">throw someone under the bus</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">자신을 보호하려고 다른 사람에게 잘못이나 책임을 떠넘긴다는 뜻이에요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">pass the buck</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">자신을 처리해야 할 책임을 다른 사람에게 넘긴다는 의미예요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">shortcut</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">실제 지름길 외에도 시간과 노력을 줄이기 위한 간단한 방법이나 편법을 뜻해요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">cautious</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">위험이나 실수를 피하기 위해 신중하게 행동하는 모습을 나타내요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Hyunwoo was leaving the office when his manager stopped him.</p>
+                <p class="mb-6">“Could you drop this envelope at the printing shop downstairs?”</p>
+                <p class="mb-6">Hyunwoo accepted it. The shop was in the same building, so the favor seemed tiny.</p>
+                <p class="mb-6">When he reached the lobby, the printing shop was closed.</p>
+                <p class="mb-6">He called his manager.</p>
+                <p class="mb-6">“Oh,” she said. “They moved last month. It’s only ten minutes away by car.”</p>
+                <p class="mb-6">Hyunwoo was usually <b class="highlight quiz-target" data-ans="cautious" data-kor="신중한">cautious</b> about vague requests.</p>
+                <p class="mb-6">“What’s in the envelope?”</p>
+                <p class="mb-6">“Just the final text for a tourism sign.”</p>
+                <p class="mb-6">He should have returned it. Instead, he decided to finish the job quickly.</p>
+                <p class="mb-6">The navigation app showed heavy traffic, so Hyunwoo took a <b class="highlight quiz-target" data-ans="shortcut" data-kor="지름길">shortcut</b> through a rural road.</p>
+                <p class="mb-6">The road became narrower until his car was beside a <b class="highlight quiz-target" data-ans="rice paddy" data-kor="논">rice paddy</b>. Then one wheel sank into the soft ground.</p>
+                <p class="mb-6">Hyunwoo called the printing shop.</p>
+                <p class="mb-6">“I may be late.”</p>
+                <p class="mb-6">“The sign must be printed tonight,” the owner said. “Could you send us a photo of the text?”</p>
+                <p class="mb-6">Hyunwoo opened the envelope and photographed the page. One English <b class="highlight quiz-target" data-ans="phrase" data-kor="구절">phrase</b> had been corrected by hand, but the handwriting was difficult to read.</p>
+                <p class="mb-6">The printer called back.</p>
+                <p class="mb-6">“Does this say ‘Walk beside the rice field’ or ‘Walk inside the rice field’?”</p>
+                <p class="mb-6">Hyunwoo looked at the muddy road and guessed.</p>
+                <p class="mb-6">“Inside.”</p>
+                <p class="mb-6">Thirty minutes later, a farmer pulled Hyunwoo’s car free with a tractor. By then, the sign had already been printed.</p>
+                <p class="mb-6">The next morning, Hyunwoo’s manager called him urgently.</p>
+                <p class="mb-6">The new sign stood beside a popular walking path. It said:</p>
+                <p class="mb-6">“Visitors are welcome to walk inside the <b class="highlight quiz-target" data-ans="rice paddy" data-kor="논">rice paddy</b>.”</p>
+                <p class="mb-6">Several tourists had followed the instruction. Two had lost their shoes, and one had fallen into the mud while taking a photograph.</p>
+                <p class="mb-6">At the emergency meeting, the manager tried to <b class="highlight quiz-target" data-ans="pass the buck" data-kor="책임을 떠넘기다">pass the buck</b>.</p>
+                <p class="mb-6">“Hyunwoo gave the printer the wrong wording.”</p>
+                <p class="mb-6">Hyunwoo stared at her.</p>
+                <p class="mb-6">“You asked me to deliver an envelope. You never asked me to approve the English.”</p>
+                <p class="mb-6">“The printer said you confirmed it.”</p>
+                <p class="mb-6">“Don’t <b class="highlight quiz-target" data-ans="throw me under the bus" data-kor="저한테 책임을 뒤집어씌우지 마세요">throw me under the bus</b>. You wrote the correction.”</p>
+                <p class="mb-6">Everyone turned toward the manager.</p>
+                <p class="mb-6">She looked at the original document.</p>
+                <p class="mb-6">Her handwritten word was clearly “beside.”</p>
+                <p class="mb-6">The company had to replace the sign, compensate the farmer, clean three tourists’ clothes, and pay to repair Hyunwoo’s car.</p>
+                <p class="mb-6">That evening, the manager approached his desk with a small package.</p>
+                <p class="mb-6">“Could you do me a quick favor?”</p>
+                <p class="mb-6">Hyunwoo stood up, put on his coat, and walked away without answering.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">현우가 사무실을 나가려는데 팀장이 그를 불러 세웠다.</p>
+                <p class="mb-6">“아래층 인쇄소에 이 봉투 좀 가져다줄 수 있어요?”</p>
+                <p class="mb-6">현우는 봉투를 받았다. 인쇄소는 같은 건물에 있었기 때문에 아주 작은 부탁처럼 보였다.</p>
+                <p class="mb-6">하지만 로비에 도착해 보니 인쇄소는 문을 닫은 상태였다.</p>
+                <p class="mb-6">현우는 팀장에게 전화했다.</p>
+                <p class="mb-6">“아, 맞다.” 팀장이 말했다. “지난달에 이전했어요. 차로 10분밖에 안 걸려요.”</p>
+                <p class="mb-6">현우는 보통 애매한 부탁을 받을 때 <b class="highlight">신중한</b> 편이었다.</p>
+                <p class="mb-6">“봉투 안에 뭐가 들어 있는데요?”</p>
+                <p class="mb-6">“관광 안내판에 들어갈 최종 문구뿐이에요.”</p>
+                <p class="mb-6">그는 봉투를 돌려줬어야 했다. 하지만 일을 빨리 끝내기로 했다.</p>
+                <p class="mb-6">내비게이션 앱에는 교통 체증이 심하다고 나왔다. 그래서 현우는 시골길을 지나는 <b class="highlight">지름길을</b> 택했다.</p>
+                <p class="mb-6">길은 점점 좁아졌고, 결국 그의 차는 <b class="highlight">논</b> 옆에 서게 되었다. 그때 바퀴 하나가 부드러운 땅속으로 빠졌다.</p>
+                <p class="mb-6">현우는 인쇄소에 전화했다.</p>
+                <p class="mb-6">“조금 늦을 것 같습니다.”</p>
+                <p class="mb-6">“오늘 밤에 안내판을 인쇄해야 합니다.” 인쇄소 사장이 말했다. “문구를 사진으로 보내주실 수 있나요?”</p>
+                <p class="mb-6">현우는 봉투를 열어 종이를 촬영했다. 영어 <b class="highlight">표현</b> 하나가 손으로 수정되어 있었지만 글씨를 읽기 어려웠다.</p>
+                <p class="mb-6">인쇄소에서 다시 전화가 왔다.</p>
+                <p class="mb-6">“여기 ‘논 옆으로 걸으세요’라고 적혀 있나요, 아니면 ‘논 안으로 걸으세요’라고 적혀 있나요?”</p>
+                <p class="mb-6">현우는 진흙투성이 길을 바라보고 추측했다.</p>
+                <p class="mb-6">“안으로요.”</p>
+                <p class="mb-6">30분 후, 한 농부가 트랙터로 현우의 차를 끌어냈다. 하지만 그때는 이미 안내판이 인쇄된 뒤였다.</p>
+                <p class="mb-6">다음 날 아침, 팀장은 현우에게 급하게 전화했다.</p>
+                <p class="mb-6">새 안내판은 인기 있는 산책로 옆에 설치되어 있었다. 안내판에는 이렇게 적혀 있었다.</p>
+                <p class="mb-6">“방문객들은 <b class="highlight">논</b> 안으로 걸어 들어가셔도 됩니다.”</p>
+                <p class="mb-6">관광객 몇 명이 그 지시를 그대로 따랐다. 두 사람은 신발을 잃어버렸고, 한 사람은 사진을 찍다가 진흙 속으로 넘어졌다.</p>
+                <p class="mb-6">긴급회의에서 팀장은 <b class="highlight">책임을 떠넘기려</b> 했다.</p>
+                <p class="mb-6">“현우 씨가 인쇄소에 잘못된 문구를 전달했습니다.”</p>
+                <p class="mb-6">현우는 팀장을 바라봤다.</p>
+                <p class="mb-6">“저한테는 봉투를 배달해 달라고만 하셨잖아요. 영어를 승인해 달라고 한 적은 없습니다.”</p>
+                <p class="mb-6">“인쇄소에서는 현우 씨가 확인했다고 했어요.”</p>
+                <p class="mb-6">“<b class="highlight">저한테 책임을 뒤집어씌우지 마세요.</b> 수정한 사람은 팀장님이잖아요.”</p>
+                <p class="mb-6">모두가 팀장을 바라봤다.</p>
+                <p class="mb-6">팀장은 원본 문서를 확인했다.</p>
+                <p class="mb-6">그녀가 손으로 쓴 단어는 분명히 ‘옆으로’였다.</p>
+                <p class="mb-6">회사는 안내판을 교체하고, 농부에게 보상하고, 관광객 세 명의 옷을 세탁해 주고, 현우의 차 수리비까지 지불해야 했다.</p>
+                <p class="mb-6">그날 저녁, 팀장은 작은 소포를 들고 현우의 책상으로 다가왔다.</p>
+                <p class="mb-6">“간단한 부탁 하나만 해도 될까요?”</p>
+                <p class="mb-6">현우는 자리에서 일어나 코트를 입고 아무 대답도 하지 않은 채 걸어 나갔다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "622830.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

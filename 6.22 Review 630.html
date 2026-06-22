@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | Just One Photo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">📸</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">Just One Photo</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">wherever she wants to go</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그녀가 가고 싶은 곳이라면 어디든</td></tr>
+                <tr><td class="p-4"><b class="text-white">she's a beast!</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그녀는 정말 대단해! / 엄청난 사람이야!</td></tr>
+                <tr><td class="p-4"><b class="text-white">drab</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">칙칙한, 생기 없는</td></tr>
+                <tr><td class="p-4"><b class="text-white">farmwork</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">농사일</td></tr>
+                <tr><td class="p-4"><b class="text-white">farmhands</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">농장 일꾼들</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">she’s a beast!</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">능력이나 체력이 매우 뛰어난 사람을 강하게 칭찬하는 구어체 표현이에요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">drab</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">색이나 분위기가 칙칙하고 재미없어 보인다는 뜻이에요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">farmhands</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">농장에서 육체노동을 하는 고용된 일꾼들을 뜻해요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">wherever she wants to go</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">목적지를 제한하지 않고 ‘그녀가 원하는 곳 어디든’이라는 의미예요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Nari was finishing lunch when her coworker Jiyoon placed a camera on her desk.</p>
+                <p class="mb-6">“Could you do me a tiny favor? The new employee orientation is starting in the conference room. I just need one photo for the company newsletter.”</p>
+                <p class="mb-6">Nari looked at the clock. Her afternoon was busy, but one photo would take less than a minute.</p>
+                <p class="mb-6">“Fine.”</p>
+                <p class="mb-6">In the conference room, twenty new employees stood in front of a plain gray wall. Nari took the picture and showed it to the organizer.</p>
+                <p class="mb-6">He frowned. “It looks a little <b class="highlight quiz-target" data-ans="drab" data-kor="칙칙한">drab</b>. We have a company banner outside. Could we take one more photo there?”</p>
+                <p class="mb-6">The banner was directly beside the entrance, so Nari agreed.</p>
+                <p class="mb-6">Outside, a strong wind knocked it over. The organizer grabbed one side.</p>
+                <p class="mb-6">“Could you hold the other end for a second?”</p>
+                <p class="mb-6">Nari put down the camera and held the banner. Then one of the poles came loose.</p>
+                <p class="mb-6">“We need to take this to the storage room,” the organizer said. “It’s just around the corner.”</p>
+                <p class="mb-6">Nari carried the pole while he carried the banner. When they reached the storage room, a company van was waiting outside.</p>
+                <p class="mb-6">A manager hurried toward them.</p>
+                <p class="mb-6">“Perfect. That banner is supposed to go to our training farm. Could you put it in the van?”</p>
+                <p class="mb-6">Nari loaded it into the back. As she stepped away, the driver looked worried.</p>
+                <p class="mb-6">“Are you the photographer?”</p>
+                <p class="mb-6">“No. I took one picture.”</p>
+                <p class="mb-6">“The farm photographer canceled. We only need a few photos of the new <b class="highlight quiz-target" data-ans="farmhands" data-kor="농장 일꾼들">farmhands</b> during their training.”</p>
+                <p class="mb-6">Nari shook her head. “I have work to do.”</p>
+                <p class="mb-6">Jiyoon called at that exact moment.</p>
+                <p class="mb-6">“The department head loved your conference-room photo. Could you take a few more at the farm? The van will bring you back before three.”</p>
+                <p class="mb-6">Nari should have refused. But the department head was standing nearby, and everyone was waiting for her answer.</p>
+                <p class="mb-6">“One hour,” she said.</p>
+                <p class="mb-6">The farm was fifty minutes away.</p>
+                <p class="mb-6">When they arrived, the trainees were learning basic <b class="highlight quiz-target" data-ans="farmwork" data-kor="농사일">farmwork</b>. Nari photographed them planting vegetables, carrying tools, and cleaning equipment.</p>
+                <p class="mb-6">One woman lifted two heavy bags of soil at once.</p>
+                <p class="mb-6">A trainer laughed. “Look at her. <b class="highlight quiz-target" data-ans="She's a beast!" data-kor="그녀는 정말 대단해!">She's a beast!</b>”</p>
+                <p class="mb-6">Nari took the photo just as one bag split open. Soil poured over her shoes and into the camera bag.</p>
+                <p class="mb-6">Then the van driver announced that he had to take the trainees to several bus stops before returning to the office.</p>
+                <p class="mb-6">“Can’t you take me back first?” Nari asked.</p>
+                <p class="mb-6">“I have to drop each person off <b class="highlight quiz-target" data-ans="wherever she wants to go" data-kor="그녀가 가고 싶은 곳이라면 어디든">wherever she wants to go</b>. That’s what the manager promised.”</p>
+                <p class="mb-6">Nari returned to the office at seven, with muddy shoes, a dirty camera, and eighty-four farm photos.</p>
+                <p class="mb-6">Jiyoon smiled. “Thanks. That was a huge help.”</p>
+                <p class="mb-6">Nari placed the camera on her desk.</p>
+                <p class="mb-6">“You asked me for one photo.”</p>
+                <p class="mb-6">“I know.”</p>
+                <p class="mb-6">Nari picked up her bag.</p>
+                <p class="mb-6">“Next time, ask a photographer.”</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">나리는 점심을 마무리하고 있었는데, 동료 지윤이 그녀의 책상 위에 카메라를 올려놓았다.</p>
+                <p class="mb-6">“아주 작은 부탁 하나만 해도 될까? 신입 직원 오리엔테이션이 회의실에서 시작하거든. 회사 소식지에 넣을 사진 한 장만 필요해.”</p>
+                <p class="mb-6">나리는 시계를 봤다. 오후 일정이 바빴지만, 사진 한 장은 1분도 걸리지 않을 것 같았다.</p>
+                <p class="mb-6">“알았어.”</p>
+                <p class="mb-6">회의실에는 신입 직원 스무 명이 평범한 회색 벽 앞에 서 있었다. 나리는 사진을 찍고 행사 담당자에게 보여줬다.</p>
+                <p class="mb-6">그는 인상을 찌푸렸다. “조금 <b class="highlight">칙칙해</b> 보이네요. 밖에 회사 배너가 있는데, 거기서 한 장만 더 찍을 수 있을까요?”</p>
+                <p class="mb-6">배너는 입구 바로 옆에 있었기 때문에 나리는 승낙했다.</p>
+                <p class="mb-6">밖으로 나가자 강한 바람이 배너를 쓰러뜨렸다. 담당자가 한쪽을 붙잡았다.</p>
+                <p class="mb-6">“반대쪽을 잠깐만 잡아주실래요?”</p>
+                <p class="mb-6">나리는 카메라를 내려놓고 배너를 잡았다. 그때 기둥 하나가 빠졌다.</p>
+                <p class="mb-6">“이걸 창고로 가져가야겠네요.” 담당자가 말했다. “바로 모퉁이만 돌면 돼요.”</p>
+                <p class="mb-6">나리는 기둥을 들고, 담당자는 배너를 들었다. 창고에 도착하자 회사 승합차 한 대가 밖에서 기다리고 있었다.</p>
+                <p class="mb-6">한 관리자가 급히 다가왔다.
+“잘됐네요. 그 배너는 교육 농장으로 가야 해요. 차에 좀 실어주시겠어요?”</p>
+                <p class="mb-6">나리는 배너를 차 뒤에 실었다. 그녀가 물러나려는데 운전기사가 걱정스러운 표정으로 물었다.</p>
+                <p class="mb-6">“사진기사님이세요?”</p>
+                <p class="mb-6">“아니요. 사진 한 장 찍었을 뿐이에요.”</p>
+                <p class="mb-6">“농장 사진기사가 취소했어요. 새 <b class="highlight">농장 일꾼들</b>이 교육받는 모습만 몇 장 찍으면 됩니다.”</p>
+                <p class="mb-6">나리는 고개를 저었다. “저는 해야 할 일이 있어요.”</p>
+                <p class="mb-6">바로 그 순간 지윤에게서 전화가 왔다.</p>
+                <p class="mb-6">“부서장님이 네 회의실 사진을 정말 좋아하셨어. 농장에서 몇 장만 더 찍어줄 수 있어? 승합차가 3시 전에는 데려다줄 거야.”</p>
+                <p class="mb-6">나리는 거절했어야 했다. 하지만 부서장이 바로 옆에 서 있었고, 모두가 그녀의 대답을 기다리고 있었다.</p>
+                <p class="mb-6">“한 시간만이야.”</p>
+                <p class="mb-6">농장까지는 50분이 걸렸다.</p>
+                <p class="mb-6">도착했을 때 교육생들은 기본적인 <b class="highlight">농사일</b>을 배우고 있었다. 나리는 그들이 채소를 심고, 도구를 나르고, 장비를 청소하는 모습을 찍었다.</p>
+                <p class="mb-6">One woman lifted two heavy bags of soil at once.</p>
+                <p class="mb-6">한 교육 담당자가 웃었다. “저것 봐요. <b class="highlight">정말 대단하네요!</b>”</p>
+                <p class="mb-6">나리가 사진을 찍는 순간 포대 하나가 터졌다. 흙이 나리의 신발과 카메라 가방 안으로 쏟아졌다.</p>
+                <p class="mb-6">그때 운전기사는 회사로 돌아가기 전에 교육생들을 여러 버스 정류장에 내려줘야 한다고 말했다.</p>
+                <p class="mb-6">“저부터 회사에 데려다주시면 안 돼요?” 나리가 물었다.</p>
+                <p class="mb-6">“관리자가 각자 <b class="highlight">가고 싶은 곳 어디든</b> 데려다주겠다고 약속했어요.”</p>
+                <p class="mb-6">나리는 저녁 7시에야 회사로 돌아왔다. 신발은 진흙투성이였고, 카메라는 더러워졌으며, 농장 사진은 84장이나 찍혀 있었다.</p>
+                <p class="mb-6">지윤이 웃었다. “고마워. 정말 큰 도움이 됐어.”</p>
+                <p class="mb-6">나리는 카메라를 책상 위에 내려놓았다.</p>
+                <p class="mb-6">“넌 나한테 사진 한 장만 부탁했어.”</p>
+                <p class="mb-6">“알아.”</p>
+                <p class="mb-6">나리는 가방을 집어 들었다.</p>
+                <p class="mb-6">“다음부터는 사진기사한테 부탁해.”</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "622630.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

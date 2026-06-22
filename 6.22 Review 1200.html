@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | Just Drop Off the Sign</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">💒</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">Just Drop Off the Sign</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">placard</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">안내판, 팻말</td></tr>
+                <tr><td class="p-4"><b class="text-white">out loud</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">소리 내어</td></tr>
+                <tr><td class="p-4"><b class="text-white">once I get going</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">일단 시작하면 / 탄력이 붙으면</td></tr>
+                <tr><td class="p-4"><b class="text-white">made plans with</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">~와 약속을 잡았다</td></tr>
+                <tr><td class="p-4"><b class="text-white">pass the buck</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">책임을 다른 사람에게 떠넘기다</td></tr>
+                <tr><td class="p-4"><b class="text-white">groom</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">신랑</td></tr>
+                <tr><td class="p-4"><b class="text-white">sunk cost fallacy</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">매몰 비용의 오류</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">placard</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">정보를 보여 주기 위해 손에 들거나 세워 두는 작은 안내판이나 팻말이에요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">once I get going</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">어떤 일을 시작하기는 어렵지만, 일단 시작하면 탄력이 붙는다는 뜻이에요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">pass the buck</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">자신이 져야 할 책임을 다른 사람에게 떠넘긴다는 뜻이에요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">sunk cost fallacy</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">이미 들인 시간이나 노력이 아까워서, 손해가 커지는데도 그만두지 못하는 사고방식이에요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Mina was leaving work when her coworker Jaeho handed her a small <b class="highlight quiz-target" data-ans="placard" data-kor="안내판, 팻말">placard</b>.</p>
+                <p class="mb-6">“Could you drop this off at the wedding hall across the street?” he asked. “My cousin is getting married there, and I forgot to deliver it.”</p>
+                <p class="mb-6">Mina had <b class="highlight quiz-target" data-ans="made plans with" data-kor="~와 약속을 잡았다">made plans with</b> her sister for dinner, but the wedding hall was directly opposite the office.</p>
+                <p class="mb-6">“Fine. I’ll leave it at the front desk.”</p>
+                <p class="mb-6">At the wedding hall, the receptionist examined the <b class="highlight quiz-target" data-ans="placard" data-kor="안내판">placard</b>.</p>
+                <p class="mb-6">“This belongs beside the guest book. Could you take it upstairs?”</p>
+                <p class="mb-6">The third-floor entrance was only a short elevator ride away, so Mina agreed.</p>
+                <p class="mb-6">A wedding assistant met her there.</p>
+                <p class="mb-6">“The stand hasn’t arrived yet. Could you hold the sign for one minute?”</p>
+                <p class="mb-6">“One minute,” Mina said.</p>
+                <p class="mb-6">Guests soon began asking her questions. One elderly man pointed at the small writing.</p>
+                <p class="mb-6">“I can’t read that. Could you read it <b class="highlight quiz-target" data-ans="out loud" data-kor="소리 내어">out loud</b>?”</p>
+                <p class="mb-6">Mina read the wedding information to him. More guests gathered around, assuming that she worked there.</p>
+                <p class="mb-6">The assistant returned without the stand.</p>
+                <p class="mb-6">“You’re doing a great job. Could you welcome people until I find it?”</p>
+                <p class="mb-6">“No, I need to leave.”</p>
+                <p class="mb-6">Just then, the <b class="highlight quiz-target" data-ans="groom" data-kor="신랑">groom</b> hurried over.</p>
+                <p class="mb-6">“The friend managing the gift table is stuck in traffic. Could you sit there for five minutes?”</p>
+                <p class="mb-6">Mina checked her phone. Her sister had already sent three messages. Still, Mina had carried the sign upstairs, held it for twenty minutes, and helped several guests. Leaving now made all that effort feel wasted.</p>
+                <p class="mb-6">It was the <b class="highlight quiz-target" data-ans="sunk cost fallacy" data-kor="매몰 비용의 오류">sunk cost fallacy</b>, although she did not recognize it at the time.</p>
+                <p class="mb-6">“Five minutes,” she said.</p>
+                <p class="mb-6">As soon as Mina sat down, guests began handing her envelopes. The assistant showed her a list.</p>
+                <p class="mb-6">“Write down each name and put the envelope in this box.”</p>
+                <p class="mb-6">“I’ve never done this.”</p>
+                <p class="mb-6">“Don’t worry. <b class="highlight quiz-target" data-ans="Once I get going" data-kor="일단 시작하면">Once I get going</b>, it’s easy.”</p>
+                <p class="mb-6">It was not easy.</p>
+                <p class="mb-6">Two guests had the same name. One envelope had no name on it. Another guest wanted change for a large bill. Then the <b class="highlight quiz-target" data-ans="groom's" data-kor="신랑의">groom's</b> aunt claimed that an envelope was missing.</p>
+                <p class="mb-6">Everyone began to <b class="highlight quiz-target" data-ans="pass the buck" data-kor="책임을 떠넘기다">pass the buck</b>. The assistant blamed the <b class="highlight quiz-target" data-ans="groom" data-kor="신랑">groom</b>. The <b class="highlight quiz-target" data-ans="groom" data-kor="신랑">groom</b> blamed his absent friend. His friend called and blamed Mina, although he had never even met her.</p>
+                <p class="mb-6">By the time the real gift-table manager arrived, Mina had completely missed dinner.</p>
+                <p class="mb-6">Her sister called.</p>
+                <p class="mb-6">“Where are you?”</p>
+                <p class="mb-6">Mina looked at the <b class="highlight quiz-target" data-ans="placard" data-kor="안내판">placard</b>, the box of money, and the arguing relatives.</p>
+                <p class="mb-6">“I agreed to cross one street.”</p>
+                <p class="mb-6">The <b class="highlight quiz-target" data-ans="groom" data-kor="신랑">groom</b> approached with an anxious smile.</p>
+                <p class="mb-6">“Could you do me one final favor?”</p>
+                <p class="mb-6">Mina handed him the <b class="highlight quiz-target" data-ans="placard" data-kor="안내판">placard</b> and entered the elevator without answering.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">미나는 퇴근하려던 중 동료 재호에게서 작은 <b class="highlight">안내판</b> 하나를 받았다.</p>
+                <p class="mb-6">“길 건너편 예식장에 이것 좀 가져다줄 수 있어?” 재호가 물었다. “내 사촌이 거기서 결혼하는데, 전달하는 걸 깜빡했어.”</p>
+                <p class="mb-6">미나는 여동생과 <b class="highlight">약속을 잡았다</b> 상태였지만, 예식장은 회사 바로 맞은편에 있었다.</p>
+                <p class="mb-6">“알았어. 안내 데스크에 맡기고 갈게.”</p>
+                <p class="mb-6">예식장에 도착하자 접수 직원이 <b class="highlight">안내판을</b> 살펴봤다.</p>
+                <p class="mb-6">“이건 방명록 옆에 있어야 해요. 위층으로 가져다주시겠어요?”</p>
+                <p class="mb-6">3층 입구까지는 엘리베이터로 금방이었기 때문에 미나는 승낙했다.</p>
+                <p class="mb-6">그곳에서 결혼식 진행 요원이 그녀를 맞았다.</p>
+                <p class="mb-6">“거치대가 아직 도착하지 않았어요. 이 안내판을 1분만 들고 있어 주실 수 있을까요?”</p>
+                <p class="mb-6">“1분만이에요.” 미나가 말했다.</p>
+                <p class="mb-6">곧 하객들이 그녀에게 질문하기 시작했다. 한 노인이 작은 글씨를 가리켰다.</p>
+                <p class="mb-6">“잘 안 보이는데, <b class="highlight">소리 내서</b> 읽어 줄 수 있어요?”</p>
+                <p class="mb-6">미나는 그에게 결혼식 정보를 읽어 주었다. 더 많은 하객이 주변에 모였고, 모두 미나가 직원이라고 생각했다.</p>
+                <p class="mb-6">진행 요원은 거치대 없이 돌아왔다.</p>
+                <p class="mb-6">“정말 잘하고 계시네요. 제가 거치대를 찾는 동안 하객들을 맞아 주실 수 있을까요?”</p>
+                <p class="mb-6">“아니요. 저는 가야 해요.”</p>
+                <p class="mb-6">바로 그때 <b class="highlight">신랑이</b> 급하게 다가왔다.</p>
+                <p class="mb-6">“축의금 접수를 맡은 친구가 교통 체증에 갇혔어요. 그 자리에 5분만 앉아 주실 수 있을까요?”</p>
+                <p class="mb-6">미나는 휴대전화를 확인했다. 여동생에게서 이미 메시지가 세 통 와 있었다. 하지만 미나는 안내판을 위층으로 옮기고, 20분 동안 들고 있고, 여러 하객까지 도운 상태였다. 지금 떠나면 그동안의 노력이 모두 아깝게 느껴졌다.</p>
+                <p class="mb-6">당시에는 깨닫지 못했지만, 그것이 바로 <b class="highlight">매몰 비용의 오류였다</b>.</p>
+                <p class="mb-6">“5분만이에요.”</p>
+                <p class="mb-6">미나가 자리에 앉자마자 하객들이 축의금 봉투를 건네기 시작했다. 진행 요원이 명단을 보여 주었다.</p>
+                <p class="mb-6">“여기에 이름을 적고 봉투를 이 상자에 넣으세요.”</p>
+                <p class="mb-6">“I’ve never done this.”</p>
+                <p class="mb-6">“걱정하지 마세요. <b class="highlight">일단 시작하면</b> 쉬워요.”</p>
+                <p class="mb-6">전혀 쉽지 않았다.</p>
+                <p class="mb-6">이름이 같은 하객이 두 명 있었다. 이름이 적히지 않은 봉투도 하나 있었다. 또 다른 하객은 큰 지폐를 내며 거스름돈을 요구했다. 그러더니 <b class="highlight">신랑의</b> 이모가 봉투 하나가 없어졌다고 주장했다.</p>
+                <p class="mb-6">모두가 <b class="highlight">책임을 떠넘기기</b> 시작했다. 진행 요원은 <b class="highlight">신랑을</b> 탓했고, <b class="highlight">신랑은</b> 자리에 없는 친구를 탓했다. 그 친구는 미나를 만난 적도 없으면서 전화로 미나를 탓했다.</p>
+                <p class="mb-6">진짜 축의금 담당자가 도착했을 때, 미나는 저녁 약속을 완전히 놓친 뒤였다.</p>
+                <p class="mb-6">여동생에게서 전화가 왔다.</p>
+                <p class="mb-6">“언니 어디야?”</p>
+                <p class="mb-6">미나는 <b class="highlight">안내판과</b> 돈이 든 상자, 그리고 말다툼 중인 친척들을 바라봤다.</p>
+                <p class="mb-6">“나는 그냥 길 하나만 건너기로 했어.”</p>
+                <p class="mb-6"><b class="highlight">신랑이</b> 불안한 미소를 지으며 다가왔다.</p>
+                <p class="mb-6">“마지막 부탁 하나만 해도 될까요?”</p>
+                <p class="mb-6">미나는 <b class="highlight">안내판을</b> 신랑에게 건네고 아무 대답도 하지 않은 채 엘리베이터에 탔다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "6221200.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

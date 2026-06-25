@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | I Prepare Breakfast for a Bear That Eats All Day</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🐼</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">I Prepare Breakfast for a Bear That Eats All Day</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">the calm before the storm</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">폭풍 전의 고요함 / 큰일이 벌어지기 전의 잠깐의 평온</td></tr>
+                <tr><td class="p-4"><b class="text-white">allergy to</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">~에 대한 알레르기</td></tr>
+                <tr><td class="p-4"><b class="text-white">flour</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">밀가루 / 곡물 가루</td></tr>
+                <tr><td class="p-4"><b class="text-white">hard to digest</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">소화하기 어려운</td></tr>
+                <tr><td class="p-4"><b class="text-white">have trouble digesting</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">소화하는 데 어려움을 겪다</td></tr>
+                <tr><td class="p-4"><b class="text-white">as fast as he could</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그가 할 수 있는 한 빨리</td></tr>
+                <tr><td class="p-4"><b class="text-white">have a nap</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">낮잠을 자다</td></tr>
+                <tr><td class="p-4"><b class="text-white">rest my eyes</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">잠깐 눈을 붙이다 / 눈을 쉬게 하다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">the calm before the storm</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">큰 문제나 매우 바쁜 일이 시작되기 직전의 조용한 순간을 뜻해요. 실제 폭풍이 없어도 사용할 수 있습니다.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">allergy to</h3>
+                <p class="text-slate-300 text-sm Yachts leading-relaxed">보통 have an allergy to + 명사 또는 be allergic to + 명사 형태로 사용해요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">hard to digest / have trouble digesting</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">둘 다 소화가 어렵다는 뜻이지만, hard to digest는 음식의 특성을, have trouble digesting은 사람이나 동물이 겪는 어려움을 강조해요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">as fast as he could</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">“가능한 한 빨리”라는 뜻이에요. 주어에 맞게 as fast as I could, as fast as she could처럼 바꿀 수 있습니다.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2 md:col-span-2">
+                <h3 class="text-amber-400 font-bold text-lg">rest my eyes</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">실제로 잠들 수도 있지만, 보통 “자는 건 아니고 잠깐 눈만 감겠다”라고 부드럽게 말할 때 사용해요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">I am a giant panda keeper, which means that most of my working day is organized around bamboo, sleep, and enormous amounts of waste.</p>
+                <p class="mb-6">I arrive early, before visitors enter the zoo. The panda house is quiet, and one of the pandas is usually asleep in a corner. That peaceful moment is <b class="highlight quiz-target" data-ans="the calm before the storm" data-kor="폭풍 전의 고요함">the calm before the storm</b>. Once the panda wakes up, it expects breakfast immediately.</p>
+                <p class="mb-6">My first job is to inspect the indoor and outdoor areas. I remove yesterday’s bamboo, clean the floor, check the doors, and look for anything damaged. I also examine the panda’s waste because changes in it can tell us whether the animal is eating normally.</p>
+                <p class="mb-6">Then I bring in fresh bamboo.</p>
+                <p class="mb-6">This is not one small branch. Giant pandas may consume roughly 70 to 100 pounds of bamboo per day because their digestive systems process it inefficiently. They can spend 10 to 16 hours eating and foraging.</p>
+                <p class="mb-6">Although pandas live mainly on bamboo, their digestive systems are more similar to those of carnivores. In other words, they <b class="highlight quiz-target" data-ans="have trouble digesting" data-kor="소화하는 데 어려움을 겪습니다">have trouble digesting</b> the plant that makes up nearly their entire diet. Much of the bamboo simply passes through them.</p>
+                <p class="mb-6">My panda is selective. He smells each branch, bites one, and sometimes throws it aside. If he rejects a batch, I replace it <b class="highlight quiz-target" data-ans="as fast as I could" data-kor="가능한 한 빨리">as fast as I could</b>. A hungry panda may look cute, but I do not want to test his patience.</p>
+                <p class="mb-6">We also provide small amounts of fruit, vegetables, and dense cakes made with <b class="highlight quiz-target" data-ans="flour" data-kor="밀가루">flour</b> and added nutrients. I personally have an <b class="highlight quiz-target" data-ans="allergy to" data-kor="~에 대한 알레르기">allergy to</b> certain nuts, so I always check the ingredients before handling prepared foods. My allergy has nothing to do with the panda, but animal keepers must think about their own safety too.</p>
+                <p class="mb-6">After breakfast, I conduct a training session. The panda follows simple signals and moves into different positions so we can inspect his body without forcing him. He receives a small reward when he cooperates.</p>
+                <p class="mb-6">By late morning, he is ready to <b class="highlight quiz-target" data-ans="have a nap" data-kor="낮잠을 자다">have a nap</b>. Pandas regularly sleep or rest between long periods of eating.</p>
+                <p class="mb-6">I sometimes look at him sleeping and think, “I’d like to <b class="highlight quiz-target" data-ans="rest my eyes" data-kor="잠깐 눈을 붙이고">rest my eyes</b> too.”</p>
+                <p class="mb-6">Then I see the floor.</p>
+                <p class="mb-6">Bamboo is <b class="highlight quiz-target" data-ans="hard to digest" data-kor="소화하기 어렵습니다">hard to digest</b>, and what goes in must eventually come out. I pick up my cleaning tools and begin preparing the enclosure for his next meal.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">저는 자이언트판다 사육사입니다. 제 근무 시간 대부분은 대나무와 수면, 그리고 엄청난 양의 배설물을 중심으로 돌아갑니다.</p>
+                <p class="mb-6">저는 방문객들이 동물원에 들어오기 전인 이른 시간에 출근합니다. 판다 사육장은 조용하고, 판다 한 마리는 보통 구석에서 자고 있습니다. 그 평화로운 순간은 <b class="highlight">폭풍 전의 고요함</b>과 같습니다. 판다가 잠에서 깨면 곧바로 아침 식사를 기대하기 때문입니다.</p>
+                <p class="mb-6">제 첫 번째 업무는 실내외 공간을 점검하는 것입니다. 전날 남은 대나무를 치우고, 바닥을 청소하고, 문을 확인하며, 손상된 것이 없는지 살펴봅니다. 판다가 정상적으로 먹고 있는지 확인할 수 있도록 배설물의 상태도 조사합니다.</p>
+                <p class="mb-6">그다음 신선한 대나무를 가져옵니다.</p>
+                <p class="mb-6">작은 가지 하나를 가져오는 정도가 아닙니다. 자이언트판다는 소화기관이 대나무를 비효율적으로 처리하기 때문에 하루에 약 70~100파운드의 대나무를 먹기도 합니다. 하루 중 10~16시간을 먹거나 먹이를 찾는 데 사용할 수 있습니다.</p>
+                <p class="mb-6">판다는 주로 대나무를 먹지만, 소화기관은 초식동물보다 육식동물의 것과 더 비슷합니다. 다시 말해, 식단의 거의 전부를 차지하는 식물을 <b class="highlight">소화하는 데 어려움을 겪습니다</b>. 먹은 대나무의 상당 부분이 그대로 몸을 통과합니다.</p>
+                <p class="mb-6">제가 돌보는 판다는 입맛이 까다롭습니다. 가지마다 냄새를 맡고 하나를 물어 본 뒤, 마음에 들지 않으면 옆으로 던져 버리기도 합니다. 대나무 한 묶음을 거부하면 저는 <b class="highlight">가능한 한 빨리</b> 다른 것으로 교체합니다. 배고픈 판다는 귀엽게 보일 수 있지만, 인내심을 시험하고 싶지는 않습니다.</p>
+                <p class="mb-6">판다에게는 소량의 과일과 채소, 그리고 <b class="highlight">밀가루</b>와 영양분으로 만든 단단한 케이크도 제공합니다. 저는 특정 견과류에 <b class="highlight">알레르기가</b> 있어서 조리된 먹이를 만지기 전에 항상 재료를 확인합니다. 제 알레르기는 판다와 관계없지만, 사육사도 자신의 안전을 생각해야 합니다.</p>
+                <p class="mb-6">아침 식사가 끝나면 훈련을 진행합니다. 판다는 간단한 신호를 따라 여러 자세를 취합니다. 덕분에 우리는 판다을 억지로 붙잡지 않고도 몸 상태를 확인할 수 있습니다. 잘 협조하면 작은 보상을 줍니다.</p>
+                <p class="mb-6">늦은 오전이 되면 판다는 <b class="highlight">낮잠을 잘</b> 준비를 합니다. 판다는 오랫동안 먹는 시간 사이사이에 정기적으로 잠을 자거나 휴식을 취합니다.</p>
+                <p class="mb-6">저는 가끔 잠든 판다를 보며 생각합니다. “나도 <b class="highlight">잠깐 눈을 붙이고</b> 싶다.”</p>
+                <p class="mb-6">그러다가 바닥을 봅니다.</p>
+                <p class="mb-6">대나무는 <b class="highlight">소화하기 어렵습니다</b>. 그리고 몸속으로 들어간 것은 결국 밖으로 나오게 되어 있습니다. 저는 청소 도구를 들고 판다의 다음 식사를 위해 사육장을 정리하기 시작합니다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "625830.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

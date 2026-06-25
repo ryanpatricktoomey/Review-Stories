@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | I Fire a Cannon at Mountains</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🏔️</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">I Fire a Cannon at Mountains</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">get the whole house to myself</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">집 전체를 혼자 쓰게 되다 / 집에 나 혼자 있게 되다</td></tr>
+                <tr><td class="p-4"><b class="text-white">ammunition</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">탄약</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">get the whole house to myself</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">다른 사람이 모두 외출하거나 여행을 가서 집을 혼자 자유롭게 사용할 수 있다는 뜻이에요. have the whole house to myself도 자주 사용합니다.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">ammunition</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">총이나 대포에 사용하는 총알·포탄 등의 탄약을 통틀어 가리켜요. 비유적으로는 논쟁에서 상대를 공격할 수 있는 정보나 근거라는 뜻도 있습니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Before most people drive through the canyon, my team may have already fired a cannon at the mountain above it.</p>
+                <p class="mb-6">I work in avalanche control. After a heavy snowfall, unstable layers can form inside the snowpack. If that snow releases naturally, it may cover a road or endanger people below. Our job is to reduce that risk by triggering smaller avalanches under controlled conditions.</p>
+                <p class="mb-6">My alarm often rings before 3 a.m. I study weather reports, recent snowfall, wind direction, and data collected from the snowpack. Then our team meets to decide which slopes may need treatment. We do not simply look at a mountain and start firing.</p>
+                <p class="mb-6">On artillery days, the road is closed and the target area must be cleared. We confirm that no vehicles, workers, or members of the public are inside the restricted zone. Every step follows a strict procedure.</p>
+                <p class="mb-6">Then we inspect the equipment and account for the <b class="highlight quiz-target" data-ans="ammunition" data-kor="탄약">ammunition</b>. Military artillery has been used in some American avalanche-mitigation programs to send explosive rounds toward dangerous slopes from a protected location. The weapons and ammunition are controlled under formal government agreements, with specific requirements for storage, inspection, and inventory.</p>
+                <p class="mb-6">When everything is ready, I stand inside a reinforced position and communicate with the rest of the team by radio. A round is fired toward a carefully selected target. We wait, watch the slope, and record the result.</p>
+                <p class="mb-6">Sometimes a wide section of snow breaks loose and rushes downhill. Sometimes only a small amount moves. Sometimes nothing visible happens, which means we must evaluate the slope and decide what to do next.</p>
+                <p class="mb-6">The strange part is that I rarely see other people during the most dramatic part of my day. The canyon is empty, the road is silent, and the sky may still be completely dark.</p>
+                <p class="mb-6">My brother once said, “It must be nice to <b class="highlight quiz-target" data-ans="get the whole house to yourself" data-kor="집 전체를 혼자 쓰면">get the whole house to yourself</b> after work.”</p>
+                <p class="mb-6">“I don’t,” I told him. “But before sunrise, I occasionally get the whole canyon to myself.”</p>
+                <p class="mb-6">After the avalanche work, crews inspect and clear the road before it can reopen. I return to the office to document the weather, targets, results, and equipment use. The reports matter because every decision must be traceable.</p>
+                <p class="mb-6">People imagine that my job is about explosions. Explosions are only one tool. Most of the work is careful observation, communication, recordkeeping, and waiting for the mountain to show us what the snow is doing.</p>
+                <p class="mb-6">By the time the first commuters enter the canyon, my loudest work may already be over.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">대부분의 사람들이 협곡 도로를 달리기 전에, 저희 팀은 이미 그 위쪽 산을 향해 대포를 발사했을 수도 있습니다.</p>
+                <p class="mb-6">저는 눈사태 통제 업무를 합니다. 폭설이 내리고 나면 눈더미 안에 불안정한 층이 생길 수 있습니다. 그 눈이 자연스럽게 무너지면 도로를 덮거나 아래쪽에 있는 사람들을 위험에 빠뜨릴 수 있습니다. 저희의 임무는 통제된 상황에서 더 작은 눈사태를 미리 일으켜 위험을 줄이는 것입니다.</p>
+                <p class="mb-6">제 알람은 종종 새벽 3시가 되기 전에 울립니다. 저는 기상 보고서, 최근 적설량, 바람의 방향, 그리고 눈층에서 수집한 자료를 살펴봅니다. 그런 다음 팀원들과 만나 어느 경사면을 처리해야 할지 결정합니다. 산을 대충 바라본 뒤 바로 발사를 시작하는 것이 아닙니다.</p>
+                <p class="mb-6">대포를 사용하는 날에는 도로를 폐쇄하고 목표 지역에서 사람들을 모두 내보내야 합니다. 제한 구역 안에 차량이나 작업자, 일반인이 없는지 확인합니다. 모든 단계는 엄격한 절차에 따라 진행됩니다.</p>
+                <p class="mb-6">그다음 장비를 점검하고 <b class="highlight">탄약</b> 수량을 확인합니다. 미국의 일부 눈사태 완화 프로그램에서는 안전한 장소에서 위험한 경사면으로 폭발성 포탄을 보내기 위해 군용 대포를 사용해 왔습니다. 무기와 탄약은 정부 기관 간의 공식 협약에 따라 관리되며, 보관·검사·재고 관리에 관한 구체적인 규정이 있습니다.</p>
+                <p class="mb-6">모든 준비가 끝나면 저는 강화된 보호 시설 안에 서서 무전기로 팀원들과 소통합니다. 신중하게 선택한 목표 지점을 향해 포탄을 발사합니다. 그런 다음 기다리면서 경사면을 관찰하고 결과를 기록합니다.</p>
+                <p class="mb-6">때로는 넓은 눈층이 무너져 아래로 쏟아집니다. 때로는 아주 적은 양만 움직입니다. 눈에 보이는 변화가 전혀 없을 때도 있습니다. 그러면 경사면의 상태를 다시 평가하고 다음 조치를 결정해야 합니다.</p>
+                <p class="mb-6">이상한 점은 제 하루에서 가장 극적인 순간에 다른 사람을 거의 볼 수 없다는 것입니다. 협곡은 비어 있고, 도로는 조용하며, 하늘은 아직 완전히 어두울 수도 있습니다.</p>
+                <p class="mb-6">한번은 남동생이 말했습니다. “퇴근 후에 <b class="highlight">집 전체를 혼자 쓰면</b> 좋겠네.”</p>
+                <p class="mb-6">“그렇지는 않아. 하지만 해가 뜨기 전에는 가끔 협곡 전체를 혼자 쓰는 기분이 들지.” 제가 대답했습니다.</p>
+                <p class="mb-6">눈사태 통제 작업이 끝나면 도로를 다시 열기 전에 작업자들이 현장을 점검하고 눈을 치웁니다. 저는 사무실로 돌아가 날씨와 목표 지점, 결과, 장비 사용 내역을 기록합니다. 모든 결정의 과정을 추적할 수 있어야 하므로 보고서는 매우 중요합니다.</p>
+                <p class="mb-6">사람들은 제 직업이 폭발을 일으키는 일이라고 생각합니다. 하지만 폭발은 여러 도구 중 하나일 뿐입니다. 업무의 대부분은 세심한 관찰과 의사소통, 기록 작성, 그리고 산이 눈의 상태를 보여줄 때까지 기다리는 일입니다.</p>
+                <p class="mb-6">첫 출근 차량들이 협곡으로 들어올 무렵이면, 제 하루에서 가장 시끄러운 업무는 이미 끝나 있을 수도 있습니다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "6251200.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

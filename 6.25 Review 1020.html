@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | I Work as a Human Scarecrow</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🌾</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">I Work as a Human Scarecrow</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">get up late</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">늦게 일어나다</td></tr>
+                <tr><td class="p-4"><b class="text-white">desperately cling to</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">필사적으로 ~에 매달리다</td></tr>
+                <tr><td class="p-4"><b class="text-white">in earnest</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">본격적으로 / 진지하게</td></tr>
+                <tr><td class="p-4"><b class="text-white">really hit the books</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">정말 열심히 공부하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">grinding</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">고된 일을 계속하는 / 쉬지 않고 노력하는</td></tr>
+                <tr><td class="p-4"><b class="text-white">my destiny</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">내 운명</td></tr>
+                <tr><td class="p-4"><b class="text-white">my lot in life</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">내가 타고난 운명 / 피할 수 없는 처지</td></tr>
+                <tr><td class="p-4"><b class="text-white">explain in detail</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">자세히 설명하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">homebody</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">집에 있기를 좋아하는 사람</td></tr>
+                <tr><td class="p-4"><b class="text-white">resist temptation</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">유혹을 참다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">desperately cling to</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">무언가를 놓치지 않으려고 필사적으로 붙잡거나, 생각·희망 등을 포기하지 않는다는 뜻이에요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">in earnest</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">준비 단계가 끝나고 어떤 일을 진지하게 또는 본격적으로 시작한다는 뜻이에요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">hit the books</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">책을 때린다는 뜻이 아니라 “열심히 공부하다”라는 구어체 표현이에요. really hit the books는 그 의미를 강조합니다.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">grinding</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">게임에서는 반복 작업을 뜻하기도 하지만, 일상에서는 힘든 일을 오랫동안 꾸준히 하는 모습을 나타낼 수 있어요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2 md:col-span-2">
+                <h3 class="text-amber-400 font-bold text-lg">my lot in life</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">자신에게 주어진 피할 수 없는 삶의 처지라는 뜻이에요. 체념하거나 농담하는 말투로 자주 사용합니다.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2 md:col-span-2">
+                <h3 class="text-amber-400 font-bold text-lg">resist temptation</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">하고 싶은 행동이나 욕구를 참고 하지 않는다는 뜻이에요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">I work as a human scarecrow on a farm.</p>
+                <p class="mb-6">That is not a joke or a title I invented. My job is to walk through a field and frighten birds away from valuable crops. Farmers have used people as bird scarers for centuries, and modern farms sometimes still employ workers to patrol fields when ordinary scarecrow or noise devices are not effective enough. One British human scarecrow was hired to protect an oilseed rape field from partridges and pheasants by walking around, waving his arms, and making noise.</p>
+                <p class="mb-6">I cannot <b class="highlight quiz-target" data-ans="get up late" data-kor="늦게 일어날">get up late</b> during the growing season. Birds begin feeding early, so I arrive shortly after sunrise wearing waterproof boots and several layers of old clothing.</p>
+                <p class="mb-6">At first, the field is quiet. I walk along the rows, looking for movement. When birds appear, the real work begins <b class="highlight quiz-target" data-ans="in earnest" data-kor="본격적으로">in earnest</b>.</p>
+                <p class="mb-6">I run toward them, clap, shout, and wave a bright flag. Sometimes I ring a cowbell. The birds fly away as if <b class="highlight quiz-target" data-ans="desperately clinging to" data-kor="필사적으로 매달리는">desperately clinging to</b> the last few seconds of their breakfast.</p>
+                <p class="mb-6">Then I wait for them to return.</p>
+                <p class="mb-6">This pattern continues for hours. I walk, watch, shout, and walk some more. It is physically <b class="highlight quiz-target" data-ans="grinding" data-kor="고된 일입니다">grinding</b>, especially when the ground is wet. Human bird scarers may spend long days patrolling fields, using movement, instruments, or other noises to keep birds from becoming comfortable.</p>
+                <p class="mb-6">I bring books with me because there are long quiet periods. I once planned to <b class="highlight quiz-target" data-ans="really hit the books" data-kor="정말 열심히 공부할">really hit the books</b> and study for an agricultural qualification while working. In reality, I can read only a few pages before a group of pheasants lands fifty meters away.</p>
+                <p class="mb-6">Visitors sometimes stop beside the road and ask what I am doing. I usually <b class="highlight quiz-target" data-ans="explain in detail" data-kor="자세히 설명합니다">explain in detail</b> that I am protecting young plants, not performing an outdoor drama.</p>
+                <p class="mb-6">One man asked, “Was this always <b class="highlight quiz-target" data-ans="your destiny" data-kor="당신의 운명">your destiny</b>?”</p>
+                <p class="mb-6">“No,” I said. “I applied after seeing an advertisement.”</p>
+                <p class="mb-6">He looked disappointed.</p>
+                <p class="mb-6">I am naturally a <b class="highlight quiz-target" data-ans="homebody" data-kor="집에 있기를 좋아하는 사람">homebody</b>, so spending the entire day alone in a cold field is not ideal. Still, I refuse to describe it as <b class="highlight quiz-target" data-ans="my lot in life" data-kor="내가 타고난 운명">my lot in life</b>. It is seasonal work, and it pays me to read, exercise, and protect a crop.</p>
+                <p class="mb-6">The hardest part comes at lunchtime. I sit beside the field with a sandwich while hundreds of birds watch from the trees.</p>
+                <p class="mb-6">I have to <b class="highlight quiz-target" data-ans="resist the temptation" data-kor="유혹을 참아야">resist the temptation</b> to leave early.</p>
+                <p class="mb-6">The moment I disappear, they know.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">저는 농장에서 인간 허수아비로 일합니다.</p>
+                <p class="mb-6">농담도 아니고 제가 만들어 낸 직책도 아닙니다. 제 일은 밭을 걸어 다니며 귀중한 작물에 접근하는 새들을 쫓아내는 것입니다. 농부들은 수백 년 동안 사람을 새 쫓는 일에 활용해 왔으며, 일반 허수아비나 소음 장치만으로 효과가 충분하지 않을 때는 지금도 밭을 순찰하는 사람을 고용하기도 합니다. 영국에서는 한 인간 허수아비가 유채밭을 자고새와 꿩으로부터 보호하기 위해 걸어 다니고, 팔을 흔들고, 소리를 내는 일을 맡았습니다.</p>
+                <p class="mb-6">작물 재배 기간에는 <b class="highlight">늦게 일어날</b> 수 없습니다. 새들은 이른 시간부터 먹이를 찾기 때문에 저는 해가 뜬 직후 방수 장화를 신고 낡은 옷을 여러 겹 입은 채 도착합니다.</p>
+                <p class="mb-6">처음에는 밭이 조용합니다. 저는 작물 사이를 걸으며 움직임을 찾습니다. 새들이 나타나면 <b class="highlight">본격적인</b> 일이 시작됩니다.</p>
+                <p class="mb-6">저는 새들을 향해 달리고, 손뼉을 치고, 소리를 지르며 밝은 깃발을 흔듭니다. 가끔은 카우벨도 울립니다. 새들은 아침 식사의 마지막 몇 초에 <b class="highlight">필사적으로 매달리는</b> 듯하다가 날아갑니다.</p>
+                <p class="mb-6">그러면 저는 새들이 돌아오기를 기다립니다.</p>
+                <p class="mb-6">이런 과정이 몇 시간 동안 계속됩니다. 걷고, 살피고, 소리 지르고, 또 걷습니다. 특히 땅이 젖어 있을 때는 육체적으로 상당히 <b class="highlight">고된 일입니다</b>. 인간 새 쫓는 사람들은 새들이 밭에 익숙해지지 않도록 움직임이나 악기, 여러 소리를 사용하며 오랫동안 밭을 순찰할 수 있습니다.</p>
+                <p class="mb-6">조용한 시간이 길기 때문에 저는 책을 가져갑니다. 한때는 일하면서 농업 관련 자격증을 따기 위해 <b class="highlight">정말 열심히 공부할</b> 계획이었습니다. 하지만 실제로는 몇 장 읽기도 전에 50미터쯤 떨어진 곳에 꿩 떼가 내려앉습니다.</p>
+                <p class="mb-6">가끔 지나가던 사람들이 길가에 멈춰 서서 제가 무엇을 하는지 묻습니다. 저는 보통 야외 공연을 하는 것이 아니라 어린 작물을 보호하고 있다고 <b class="highlight">자세히 설명합니다</b>.</p>
+                <p class="mb-6">한 남자가 물었습니다. “이 일이 원래부터 <b class="highlight">당신의 운명이었나요</b>?”</p>
+                <p class="mb-6">“아니요. 구인 광고를 보고 지원했어요.” 제가 대답했습니다.</p>
+                <p class="mb-6">그는 실망한 표정을 지었습니다.</p>
+                <p class="mb-6">저는 원래 <b class="highlight">집에 있기를 좋아하는 사람이라</b> 온종일 추운 밭에서 혼자 지내는 것이 이상적인 생활은 아닙니다. 그래도 이것이 제게 주어진 피할 수 없는 운명이라고 생각하지는 않습니다. 계절성 일자리이고, 책을 읽고 운동하면서 작물을 보호하는 대가로 돈을 받을 수 있습니다.</p>
+                <p class="mb-6">가장 힘든 순간은 점심시간입니다. 저는 샌드위치를 들고 밭 옆에 앉고, 수백 마리의 새들은 나무 위에서 저를 지켜봅니다.</p>
+                <p class="mb-6"><b class="highlight">유혹을 참아야</b> 합니다.</p>
+                <p class="mb-6">제가 사라지는 순간, 새들은 알아차립니다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "62511020.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

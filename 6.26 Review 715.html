@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Day the Sky Caught Fire</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">☀️</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Day the Sky Caught Fire</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">corrupt</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">부패한, 타락한</td></tr>
+                <tr><td class="p-4"><b class="text-white">corruption</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">부패, 비리</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold flex items-center gap-2">💡 <span>corrupt</span></h3>
+                <p class="text-sm text-slate-300 leading-relaxed">corrupt는 권력이나 지위를 사적인 이익을 위해 부당하게 사용하는 사람이나 조직을 묘사합니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold flex items-center gap-2">💡 <span>corruption</span></h3>
+                <p class="text-sm text-slate-300 leading-relaxed">corruption은 그런 부정행위가 반복되거나 제도적으로 퍼진 상태를 뜻합니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">At 2:14 p.m. on March 8, 2041, the largest solar storm in recorded history struck Earth.</p>
+                <p class="mb-6">In Tokyo, flight engineer Emi Sato was aboard a passenger plane carrying 280 people. She was checking the navigation system when every screen in the cockpit flashed white.</p>
+                <p class="mb-6">Then they went dark.</p>
+                <p class="mb-6">The pilots lost contact with air traffic control. Outside the windows, green and purple light spread across the daytime sky. Passengers lifted their phones, thinking it was beautiful.</p>
+                <p class="mb-6">Emi knew it was not.</p>
+                <p class="mb-6">“The satellites are down,” she told the captain. “We’re flying blind.”</p>
+                <p class="mb-6">Thousands of kilometers away, Malik Reed was working inside an underground hospital in Nairobi. The solar storm destroyed the city’s electrical grid, but the hospital’s emergency generators started immediately.</p>
+                <p class="mb-6">For twelve seconds.</p>
+                <p class="mb-6">Then they stopped.</p>
+                <p class="mb-6">Malik, a maintenance technician, ran into the generator room. The fuel tanks were almost empty. A <b class="highlight quiz-target" data-ans="corrupt" data-kor="부패한">corrupt</b> supplier had been paid to deliver six months of emergency fuel, but most of it had never arrived.</p>
+                <p class="mb-6">Upstairs, patients on life-support machines were already in danger.</p>
+                <p class="mb-6">Malik connected a portable generator and shouted for nurses to move the most critical patients into one operating room. It would not power the whole hospital, but it might keep twenty people alive.</p>
+                <p class="mb-6">In northern Canada, sixteen-year-old Lena Cho was watching a championship hockey game inside a crowded arena. When the lights failed, twenty thousand people screamed.</p>
+                <p class="mb-6">A second later, part of the roof caught fire.</p>
+                <p class="mb-6">Burning pieces of satellite debris were falling through the atmosphere. One fragment had struck the arena’s power system. Emergency doors should have opened automatically, but several remained locked.</p>
+                <p class="mb-6">Lena’s father, a safety inspector, stared at the doors.</p>
+                <p class="mb-6">“This building never passed its final inspection,” he said.</p>
+                <p class="mb-6">“Then why is it open?”</p>
+                <p class="mb-6">He did not answer immediately.</p>
+                <p class="mb-6">Years of political <b class="highlight quiz-target" data-ans="corruption" data-kor="부패">corruption</b> had allowed the owners to ignore safety rules.</p>
+                <p class="mb-6">Lena grabbed a metal barrier with several other spectators. Together, they smashed the glass beside an emergency exit. Cold air rushed inside, and people began climbing out.</p>
+                <p class="mb-6">That evening, Emi’s plane landed using an old military runway and handwritten maps. Malik kept the hospital’s emergency room running until power returned. Lena helped hundreds of strangers escape before the roof collapsed.</p>
+                <p class="mb-6">Later, people remembered the burning sky.</p>
+                <p class="mb-6">Emi remembered the silence in the cockpit. Malik remembered counting every liter of fuel. Lena remembered her father’s face when she asked why the doors had been locked.</p>
+                <p class="mb-6">The solar storm lasted less than an hour.</p>
+                <p class="mb-6">Its consequences lasted for decades.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">2041년 3월 8일 오후 2시 14분, 기록상 가장 강력한 태양 폭풍이 지구를 강타했다.</p>
+                <p class="mb-6">도쿄에서 항공 엔지니어 에미 사토는 승객 280명을 태운 여객기에 타고 있었다. 그녀가 항법 장치를 확인하던 순간 조종석의 모든 화면이 하얗게 번쩍였다.</p>
+                <p class="mb-6">그러고는 모두 꺼졌다.</p>
+                <p class="mb-6">조종사들은 항공 교통 관제소와의 연락을 잃었다. 창밖에서는 초록색과 보라색 빛이 대낮의 하늘을 뒤덮었다. 승객들은 아름다운 장면이라고 생각하며 휴대전화를 들어 올렸다.</p>
+                <p class="mb-6">에미는 그것이 아름다운 현상이 아니라는 것을 알고 있었다.</p>
+                <p class="mb-6">“위성들이 작동을 멈췄어요.” 그녀가 기장에게 말했다. “아무것도 보지 못한 채 비행하고 있어요.”</p>
+                <p class="mb-6">수천 킬로미터 떨어진 나이로비에서는 말리크 리드가 지하 병원에서 일하고 있었다. 태양 폭풍이 도시의 전력망을 파괴했지만, 병원의 비상 발전기는 즉시 작동했다.</p>
+                <p class="mb-6">단 12초 동안이었다.</p>
+                <p class="mb-6">그러고는 멈췄다.</p>
+                <p class="mb-6">시설 관리 기술자인 말리크는 발전기실로 달려갔다. 연료 탱크는 거의 비어 있었다. 한 <b class="highlight">부패한</b> 공급업체가 6개월분의 비상 연료를 납품하기로 하고 돈을 받았지만, 대부분의 연료는 도착하지 않았다.</p>
+                <p class="mb-6">위층에서는 생명 유지 장치에 의존하던 환자들이 이미 위험한 상태였다.</p>
+                <p class="mb-6">말리크는 이동식 발전기를 연결하고, 가장 위급한 환자들을 한 수술실로 옮기라고 간호사들에게 외쳤다. 병원 전체에 전력을 공급할 수는 없었지만, 스무 명 정도는 살릴 수 있을지도 몰랐다.</p>
+                <p class="mb-6">캐나다 북부에서는 열여섯 살 레나 조가 사람들로 가득 찬 경기장에서 아이스하키 결승전을 보고 있었다. 조명이 꺼지자 2만 명이 비명을 질렀다.</p>
+                <p class="mb-6">잠시 후 지붕 일부에 불이 붙었다.</p>
+                <p class="mb-6">불타는 위성 잔해가 대기권을 통과해 떨어지고 있었다. 파편 하나가 경기장의 전력 설비를 강타했다. 비상문은 자동으로 열려야 했지만, 몇몇 문은 잠긴 채 움직이지 않았다.</p>
+                <p class="mb-6">안전 검사관인 레나의 아버지는 문들을 바라보았다.</p>
+                <p class="mb-6">“이 건물은 최종 안전 검사를 통과한 적이 없어.”</p>
+                <p class="mb-6">“그런데 왜 문을 연 거예요?”</p>
+                <p class="mb-6">그는 바로 대답하지 않았다.</p>
+                <p class="mb-6">수년간 이어진 정치권의 <b class="highlight">부패</b> 때문에 경기장 소유주들은 안전 규정을 무시할 수 있었다.</p>
+                <p class="mb-6">레나는 다른 관중들과 함께 금속 차단봉을 붙잡았다. 그들은 비상구 옆의 유리를 깨뜨렸다. 차가운 공기가 안으로 들어왔고, 사람들은 밖으로 빠져나가기 시작했다.</p>
+                <p class="mb-6">그날 저녁, 에미가 탄 비행기는 오래된 군용 활주로와 손으로 그린 지도를 이용해 착륙했다. 말리크는 전기가 돌아올 때까지 병원의 응급실을 유지했다. 레나는 지붕이 무너지기 전에 수백 명의 낯선 사람들이 탈출하도록 도왔다.</p>
+                <p class="mb-6">이후 사람들은 불타던 하늘을 기억했다.</p>
+                <p class="mb-6">에미는 조종석의 침묵을 기억했다. 말리크는 연료를 한 리터씩 세던 순간을 기억했다. 레나는 왜 문이 잠겨 있었냐고 물었을 때 아버지가 지었던 표정을 기억했다.</p>
+                <p class="mb-6">태양 폭풍은 한 시간도 지속되지 않았다.</p>
+                <p class="mb-6">그러나 그 결과는 수십 년 동안 이어졌다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "626715.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

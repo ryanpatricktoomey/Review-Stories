@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Eleven Minutes Without Gravity</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🌍</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Eleven Minutes Without Gravity</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">was representing</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">~을 대표하고 있었다</td></tr>
+                <tr><td class="p-4"><b class="text-white">representative</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">대표자, 대리인</td></tr>
+                <tr><td class="p-4"><b class="text-white">telecommunications</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">통신, 전기통신</td></tr>
+                <tr><td class="p-4"><b class="text-white">semi-finals</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">준결승</td></tr>
+                <tr><td class="p-4"><b class="text-white">it's not fair</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그건 불공평해</td></tr>
+                <tr><td class="p-4"><b class="text-white">feel wronged</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">부당한 대우를 받았다고 느끼다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-2xl p-5 space-y-2 border-l-4 border-teal-500"><h3 class="font-bold text-white text-lg">represent</h3><p class="text-sm text-slate-300">represent는 사람이나 단체를 대신해 공식적으로 행동하거나, 경기에서 국가·팀을 대표한다는 뜻으로 자주 쓰입니다.</p></div>
+            <div class="glass rounded-2xl p-5 space-y-2 border-l-4 border-teal-500"><h3 class="font-bold text-white text-lg">representative</h3><p class="text-sm text-slate-300">representative는 회사나 기관의 “대표자”일 수도 있고, 고객 상담을 담당하는 “직원”을 뜻할 수도 있습니다.</p></div>
+            <div class="glass rounded-2xl p-5 space-y-2 border-l-4 border-teal-500"><h3 class="font-bold text-white text-lg">telecommunications</h3><p class="text-sm text-slate-300">telecommunications는 전화, 인터넷, 위성 신호처럼 먼 거리에서 정보를 주고받는 기술과 산업을 통틀어 말합니다.</p></div>
+            <div class="glass rounded-2xl p-5 space-y-2 border-l-4 border-teal-500"><h3 class="font-bold text-white text-lg">feel wronged</h3><p class="text-sm text-slate-300">feel wronged는 단순히 기분이 나쁘다는 뜻이 아니라, 자신이 부당하거나 불공정한 대우를 받았다고 느낀다는 뜻입니다.</p></div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">At 8:17 p.m., gravity disappeared.</p>
+                <p class="mb-6">Mina was on a passenger plane above the Pacific. She had been flying home after <b class="highlight quiz-target" data-ans="representing" data-kor="대표한 뒤">representing</b> Korea in the robotics <b class="highlight quiz-target" data-ans="semi-finals" data-kor="준결승">semi-finals</b> in Singapore. When her water bottle rose from the tray, she thought it was a trick.</p>
+                <p class="mb-6">Then the passengers began floating.</p>
+                <p class="mb-6">A flight attendant hit the ceiling. Bags burst out of the overhead compartments. Mina grabbed her seat belt with both hands while the plane continued moving forward without falling.</p>
+                <p class="mb-6">A man near her shouted, “<b class="highlight quiz-target" data-ans="It’s not fair" data-kor="불공평해요">It’s not fair</b>! I paid for business class!”</p>
+                <p class="mb-6">Nobody answered him.</p>
+                <p class="mb-6">At the same moment, Dr. Luis Ortega was performing heart surgery in Madrid. The patient, the surgical tools, and several drops of blood lifted from the table.</p>
+                <p class="mb-6">“Hold him down!” Luis shouted.</p>
+                <p class="mb-6">The nurses pulled the patient toward the operating table with straps. Luis caught a floating instrument and continued the operation while alarms sounded throughout the hospital. A hospital <b class="highlight quiz-target" data-ans="representative" data-kor="대표자">representative</b> appeared at the door and said that emergency services had lost contact with half the city.</p>
+                <p class="mb-6">Luis stared at him. “Then fix the phones.”</p>
+                <p class="mb-6">“We can’t. The entire <b class="highlight quiz-target" data-ans="telecommunications" data-kor="통신">telecommunications</b> network is failing.”</p>
+                <p class="mb-6">Across the city, Hana Park was shopping in a crowded supermarket. Cans, fruit, carts, and customers drifted through the aisles. Hana held onto a freezer handle while a boy floated past her, laughing.</p>
+                <p class="mb-6">His mother was crying.</p>
+                <p class="mb-6">Hana pushed herself away from the freezer, caught the boy, and pulled him toward a shelf. Before she could reach his mother, the lights went out.</p>
+                <p class="mb-6">For eleven minutes, the world had no weight.</p>
+                <p class="mb-6">Then gravity returned.</p>
+                <p class="mb-6">On the plane, everyone crashed into their seats and the floor. In the operating room, the tools slammed down, but Luis managed to protect the patient. In the supermarket, shelves collapsed as Hana covered the boy with her body.</p>
+                <p class="mb-6">Years later, the three of them appeared in the same documentary.</p>
+                <p class="mb-6">Mina remembered the silence after everyone stopped screaming. Luis remembered refusing to stop the surgery. Hana remembered the boy asking whether the world was ending.</p>
+                <p class="mb-6">Some survivors said governments had known the disaster was coming. Others <b class="highlight quiz-target" data-ans="felt wronged" data-kor="부당한 대우를 받았다고 느꼈다">felt wronged</b> because no warning had been given.</p>
+                <p class="mb-6">The official report called it an unexplained global gravitational failure.</p>
+                <p class="mb-6">Most people simply called it the Eleven Minutes.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">오후 8시 17분, 중력이 사라졌다.</p>
+                <p class="mb-6">미나는 태평양 상공을 날고 있는 여객기에 타고 있었다. 그녀는 싱가포르에서 열린 로봇 대회 <b class="highlight">준결승</b>에서 한국을 <b class="highlight">대표한 뒤</b> 집으로 돌아가는 중이었다. 물병이 테이블 위로 떠오르자 그녀는 처음에는 장난이라고 생각했다.</p>
+                <p class="mb-6">그러고는 승객들이 떠오르기 시작했다.</p>
+                <p class="mb-6">승무원 한 명이 천장에 부딪혔다. 머리 위 수납칸에서 가방들이 쏟아져 나왔다. 비행기는 추락하지 않은 채 앞으로 계속 나아갔고, 미나는 양손으로 안전벨트를 붙잡았다.</p>
+                <p class="mb-6">근처에 있던 한 남자가 소리쳤다.</p>
+                <p class="mb-6">“이건 <b class="highlight">불공평해요</b>! 나는 비즈니스석 비용을 냈다고요!”</p>
+                <p class="mb-6">아무도 대답하지 않았다.</p>
+                <p class="mb-6">같은 순간, 루이스 오르테가 의사는 마드리드에서 심장 수술을 하고 있었다. 환자와 수술 도구들, 그리고 몇 방울의 피가 수술대 위로 떠올랐다.</p>
+                <p class="mb-6">“환자를 붙잡아요!” 루이스가 소리쳤다.</p>
+                <p class="mb-6">간호사들은 끈을 이용해 환자를 수술대 쪽으로 끌어당겼다. 루이스는 공중에 떠 있던 수술 도구를 붙잡고 수술을 계속했다. 병원 전체에서는 경보음이 울리고 있었다. 병원 <b class="highlight">대표자</b>가 문 앞에 나타나 응급 구조대가 도시 절반과 연락이 끊겼다고 말했다.</p>
+                <p class="mb-6">루이스는 그를 바라보았다.</p>
+                <p class="mb-6">“그럼 전화부터 고치세요.”</p>
+                <p class="mb-6">“불가능합니다. 전체 <b class="highlight">통신망</b>이 마비되고 있어요.”</p>
+                <p class="mb-6">도시 건너편에서는 하나 박이 붐비는 슈퍼마켓에서 장을 보고 있었다. 통조림, 과일, 카트, 손님들이 통로 사이를 떠다녔다. 하나는 냉동고 손잡이를 붙잡고 있었고, 한 소년이 웃으며 그녀의 앞을 떠갔다.</p>
+                <p class="mb-6">소년의 어머니는 울고 있었다.</p>
+                <p class="mb-6">하나는 냉동고를 밀어 몸을 움직인 뒤 소년을 붙잡아 선반 쪽으로 끌어당겼다. 아이의 어머니에게 도착하기도 전에 불이 꺼졌다.</p>
+                <p class="mb-6">11분 동안 세상에는 무게가 없었다.</p>
+                <p class="mb-6">그러고는 중력이 돌아왔다.</p>
+                <p class="mb-6">비행기에서는 모두가 좌석과 바닥으로 떨어졌다. 수술실에서는 도구들이 수술대 위로 세게 떨어졌지만, 루이스는 환자를 보호하는 데 성공했다. 슈퍼마켓에서는 선반들이 무너졌고, 하나는 몸으로 소년을 감쌌다.</p>
+                <p class="mb-6">몇 년 후, 세 사람은 같은 다큐멘터리에 출연했다.</p>
+                <p class="mb-6">미나는 모두가 비명을 멈춘 뒤 찾아온 정적을 기억했다. 루이스는 수술을 멈추지 않았던 일을 기억했다. 하나는 소년이 세상이 끝나는 것이냐고 물었던 순간을 기억했다.</p>
+                <p class="mb-6">일부 생존자들은 정부가 재난을 미리 알고 있었다고 말했다. 아무런 경고도 없었다는 이유로 <b class="highlight">부당한 대우를 받았다고 느끼는</b> 사람들도 있었다.</p>
+                <p class="mb-6">공식 보고서는 그 사건을 원인을 알 수 없는 전 세계적 중력 이상 현상이라고 불렀다.</p>
+                <p class="mb-6">대부분의 사람들은 그저 ‘11분’이라고 불렀다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "626630.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

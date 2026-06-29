@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Last Empty Box 🪂</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🪂</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Last Empty Box</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">cross off the list</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">목록에서 완료한 항목으로 지우다</td></tr>
+                <tr><td class="p-4"><b class="text-white">street smarts</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">세상 물정에 밝은 감각 / 실전 대처 능력</td></tr>
+                <tr><td class="p-4"><b class="text-white">parachute</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">낙하산</td></tr>
+                <tr><td class="p-4"><b class="text-white">detached house</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">단독주택</td></tr>
+                <tr><td class="p-4"><b class="text-white">in the near future</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">가까운 미래에 / 조만간</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-6 rounded-3xl border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">cross off the list</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">목록의 항목을 끝낸 뒤 줄을 그어 지운다는 뜻이에요. 버킷리스트의 목표를 이루었을 때 자주 사용해요.</p>
+            </div>
+            <div class="glass p-6 rounded-3xl border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">street smarts</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">책으로 배운 지식이 아니라 실제 생활에서 위험이나 문제를 빠르게 파악하고 대처하는 능력을 말해요.</p>
+            </div>
+            <div class="glass p-6 rounded-3xl border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">detached house</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">다른 집과 벽을 공유하지 않고 독립적으로 지어진 단독주택이에요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">June 29, 2026</p>
+                <p class="mb-6">Today, at the age of ninety, I finally jumped out of an airplane.</p>
+                <p class="mb-6">Skydiving had been on my bucket list since I was twelve. I saw a photograph of a woman floating under a bright red <b class="highlight quiz-target" data-ans="parachute" data-kor="낙하산">parachute</b>, and I decided that someday I would do the same.</p>
+                <p class="mb-6">My first chance came when I was twenty-three. Two friends invited me to a small airfield outside the city. I was ready to go, but my mother called that morning. A pipe had burst in her kitchen, and water was spreading across the floor. I spent the day carrying wet furniture outside instead.</p>
+                <p class="mb-6">At thirty-seven, I booked a jump during a family vacation. My husband said he would watch from the ground. Unfortunately, a storm arrived during the night. The instructor told me they might reopen <b class="highlight quiz-target" data-ans="in the near future" data-kor="가까운 미래에">in the near future</b>, but our flight home was the next morning.</p>
+                <p class="mb-6">At fifty-two, I tried again. By then, we had moved into a <b class="highlight quiz-target" data-ans="detached house" data-kor="단독주택">detached house</b> in the countryside, and money was tight. Two days before the jump, the heating system broke. I looked at the repair bill, canceled my booking, and told myself that keeping the house warm was more important.</p>
+                <p class="mb-6">At sixty-eight, my daughter bought me a skydiving voucher for my birthday. She said, “You have enough <b class="highlight quiz-target" data-ans="street smarts" data-kor="세상 물정에 밝은 감각">street smarts</b> to know when something is dangerous, but sometimes you use them as an excuse to avoid everything.”</p>
+                <p class="mb-6">She was right, but that attempt failed too. I injured my knee while carrying groceries and spent three months in physical therapy.</p>
+                <p class="mb-6">Last year, I called the skydiving center. The young man on the phone was silent when I told him my age.</p>
+                <p class="mb-6">“Are you sure?” he asked.</p>
+                <p class="mb-6">“I have been sure for seventy-eight years,” I said.</p>
+                <p class="mb-6">This morning, my daughter, two grandchildren, and one very nervous doctor came with me. The instructor checked my equipment twice. At the airplane door, I was frightened, but I was not uncertain.</p>
+                <p class="mb-6">Then we jumped.</p>
+                <p class="mb-6">For several seconds, the world was only wind and sky. When the <b class="highlight quiz-target" data-ans="parachute" data-kor="낙하산">parachute</b> opened, everything became quiet. I could see roads, fields, and tiny houses below me.</p>
+                <p class="mb-6">Tonight, I opened my old journal. Beside “Go skydiving,” I drew a long line through the words.</p>
+                <p class="mb-6">At last, I could <b class="highlight quiz-target" data-ans="cross off the list" data-kor="목록에서 완료한 항목으로 지우다">cross it off the list</b>.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">2026년 6월 29일</p>
+                <p class="mb-6">오늘 나는 아흔 살의 나이로 마침내 비행기에서 뛰어내렸다.</p>
+                <p class="mb-6">스카이다이빙은 내가 열두 살이었을 때부터 버킷리스트에 있었다. 밝은 빨간색 <b class="highlight">낙하산</b> 아래에서 떠다니는 한 여성의 사진을 보고, 나도 언젠가는 똑같이 해보겠다고 결심했다.</p>
+                <p class="mb-6">첫 번째 기회는 스물세 살 때 찾아왔다. 친구 두 명이 도시 외곽의 작은 비행장에 함께 가자고 했다. 갈 준비를 모두 마쳤지만, 그날 아침 어머니에게 전화가 왔다. 부엌의 수도관이 터져 바닥 전체로 물이 퍼지고 있었다. 나는 하루 종일 젖은 가구를 밖으로 옮겼다.</p>
+                <p class="mb-6">서른일곱 살 때는 가족 여행 중 점프를 예약했다. 남편은 땅에서 지켜보겠다고 했다. 하지만 밤사이에 폭풍이 찾아왔다. 강사는 <b class="highlight">조만간</b> 다시 운영할지도 모른다고 했지만, 우리 가족이 집으로 돌아가는 비행기는 다음 날 아침이었다.</p>
+                <p class="mb-6">쉰두 살 때 다시 도전했다. 그때 우리는 시골의 <b class="highlight">단독주택</b>으로 이사한 상태였고, 경제적으로 여유가 없었다. 점프를 이틀 앞두고 난방 장치가 고장 났다. 나는 수리비를 보고 예약을 취소한 뒤, 집을 따뜻하게 유지하는 일이 더 중요하다고 스스로를 설득했다.</p>
+                <p class="mb-6">예순여덟 살 생일에는 딸이 스카이다이빙 이용권을 사주었다. 딸은 이렇게 말했다.<br>“엄마는 위험한 상황을 알아차릴 만큼 <b class="highlight">세상 물정에 밝지만</b>, 가끔은 그 능력을 모든 일을 피하기 위한 핑계로 쓰는 것 같아요.”</p>
+                <p class="mb-6">딸의 말이 맞았다. 하지만 그 도전도 실패했다. 장을 본 뒤 식료품을 옮기다가 무릎을 다쳐 석 달 동안 물리치료를 받아야 했다.</p>
+                <p class="mb-6">작년에는 내가 직접 스카이다이빙 센터에 전화했다. 전화기 너머의 젊은 남자는 내 나이를 듣고 잠시 아무 말도 하지 않았다.</p>
+                <p class="mb-6">“정말 확실하세요?” 그가 물었다.</p>
+                <p class="mb-6">“칠십팔 년 동안 확실했어요.” 내가 대답했다.</p>
+                <p class="mb-6">오늘 아침에는 딸과 손주 두 명, 그리고 몹시 긴장한 의사 한 명이 나와 함께 왔다. 강사는 내 장비를 두 번 확인했다. 비행기 문 앞에 섰을 때 나는 무서웠지만, 마음이 흔들리지는 않았다.</p>
+                <p class="mb-6">그리고 우리는 뛰어내렸다.</p>
+                <p class="mb-6">몇 초 동안 세상에는 바람과 하늘만 존재했다. <b class="highlight">낙하산</b>이 펼쳐지자 모든 것이 조용해졌다. 아래로 도로와 들판, 아주 작아 보이는 집들이 보였다.</p>
+                <p class="mb-6">오늘 밤, 나는 오래된 일기장을 펼쳤다. “스카이다이빙 하기”라는 문장 위에 길게 선을 그었다.</p>
+                <p class="mb-6">마침내 그것을 <b class="highlight">목록에서 지울</b> 수 있었다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "629630.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

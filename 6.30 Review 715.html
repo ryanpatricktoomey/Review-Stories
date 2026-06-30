@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Cat on the Third Floor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🐾</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Cat on the Third Floor</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">playing with his heart</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그분의 마음을 가지고 노는 것</td></tr>
+                <tr><td class="p-4"><b class="text-white">warm-hearted</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">마음이 따뜻한</td></tr>
+                <tr><td class="p-4"><b class="text-white">farewell</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">작별 / 송별</td></tr>
+                <tr><td class="p-4"><b class="text-white">fare</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">교통 요금</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-slate-800/50 p-4 rounded-2xl border border-white/5">
+                <h3 class="text-amber-400 font-bold mb-2">playing with someone's heart</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">상대의 감정을 진지하게 대하지 않고 마음을 흔들거나 이용한다는 뜻이에요.</p>
+            </div>
+            <div class="bg-slate-800/50 p-4 rounded-2xl border border-white/5">
+                <h3 class="text-amber-400 font-bold mb-2">warm-hearted</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">다른 사람에게 친절하고 다정하며 인정이 많다는 뜻이에요.</p>
+            </div>
+            <div class="bg-slate-800/50 p-4 rounded-2xl border border-white/5">
+                <h3 class="text-amber-400 font-bold mb-2">farewell</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">다소 격식 있는 ‘작별’이라는 표현이고, 일상 대화에서는 보통 say goodbye를 더 많이 사용해요.</p>
+            </div>
+            <div class="bg-slate-800/50 p-4 rounded-2xl border border-white/5">
+                <h3 class="text-amber-400 font-bold mb-2">fare</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">택시, 버스, 기차 등의 교통 요금을 뜻해요. farewell과 철자는 비슷하지만 의미는 다릅니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Sora found a framed photograph inside Mr. Han’s desk drawer. It showed a young man holding a white cat.</p>
+                <p class="mb-6">“Is that you?” she asked.</p>
+                <p class="mb-6">Mr. Han nodded. “I raised a cat when I was in college. Her name was Snow.”</p>
+                <p class="mb-6">Sora had worked with him at the hotel for three years, but she had never heard that story. Mr. Han was the night manager. He remembered every employee’s birthday, brought soup when someone was sick, and quietly paid for dinner when interns forgot their wallets.</p>
+                <p class="mb-6">Everyone described him as <b class="highlight quiz-target" data-ans="warm-hearted" data-kor="마음이 따뜻한">warm-hearted</b>. Sora often told new employees, “He looks strict, but he’s a warm person.”</p>
+                <p class="mb-6">That afternoon, the staff prepared a <b class="highlight quiz-target" data-ans="farewell" data-kor="작별 / 송별">farewell</b> party. Mr. Han was retiring, and Sora had been pretending not to care.</p>
+                <p class="mb-6">“You haven’t signed his card Ext,” her coworker Mina said.</p>
+                <p class="mb-6">“I will.”</p>
+                <p class="mb-6">“You’ve said that all day.”</p>
+                <p class="mb-6">Sora looked toward Mr. Han. He was helping a guest carry a suitcase even though his shift had not started.</p>
+                <p class="mb-6">Mina lowered her voice. “He asked whether you would visit him after he leaves. You laughed.”</p>
+                <p class="mb-6">“I thought he was joking.”</p>
+                <p class="mb-6">“He wasn’t. It looked like you were <b class="highlight quiz-target" data-ans="playing with his heart" data-kor="그분의 마음을 가지고 노는 것">playing with his heart</b>.”</p>
+                <p class="mb-6">Sora felt embarrassed. Mr. Han had trained her when she was nervous and inexperienced. He had defended her after she made a serious booking mistake. She had assumed he would always be there.</p>
+                <p class="mb-6">At six, the hotel called a taxi for him.</p>
+                <p class="mb-6">“The company will pay the <b class="highlight quiz-target" data-ans="fare" data-kor="교통 요금">fare</b>,” the general manager announced.</p>
+                <p class="mb-6">Mr. Han picked up a small box containing his photograph, name tag, and favorite teacup.</p>
+                <p class="mb-6">“Well,” he said, “I suppose it’s time to say goodbye.”</p>
+                <p class="mb-6">Everyone clapped, but Sora could not move.</p>
+                <p class="mb-6">Mr. Han walked toward the door.</p>
+                <p class="mb-6">“Wait,” she called.</p>
+                <p class="mb-6">He turned.</p>
+                <p class="mb-6">“You asked whether I’d visit,” she said. “I will.”</p>
+                <p class="mb-6">“Are you sure?”</p>
+                <p class="mb-6">“Yes. And I’m sorry I laughed.”</p>
+                <p class="mb-6">Mr. Han smiled. “Then bring cat food.”</p>
+                <p class="mb-6">“Cat food?”</p>
+                <p class="mb-6">“I adopted a stray last week.”</p>
+                <p class="mb-6">Sora laughed through her tears. “Of course you did.”</p>
+                <p class="mb-6">The taxi pulled away. Sora returned to the front desk and saw his empty chair.</p>
+                <p class="mb-6">The hotel lobby looked exactly the same, but it no longer felt the same.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">소라는 한 씨의 책상 서랍 안에서 액자 사진 한 장을 발견했다. 사진 속에는 흰 고양이를 안고 있는 젊은 남자가 있었다.</p>
+                <p class="mb-6">“이분이세요?” 그녀가 물었다.</p>
+                <p class="mb-6">한 씨가 고개를 끄덕였다. “대학생 때 고양이를 키웠어. 이름은 스노우였지.”</p>
+                <p class="mb-6">소라는 호텔에서 그와 3년 동안 함께 일했지만, 그 이야기는 처음 들었다. 한 씨는 야간 관리자였다. 그는 모든 직원의 생일을 기억했고, 누군가 아프면 수프를 가져다주었으며, 인턴들이 지갑을 두고 왔을 때 조용히 저녁값을 대신 내 주었다.</p>
+                <p class="mb-6">모두가 그를 마음이 따뜻한 사람이라고 표현했다. 소라는 신입 직원들에게 자주 말했다. “엄격해 보이지만, 사실 따뜻한 사람이에요.”</p>
+                <p class="mb-6">그날 오후 직원들은 그의 <b class="highlight">송별</b> 파티를 준비했다. 한 씨는 퇴직할 예정이었지만, 소라는 아무렇지 않은 척하고 있었다.</p>
+                <p class="mb-6">“아직 카드에 메시지 안 썼네.” 동료 미나가 말했다.</p>
+                <p class="mb-6">“쓸 거야.”</p>
+                <p class="mb-6">“하루 종일 그렇게 말했잖아.”</p>
+                <p class="mb-6">소라는 한 씨를 바라보았다. 그는 아직 근무가 시작되지도 않았는데 손님의 여행 가방을 들어 주고 있었다.</p>
+                <p class="mb-6">미나가 목소리를 낮췄다. “한 부장님이 퇴직한 뒤에도 네가 찾아올 거냐고 물으셨는데, 네가 웃었잖아.”</p>
+                <p class="mb-6">“농담하시는 줄 알았어.”</p>
+                <p class="mb-6">“농담 아니었어. 네가 <b class="highlight">그분의 마음을 가지고 노는 것</b>처럼 보였어.”</p>
+                <p class="mb-6">소라는 부끄러워졌다. 한 씨는 그녀가 긴장 많고 경험이 없던 시절에 일을 가르쳐 주었다. 그녀가 큰 예약 실수를 했을 때도 그녀를 보호해 주었다. 소라는 그가 늘 그곳에 있을 거라고 생각했다.</p>
+                <p class="mb-6">6시가 되자 호텔은 그를 위해 택시를 불렀다.</p>
+                <p class="mb-6">“회사가 <b class="highlight">요금</b>을 부담하겠습니다.” 총지배인이 발표했다.</p>
+                <p class="mb-6">한 씨는 사진과 이름표, 가장 좋아하는 찻잔이 들어 있는 작은 상자를 들었다.</p>
+                <p class="mb-6">“자, 이제 작별 인사를 할 시간이군.”</p>
+                <p class="mb-6">모두가 박수를 쳤지만, 소라는 움직일 수 없었다.</p>
+                <p class="mb-6">한 씨가 문 쪽으로 걸어갔다.</p>
+                <p class="mb-6">“잠깐만요.” 소라가 불렀다.</p>
+                <p class="mb-6">그가 돌아보았다.</p>
+                <p class="mb-6">“퇴직 후에 찾아올 거냐고 물으셨죠. 갈게요.”</p>
+                <p class="mb-6">“정말이니?”</p>
+                <p class="mb-6">“네. 그리고 웃어서 죄송해요.”</p>
+                <p class="mb-6">한 씨가 미소를 지었다. “그럼 고양이 사료를 가져와.”</p>
+                <p class="mb-6">“고양이 사료요?”</p>
+                <p class="mb-6">“지난주에 길고양이를 입양했거든.”</p>
+                <p class="mb-6">소라는 눈물을 흘리면서도 웃었다. “역시 그러실 줄 알았어요.”</p>
+                <p class="mb-6">택시가 떠났다. 소라는 프런트 데스크로 돌아와 그의 빈 의자를 바라보았다.</p>
+                <p class="mb-6">호텔 로비의 모습은 그대로였지만, 더 이상 같은 곳처럼 느껴지지 않았다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "630715.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

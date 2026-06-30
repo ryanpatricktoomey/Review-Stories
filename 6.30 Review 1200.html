@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Missing Sketchbook</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🎨</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Missing Sketchbook</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">let it go</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그냥 넘기다 / 놓아주다</td></tr>
+                <tr><td class="p-4"><b class="text-white">trust him</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그를 신뢰하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">believe in him</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그의 가능성이나 능력을 믿다</td></tr>
+                <tr><td class="p-4"><b class="text-white">believe him</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그의 말을 믿다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-slate-800/50 p-4 rounded-2xl border border-white/5">
+                <h3 class="text-amber-400 font-bold mb-2">let it go</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">let it go는 화, 실수, 문제, 미련 등을 더 이상 붙잡지 않고 넘긴다는 뜻이에요. 상황에 따라 “잊어버려”, “그만 신경 써”, “놓아줘”처럼 번역할 수 있어요.</p>
+            </div>
+            <div class="bg-slate-800/50 p-4 rounded-2xl border border-white/5">
+                <h3 class="text-amber-400 font-bold mb-2">trust someone</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">그 사람이 정직하고 믿을 만하다고 생각한다는 뜻이에요.</p>
+            </div>
+            <div class="bg-slate-800/50 p-4 rounded-2xl border border-white/5">
+                <h3 class="text-amber-400 font-bold mb-2">believe someone</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">그 사람이 한 말이 사실이라고 믿는다는 뜻이에요.</p>
+            </div>
+            <div class="bg-slate-800/50 p-4 rounded-2xl border border-white/5">
+                <h3 class="text-amber-400 font-bold mb-2">believe in someone</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">그 사람의 능력, 가능성, 또는 성공할 힘을 믿는다는 뜻이에요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">On Owen’s last day at the design studio, he could not find his sketchbook.</p>
+                <p class="mb-6">It was old, stained, and held together with tape. He had carried it to every meeting for six years. Most of the drawings inside were useless, but he could not imagine leaving without it.</p>
+                <p class="mb-6">“Did you check your desk?” Maya asked.</p>
+                <p class="mb-6">“Three times.”</p>
+                <p class="mb-6">“The meeting room?”</p>
+                <p class="mb-6">“Twice.”</p>
+                <p class="mb-6">Owen looked toward Ben, the newest employee. Ben was standing beside the printer with a large envelope under his arm.</p>
+                <p class="mb-6">“I saw him near my desk this morning,” Owen whispered.</p>
+                <p class="mb-6">Maya followed his eyes. “Are you accusing him?”</p>
+                <p class="mb-6">“I’m saying it’s strange.”</p>
+                <p class="mb-6">Ben had joined the studio only two months earlier. He was talented, but nervous, and he often made careless mistakes. Owen had corrected his work several times.</p>
+                <p class="mb-6">Maya lowered her voice. “You need to <b class="highlight quiz-target" data-ans="trust him" data-kor="그를 신뢰하다">trust him</b>.”</p>
+                <p class="mb-6">“I barely know him.”</p>
+                <p class="mb-6">“You know enough.”</p>
+                <p class="mb-6">Owen walked over to Ben.</p>
+                <p class="mb-6">“Have you seen my sketchbook?”</p>
+                <p class="mb-6">Ben froze. “No.”</p>
+                <p class="mb-6">Owen stared at the envelope. “What’s in there?”</p>
+                <p class="mb-6">“Nothing important.”</p>
+                <p class="mb-6">That answer made Owen more suspicious.</p>
+                <p class="mb-6">“Open it.”</p>
+                <p class="mb-6">Ben’s face turned red. “You don’t <b class="highlight quiz-target" data-ans="believe me" data-kor="그의 말을 믿다">believe me</b>?”</p>
+                <p class="mb-6">“I didn’t say that.”</p>
+                <p class="mb-6">“You didn’t have to.”</p>
+                <p class="mb-6">The room became quiet. Ben put the envelope on a table and walked out.</p>
+                <p class="mb-6">Maya looked at Owen. “That was unfair.”</p>
+                <p class="mb-6">“My sketchbook is missing.”</p>
+                <p class="mb-6">“And you decided he took it.”</p>
+                <p class="mb-6">“He was acting strangely.”</p>
+                <p class="mb-6">“He was preparing something for you. You should <b class="highlight quiz-target" data-ans="believe in him" data-kor="그의 가능성이나 능력을 믿다">believe in him</b> a little more.”</p>
+                <p class="mb-6">Before Owen could answer, the studio manager entered holding the missing sketchbook.</p>
+                <p class="mb-6">“This was in my office,” she said. “You gave it to me yesterday so I could scan some pages.”</p>
+                <p class="mb-6">Owen closed his eyes. He had completely forgotten.</p>
+                <p class="mb-6">Maya crossed her arms. “Go apologize.”</p>
+                <p class="mb-6">Owen found Ben near the elevator.</p>
+                <p class="mb-6">“I was wrong,” he said. “I should have <b class="highlight quiz-target" data-ans="believed you" data-kor="그의 말을 믿다">believed you</b>.”</p>
+                <p class="mb-6">Ben said nothing.</p>
+                <p class="mb-6">Owen continued, “You don’t have to <b class="highlight quiz-target" data-ans="let it go" data-kor="그냥 넘기다 / 놓아주다">let it go</b> immediately. But I hope you can eventually.”</p>
+                <p class="mb-6">Ben opened the envelope. Inside was a framed copy of Owen’s first successful design, signed by the whole team.</p>
+                <p class="mb-6">“I made this for your goodbye,” Ben said.</p>
+                <p class="mb-6">Owen stared at it.</p>
+                <p class="mb-6">“I’m sorry,” he said quietly.</p>
+                <p class="mb-6">Ben nodded. “I know.”</p>
+                <p class="mb-6">When Owen finally left the studio, he carried the sketchbook under one arm and Ben’s gift under the other.</p>
+                <p class="mb-6">The gift felt heavier.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">오언은 디자인 스튜디오에서의 마지막 근무일에 자신의 스케치북을 찾을 수 없었다.</p>
+                <p class="mb-6">그것은 오래되고 얼룩졌으며 테이프로 겨우 붙어 있었다. He had carried it to every meeting for six years. 안에 있는 그림 대부분은 쓸모가 없었지만, 그것 없이 떠난다는 것은 상상할 수 없었다.</p>
+                <p class="mb-6">“책상 확인했어?” 마야가 물었다.</p>
+                <p class="mb-6">“세 번.”</p>
+                <p class="mb-6">“회의실은?”</p>
+                <p class="mb-6">“두 번.”</p>
+                <p class="mb-6">오언은 신입 직원 벤을 바라보았다. 벤은 큰 봉투 하나를 팔 아래에 끼고 프린터 옆에 서 있었다.</p>
+                <p class="mb-6">“오늘 아침에 저 사람이 내 책상 근처에 있는 걸 봤어.” 오언이 속삭였다.</p>
+                <p class="mb-6">마야가 그의 시선을 따라갔다.</p>
+                <p class="mb-6">“지금 벤을 의심하는 거야?”</p>
+                <p class="mb-6">“그냥 이상하다는 거야.”</p>
+                <p class="mb-6">벤은 두 달 전에 스튜디오에 들어왔다. 재능은 있었지만 긴장을 많이 했고, 종종 부주의한 실수를 했다. 오언은 그의 작업을 여러 번 고쳐 주었다.</p>
+                <p class="mb-6">마야가 목소리를 낮췄다.</p>
+                <p class="mb-6">“그를 <b class="highlight">신뢰해야</b> 해.”</p>
+                <p class="mb-6">“거의 알지도 못하는데.”</p>
+                <p class="mb-6">“충분히 알잖아.”</p>
+                <p class="mb-6">오언은 벤에게 다가갔다.</p>
+                <p class="mb-6">“내 스케치북 본 적 있어?”</p>
+                <p class="mb-6">벤은 몸이 굳었다.</p>
+                <p class="mb-6">“아니요.”</p>
+                <p class="mb-6">오언은 봉투를 바라보았다.</p>
+                <p class="mb-6">“그 안에 뭐가 있어?”</p>
+                <p class="mb-6">“중요한 건 아니에요.”</p>
+                <p class="mb-6">그 대답은 오언을 더 의심하게 만들었다.</p>
+                <p class="mb-6">“열어 봐.”</p>
+                <p class="mb-6">벤의 얼굴이 붉어졌다.</p>
+                <p class="mb-6">“제 <b class="highlight">말을 믿지</b> 않으세요?”</p>
+                <p class="mb-6">“그런 말은 안 했어.”</p>
+                <p class="mb-6">“말하지 않아도 알아요.”</p>
+                <p class="mb-6">방 안이 조용해졌다. 벤은 봉투를 탁자 위에 놓고 밖으로 나갔다.</p>
+                <p class="mb-6">마야가 오언을 바라보았다.</p>
+                <p class="mb-6">“너무했어.”</p>
+                <p class="mb-6">“내 스케치북이 없어졌잖아.”</p>
+                <p class="mb-6">“그래서 벤이 가져갔다고 결론 내린 거야?”</p>
+                <p class="mb-6">“행동이 이상했어.”</p>
+                <p class="mb-6">“너를 위해 뭔가 준비하고 있었던 거야. 그 사람의 <b class="highlight">가능성을 조금 더 믿어</b> 줬어야 해.”</p>
+                <p class="mb-6">오언이 대답하기도 전에 스튜디오 관리자가 스케치북을 들고 들어왔다.</p>
+                <p class="mb-6">“이거 내 사무실에 있었어요. 어제 몇 장 스캔해 달라고 직접 줬잖아요.”</p>
+                <p class="mb-6">오언은 눈을 감았다. 완전히 잊고 있었다.</p>
+                <p class="mb-6">마야가 팔짱을 꼈.</p>
+                <p class="mb-6">“가서 사과해.”</p>
+                <p class="mb-6">오언은 엘리베이터 근처에서 벤을 찾았다.</p>
+                <p class="mb-6">“내가 틀렸어.” 그가 말했다. “네 <b class="highlight">말을 믿었어야</b> 했어.”</p>
+                <p class="mb-6">벤은 아무 말도 하지 않았다.</p>
+                <p class="mb-6">오언은 계속 말했다.</p>
+                <p class="mb-6">“당장 <b class="highlight">그냥 넘길</b> 필요는 없어. 하지만 언젠가는 그럴 수 있으면 좋겠어.”</p>
+                <p class="mb-6">벤은 봉투를 열었다. 안에는 오언이 처음 성공시킨 디자인의 액자가 들어 있었고, 팀 전원의 서명이 적혀 있었다.</p>
+                <p class="mb-6">“작별 선물로 만든 거예요.” 벤이 말했다.</p>
+                <p class="mb-6">오언은 그것을 바라보았다.</p>
+                <p class="mb-6">“미안해.” 그가 조용히 말했다.</p>
+                <p class="mb-6">벤이 고개를 끄덕였다.</p>
+                <p class="mb-6">“알아요.”</p>
+                <p class="mb-6">오언은 스튜디오를 떠날 때 한쪽 팔에는 스케치북을, 다른 쪽 팔에는 벤의 선물을 들고 있었다.</p>
+                <p class="mb-6">선물 쪽이 더 무겁게 느껴졌다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "6301200.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

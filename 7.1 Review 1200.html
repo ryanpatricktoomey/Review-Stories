@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Photo That Started an Argument</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🍜</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Photo That Started an Argument</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">saliva</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">침</td></tr>
+                <tr><td class="p-4"><b class="text-white">drooling</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">침을 흘리는 / 군침을 흘리는</td></tr>
+                <tr><td class="p-4"><b class="text-white">mouthwatering</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">군침이 도는 / 아주 맛있어 보이는</td></tr>
+                <tr><td class="p-4"><b class="text-white">my mouth is watering</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">군침이 돌아</td></tr>
+                <tr><td class="p-4"><b class="text-white">filling</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">든든한 / 포만감이 있는</td></tr>
+                <tr><td class="p-4"><b class="text-white">too fishy</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">비린 맛이나 냄새가 너무 강한</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-6 rounded-2xl space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">drooling</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">실제로 침을 흘린다는 뜻도 있지만, 맛있는 음식을 몹시 먹고 싶어 할 때 과장해서 자주 써요.</p>
+            </div>
+            <div class="glass p-6 rounded-2xl space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">mouthwatering</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">음식의 모습이나 냄새가 아주 맛있어서 군침이 돌게 한다는 뜻의 형용사예요.</p>
+            </div>
+            <div class="glass p-6 rounded-2xl space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">my mouth is watering</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">맛있는 음식의 냄새, 사진, 설명 때문에 군침이 돌 때 쓰는 자연스러운 표현이에요.</p>
+            </div>
+            <div class="glass p-6 rounded-2xl space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">filling</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">양이 많다는 뜻보다는, 먹고 나서 오랫동안 배가 든든하다는 뜻이에요.</p>
+            </div>
+            <div class="glass p-6 rounded-2xl space-y-2 md:col-span-2">
+                <h3 class="text-amber-400 font-bold text-lg">too fishy</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">생선 맛이나 냄새가 지나치게 강해서 불쾌하다는 뜻이에요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">At eight o’clock, Ethan and his three roommates gathered around the kitchen table to decide what to eat.</p>
+                <p class="mb-6">“I want something <b class="highlight quiz-target" data-ans="filling" data-kor="든든한 / 포만감이 있는">filling</b>,” Ethan said. “I skipped lunch.”</p>
+                <p class="mb-6">“I don’t care,” Noah replied. “Just choose something.”</p>
+                <p class="mb-6">Ethan opened a delivery app and showed them a photo of grilled salmon over rice. The fish was covered in a glossy sauce, and steam rose from the bowl.</p>
+                <p class="mb-6">“That looks <b class="highlight quiz-target" data-ans="mouthwatering" data-kor="군침이 도는 / 아주 맛있어 보이는">mouthwatering</b>,” Lucas said. “I’m practically <b class="highlight quiz-target" data-ans="drooling" data-kor="침을 흘리는 / 군침을 흘리는">drooling</b>.”</p>
+                <p class="mb-6">“You’re not actually drooling, are you?” Noah asked.</p>
+                <p class="mb-6">Lucas wiped the corner of his mouth. “Maybe a little.”</p>
+                <p class="mb-6">Ethan amplified. “Well, the human body produces <b class="highlight quiz-target" data-ans="saliva" data-kor="침">saliva</b> when it expects food.”</p>
+                <p class="mb-6">“Thank you, Professor,” Noah said. “Can we order now?”</p>
+                <p class="mb-6">Their fourth roommate, Ben, leaned closer to the screen and frowned. “Salmon can be <b class="highlight quiz-target" data-ans="too fishy" data-kor="비린 맛이나 냄새가 너무 강한">too fishy</b>.”</p>
+                <p class="mb-6">“This one is grilled,” Ethan said.</p>
+                <p class="mb-6">“Grilled fish can still taste fishy.”</p>
+                <p class="mb-6">Lucas stared at the photo. “I don’t care. <b class="highlight quiz-target" data-ans="My mouth is watering" data-kor="군침이 돌아">My mouth is watering</b>.”</p>
+                <p class="mb-6">Ethan added four salmon bowls to the cart.</p>
+                <p class="mb-6">Wait,” Noah said. “Rice bowls are boring. What about pizza?”</p>
+                <p class="mb-6">“Pizza isn’t filling enough,” Ben replied.</p>
+                <p class="mb-6">“It’s pizza. Of course it’s filling.”</p>
+                <p class="mb-6">“Not in a satisfying way.”</p>
+                <p class="mb-6">Ethan removed the salmon bowls. “Fine. How about fried chicken?”</p>
+                <p class="mb-6">“Too greasy,” Lucas said.</p>
+                <p class="mb-6">“You were drooling over salmon thirty seconds ago.”</p>
+                <p class="mb-6">“That was different.”</p>
+                <p class="mb-6">They moved on to burgers, curry, dumplings, and sandwiches. Noah wanted something cheap. Ben wanted something mild. Lucas wanted food that looked impressive in photos. Every suggestion failed.</p>
+                <p class="mb-6">After twenty-five minutes, Ethan put his phone down.</p>
+                <p class="mb-6">“You told me to choose,” he said to Noah.</p>
+                <p class="mb-6">“I did, but I didn’t know you’d choose fish.”</p>
+                <p class="mb-6">“You said you didn’t care.”</p>
+                <p class="mb-6">“I didn’t care until you made the wrong choice.”</p>
+                <p class="mb-6">Ethan stared at him, then quietly walked to the kitchen cupboard. He found a single cup of yukgaejang ramen, filled it with boiling water, and sat at the counter.</p>
+                <p class="mb-6">The spicy smell spread through the room.</p>
+                <p class="mb-6">Lucas appeared beside him. “That smells amazing.”</p>
+                <p class="mb-6">Ben looked into the cup. “And very filling.”</p>
+                <p class="mb-6">Noah reached for a fork. “Can I have one bite?”</p>
+                <p class="mb-6">Ethan pulled the ramen closer.</p>
+                <p class="mb-6">“No. You might find it too fishy.”</p>
+                <p class="mb-6">“It’s beef ramen.”</p>
+                <p class="mb-6">“Exactly. I don't want to risk another debate.”</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">저녁 8시, 이선과 세 명의 룸메이트는 무엇을 먹을지 정하기 위해 식탁 주위에 모였다.</p>
+                <p class="mb-6">“난 좀 <b class="highlight">든든한</b> 걸 먹고 싶어.” 이선이 말했다. “점심을 거렸거든.”</p>
+                <p class="mb-6">“난 상관없어.” 노아가 대답했다. “그냥 아무거나 골라.”</p>
+                <p class="mb-6">이선은 배달 앱을 열고 밥 위에 구운 연어가 올라간 사진을 보여 주었다. 생선에는 윤기 나는 소스가 발려 있었고 그릇에서는 김이 올라오고 있었다.</p>
+                <p class="mb-6">“저거 진짜 <b class="highlight">군침 돌게 생겼다</b>.” 루커스가 말했다. “나 거의 <b class="highlight">침 흘리고 있어</b>.”</p>
+                <p class="mb-6">“진짜로 침 흘리는 건 아니지?” 노아가 물었다.</p>
+                <p class="mb-6">루커스는 입가를 닦았다. “조금일지도.”</p>
+                <p class="mb-6">이선이 웃었다. “사람 몸은 음식을 기대하면 <b class="highlight">침</b>을 만들어 내잖아.”</p>
+                <p class="mb-6">“설명 고마워요, 교수님.” 노아가 말했다. “이제 주문해도 돼?”</p>
+                <p class="mb-6">네 번째 룸메이트인 벤은 화면을 가까이 들여다보고는 인상을 찌푸렸다. “연어는 <b class="highlight">너무 비릴 수 있어</b>.”</p>
+                <p class="mb-6">“이건 구운 거야.” 이선이 말했다.</p>
+                <p class="mb-6">“구운 생선도 비릴 수 있지.”</p>
+                <p class="mb-6">루커스는 사진을 빤히 바라보았다. “난 상관없어. <b class="highlight">군침이 돌아</b>.”</p>
+                <p class="mb-6">이선은 연어 덮밥 네 개를 장바구니에 담았다.</p>
+                <p class="mb-6">“잠깐.” 노아가 말했다. “덮밥은 재미없잖아. 피자는 어때?”</p>
+                <p class="mb-6">“피자는 충분히 든든하지 않아.” 벤이 대답했다.</p>
+                <p class="mb-6">“피자잖아. 당연히 든든하지.”</p>
+                <p class="mb-6">“만족스럽게 든든한 건 아니야.”</p>
+                <p class="mb-6">이선은 연어 덮밥을 장바구니에서 뺐다. “좋아. 그럼 치킨은?”</p>
+                <p class="mb-6">“너무 기름져.” 루커스가 말했다.</p>
+                <p class="mb-6">“30초 전에는 연어를 보면서 침 흘리고 있었잖아.”</p>
+                <p class="mb-6">“그건 달랐어.”</p>
+                <p class="mb-6">그들은 햄버거, 카레, 만두, 샌드위치까지 차례로 검토했다. 노아는 저렴한 음식을 원했고, 벤은 순한 음식을 원했으며, 루커스는 사진으로 보기 좋은 음식을 원했다. 모든 제안이 거절당했다.</p>
+                <p class="mb-6">25분 뒤, 이선은 휴대폰을 내려놓았다.</p>
+                <p class="mb-6">“네가 나한테 고르라고 했잖아.” 그가 노아에게 말했다.</p>
+                <p class="mb-6">“그랬지. 하지만 네가 생선을 고를 줄은 몰랐어.”</p>
+                <p class="mb-6">“상관없다며.”</p>
+                <p class="mb-6">“네가 잘못된 걸 고르기 전까지는 상관없었지.”</p>
+                <p class="mb-6">이선은 그를 바라보다가 조용히 부엌 찬장으로 걸어갔다. 그는 육개장 컵라면 하나를 찾아 끓는 물을 붓고 조리대 앞에 앉았다.</p>
+                <p class="mb-6">매운 냄새가 방 안에 퍼졌다.</p>
+                <p class="mb-6">루커스가 그의 옆에 나타났다. “냄새 진짜 좋은데.”</p>
+                <p class="mb-6">벤이 컵 안을 들여다보았다. “그리고 아주 든든해 보여.”</p>
+                <p class="mb-6">노아는 포크를 향해 손을 뻗었다. “한 입만 먹어도 돼?”</p>
+                <p class="mb-6">이선은 컵라면을 자기 쪽으로 당겼다.</p>
+                <p class="mb-6">“안 돼. 네 입에는 너무 비릴지도 모르잖아.”</p>
+                <p class="mb-6">“그건 소고기 라면이잖아.”</p>
+                <p class="mb-6">“그러니까. 또 논쟁이 시작될 위험을 감수하고 싶지 않아.”</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "711020.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

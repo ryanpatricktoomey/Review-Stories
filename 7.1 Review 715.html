@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Last Cup of Ramen</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🍜</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Last Cup of Ramen</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">it puts hair on your chest</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그걸 먹으면 기운이 세진다 / 남자다워진다</td></tr>
+                <tr><td class="p-4"><b class="text-white">clean-tasting</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">맛이 깔끔한</td></tr>
+                <tr><td class="p-4"><b class="text-white">with a clean finish</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">뒷맛이 깔끔한</td></tr>
+                <tr><td class="p-4"><b class="text-white">plain</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">담백한 / 별다른 것이 들어가지 않은</td></tr>
+                <tr><td class="p-4"><b class="text-white">simple</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">단순한 / 복잡하지 않은</td></tr>
+                <tr><td class="p-4"><b class="text-white">bland</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">싱거운 / 밋밋한</td></tr>
+                <tr><td class="p-4"><b class="text-white">rides</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">놀이기구</td></tr>
+                <tr><td class="p-4"><b class="text-white">wave pool</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">파도풀</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-6 rounded-2xl space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">it puts hair on your chest</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">맵거나 강한 음식과 술이 사람을 강하게 만들어 준다는 뜻으로 쓰는 옛날식 농담이에요. 실제로 털이 난다는 뜻은 아닙니다.</p>
+            </div>
+            <div class="glass p-6 rounded-2xl space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">clean-tasting</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">맛이 무겁거나 느끼하지 않고 깔끔하다는 뜻이에요.</p>
+            </div>
+            <div class="glass p-6 rounded-2xl space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">with a clean finish</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">음식을 먹거나 음료를 마신 뒤 입안에 강한 맛이 오래 남지 않고 뒷맛이 깔끔하다는 뜻이에요.</p>
+            </div>
+            <div class="glass p-6 rounded-2xl space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">plain / simple / bland</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">plain과 simple은 담백하거나 복잡하지 않다는 중립적인 표현이지만, bland는 맛이 부족하고 밋밋하다는 부정적인 느낌이 강해요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Kevin and his three roommates returned home after spending the afternoon at a water park. They had gone on nearly all the <b class="highlight quiz-target" data-ans="rides" data-kor="놀이기구">rides</b> and had spent an hour fighting artificial waves in the <b class="highlight quiz-target" data-ans="wave pool" data-kor="파도풀">wave pool</b>. By the time they entered the apartment, everyone was exhausted and hungry.</p>
+                <p class="mb-6">“What should we eat?” Kevin asked.</p>
+                <p class="mb-6">“Anything,” Josh said, dropping onto the sofa.</p>
+                <p class="mb-6">“I don’t care,” said Brian.</p>
+                <p class="mb-6">Leo opened the refrigerator, looked inside, and closed it. “We should order something.”</p>
+                <p class="mb-6">Kevin opened a delivery app. “How about sushi?”</p>
+                <p class="mb-6">Brian nodded. “Sushi is light and <b class="highlight quiz-target" data-ans="clean-tasting" data-kor="맛이 깔끔한">clean-tasting</b>.”</p>
+                <p class="mb-6">“The tuna from this restaurant is good,” Leo said. “It has a rich flavor <b class="highlight quiz-target" data-ans="with a clean finish" data-kor="뒷맛이 깔끔한">with a clean finish</b>.”</p>
+                <p class="mb-6">Josh shook his head. “I need something hot. I nearly froze in that pool.”</p>
+                <p class="mb-6">“Fine,” Kevin said. “How about spicy pork?”</p>
+                <p class="mb-6">Leo smiled. “That sounds good.”</p>
+                <p class="mb-6">Brian frowned. “Too heavy.”</p>
+                <p class="mb-6">Josh pointed at the picture of the pork. “Come on. <b class="highlight quiz-target" data-ans="It puts hair on your chest" data-kor="그걸 먹으면 기운이 세진다 / 남자다워진다">It puts hair on your chest</b>.”</p>
+                <p class="mb-6">“I already have enough,” Brian replied.</p>
+                <p class="mb-6">Kevin scrolled down. “What about pasta?”</p>
+                <p class="mb-6">“Too <b class="highlight quiz-target" data-ans="plain" data-kor="담백한 / 별다른 것이 들어가지 않은">plain</b>,” Leo said.</p>
+                <p class="mb-6">“Fried chicken?”</p>
+                <p class="mb-6">“Too greasy,” Brian answered.</p>
+                <p class="mb-6">“Sandwiches?”</p>
+                <p class="mb-6">Josh looked offended. “That’s too <b class="highlight quiz-target" data-ans="simple" data-kor="단순한 / 복잡하지 않은">simple</b> for dinner.”</p>
+                <p class="mb-6">Kevin put his phone on the table. “You rejected sushi, pork, pasta, chicken, and sandwiches.”</p>
+                <p class="mb-6">“We’re helping narrow it down,” Leo said.</p>
+                <p class="mb-6">“No, you’re destroying every option.”</p>
+                <p class="mb-6">Brian suggested salad, but Josh called it rabbit food. Leo suggested curry, but Brian said it smelled too strong. Josh suggested rice porridge, but Leo complained that it was <b class="highlight quiz-target" data-ans="bland" data-kor="싱거운 / 밋밋한">bland</b>.</p>
+                <p class="mb-6">Twenty-five minutes passed. Kevin’s hunger turned into irritation.</p>
+                <p class="mb-6">“Someone else choose,” he said.</p>
+                <p class="mb-6">The three roommates looked at one another.</p>
+                <p class="mb-6">“I’m fine with anything,” Brian said.</p>
+                <p class="mb-6">“Me too,” Josh added.</p>
+                <p class="mb-6">Leo nodded. “Same.”</p>
+                <p class="mb-6">Kevin stood up, walked into the kitchen, and opened a cupboard. Behind a bag of rice, he found one cup of yukgaejang ramen.</p>
+                <p class="mb-6">He boiled water, filled the cup, and carried it back to the living room.</p>
+                <p class="mb-6">The spicy smell immediately caught everyone’s attention.</p>
+                <p class="mb-6">“That looks good,” Josh said.</p>
+                <p class="mb-6">“Can I try some?” Leo asked.</p>
+                <p class="mb-6">Kevin sat down and lifted his chopsticks.</p>
+                <p class="mb-6">“No.”</p>
+                <p class="mb-6">Brian stared at the cup. “Do we have any more?”</p>
+                <p class="mb-6">Kevin checked the cupboard.</p>
+                <p class="mb-6">“One cup,” he said. “One decision.”</p>
+                <p class="mb-6">Then he began eating while his roommates reopened the delivery app and started arguing about sushi.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">케빈과 세 명의 룸메이트는 오후 내내 워터파크에서 시간을 보낸 뒤 집으로 돌아왔다. 그들은 거의 모든 <b class="highlight">놀이기구</b>를 탔고, <b class="highlight">파도풀</b>에서는 인공 파도와 한 시간 동안 씨름했다. 아파트에 들어왔을 때는 모두 지치고 배가 고픈 상태였다.</p>
+                <p class="mb-6">“우리 뭐 먹을까?” 케빈이 물었다.</p>
+                <p class="mb-6">“아무거나.” 조시가 소파에 쓰러지듯 앉으며 말했다.</p>
+                <p class="mb-6">“난 상관없어.” 브라이언이 말했다.</p>
+                <p class="mb-6">레오는 냉장고를 열어 안을 본 뒤 다시 닫았다. “뭐라도 시켜야겠다.”</p>
+                <p class="mb-6">케빈은 배달 앱을 열었다. “초밥은 어때?”</p>
+                <p class="mb-6">브라이언이 고개를 끄덕였다. “초밥은 가볍고 <b class="highlight">맛도 깔끔한</b>잖아.”</p>
+                <p class="mb-6">“이 식당 참치 맛있어.” 레오가 말했다. “풍미는 진한데 <b class="highlight">뒷맛은 깔끔해</b>.”</p>
+                <p class="mb-6">조시는 고개를 저었다. “난 뜨거운 게 필요해. 수영장에서 거의 얼어 죽을 뻔했어.”</p>
+                <p class="mb-6">“알았어.” 케빈이 말했다. “매운 돼지고기는 어때?”</p>
+                <p class="mb-6">레오가 웃었다. “좋은데.”</p>
+                <p class="mb-6">브라이언은 인상을 찌푸렸다. “너무 무거워.”</p>
+                <p class="mb-6">조시가 돼지고기 사진을 가리켰다. “에이, 먹어 봐. 이런 걸 먹어야 <b class="highlight">힘이 세지지</b>.”</p>
+                <p class="mb-6">“난 이미 충분히 세.” 브라이언이 대답했다.</p>
+                <p class="mb-6">케빈은 화면을 아래로 내렸다. “파스타는?”</p>
+                <p class="mb-6">“너무 <b class="highlight">담백해</b>.” 레오가 말했다.</p>
+                <p class="mb-6">“치킨?”</p>
+                <p class="mb-6">“너무 기름져.” 브라이언이 대답했다.</p>
+                <p class="mb-6">“샌드위치는?”</p>
+                <p class="mb-6">조시는 모욕이라도 당한 듯한 표정을 지었다. “저녁으로는 너무 <b class="highlight">단순하</b>잖아.”</p>
+                <p class="mb-6">케빈은 휴대폰을 테이블 위에 내려놓았다. “너희는 초밥, 돼지고기, 파스타, 치킨, 샌드위치를 전부 거절했어.”</p>
+                <p class="mb-6">“선택지를 줄이는 걸 도와주는 거야.” 레오가 말했다.</p>
+                <p class="mb-6">“아니, 너희는 모든 선택지를 없애고 있어.”</p>
+                <p class="mb-6">브라이언은 샐러드를 제안했지만, 조시는 토끼 먹이라고 했다. 레오는 카레를 제안했지만, 브라이언은 냄새가 너무 강하다고 했다. 조시는 죽을 제안했지만, 레오는 너무 <b class="highlight">밋밋하다</b>고 불평했다.</p>
+                <p class="mb-6">25분이 흘렀다. 케빈은 배고픔을 넘어 짜증이 나기 시작했다.</p>
+                <p class="mb-6">“다른 사람이 골라.” 그가 말했다.</p>
+                <p class="mb-6">세 명의 룸메이트는 서로를 바라보았다.</p>
+                <p class="mb-6">“난 아무거나 괜찮아.” 브라이언이 말했다.</p>
+                <p class="mb-6">“나도.” 조시가 덧붙였다.</p>
+                <p class="mb-6">레오도 고개를 끄덕였다. “나도 같아.”</p>
+                <p class="mb-6">케빈은 자리에서 일어나 부엌으로 가서 찬장을 열었다. 쌀 봉지 뒤에서 육개장 컵라면 하나를 발견했다.</p>
+                <p class="mb-6">그는 물을 끓여 컵라면에 붓고 거실로 가져왔다.</p>
+                <p class="mb-6">매운 냄새가 퍼지자 모두의 시선이 즉시 컵라면으로 향했다.</p>
+                <p class="mb-6">“그거 맛있어 보인다.” 조시가 말했다.</p>
+                <p class="mb-6">“나도 좀 먹어 봐도 돼?” 레오가 물었다.</p>
+                <p class="mb-6">케빈은 자리에 앉아 젓가락을 들었다.</p>
+                <p class="mb-6">“안 돼.”</p>
+                <p class="mb-6">브라이언은 컵라면을 바라보았다. “더 없어?”</p>
+                <p class="mb-6">케빈은 찬장을 확인했다.</p>
+                <p class="mb-6">“컵라면 하나, 결정한 사람 하나.”</p>
+                <p class="mb-6">그는 룸메이트들이 배달 앱을 다시 열어 초밥을 두고 논쟁하는 동안 혼자 라면을 먹기 시작했다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "71715.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

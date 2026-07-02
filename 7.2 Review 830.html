@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Woman Who Is Ready Before Anything Goes Wrong</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">☀️</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Woman Who Is Ready Before Anything Goes Wrong</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">stain</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">얼룩</td></tr>
+                <tr><td class="p-4"><b class="text-white">swell up</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">붓다, 부어오르다</td></tr>
+                <tr><td class="p-4"><b class="text-white">get swollen</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">붓다, 부은 상태가 되다</td></tr>
+                <tr><td class="p-4"><b class="text-white">tank top</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">민소매 셔츠, 탱크톱</td></tr>
+                <tr><td class="p-4"><b class="text-white">wet wipe</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">물티슈</td></tr>
+                <tr><td class="p-4"><b class="text-white">warm welcome</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">따뜻한 환영</td></tr>
+                <tr><td class="p-4"><b class="text-white">suburbs</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">교외</td></tr>
+                <tr><td class="p-4"><b class="text-white">rural</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">시골의, 전원 지역의</td></tr>
+                <tr><td class="p-4"><b class="text-white">peak season</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">성수기</td></tr>
+                <tr><td class="p-4"><b class="text-white">can't pull this off</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">이 일을 성공적으로 해낼 수 없다</td></tr>
+                <tr><td class="p-4"><b class="text-white">reality check</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">현실을 깨닫게 하는 계기</td></tr>
+                <tr><td class="p-4"><b class="text-white">reality hit me</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">현실이 실감 났다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">swell up</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">벌레 물림, 부상, 알레르기 등으로 신체 일부가 부어오르는 변화를 강조합니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">get swollen</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">신체 일부가 부은 상태가 되는 것을 뜻합니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">pull something off</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">어렵거나 성공하기 힘들어 보이는 일을 결국 성공적으로 해낸다는 뜻입니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">reality check</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">계획이나 기대가 현실적인지 다시 생각하게 만드는 경험이나 정보입니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">reality hit me</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">상황의 실제 어려움이나 심각성이 갑자기 실감 났다다는 뜻입니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Yuna gives people a <b class="highlight quiz-target" data-ans="warm welcome" data-kor="따뜻한 환영을">warm welcome</b> wherever she is. She can make a small apartment, a picnic table, or a rented cabin feel comfortable within minutes. Her gift is not decoration. It is anticipation.</p>
+                <p class="mb-6">When she plans a trip from the <b class="highlight quiz-target" data-ans="suburbs" data-kor="교외에서">suburbs</b> to a <b class="highlight quiz-target" data-ans="rural" data-kor="시골">rural</b> area, she checks much more than the route. She looks up store hours, mobile service, transportation, weather, and local medical facilities. During <b class="highlight quiz-target" data-ans="peak season" data-kor="성수기에는">peak season</b>, she books early and keeps backup options in case restaurants or taxis are unavailable.</p>
+                <p class="mb-6">She also gives practical clothing advice. If the weather is hot, she may recommend a <b class="highlight quiz-target" data-ans="tank top" data-kor="민소매 셔츠를">tank top</b> for the afternoon but remind everyone to bring long sleeves for the evening. She knows that countryside temperatures can change quickly and that insects become more active after sunset.</p>
+                <p class="mb-6">Her bag is small but unusually useful. It contains sunscreen, bandages, insect repellent, a charger, and a <b class="highlight quiz-target" data-ans="wet wipe" data-kor="물티슈">wet wipe</b> pack. If food, mud, or grass leaves a <b class="highlight quiz-target" data-ans="stain" data-kor="얼룩이">stain</b>, she deals with it quickly before it sets.</p>
+                <p class="mb-6">Yuna is careful about health without becoming dramatic. She knows that a bug bite can <b class="highlight quiz-target" data-ans="swell up" data-kor="부어오를 수">swell up</b> and that an ankle or eyelid can <b class="highlight quiz-target" data-ans="get swollen" data-kor="부을 수">get swollen</b> after an allergic reaction. She keeps basic first-aid supplies nearby and knows when a problem needs professional medical attention.</p>
+                <p class="mb-6">Her sense is not limited to travel. At work, she prepares alternatives before making ambitious plans. When a project becomes too large, she does not panic and say, “I <b class="highlight quiz-target" data-ans="can't pull this off" data-kor="해낼 수 없어">can't pull this off</b>.” She reduces the scope, protects the most important part, and asks for help early.</p>
+                <p class="mb-6">She values a good <b class="highlight quiz-target" data-ans="reality check" data-kor="현실을 점검하는">reality check</b>. If an idea is exciting but unrealistic, she checks the budget, time, and practical limits before committing to it. Once reality <b class="highlight quiz-target" data-ans="hits" data-kor="실감 난 뒤에도">hits</b>, she does not become defensive. She adjusts.</p>
+                <p class="mb-6">At home, she keeps extra towels where guests can find them, labels unfamiliar food, and leaves a small light on near the bathroom at night. She does not explain these choices unless someone asks.</p>
+                <p class="mb-6">Yuna’s sense comes from one simple habit: she imagines the moment when something becomes uncomfortable, confusing, or inconvenient—and fixes it before anyone reaches that moment.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">유나는 어디에 있든 사람들에게 <b class="highlight">따뜻한 환영을</b> 느끼게 합니다. 작은 아파트, 피크닉 테이블, 임대한 오두막도 몇 분 안에 편안한 공간처럼 만들 수 있습니다. 그녀의 재능은 장식이 아니라 미리 예상하는 능력입니다.</p>
+                <p class="mb-6"><b class="highlight">교외에서</b> <b class="highlight">시골</b> 지역으로 여행을 계획할 때는 길만 확인하지 않습니다. 상점 영업시간, 휴대전화 연결, 교통편, 날씨, 지역 의료시설까지 찾아봅니다. <b class="highlight">성수기에는</b> 일찍 예약하고, 식당이나 택시를 이용할 수 없을 때를 대비해 대안도 준비합니다.</p>
+                <p class="mb-6">옷차림에 대한 조언도 실용적입니다. 날씨가 더우면 오후에는 <b class="highlight">민소매 셔츠를</b> 권할 수 있지만, 저녁을 위해 긴소매 옷을 가져오라고 알려 줍니다. 시골의 기온은 빠르게 변할 수 있고, 해가 진 뒤 벌레가 더 활발해진다는 것을 알기 때문입니다.</p>
+                <p class="mb-6">가방은 작지만 놀라울 정도로 유용합니다. 자외선 차단제, 밴드, 벌레 퇴치제, 충전기, <b class="highlight">물티슈가</b> 들어 있습니다. 음식, 진흙, 풀 때문에 <b class="highlight">얼룩이</b> 생기면 굳기 전에 빠르게 처리합니다.</p>
+                <p class="mb-6">건강에 대해서는 신중하지만 과장하지 않습니다. 벌레에 물린 곳이 <b class="highlight">부어오를 수</b> 있고, 알레르기 반응 때문에 발목이나 눈꺼풀이 <b class="highlight">부을 수</b> 있다는 것을 압니다. 기본 구급용품을 가까이 두고, 언제 전문적인 의료 도움이 필요한지도 알고 있습니다.</p>
+                <p class="mb-6">그녀의 센스는 여행에만 한정되지 않습니다. 직장에서는 큰 계획을 세우기 전에 대안을 준비합니다. 프로젝트가 너무 커지면 “이건 <b class="highlight">해낼 수 없어</b>”라고 당황하지 않습니다. 범위를 줄이고, 가장 중요한 부분을 지키며, 일찍 도움을 요청합니다.</p>
+                <p class="mb-6"><b class="highlight">현실을 점검하는</b> 것도 중요하게 생각합니다. 아이디어가 흥미롭지만 비현실적이라면 결정하기 전에 예산, 시간, 실제 한계를 확인합니다. <b class="highlight">현실이 실감 난</b> 뒤에도 방어적으로 반응하지 않습니다. 조정합니다.</p>
+                <p class="mb-6">집에서는 손님이 쉽게 찾을 수 있는 곳에 여분의 수건을 두고, 낯선 음식에는 표시를 하며, 밤에는 화장실 근처에 작은 불을 켜 둡니다. 누가 묻지 않으면 이런 선택을 굳이 설명하지 않습니다.</p>
+                <p class="mb-6">유나의 센스는 단순한 습관에서 나옵니다. 무언가가 불편하거나, 혼란스럽거나, 번거로워지는 순간을 미리 상상하고, 누군가 그 순간에 도달하기 전에 해결하는 것입니다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "72830.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

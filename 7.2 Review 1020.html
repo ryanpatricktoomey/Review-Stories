@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Woman Who Makes Thoughtful Choices Look Easy</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🌱</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Woman Who Makes Thoughtful Choices Look Easy</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">carpool</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">카풀하다, 승용차를 함께 타다</td></tr>
+                <tr><td class="p-4"><b class="text-white">disposable product</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">일회용품</td></tr>
+                <tr><td class="p-4"><b class="text-white">take pride in</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">~에 자부심을 느끼다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">carpool</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">같은 방향으로 이동하는 사람들이 한 차를 함께 이용하는 것을 말합니다. 명사와 동사로 모두 사용할 수 있습니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">disposable product</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">한 번 또는 짧은 기간 사용한 뒤 버리도록 만들어진 제품을 뜻합니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">take pride in</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">자신의 일, 태도, 능력, 결과 등을 중요하게 여기고 자랑스럽게 생각한다는 뜻입니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Mira is the kind of person whose good sense appears in ordinary decisions. She does not make speeches about being organized, considerate, or environmentally responsible. She simply notices what would make life easier and acts on it.</p>
+                <p class="mb-6">Her mornings are carefully planned. Several people in her neighborhood work near the same business district, so she organizes a <b class="highlight quiz-target" data-ans="carpool" data-kor="카풀을">carpool</b> twice a week. She keeps the schedule simple, confirms pickup times the night before, and rotates drivers fairly. She also leaves extra time for traffic, so nobody begins the day feeling rushed.</p>
+                <p class="mb-6">At work, Mira pays attention to the small things that affect everyone. She sends clear updates before anyone has to ask, brings printed materials only when they are truly necessary, and keeps shared files easy to find. She knows that efficiency is not about doing everything quickly. It is about preventing confusion.</p>
+                <p class="mb-6">Her good sense is especially clear when she prepares events. Instead of buying a large number of <b class="highlight quiz-target" data-ans="disposable products" data-kor="일회용품을">disposable products</b>, she first checks what can be borrowed, washed, or reused. She still keeps a few paper cups and disposable containers for emergencies, but she avoids creating waste just for convenience.</p>
+                <p class="mb-6">She applies the same thinking at home. Shopping bags are folded near the front door, extra chargers are labeled, and leftovers are stored in clear containers with dates. Guests can find water, towels, and basic supplies without needing to ask.</p>
+                <p class="mb-6">Mira also knows when not to interfere. If someone makes a small mistake, she does not correct it in front of everyone. If a conversation becomes uncomfortable, she changes the subject naturally. Her sense is not only practical. It is social.</p>
+                <p class="mb-6">She <b class="highlight quiz-target" data-ans="takes pride in" data-kor="자부심을 느끼지만">takes pride in</b> doing things properly, but she does not need praise for every detail. She cares more about whether the system works, whether people feel comfortable, and whether a choice will still make sense tomorrow.</p>
+                <p class="mb-6">That is what makes her impressive. She does not treat thoughtfulness as a performance. She treats it as a habit. Her choices save time, reduce waste, and make other people’s lives easier without making them feel managed.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">미라는 평범한 선택 속에서 좋은 센스를 보여 주는 사람입니다. 자신이 체계적이고, 배려 깊고, 환경을 생각하는 사람이라고 길게 말하지 않습니다. 그저 무엇이 생활을 더 편하게 만들지 알아차리고 행동합니다.</p>
+                <p class="mb-6">아침 일정은 세심하게 계획되어 있습니다. 같은 동네의 여러 사람이 비슷한 업무 지구로 출근하기 때문에, 미라는 일주일에 두 번 <b class="highlight">카풀을</b> 운영합니다. 일정은 단순하게 유지하고, 전날 밤에 탑승 시간을 확인하며, 운전 순서도 공평하게 나눕니다. 교통 체증을 고려해 여유 시간도 두기 때문에 누구도 하루를 서두르며 시작하지 않습니다.</p>
+                <p class="mb-6">직장에서는 모두에게 영향을 주는 작은 부분에 주의를 기울입니다. 누가 묻기 전에 진행 상황을 명확하게 공유하고, 정말 필요할 때만 인쇄물을 준비하며, 공용 파일을 쉽게 찾을 수 있게 정리합니다. 효율성이란 모든 일을 빠르게 하는 것이 아니라 혼란을 예방하는 것임을 알고 있습니다.</p>
+                <p class="mb-6">행사를 준비할 때 그녀의 센스는 특히 잘 드러납니다. 많은 <b class="highlight">일회용품을</b> 사기 전에 빌리거나, 씻어서 다시 쓰거나, 재사용할 수 있는 것이 있는지 먼저 확인합니다. 비상 상황을 위해 종이컵과 일회용 용기를 조금 준비해 두기는 하지만, 단지 편하다는 이유로 쓰레기를 만들지는 않습니다.</p>
+                <p class="mb-6">집에서도 같은 방식으로 행동합니다. 장바구니는 현관 근처에 접어 두고, 여분의 충전기에는 표시를 하며, 남은 음식은 날짜와 함께 투명한 용기에 보관합니다. 손님들은 물, 수건, 기본 물품을 묻지 않고도 찾을 수 있습니다.</p>
+                <p class="mb-6">언제 개입하지 말아야 하는지도 압니다. 누군가 작은 실수를 하면 모두 앞에서 고치지 않습니다. 대화가 불편해지면 자연스럽게 화제를 바꿉니다. 그녀의 센스는 실용적일 뿐 아니라 사교적이기도 합니다.</p>
+                <p class="mb-6">미라는 일을 제대로 하는 것에 <b class="highlight">자부심을 느끼지만</b>, 모든 세부 사항에 대해 칭찬받을 필요는 없습니다. 시스템이 잘 작동하는지, 사람들이 편안한지, 그리고 그 선택이 내일도 여전히 합리적인지를 더 중요하게 생각합니다.</p>
+                <p class="mb-6">그 점이 그녀를 인상적으로 만듭니다. 배려를 보여 주기 위한 행동으로 만들지 않습니다. 습관처럼 실천합니다. 그녀의 선택은 시간을 절약하고, 쓰레기를 줄이며, 다른 사람들이 통제받는 기분이 들지 않게 하면서도 삶을 더 편하게 만듭니다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "721020.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Last Mechanical Game Repairman</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🕹️</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Last Mechanical Game Repairman</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">arcade</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">오락실</td></tr>
+                <tr><td class="p-4"><b class="text-white">went blank</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">머릿속이 하얘졌다 / 아무 생각도 나지 않았다</td></tr>
+                <tr><td class="p-4"><b class="text-white">fool</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">바보 / 속이다</td></tr>
+                <tr><td class="p-4"><b class="text-white">wind at your back</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">순풍을 등에 받다 / 상황이 유리하게 돌아가다</td></tr>
+                <tr><td class="p-4"><b class="text-white">industry</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">산업 / 업계</td></tr>
+                <tr><td class="p-4"><b class="text-white">commercial industry</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">상업 업계 / 상업 산업</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-2xl p-5 space-y-2"><h3 class="text-teal-400 font-bold text-lg">went blank</h3><p class="text-sm text-slate-300">긴장하거나 당황해서 알고 있던 것도 갑자기 떠오르지 않는 상황을 말해요.</p></div>
+            <div class="glass rounded-2xl p-5 space-y-2"><h3 class="text-teal-400 font-bold text-lg">fool</h3><p class="text-sm text-slate-300">명사로는 ‘바보’, 동사로는 ‘속이다’라는 뜻이에요.</p></div>
+            <div class="glass rounded-2xl p-5 space-y-2"><h3 class="text-teal-400 font-bold text-lg">wind at your back</h3><p class="text-sm text-slate-300">뒤에서 부는 바람이 앞으로 나아가게 도와주는 모습에서 나온 표현이에요. 일이 잘 풀리거나 유리한 상황에 있다는 뜻으로도 써요.</p></div>
+            <div class="glass rounded-2xl p-5 space-y-2"><h3 class="text-teal-400 font-bold text-lg">commercial industry</h3><p class="text-sm text-slate-300">영리 목적으로 상품이나 서비스를 제공하는 업계를 가리킬 수 있지만, 실제 문장에서는 분야를 구체적으로 밝혀 the commercial entertainment industry처럼 쓰는 편이 더 자연스러워요.</p></div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">The first machine I repaired at Miller’s <b class="highlight quiz-target" data-ans="arcade" data-kor="오락실">arcade</b> threw a metal ball through its own glass cover.</p>
+                <p class="mb-6">Mr. Miller stared at the broken glass.</p>
+                <p class="mb-6">“You tightened the spring too much,” he said.</p>
+                <p class="mb-6">“You told me to make it stronger.”</p>
+                <p class="mb-6">“Stronger, not dangerous.”</p>
+                <p class="mb-6">In 1978, the <b class="highlight quiz-target" data-ans="arcade" data-kor="오락실">arcade</b> was filled with mechanical games. There were miniature horse races, shooting galleries, baseball machines, and driving games with painted roads moving beneath plastic cars. Inside each cabinet were belts, gears, springs, lights, and hundreds of wires.</p>
+                <p class="mb-6">My job was to keep them running.</p>
+                <p class="mb-6">At first, every machine seemed designed to <b class="highlight quiz-target" data-ans="fool" data-kor="속이다">fool</b> me. A horse would stop because of a loose belt, but when I replaced the belt, two other horses would begin running backward. A baseball machine accepted coins but refused to release the ball. The shooting game sometimes awarded points when nobody had fired.</p>
+                <p class="mb-6">Whenever Mr. Miller asked what was wrong, my mind <b class="highlight quiz-target" data-ans="went blank" data-kor="머릿속이 하얘졌다">went blank</b>.</p>
+                <p class="mb-6">I studied repair manuals after work and drew diagrams of every machine. Soon, I could recognize problems by sound. A clicking noise meant a damaged gear. A low hum usually meant a motor was stuck. A burning smell meant I had already waited too long.</p>
+                <p class="mb-6">Mr. Miller had worked in the amusement <b class="highlight quiz-target" data-ans="industry" data-kor="산업">industry</b> for thirty years. He told me that mechanical games would always survive.</p>
+                <p class="mb-6">“People want to touch something real,” he said. “The whole <b class="highlight quiz-target" data-ans="commercial industry" data-kor="상업 업계">commercial industry</b> depends on giving customers an experience they can’t get at home.”</p>
+                <p class="mb-6">For months, I struggled with one machine called Rocket Racer. It had six metal spaceships that moved along separate tracks. No matter what I repaired, the blue ship always stopped halfway.</p>
+                <p class="mb-6">One Saturday, the arcade was crowded, and Rocket Racer failed during a tournament. Mr. Miller gave me ten minutes to fix it.</p>
+                <p class="mb-6">For once, I had the <b class="highlight quiz-target" data-ans="wind at my back" data-kor="상황이 내게 유리하게 돌아갔다">wind at my back</b>. I opened the cabinet, heard a faint scrape, and found a bent metal guide beneath the track. I straightened it, replaced a spring, and restarted the machine.</p>
+                <p class="mb-6">All six ships raced to the finish.</p>
+                <p class="mb-6">The crowd cheered. Mr. Miller slapped me on the shoulder.</p>
+                <p class="mb-6">“You finally understand these machines,” he said.</p>
+                <p class="mb-6">On Monday morning, a delivery truck arrived with four large cabinets. Their screens glowed with spaceships made of light.</p>
+                <p class="mb-6">The new video games had no tracks, springs, or mechanical horses. When something failed, the distributor replaced an electronic board. There was almost nothing for me to adjust or rebuild.</p>
+                <p class="mb-6">Within a month, the video games earned more money than every mechanical game combined.</p>
+                <p class="mb-6">Mr. Miller sold Rocket Racer to make room for two more.</p>
+                <p class="mb-6">I had finally learned how to repair every machine in the arcade.</p>
+                <p class="mb-6">Then the <b class="highlight quiz-target" data-ans="industry" data-kor="업계">industry</b> stopped building machines that needed my skills.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">내가 밀러 씨의 <b class="highlight">오락실</b>에서 처음으로 수리한 기계는 금속 공을 자기 유리 덮개 밖으로 쏘아 버렸다.</p>
+                <p class="mb-6">밀러 씨는 깨진 유리를 바라보았다.</p>
+                <p class="mb-6">“스프링을 너무 세게 조였잖아.” 그가 말했다.</p>
+                <p class="mb-6">“더 강하게 만들라고 하셨잖아요.”</p>
+                <p class="mb-6">“강하게 하랬지, 위험하게 만들라고 하진 않았어.”</p>
+                <p class="mb-6">1978년 당시 <b class="highlight">오락실</b>은 기계식 게임들로 가득했다. 작은 경마 게임, 사격 게임, 야구 게임, 그리고 플라스틱 자동차 아래로 그림이 그려진 도로가 움직이는 운전 게임도 있었다. 각 게임기 안에는 벨트, 기어, 스프링, 전구, 그리고 수백 개의 전선이 들어 있었다.</p>
+                <p class="mb-6">내 일은 그 기계들이 계속 작동하게 하는 것이었다.</p>
+                <p class="mb-6">처음에는 모든 기계가 나를 <b class="highlight">속이도록</b> 설계된 것처럼 느껴졌다. 말 한 마리가 멈춘 이유는 느슨해진 벨트 때문이었지만, 내가 벨트를 교체하면 다른 말 두 마리가 뒤로 달리기 시작했다. 야구 게임기는 동전을 받으면서도 공은 내보내지 않았다. 사격 게임은 아무도 총을 쏘지 않았는데 점수를 주기도 했다.</p>
+                <p class="mb-6">밀러 씨가 무엇이 문제인지 물을 때마다 내 <b class="highlight">머릿속은 하얘졌다</b>.</p>
+                <p class="mb-6">나는 퇴근 후 수리 설명서를 공부하고 모든 기계의 구조를 그림으로 그렸다. 얼마 지나지 않아 소리만 듣고도 문제를 알아낼 수 있게 되었다. 딸깍거리는 소리는 기어가 손상되었다는 뜻이었다. 낮게 웅웅거리는 소리는 보통 모터가 걸렸다는 뜻이었다. 타는 냄새가 난다면 이미 너무 늦게 확인했다는 뜻이었다.</p>
+                <p class="mb-6">밀러 씨는 오락 <b class="highlight">산업</b>에서 30년 동안 일했다. 그는 기계식 게임이 언제나 살아남을 것이라고 말했다.</p>
+                <p class="mb-6">“사람들은 실제로 만질 수 있는 걸 원해.” 그가 말했다. “상업 오락 <b class="highlight">업계</b> 전체는 고객에게 집에서는 할 수 없는 경험을 제공하는 데 달려 있어.”</p>
+                <p class="mb-6">나는 몇 달 동안 ‘로켓 레이서’라는 게임기와 씨름했다. 이 게임에는 각기 다른 선로를 따라 움직이는 금속 우주선 여섯 대가 있었다. 무엇을 수리해도 파란색 우주선은 항상 중간에서 멈췄다.</p>
+                <p class="mb-6">어느 토요일, 오락실이 손님들로 붐비던 중 로켓 레이서가 대회 도중 고장 났다. 밀러 씨는 내게 10분 안에 수리하라고 했다.</p>
+                <p class="mb-6">그날만큼은 <b class="highlight">상황이 내게 유리하게 돌아갔다</b>. 나는 기계 문을 열고 희미하게 긁히는 소리를 들었다. 선로 아래에서 휘어진 금속 가이드를 발견했다. 나는 그것을 펴고 스프링을 교체한 뒤 기계를 다시 작동시켰다.</p>
+                <p class="mb-6">여섯 대의 우주선이 모두 결승선까지 달렸다.</p>
+                <p class="mb-6">사람들은 환호했다. 밀러 씨는 내 어깨를 두드렸다.</p>
+                <p class="mb-6">“드디어 이 기계들을 이해하게 됐군.” 그가 말했다.</p>
+                <p class="mb-6">월요일 아침, 배달 트럭 한 대가 커다란 게임기 네 대를 싣고 도착했다. 화면 안에서는 빛으로 만들어진 우주선들이 움직이고 있었다.</p>
+                <p class="mb-6">새로운 비디오 게임에는 선로도, 스프링도, 기계식 말도 없었다. 고장이 나면 유통업체가 전자 회로 기판을 교체했다. 내가 조절하거나 다시 조립할 만한 것은 거의 없었다.</p>
+                <p class="mb-6">한 달도 지나지 않아 비디오 게임 네 대가 다른 모든 기계식 게임을 합친 것보다 더 많은 돈을 벌었다.</p>
+                <p class="mb-6">밀러 씨는 비디오 게임 두 대를 더 놓을 공간을 만들기 위해 로켓 레이서를 팔았다.</p>
+                <p class="mb-6">나는 마침내 오락실의 모든 기계를 수리하는 법을 익혔다.</p>
+                <p class="mb-6">그러자 <b class="highlight">업계</b>는 내 기술이 필요한 기계를 더 이상 만들지 않기 시작했다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "731020.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

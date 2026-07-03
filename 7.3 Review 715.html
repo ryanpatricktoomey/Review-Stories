@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Final Signal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🚩</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Final Signal</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">from scratch</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">처음부터 / 아무것도 없는 상태에서</td></tr>
+                <tr><td class="p-4"><b class="text-white">talk to myself</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">혼잣말하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">2 birds 1 stone</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">일석이조</td></tr>
+                <tr><td class="p-4"><b class="text-white">cardio</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">유산소 운동</td></tr>
+                <tr><td class="p-4"><b class="text-white">colorful person</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">개성 강한 사람 / 다채로운 성격의 사람</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-2xl p-5 space-y-2"><h3 class="text-teal-400 font-bold text-lg">from scratch</h3><p class="text-sm text-slate-300">기존의 도움이나 준비된 기반 없이 맨 처음부터 시작한다는 뜻이에요.</p></div>
+            <div class="glass rounded-2xl p-5 space-y-2"><h3 class="text-teal-400 font-bold text-lg">talk to myself</h3><p class="text-sm text-slate-300">다른 사람과 대화하는 것이 아니라 생각을 정리하거나 연습하려고 혼잣말하는 것을 뜻해요.</p></div>
+            <div class="glass rounded-2xl p-5 space-y-2"><h3 class="text-teal-400 font-bold text-lg">2 birds 1 stone</h3><p class="text-sm text-slate-300">한 가지 행동으로 두 가지 목적을 동시에 달성한다는 뜻이에요. 보통 kill two birds with one stone이라고 말해요.</p></div>
+            <div class="glass rounded-2xl p-5 space-y-2"><h3 class="text-teal-400 font-bold text-lg">cardio</h3><p class="text-sm text-slate-300">심장 박동이 빨라지는 달리기, 자전거 타기 등의 유산소 운동을 뜻해요.</p></div>
+            <div class="glass rounded-2xl p-5 space-y-2"><h3 class="text-teal-400 font-bold text-lg">colorful person</h3><p class="text-sm text-slate-300">옷이 화려하다는 뜻보다는 성격이나 인생 경험이 독특하고 흥미로운 사람을 가리킬 때가 많아요.</p></div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">I learned semaphore signaling <b class="highlight quiz-target" data-ans="from scratch" data-kor="처음부터">from scratch</b> at a coastal railway station.</p>
+                <p class="mb-6">My job was to stand on a wooden tower and send messages to ships using two large flags. Each arm position represented a different letter. It sounded simple until I discovered that there were dozens of positions and that several of them looked almost identical.</p>
+                <p class="mb-6">My instructor, Mr. Bell, was a <b class="highlight quiz-target" data-ans="colorful person" data-kor="개성이 아주 강한 사람">colorful person</b>. He wore a red coat, collected broken compasses, and claimed that he could identify any ship by the sound of its horn.</p>
+                <p class="mb-6">“Your arms must be precise,” he told me. “One careless movement can change an entire message.”</p>
+                <p class="mb-6">During my first week, I tried to signal, “Harbor entrance clear.”</p>
+                <p class="mb-6">According to Mr. Bell, I actually signaled, “Large potatoes arriving.”</p>
+                <p class="mb-6">For days, I practiced alone on the tower. I would <b class="highlight quiz-target" data-ans="talk to myself" data-kor="혼잣말하곤 했다">talk to myself</b> while moving the flags.</p>
+                <p class="mb-6">“Left arm high. Right arm low. That’s an R. No, wait. Is that a K?”</p>
+                <p class="mb-6">The tower had sixty-three steps. Whenever I made a mistake, Mr. Bell sent me downstairs to check the signal chart and then made me climb back up.</p>
+                <p class="mb-6">“At least you’re getting some <b class="highlight quiz-target" data-ans="cardio" data-kor="유산소 운동">cardio</b>,” he said.</p>
+                <p class="mb-6">I did not find that encouraging.</p>
+                <p class="mb-6">The worst day came during a storm. A supply ship was approaching the wrong side of the harbor, and I had to warn the captain about rocks near the shore. My arms were shaking from the wind, and rain kept running into my eyes.</p>
+                <p class="mb-6">I sent the warning three times.</p>
+                <p class="mb-6">The ship changed direction, avoided the rocks, and entered the harbor safely. Unfortunately, my final signal also instructed it to stop beside a fishing boat. The ship hit the smaller boat and destroyed half its roof.</p>
+                <p class="mb-6">Mr. Bell stared at the damage.</p>
+                <p class="mb-6">“You saved the ship and demolished a fisherman’s kitchen,” he said. “<b class="highlight quiz-target" data-ans="Two birds with one stone" data-kor="일석이조">Two birds with one stone</b>, in the worst possible way.”</p>
+                <p class="mb-6">I practiced for six more months. I memorized every position and built strength in my shoulders. Eventually, I could send a full message without checking the chart.</p>
+                <p class="mb-6">Then, one morning, I signaled a thirty-word weather report perfectly. Mr. Bell read it through his telescope and gave me a proud nod.</p>
+                <p class="mb-6">A technician was waiting at the bottom of the tower.</p>
+                <p class="mb-6">He installed a wireless radio that afternoon.</p>
+                <p class="mb-6">The next morning, ships received messages instantly, even in fog. No flags, no towers, and no sixty-three steps.</p>
+                <p class="mb-6">I had finally mastered semaphore.</p>
+                <p class="mb-6">Nobody needed it anymore.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">나는 해안 기차역에서 깃발 신호법을 완전히 <b class="highlight">처음부터</b> 배웠다.</p>
+                <p class="mb-6">내 일은 나무 탑 위에 서서 두 개의 커다란 깃발로 배에 메시지를 보내는 것이었다. 팔의 자세마다 서로 다른 알파벳을 나타냈다. 처음에는 간단해 보였지만, 자세가 수십 개나 되고 그중 몇 개는 거의 똑같이 보인다는 사실을 알게 되었다.</p>
+                <p class="mb-6">내 교관인 벨 씨는 <b class="highlight">개성이 아주 강한 사람</b>이었다. 그는 빨간 외투를 입고, 고장 난 나침반을 수집했으며, 뱃고동 소리만 듣고도 어떤 배인지 알아맞힐 수 있다고 주장했다.</p>
+                <p class="mb-6">“팔의 위치가 정확해야 해.” 그가 말했다. “부주의한 동작 하나가 메시지 전체를 바꿀 수 있어.”</p>
+                <p class="mb-6">첫 주에 나는 “항구 입구 이상 없음”이라는 신호를 보내려고 했다.</p>
+                <p class="mb-6">벨 씨의 말에 따르면, 내가 실제로 보낸 메시지는 “커다란 감자들이 도착 중”이었다.</p>
+                <p class="mb-6">며칠 동안 나는 탑 위에서 혼자 연습했다. 깃발을 움직이면서 <b class="highlight">혼잣말을 하곤 했다</b>.</p>
+                <p class="mb-6">“왼팔은 위로. 오른팔은 아래로. 이게 R이야. 아니, 잠깐. K인가?”</p>
+                <p class="mb-6">탑에는 계단이 63개 있었다. 내가 실수할 때마다 벨 씨는 아래층으로 내려가 신호표를 확인한 뒤 다시 올라오게 했다.</p>
+                <p class="mb-6">“적어도 <b class="highlight">유산소 운동</b>은 되잖아.” 그가 말했다.</p>
+                <p class="mb-6">나는 그 말이 전혀 격려처럼 들리지 않았다.</p>
+                <p class="mb-6">최악의 날은 폭풍이 몰아치던 날이었다. 보급선 한 척이 항구의 잘못된 방향으로 접근하고 있었고, 나는 해안 근처의 바위를 경고해야 했다. 바람 때문에 팔이 떨렸고 빗물이 계속 눈으로 흘러 들어왔다.</p>
+                <p class="mb-6">나는 경고 신호를 세 번 보냈다.</p>
+                <p class="mb-6">배는 방향을 바꾸어 바위를 피했고 안전하게 항구에 들어왔다. 하지만 마지막 신호에는 어선 옆에 정박하라는 지시도 들어가 있었다. 보급선은 작은 어선을 들이받아 지붕의 절반을 부숴 버렸다.</p>
+                <p class="mb-6">벨 씨는 파손된 모습을 바라보았다.</p>
+                <p class="mb-6">“보급선은 구하고 어부의 부엌은 부쉈군.” 그가 말했다. “최악의 방식으로 <b class="highlight">일석이조</b>를 했어.”</p>
+                <p class="mb-6">나는 그 뒤로 6개월을 더 연습했다. 모든 자세를 외웠고 어깨 힘도 길렀다. 마침내 신호표를 보지 않고도 긴 메시지를 보낼 수 있게 되었다.</p>
+                <p class="mb-6">그러던 어느 날 아침, 나는 서른 단어로 된 일기예보를 완벽하게 보냈다. 벨 씨는 망원경으로 그것을 읽고 자랑스럽게 고개를 끄덕였다.</p>
+                <p class="mb-6">탑 아래에는 기술자 한 명이 기다리고 있었다.</p>
+                <p class="mb-6">그는 그날 오후 무선 통신기를 설치했다.</p>
+                <p class="mb-6">다음 날 아침부터 배들은 안개 속에서도 메시지를 즉시 받을 수 있었다. 깃발도, 탑도, 63개의 계단도 필요하지 않았다.</p>
+                <p class="mb-6">나는 마침내 깃발 신호법을 완전히 익혔다.</p>
+                <p class="mb-6">하지만 이제 아무도 그것을 필요로 하지 않았다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "73715.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

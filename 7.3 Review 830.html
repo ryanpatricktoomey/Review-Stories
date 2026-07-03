@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Last Silent Projectionist</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🎞️</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Last Silent Projectionist</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">I'm all thumbs</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">나는 손재주가 정말 없어 / 손이 너무 서툴러</td></tr>
+                <tr><td class="p-4"><b class="text-white">got two left feet</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">몸놀림이 서툴다 / 춤을 정말 못 추다</td></tr>
+                <tr><td class="p-4"><b class="text-white">clumsy</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">서투른 / 덤벙대는</td></tr>
+                <tr><td class="p-4"><b class="text-white">take it personally</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">개인적인 공격으로 받아들이다</td></tr>
+                <tr><td class="p-4"><b class="text-white">word of mouth</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">입소문</td></tr>
+                <tr><td class="p-4"><b class="text-white">two to one 2:1</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">2 대 1 / 한쪽 가능성이 다른 쪽의 두 배인</td></tr>
+                <tr><td class="p-4"><b class="text-white">compare myself</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">나 자신을 다른 사람과 비교하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">southern drawl</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">미국 남부 특유의 느릿한 말투</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-2xl p-5 space-y-2"><h3 class="text-teal-400 font-bold text-lg">I’m all thumbs</h3><p class="text-sm text-slate-300">손재주가 없어서 손으로 하는 일을 자꾸 실수할 때 쓰는 표현이에요.</p></div>
+            <div class="glass rounded-2xl p-5 space-y-2"><h3 class="text-teal-400 font-bold text-lg">got two left feet</h3><p class="text-sm text-slate-300">주로 춤이나 발동작이 매우 서툴다는 뜻이에요. 보통 I’ve got two left feet처럼 사용해요.</p></div>
+            <div class="glass rounded-2xl p-5 space-y-2"><h3 class="text-teal-400 font-bold text-lg">take it personally</h3><p class="text-sm text-slate-300">상대의 말이나 행동을 자신에 대한 공격이나 모욕으로 받아들인다는 뜻이에요.</p></div>
+            <div class="glass rounded-2xl p-5 space-y-2"><h3 class="text-teal-400 font-bold text-lg">word of mouth</h3><p class="text-sm text-slate-300">광고가 아니라 사람들이 서로 이야기하면서 정보나 평판이 퍼지는 것을 뜻해요.</p></div>
+            <div class="glass rounded-2xl p-5 space-y-2"><h3 class="text-teal-400 font-bold text-lg">two to one 2:1</h3><p class="text-sm text-slate-300">한 결과의 가능성이 다른 결과보다 두 배 높다는 뜻으로, 내기나 확률을 말할 때 사용해요.</p></div>
+            <div class="glass rounded-2xl p-5 space-y-2"><h3 class="text-teal-400 font-bold text-lg">southern drawl</h3><p class="text-sm text-slate-300">모음을 길게 늘이는 미국 남부 지역 특유의 느긋한 억양을 뜻해요.</p></div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">My uncle gave me a job at his cinema because he needed someone immediately, not because I was qualified.</p>
+                <p class="mb-6">His regular assistant had quit after burning a reel of film, and the Friday evening show was already sold out. My uncle took me upstairs to the projection room, pointed at a machine full of wheels, belts, and metal arms, and said, “Keep the film moving at the same speed. That’s the most important thing.”</p>
+                <p class="mb-6">I stared at the machine.</p>
+                <p class="mb-6">“Which part makes it move?”</p>
+                <p class="mb-6">He closed his eyes for a moment.</p>
+                <p class="mb-6">Ten minutes later, I dropped a metal film reel. It rolled across the floor, struck a stool, and nearly went down the stairs.</p>
+                <p class="mb-6">“I should warn you,” I said. “<b class="highlight quiz-target" data-ans="I'm all thumbs" data-kor="손재주가 정말 없어">I'm all thumbs</b>.”</p>
+                <p class="mb-6">“I’ve noticed,” he replied.</p>
+                <p class="mb-6">The room was small, hot, and crowded with equipment. I had to guide the film through several wheels, keep the picture in focus, and turn a hand crank at a steady speed. If I turned it too slowly, the actors moved as if they were half asleep. If I turned it too quickly, they rushed through every scene.</p>
+                <p class="mb-6">My feet caused just as many problems. I had <b class="highlight quiz-target" data-ans="got two left feet" data-kor="몸놀림이 서툴다">got two left feet</b>, and whenever I stepped backward, I caught my shoe on a cable or kicked something important. There was no safe place in that room for someone so <b class="highlight quiz-target" data-ans="clumsy" data-kor="덤벙대는">clumsy</b>.</p>
+                <p class="mb-6">Walter, the senior projectionist, never seemed to make mistakes. I constantly <b class="highlight quiz-target" data-ans="compared myself" data-kor="나 자신을 비교하다">compared myself</b> to him. He could repair torn film in seconds while telling stories in a slow <b class="highlight quiz-target" data-ans="southern drawl" data-kor="미국 남부 특유의 느릿한 말투">southern drawl</b>.</p>
+                <p class="mb-6">“Stop fighting the machine,” he told me. “Listen to it.”</p>
+                <p class="mb-6">I thought he was making fun of me.</p>
+                <p class="mb-6">“Don’t <b class="highlight quiz-target" data-ans="take it personally" data-kor="개인적인 공격으로 받아들이지">take it personally</b>,” my uncle said. “Walter talks to everyone that way.”</p>
+                <p class="mb-6">One Friday, Walter became ill, and I had to run the evening show alone. Through <b class="highlight quiz-target" data-ans="word of mouth" data-kor="입소문">word of mouth</b>, half the town heard that the new assistant would be replacing him. People arrived early because they expected a disaster.</p>
+                <p class="mb-6">A man near the ticket counter even offered <b class="highlight quiz-target" data-ans="two-to-one" data-kor="2 대 1">two-to-one</b> odds that I would destroy the film before the final scene.</p>
+                <p class="mb-6">For the first ten minutes, he appeared to be right. The picture shook, the film slipped, and someone shouted, “Slow down!”</p>
+                <p class="mb-6">Then I stopped thinking about the audience. I listened to the machine, felt the movement of the crank, and adjusted my speed.</p>
+                <p class="mb-6">The rest of the film played perfectly.</p>
+                <p class="mb-6">When the lights came on, the audience applauded. My uncle shook my hand.</p>
+                <p class="mb-6">The next morning, Walter returned. When he heard what had happened, he gave me a slow nod.</p>
+                <p class="mb-6">“Sounds like you finally listened,” he said.</p>
+                <p class="mb-6">Before I could enjoy the compliment, a truck stopped outside. Two men carried in a motorized sound projector.</p>
+                <p class="mb-6">The new machine kept the film moving at the correct speed automatically. It also played recorded voices and music through speakers. No one needed to judge the rhythm by hand anymore.</p>
+                <p class="mb-6">My uncle explained that all the new films would soon include sound. The old projector would be removed at the end of the week.</p>
+                <p class="mb-6">I looked at the crank I had practiced turning for months. I had finally learned to feel the correct speed, hear when the film was slipping, and fix problems without looking away from the screen.</p>
+                <p class="mb-6">The night before, those skills had made me good at my job.</p>
+                <p class="mb-6">Now a motor could do all of them.</p>
+                <p class="mb-6">I had finally become a proper silent-film projectionist, just as silent-film projectionists stopped being necessary.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">삼촌이 내게 영화관 일자리를 준 것은 내가 자격이 있어서가 아니라, 당장 사람이 필요했기 때문이었다.</p>
+                <p class="mb-6">기존 보조 기사가 필름 한 통을 태워 버린 뒤 일을 그만두었고, 금요일 저녁 상영은 이미 매진된 상태였다. 삼촌은 나를 위층 영사실로 데려가 바퀴와 벨트, 금속 팔로 가득한 기계를 가리키며 말했다.</p>
+                <p class="mb-6">“필름이 항상 같은 속도로 움직이게 해. 그게 가장 중요해.”</p>
+                <p class="mb-6">나는 기계를 바라보았다.</p>
+                <p class="mb-6">“어느 부분이 움직이게 하는 건데요?”</p>
+                <p class="mb-6">삼촌은 잠시 눈을 감았다.</p>
+                <p class="mb-6">10분 뒤, 나는 금속 필름 릴을 떨어뜨렸다. 릴은 바닥을 가로질러 굴러가 의자에 부딪힌 뒤 계단 아래로 떨어질 뻔했다.</p>
+                <p class="mb-6">“미리 말씀드려야 할 것 같아요.” 내가 말했다. “저는 <b class="highlight">손재주가 정말 없어</b>요.”</p>
+                <p class="mb-6">“벌써 알아챘다.” 삼촌이 대답했다.</p>
+                <p class="mb-6">영사실은 작고 더웠으며 장비로 가득했다. 나는 필름을 여러 바퀴 사이로 통과시키고, 화면의 초점을 유지하며, 손잡이를 일정한 속도로 돌려야 했다. 너무 천천히 돌리면 배우들이 반쯤 잠든 사람들처럼 움직였다. 너무 빨리 돌리면 모든 장면을 급하게 뛰어다녔다.</p>
+                <p class="mb-6">발도 그만큼 문제였다. 나는 <b class="highlight">발동작이 형편없었</b>고 뒤로 물러설 때마다 신발이 전선에 걸리거나 중요한 물건을 걷어찼다. 나처럼 <b class="highlight">덤벙대는</b> 사람에게 그 방은 안전한 곳이 아니었다.</p>
+                <p class="mb-6">선임 영사 기사인 월터는 절대 실수하지 않는 것처럼 보였다. 나는 계속 <b class="highlight">나 자신을</b> 그와 <b class="highlight">비교했다</b>. 그는 느릿한 <b class="highlight">미국 남부 특유의 느릿한 말투</b>로 이야기를 하면서도 찢어진 필름을 몇 초 만에 고칠 수 있었다.</p>
+                <p class="mb-6">“기계와 싸우지 마.” 그가 말했다. “기계 소리를 들어.”</p>
+                <p class="mb-6">나는 그가 나를 놀리는 줄 알았다.</p>
+                <p class="mb-6">“<b class="highlight">개인적인 공격으로 받아들이지</b> 마.” 삼촌이 말했다. “월터는 누구에게나 그렇게 말해.”</p>
+                <p class="mb-6">어느 금요일, 월터가 아파서 내가 혼자 저녁 영화를 상영해야 했다. 신입 보조 기사가 그를 대신한다는 소식은 <b class="highlight">입소문</b>을 타고 마을 절반에 퍼졌다. 사람들은 사고가 날 것으로 예상해 일찍 도착했다.</p>
+                <p class="mb-6">매표소 근처에 있던 한 남자는 내가 마지막 장면 전에 필름을 망가뜨릴 것이라는 쪽에 <b class="highlight">2 대 1</b>의 내기까지 걸었다.</p>
+                <p class="mb-6">처음 10분 동안은 그의 예상이 맞는 것처럼 보였다. 화면이 흔들렸고, 필름이 미끄러졌으며, 누군가 “속도 좀 줄여요!”라고 외쳤다.</p>
+                <p class="mb-6">그러다 나는 관객에 대해 생각하는 것을 멈췄다. 기계 소리를 듣고, 손잡이의 움직임을 느끼며 속도를 조절했다.</p>
+                <p class="mb-6">나머지 영화는 완벽하게 상영되었다.</p>
+                <p class="mb-6">불이 켜지자 관객들은 박수를 쳤다. 삼촌은 내 손을 잡고 흔들었다.</p>
+                <p class="mb-6">다음 날 아침, 월터가 돌아왔다. 무슨 일이 있었는지 들은 그는 천천히 고개를 끄덕였다.</p>
+                <p class="mb-6">“드디어 기계 소리를 들었나 보군.” 그가 말했다.</p>
+                <p class="mb-6">내가 그 칭찬을 즐길 틈도 없이 영화관 밖에 트럭 한 대가 멈췄다. 남자 두 명이 전동식 유성 영화 영사기를 안으로 옮겼다.</p>
+                <p class="mb-6">새 기계는 필름을 자동으로 정확한 속도로 움직였다. 스피커를 통해 녹음된 목소리와 음악도 재생했다. 이제는 사람이 직접 리듬을 판단할 필요가 없었다.</p>
+                <p class="mb-6">삼촌은 앞으로 나오는 모든 영화에 곧 소리가 들어갈 것이라고 설명했다. 기존 영사기는 그 주가 끝나면 철거될 예정이었다.</p>
+                <p class="mb-6">나는 몇 달 동안 돌리는 연습을 했던 손잡이를 바라보았다. 나는 마침내 정확한 속도를 손으로 느끼고, 필름이 미끄러지는 소리를 알아차리며, 화면에서 눈을 떼지 않고 문제를 해결하는 법을 배웠다.</p>
+                <p class="mb-6">전날 밤, 그 기술들은 나를 유능한 영사 기사로 만들어 주었다.</p>
+                <p class="mb-6">이제는 모터가 그 모든 일을 할 수 있었다.</p>
+                <p class="mb-6">나는 마침내 제대로 된 무성 영화 영사 기사가 되었지만, 바로 그때 무성 영화 영사 기사는 더 이상 필요하지 않게 되었다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "73830.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

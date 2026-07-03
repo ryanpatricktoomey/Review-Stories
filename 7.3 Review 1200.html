@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+      <title>Review Note | The Last Fireman</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+      <style>
+          :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+          body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+          .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+          .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+          input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+          input:focus::placeholder { opacity: 0 !important; }
+          .mystery-cell { transition: color 0.3s; }
+          .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+          .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+          .highlight { color: var(--teal); font-weight: 700; }
+          .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+          audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+      </style>
+</head>
+<body class="p-4 md:p-12">
+      <div class="max-w-4xl mx-auto space-y-8">
+
+          <header class="text-center space-y-4">
+              <div class="flex items-center justify-center gap-4">
+                  <span class="text-5xl">🚂</span>
+                  <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Last Fireman</h1>
+              </div>
+              <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+          </header>
+
+          <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+              <div class="flex items-center justify-between px-2">
+                  <div class="flex items-center gap-3">
+                      <span class="text-xl">🎧</span>
+                      <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                  </div>
+                  <div class="flex gap-2">
+                      <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          <span class="text-lg">↺</span> 5s
+                      </button>
+                      <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          5s <span class="text-lg">↻</span>
+                      </button>
+                  </div>
+              </div>
+              <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+          </div>
+
+          <div class="flex justify-center">
+              <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+          </div>
+
+          <section class="glass rounded-3xl overflow-hidden shadow-xl">
+              <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                  <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+              </div>
+              <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                  <tr><td class="p-4"><b class="text-white">stamina</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">체력 / 오래 버티는 힘</td></tr>
+                  <tr><td class="p-4"><b class="text-white">endurance</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">지구력 / 인내력</td></tr>
+                  <tr><td class="p-4"><b class="text-white">amateur</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">아마추어 / 미숙한 사람</td></tr>
+                  <tr><td class="p-4"><b class="text-white">blow off some steam</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">스트레스를 풀다 / 화를 식히다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">relieve my stress</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">스트레스를 해소하다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">get a big head</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">자만하다 / 우쭐해지다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">yes man</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">무조건 동의하는 사람 / 아부하는 사람</td></tr>
+              </tbody></table>
+          </section>
+
+          <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="glass rounded-2xl p-5 space-y-2"><h3 class="text-teal-400 font-bold text-lg">stamina</h3><p class="text-sm text-slate-300">오랫동안 신체 활동을 계속할 수 있는 체력을 뜻해요.</p></div>
+              <div class="glass rounded-2xl p-5 space-y-2"><h3 class="text-teal-400 font-bold text-lg">endurance</h3><p class="text-sm text-slate-300">힘들거나 불편한 상황을 오랫동안 견디는 능력이에요. 운동뿐 아니라 정신적인 인내력에도 사용할 수 있어요.</p></div>
+              <div class="glass rounded-2xl p-5 space-y-2"><h3 class="text-teal-400 font-bold text-lg">blow off some steam</h3><p class="text-sm text-slate-300">쌓인 화나 긴장을 운동이나 활동을 통해 풀다는 뜻이에요.</p></div>
+              <div class="glass rounded-2xl p-5 space-y-2"><h3 class="text-teal-400 font-bold text-lg">get a big head</h3><p class="text-sm text-slate-300">칭찬이나 성공 때문에 자신이 대단하다고 생각하며 우쭐해진다는 뜻이에요.</p></div>
+              <div class="glass rounded-2xl p-5 space-y-2"><h3 class="text-teal-400 font-bold text-lg">yes man</h3><p class="text-sm text-slate-300">상사나 권력자의 의견에 항상 동의하며 반대하지 않는 사람을 부정적으로 표현할 때 써요.</p></div>
+          </section>
+
+          <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+              <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                  <p class="mb-6">My first job on the railway was feeding coal into a steam locomotive.</p>
+                  <p class="mb-6">The engineer, Mr. Harris, looked at my thin arms and laughed.</p>
+                  <p class="mb-6">“They sent me an <b class="highlight quiz-target" data-ans="amateur" data-kor="아마추어">amateur</b>,” he said.</p>
+                  <p class="mb-6">I wanted to argue, but the train was already moving. Mr. Harris pointed at the firebox.</p>
+                  <p class="mb-6">“Keep it hot. If the pressure drops, we lose speed.”</p>
+                  <p class="mb-6">I opened the iron door. Heat struck my face, and the shovel felt twice as heavy as it had at the station. I threw in three loads of coal before my shoulders began to burn.</p>
+                  <p class="mb-6">By the first hill, I had no <b class="highlight quiz-target" data-ans="stamina" data-kor="체력">stamina</b> left.</p>
+                  <p class="mb-6">“Faster!” Mr. Harris shouted. “This engine eats more than you do.”</p>
+                  <p class="mb-6">I kept shoveling. Coal dust filled my mouth, sweat ran into my eyes, and every turn of the wheels seemed to demand another load. When we finally reached the next station, I stepped down and nearly fell.</p>
+                  <p class="mb-6">A senior fireman named Frank watched me.</p>
+                  <p class="mb-6">“You need strength,” he said, “but <b class="highlight quiz-target" data-ans="endurance" data-kor="지구력">endurance</b> matters more. Anyone can shovel hard for five minutes.”</p>
+                  <p class="mb-6">For the next two months, I trained every day. I carried coal sacks across the yard and practiced moving the shovel without wasting energy. After difficult shifts, I chopped wood behind my house to <b class="highlight quiz-target" data-ans="blow off some steam" data-kor="화를 식히기 위해">blow off some steam</b>. It also helped <b class="highlight quiz-target" data-ans="relieve my stress" data-kor="스트레스를 해소하는 데도">relieve my stress</b>, especially after Mr. Harris criticized everything I did.</p>
+                  <p class="mb-6">Frank warned me not to become Mr. Harris’s <b class="highlight quiz-target" data-ans="yes man" data-kor="무조건 동의하는 사람">yes man</b>.</p>
+                  <p class="mb-6">“If he asks for too much pressure, tell him,” Frank said. “Agreeing with the engineer won’t help if the boiler explodes.”</p>
+                  <p class="mb-6">One morning, we had to pull twelve passenger cars over the steepest hill on the route. Rain made the tracks slippery, and the engine began losing speed halfway up.</p>
+                  <p class="mb-6">“More coal!” Mr. Harris yelled.</p>
+                  <p class="mb-6">I checked the pressure gauge. The fire was hot enough. What we needed was sand on the rails.</p>
+                  <p class="mb-6">I reached for the sanding control instead of the shovel.</p>
+                  <p class="mb-6">The wheels caught the track. Slowly, the train climbed the hill.</p>
+                  <p class="mb-6">At the top, Mr. Harris smiled for the first time.</p>
+                  <p class="mb-6">“You’re a real railwayman now,” he said. “Just don’t <b class="highlight quiz-target" data-ans="get a big head" data-kor="너무 우쭐대지는 마">get a big head</b>.”</p>
+                  <p class="mb-6">I spent the rest of the journey controlling the fire perfectly. We arrived exactly on time, and I stepped onto the platform feeling that I had finally mastered the job.</p>
+                  <p class="mb-6">A long silver locomotive was waiting beside us.</p>
+                  <p class="mb-6">It had no chimney, firebox, or coal car.</p>
+                  <p class="mb-6">“That’s the company’s new diesel engine,” Frank explained. “It can pull the same train with one driver. No one has to shovel coal.”</p>
+                  <p class="mb-6">I looked at my burned gloves and the black dust covering my arms.</p>
+                  <p class="mb-6">For months, I had trained my body to feed a machine that was always hungry.</p>
+                  <p class="mb-6">The new engine did not eat coal at all.</p>
+              </div>
+              <hr class="border-white/10">
+              <div class="text-slate-400 italic leading-relaxed space-y-6">
+                  <p class="mb-6">철도에서 맡은 내 첫 번째 일은 증기기관차에 석탄을 넣는 것이었다.</p>
+                  <p class="mb-6">기관사인 해리스 씨는 내 가느다란 팔을 보더니 웃었다.</p>
+                  <p class="mb-6">“<b class="highlight">아마추어</b>를 보내 줬군.” 그가 말했다.</p>
+                  <p class="mb-6">나는 따지고 싶었지만, 기차는 이미 움직이고 있었다. 해리스 씨는 화실을 가리켰다.</p>
+                  <p class="mb-6">“불을 뜨겁게 유지해. 압력이 떨어지면 속도도 떨어진다.”</p>
+                  <p class="mb-6">나는 철문을 열었다. 뜨거운 열기가 얼굴을 덮쳤고, 삽은 역에 있을 때보다 두 배는 무겁게 느껴졌다. 석탄을 세 번 퍼 넣자 어깨가 타는 듯이 아프기 시작했다.</p>
+                  <p class="mb-6">첫 번째 언덕에 도착하기도 전에 <b class="highlight">체력</b>이 바닥났다.</p>
+                  <p class="mb-6">“더 빨리!” 해리스 씨가 소리쳤다. “이 기관차는 너보다 더 많이 먹어.”</p>
+                  <p class="mb-6">나는 계속 삽질했다. 석탄 먼지가 입 안을 채웠고, 땀이 눈으로 흘러 들어왔다. 바퀴가 한 번 돌 때마다 석탄을 한 삽 더 넣으라고 요구하는 것 같았다. 마침내 다음 역에 도착했을 때, 나는 기차에서 내리다가 거의 넘어질 뻔했다.</p>
+                  <p class="mb-6">프랭크라는 선임 화부가 나를 지켜보고 있었다.</p>
+                  <p class="mb-6">“힘도 필요하지만,” 그가 말했다. “<b class="highlight">지구력</b>이 더 중요해. 5분 동안 열심히 삽질하는 건 누구나 할 수 있어.”</p>
+                  <p class="mb-6">그 뒤 두 달 동안 나는 매일 훈련했다. 석탄 자루를 들고 차량 기지를 오갔고, 힘을 낭비하지 않고 삽을 움직이는 연습을 했다. 힘든 근무가 끝나면 <b class="highlight">화를 식히기 위해</b> 집 뒤에서 장작을 팼다. 특히 해리스 씨가 내가 하는 모든 일을 비판한 날에는 <b class="highlight">스트레스를 해소하는 데도</b> 도움이 되었다.</p>
+                  <p class="mb-6">프랭크는 내가 해리스 씨의 말에 <b class="highlight">무조건 동의하는 사람</b>이 되면 안 된다고 경고했다.</p>
+                  <p class="mb-6">“기관사가 너무 높은 압력을 요구하면 말해야 해.” 프랭크가 말했다. “기관사의 말에 동의한다고 해서 보일러가 폭발할 때 도움이 되지는 않아.”</p>
+                  <p class="mb-6">어느 날 아침, 우리는 객차 열두 량을 끌고 노선에서 가장 가파른 언덕을 넘어야 했다. 비 때문에 선로가 미끄러웠고, 언덕 중간에서 기관차의 속도가 떨어지기 시작했다.</p>
+                  <p class="mb-6">“석탄을 더 넣어!” 해리스 씨가 소리쳤다.</p>
+                  <p class="mb-6">나는 압력계를 확인했다. 불은 이미 충분히 뜨거웠다. 우리에게 필요한 것은 선로 위에 뿌릴 모래였다.</p>
+                  <p class="mb-6">나는 삽 대신 모래 살포 장치에 손을 뻗었다.</p>
+                  <p class="mb-6">바퀴가 선로를 다시 붙잡았다. 기차는 천천히 언덕을 올라갔다.</p>
+                  <p class="mb-6">정상에 도착하자 해리스 씨가 처음으로 미소를 지었다.</p>
+                  <p class="mb-6">“이제 진짜 철도원이 됐군.” 그가 말했다. “그렇다고 <b class="highlight">너무 우쭐대지는 마</b>.”</p>
+                  <p class="mb-6">나는 남은 여정 내내 불을 완벽하게 조절했다. 우리는 정확히 예정된 시간에 도착했고, 나는 마침내 이 일을 완전히 익혔다고 느끼며 승강장에 내렸다.</p>
+                  <p class="mb-6">우리 옆에는 길고 은색인 기관차 한 대가 기다리고 있었다.</p>
+                  <p class="mb-6">그 기관차에는 굴뚝도, 화실도, 석탄 차량도 없었다.</p>
+                  <p class="mb-6">“회사의 새 디젤 기관차야.” 프랭크가 설명했다. “기관사 한 명이면 같은 기차를 끌 수 있어. 석탄을 퍼 넣을 사람은 필요하지 않아.”</p>
+                  <p class="mb-6">나는 불에 그을린 장갑과 검은 먼지로 뒤덮인 팔을 바라보았다.</p>
+                  <p class="mb-6">몇 달 동안 나는 항상 배고픈 기계를 먹여 살리기 위해 몸을 단련했다.</p>
+                  <p class="mb-6">새 기관차는 석탄을 전혀 먹지 않았다.</p>
+              </div>
+          </section>
+
+      </div>
+      <script>
+          function skipAudio(seconds) {
+              const player = document.getElementById('player');
+              if (player.src) {
+                  player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+              }
+          }
+
+          function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+          let _quizOriginals = new Map();
+          function toggleQuiz() {
+              const btn = document.getElementById('quizBtn');
+              const isQuiz = btn.innerText.includes("Quiz");
+              const targets = document.querySelectorAll('.quiz-target');
+              const cells = document.querySelectorAll('.mystery-cell');
+              if (isQuiz) {
+                  btn.innerText = "Study Mode 📖";
+                  cells.forEach(c => c.classList.add('quiz-hidden'));
+                  targets.forEach(t => {
+                      const ans = t.dataset.ans; const kor = t.dataset.kor;
+                      _quizOriginals.set(t, t.innerHTML);
+                      t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                  });
+              } else {
+                  btn.innerText = "Quiz Mode 👻";
+                  cells.forEach(c => c.classList.remove('quiz-hidden'));
+                  targets.forEach(t => {
+                      if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                  });
+                  _quizOriginals.clear();
+              }
+          }
+
+          function checkQuiz(i, a) {
+              if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                  i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                  confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                  checkAllSolved();
+              } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+          }
+
+          function checkAllSolved() {
+              const inputs = document.querySelectorAll('.quiz-input');
+              if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                  var duration = 3 * 1000; var end = Date.now() + duration;
+                  (function frame() {
+                      confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                      confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                      if (Date.now() < end) requestAnimationFrame(frame);
+                  }());
+              }
+          }
+
+          document.getElementById('player').src = "731200.m4a";
+      </script>
+      <script src="wordbank-utils.js"></script>
+      <script src="chat.js"></script>
+</body>
+</html>

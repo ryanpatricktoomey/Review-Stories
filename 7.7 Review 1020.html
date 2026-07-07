@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Plant Room</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🌿</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Plant Room</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">walking like crazy</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">미친 듯이 걷기 / 엄청 많이 걷기</td></tr>
+                <tr><td class="p-4"><b class="text-white">houseplants</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">실내용 화초 / 집에서 키우는 식물</td></tr>
+                <tr><td class="p-4"><b class="text-white">a black thumb</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">식물을 잘 죽이는 사람 / 식물 키우는 데 소질이 없는 사람</td></tr>
+                <tr><td class="p-4"><b class="text-white">looking for a house</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">집을 찾고 있는 중</td></tr>
+                <tr><td class="p-4"><b class="text-white">pestering her</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그녀를 계속 귀찮게 하기 / 조르기</td></tr>
+                <tr><td class="p-4"><b class="text-white">give in</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">결국 받아들이다 / 못 이겨 허락하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">clingy</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">너무 달라붙는 / 집착하는</td></tr>
+                <tr><td class="p-4"><b class="text-white">cheer</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">응원하다 / 환호하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">chant</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">구호를 외치다 / 반복해서 외치다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-2xl p-5 space-y-2 border-l-4 border-teal-500">
+                <h3 class="text-white font-bold text-lg">walking like crazy</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">“crazy”가 실제로 미쳤다는 뜻은 아니고, 어떤 행동을 아주 많이 한다는 캐주얼한 강조 표현이에요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2 border-l-4 border-teal-500">
+                <h3 class="text-white font-bold text-lg">a black thumb</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">식물을 잘 키우는 사람을 “green thumb”이라고 하고, 반대로 식물을 잘 죽이는 사람을 장난스럽게 “black thumb”이라고 해요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2 border-l-4 border-teal-500">
+                <h3 class="text-white font-bold text-lg">pestering her</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">상대가 짜증 날 정도로 계속 부탁하거나 말을 걸거나 조르는 느낌이에요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2 border-l-4 border-teal-500">
+                <h3 class="text-white font-bold text-lg">give in</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">처음에는 거절하다가 결국 못 이기고 받아들이는 뜻이에요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2 border-l-4 border-teal-500">
+                <h3 class="text-white font-bold text-lg">clingy</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">사람이 너무 들러붙거나 계속 관심을 요구할 때 써요. 연인, 친구, 아이, 반려동물에게도 쓸 수 있어요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2 border-l-4 border-teal-500">
+                <h3 class="text-white font-bold text-lg">chant</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">응원가나 구호처럼 같은 말을 리듬 있게 반복해서 외치는 것을 말해요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">I got into <b class="highlight quiz-target" data-ans="houseplants" data-kor="실내용 화초">houseplants</b> because I was lonely.</p>
+                <p class="mb-6">At first, it was just dabbling. I bought one small fern from a woman at the market. She told me it was easy to care for, almost impossible to kill.</p>
+                <p class="mb-6">“That’s good,” I said. “I have <b class="highlight quiz-target" data-ans="a black thumb" data-kor="식물을 잘 죽이는 사람">a black thumb</b>.”</p>
+                <p class="mb-6">She laughed. “Then start with this one.”</p>
+                <p class="mb-6">I named it June. That should have been the first warning.</p>
+                <p class="mb-6">Before I knew it, I had gone down a plant-care rabbit hole. I watched videos about soil, light, humidity, and root rot until two in the morning. I stopped meeting friends after work because I had to check the leaves. I started <b class="highlight quiz-target" data-ans="walking like crazy" data-kor="미친 듯이 걷기">walking like crazy</b> around my neighborhood, searching for rare plants in tiny shops.</p>
+                <p class="mb-6">I told myself it was healthy. I was getting into something calm. This one might actually last.</p>
+                <p class="mb-6">Then I met Hana.</p>
+                <p class="mb-6">She ran a plant shop near the station, and she knew everything. The first time I went in, I stayed for forty minutes asking about watering schedules. The second time, I brought photos of every leaf in my apartment. By the third week, I was <b class="highlight quiz-target" data-ans="pestering her" data-kor="그녀를 계속 귀찮게 하기">pestering her</b> almost every day.</p>
+                <p class="mb-6">“Is this yellow spot normal?”</p>
+                <p class="mb-6">“Can roots feel stress?”</p>
+                <p class="mb-6">“Do plants get lonely?”</p>
+                <p class="mb-6">One evening, Hana sighed and said, “You’re becoming a little <b class="highlight quiz-target" data-ans="clingy" data-kor="집착하는">clingy</b>.”</p>
+                <p class="mb-6">I laughed too loudly. “To the plants, right?”</p>
+                <p class="mb-6">She didn’t answer.</p>
+                <p class="mb-6">That night, I looked around my apartment. Plants covered the table, the floor, the windowsill, even the bathroom sink. I had no space to cook. No space to sit. So I made a decision that felt perfectly reasonable at three in the morning.</p>
+                <p class="mb-6">I started <b class="highlight quiz-target" data-ans="looking for a house" data-kor="집을 찾고 있는 중">looking for a house</b>.</p>
+                <p class="mb-6">Not for me, I told the real estate agent. For better light.</p>
+                <p class="mb-6">The next day, Hana refused to sell me another plant.</p>
+                <p class="mb-6">“You need to stop,” she said.</p>
+                <p class="mb-6">“Just one more.”</p>
+                <p class="mb-6">“No.”</p>
+                <p class="mb-6">“If I buy the corner house, I’ll have morning sun.”</p>
+                <p class="mb-6">Her face changed. “You’re not buying a house for plants.”</p>
+                <p class="mb-6">“I just need more room.”</p>
+                <p class="mb-6">“No,” she said. “You need help.”</p>
+                <p class="mb-6">Something inside me cracked. “Why won’t you <b class="highlight quiz-target" data-ans="cheer" data-kor="응원하다">cheer</b> for me? Everyone else quits everything. I’m finally sticking with something.”</p>
+                <p class="mb-6">“This isn’t sticking with something,” Hana said. “This is disappearing into it.”</p>
+                <p class="mb-6">Behind her, a small group of customers were watching. Someone whispered, “Is she okay?”</p>
+                <p class="mb-6">I wanted to run, but my legs felt weak. Then, from the back of the shop, a child began to <b class="highlight quiz-target" data-ans="chant" data-kor="반복해서 외치다">chant</b>, “No more plants. No more plants.”</p>
+                <p class="mb-6">His mother pulled him away, embarrassed.</p>
+                <p class="mb-6">I should have been angry. Instead, I started laughing. Then crying.</p>
+                <p class="mb-6">Hana locked the shop door and sat with me on the floor between bags of soil.</p>
+                <p class="mb-6">“I’m scared,” I said.</p>
+                <p class="mb-6">“I know,” she said. “But you can keep one plant alive without giving it your whole life.”</p>
+                <p class="mb-6">The next morning, I canceled the house viewing. I gave away twenty-three plants.</p>
+                <p class="mb-6">I kept June.</p>
+                <p class="mb-6">She sits by the window now. I water her on Sundays. Just Sundays.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>나는 외로워서 <b class="highlight">실내용 화초에</b> 빠지게 되었다.</p>
+                <p>처음에는 그냥 가볍게 해보는 정도였다. 시장에서 한 여자에게 작은 고사리 하나를 샀다. 그녀는 그 식물이 키우기 쉽고, 거의 죽이기 어렵다고 말했다.</p>
+                <p>“다행이네요.” 내가 말했다. “저는 <b class="highlight">식물을 잘 죽이는 사람이거든요</b>.”</p>
+                <p>그녀가 웃었다. “그럼 이걸로 시작하세요.”</p>
+                <p>나는 그 식물에게 준이라는 이름을 붙였다. 그것이 첫 번째 경고였어야 했다.</p>
+                <p>정신을 차려 보니 나는 식물 관리의 세계에 깊이 빠져 있었다. 새벽 두 시까지 흙, 빛, 습도, 뿌리 썩음에 관한 영상을 봤다. 퇴근 후 친구들을 만나지 않게 되었다. 잎을 확인해야 했기 때문이다. 나는 희귀한 식물을 찾으려고 동네의 작은 가게들을 찾아다니며 <b class="highlight">미친 듯이 걷기</b> 시작했다.</p>
+                <p>나는 그것이 건강한 일이라고 스스로에게 말했다. 나는 차분한 무언가에 빠지고 있었다. 이번에는 진짜 오래갈 수도 있다고 생각했다.</p>
+                <p>그러다 하나를 만났다.</p>
+                <p>그녀는 역 근처에서 식물 가게를 운영했고, 모든 것을 알고 있었다. 처음 가게에 들어갔을 때, 나는 물 주는 일정에 대해 40분 동안 질문했다. 두 번째 방문 때는 내 아파트에 있는 모든 잎의 사진을 가져갔다. 셋째 주가 되자 나는 거의 매일 <b class="highlight">그녀를 계속 귀찮게 하고</b> 있었다.</p>
+                <p>“이 노란 점 정상인가요?”</p>
+                <p>“뿌리도 스트레스를 느끼나요?”</p>
+                <p>“식물도 외로워하나요?”</p>
+                <p>어느 저녁, 하나가 한숨을 쉬며 말했다. “당신은 좀 <b class="highlight">집착하는</b> 사람이 되어 가고 있어요.”</p>
+                <p>나는 너무 크게 웃었다. “식물한테요, 그렇죠?”</p>
+                <p>그녀는 대답하지 않았다.</p>
+                <p>그날 밤, 나는 내 아파트를 둘러보았다. 식물들이 식탁, 바닥, 창턱, 심지어 욕실 세면대까지 덮고 있었다. 요리할 공간도 없었다. 앉을 공간도 없었다. 그래서 새벽 세 시에는 완벽하게 합리적으로 느껴지는 결정을 내렸다.</p>
+                <p>나는 <b class="highlight">집을 찾기 시작했다</b>.</p>
+                <p>부동산 중개인에게 말했다. 나를 위한 집이 아니라고. 더 좋은 햇빛을 위한 집이라고.</p>
+                <p>다음 날, 하나는 나에게 더 이상 식물을 팔지 않겠다고 했다.</p>
+                <p>“멈춰야 해요.” 그녀가 말했다.</p>
+                <p>“하나만 더요.”</p>
+                <p>“안 돼요.”</p>
+                <p>“모퉁이 집을 사면 아침 햇빛이 들어와요.”</p>
+                <p>그녀의 표정이 변했다. “식물 때문에 집을 사는 건 아니에요.”</p>
+                <p>“그냥 공간이 더 필요해요.”</p>
+                <p>“아니요.” 그녀가 말했다. “당신에게 필요한 건 도움이에요.”</p>
+                <p>내 안의 무언가가 갈라졌다. “왜 저를 <b class="highlight">응원해</b> 주지 않아요? 다들 뭐든 금방 그만두잖아요. 저는 드디어 뭔가를 계속하고 있는 거라고요.”</p>
+                <p>“그건 계속하는 게 아니에요.” 하나가 말했다. “그 안으로 사라지고 있는 거예요.”</p>
+                <p>그녀 뒤에서 작은 무리의 손님들이 우리를 보고 있었다. 누군가 속삭였다. “저 사람 괜찮은 거야?”</p>
+                <p>나는 도망치고 싶었지만 다리에 힘이 빠졌다. 그때 가게 뒤쪽에서 한 아이가 <b class="highlight">구호처럼 반복해서 외치기</b> 시작했다. “식물 그만. 식물 그만.”</p>
+                <p>아이의 엄마가 당황하며 아이를 데려갔다.</p>
+                <p>나는 화가 났어야 했다. 그런데 대신 웃음이 나왔다. 그러다 울기 시작했다.</p>
+                <p>하나는 가게 문을 잠그고 흙 포대 사이 바닥에 나와 함께 앉았다.</p>
+                <p>“무서워요.” 내가 말했다.</p>
+                <p>“알아요.” 그녀가 말했다. “하지만 식물 하나를 살리기 위해 인생 전체를 줄 필요는 없어요.”</p>
+                <p>다음 날 아침, 나는 집 보러 가는 약속을 취소했다. 식물 스물세 개를 다른 사람들에게 나눠 주었다.</p>
+                <p>준은 남겨 두었다.</p>
+                <p>준은 지금 창가에 앉아 있다. 나는 일요일마다 물을 준다. 일요일에만.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "771020.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

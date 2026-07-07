@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Last Stitch</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🧶</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Last Stitch</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">put my baby to sleep</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">우리 아기를 재우다</td></tr>
+                <tr><td class="p-4"><b class="text-white">goosebumps</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">소름</td></tr>
+                <tr><td class="p-4"><b class="text-white">I'm all thumbs</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">저는 손재주가 없어요 / 손이 서툴러요</td></tr>
+                <tr><td class="p-4"><b class="text-white">good with my hands</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">손재주가 좋다</td></tr>
+                <tr><td class="p-4"><b class="text-white">bad with my hands</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">손재주가 없다</td></tr>
+                <tr><td class="p-4"><b class="text-white">hipster</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">힙스터 / 비주류 감성을 좋아하는 사람</td></tr>
+                <tr><td class="p-4"><b class="text-white">yarn</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">실 / 뜨개질용 실</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-2xl p-5 space-y-2 border-l-4 border-teal-500">
+                <h3 class="text-white font-bold text-lg">put my baby to sleep</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">문맥에 따라 “아기를 재우다”라는 뜻이에요. 아주 조심해야 하는 표현으로, 동물에게 쓰면 “안락사시키다”라는 뜻이 될 수도 있어요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2 border-l-4 border-teal-500">
+                <h3 class="text-white font-bold text-lg">goosebumps</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">무섭거나 감동적이거나 추울 때 피부에 오돌토돌 올라오는 “소름”을 말해요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2 border-l-4 border-teal-500">
+                <h3 class="text-white font-bold text-lg">I’m all thumbs</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">직역하면 “나는 전부 엄지손가락이다”지만, 실제로는 손이 서툴고 뭔가를 자꾸 떨어뜨리거나 망친다는 뜻이에요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2 border-l-4 border-teal-500">
+                <h3 class="text-white font-bold text-lg">hipster</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">남들이 다 좋아하는 주류보다 독특하고 예술적이거나 빈티지한 취향을 좋아하는 사람을 가리킬 때 많이 써요. 때로는 약간 놀리는 느낌도 있어요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">I got into knitting because I needed something quiet.</p>
+                <p class="mb-6">After I <b class="highlight quiz-target" data-ans="put my baby to sleep" data-kor="우리 아기를 재우다">put my baby to sleep</b>, the apartment finally became still. No bottles, no crying, no soft music from the little speaker. Just me, the sofa, and ten minutes before I fell asleep with my phone in my hand.</p>
+                <p class="mb-6">One night, I came across a video of a woman knitting a sweater in a tiny café. She looked peaceful. She looked like she had a life. Before I knew it, I had ordered three books, six wooden needles, and a box of expensive <b class="highlight quiz-target" data-ans="yarn" data-kor="실">yarn</b> from a woman online who called herself “a fiber artist.”</p>
+                <p class="mb-6">At first, it was just dabbling. I told my husband, “I’m not serious. It might just be a phase.”</p>
+                <p class="mb-6">He smiled. “You? Knitting?”</p>
+                <p class="mb-6">“I know. <b class="highlight quiz-target" data-ans="I'm all thumbs" data-kor="저는 손재주가 없어요">I’m all thumbs</b>. But maybe I can learn.”</p>
+                <p class="mb-6">For two weeks, I knitted after midnight. Then I knitted during lunch. Then I knitted in the car before work. I started hiding shopping bags in the closet. I told myself I was getting <b class="highlight quiz-target" data-ans="good with my hands" data-kor="손재주가 좋다">good with my hands</b>, but the truth was uglier. I was getting good at lying.</p>
+                <p class="mb-6">The first real warning came when I forgot to pick up my daughter from daycare.</p>
+                <p class="mb-6">The teacher called three times. I was sitting in my parked car outside a craft store, staring at a wall of dark red <b class="highlight quiz-target" data-ans="yarn" data-kor="실">yarn</b>, feeling <b class="highlight quiz-target" data-ans="goosebumps" data-kor="소름">goosebumps</b> because I had found the exact color I needed for a blanket no one had asked for.</p>
+                <p class="mb-6">When I arrived at daycare, my daughter was sitting alone with her backpack on.</p>
+                <p class="mb-6">My husband was already there.</p>
+                <p class="mb-6">“What is happening to you?” he asked.</p>
+                <p class="mb-6">I wanted to say something normal. I wanted to say I was tired, stressed, lonely. Instead, I said, “You don’t understand. This one might actually last.”</p>
+                <p class="mb-6">His face changed. That was when I heard myself.</p>
+                <p class="mb-6">That night, I took every needle, every pattern, every soft little ball of color, and carried them to the kitchen table. My hands were shaking. I had been <b class="highlight quiz-target" data-ans="bad with my hands" data-kor="손재주가 없다">bad with my hands</b> my whole life, but somehow I had built a cage out of string.</p>
+                <p class="mb-6">The next morning, I walked into a community center with one bag of <b class="highlight quiz-target" data-ans="yarn" data-kor="실">yarn</b>.</p>
+                <p class="mb-6">A woman with silver glasses looked up. She had a very calm, almost <b class="highlight quiz-target" data-ans="hipster" data-kor="힙스터">hipster</b> scarf around her neck.</p>
+                <p class="mb-6">“Donation?” she asked.</p>
+                <p class="mb-6">“Mostly,” I said. “But I’d like to keep one small project.”</p>
+                <p class="mb-6">She nodded. “Something simple?”</p>
+                <p class="mb-6">I looked at the tiny hat in my bag.</p>
+                <p class="mb-6">“Something I can finish before bedtime.”</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>나는 조용한 무언가가 필요해서 뜨개질에 빠지게 되었다.</p>
+                <p><b class="highlight">아기를 재우고</b> 나면, 아파트는 드디어 고요해졌다. 젖병도 없고, 울음소리도 없고, 작은 스피커에서 나오는 부드러운 음악도 없었다. 그냥 나, 소파, 그리고 휴대폰을 손에 든 채 잠들기 전까지의 십 분뿐이었다.</p>
+                <p>어느 날 밤, 나는 작은 카페에서 스웨터를 뜨는 한 여자의 영상을 우연히 보게 되었다. 그녀는 평화로워 보였다. 그녀는 자기 삶이 있는 사람처럼 보였다. 정신을 차려 보니 나는 책 세 권, 나무 바늘 여섯 쌍, 그리고 자신을 “섬유 예술가”라고 부르는 온라인 판매자에게서 비싼 <b class="highlight">실</b> 한 상자를 주문해 놓고 있었다.</p>
+                <p>처음에는 그냥 가볍게 해보는 정도였다. 나는 남편에게 말했다. “나 진지한 거 아니야. 그냥 잠깐 빠진 걸 수도 있어.”</p>
+                <p>그가 웃었다. “네가? 뜨개질을?”</p>
+                <p>“알아. <b class="highlight">나 손재주 없잖아</b>. 그래도 배울 수 있을지도 모르지.”</p>
+                <p>2주 동안 나는 자정이 지난 뒤 뜨개질을 했다. 그러다 점심시간에도 뜨개질을 했다. 그다음에는 출근 전 차 안에서도 뜨개질을 했다. 나는 쇼핑백들을 옷장 안에 숨기기 시작했다. 나는 내가 <b class="highlight">손재주가 좋아지고</b> 있다고 스스로에게 말했다. 하지만 진실은 더 추했다. 나는 거짓말을 잘하게 되고 있었다.</p>
+                <p>첫 번째 진짜 경고는 딸을 어린이집에서 데려오는 것을 잊었을 때 왔다.</p>
+                <p>선생님은 세 번 전화를 했다. 나는 공예품 가게 밖에 세워 둔 차 안에 앉아, 검붉은 <b class="highlight">실</b>이 가득한 벽을 바라보고 있었다. 아무도 부탁하지 않은 담요에 꼭 필요한 정확한 색을 찾았다는 생각에 <b class="highlight">소름</b>이 돋았다.</p>
+                <p>어린이집에 도착했을 때, 딸은 가방을 멘 채 혼자 앉아 있었다.</p>
+                <p>남편은 이미 와 있었다.</p>
+                <p>“당신에게 무슨 일이 생긴 거야?” 그가 물었다.</p>
+                <p>나는 정상적인 말을 하고 싶었다. 피곤하다고, 스트레스를 받았다고, 외로웠다고 말하고 싶었다. 그런데 대신 이렇게 말했다. “당신은 이해 못 해. 이건 진짜 오래갈 수도 있어.”</p>
+                <p>His 표정이 변했다. 그때 나는 내가 한 말을 들었다.</p>
+                <p>그날 밤, 나는 모든 바늘, 모든 도안, 모든 부드럽고 작은 색깔의 뭉치들을 식탁으로 가져왔다. 손이 떨리고 있었다. 나는 평생 <b class="highlight">손재주가 없는</b> 사람이었는데, 어떻게든 실로 만든 감옥을 스스로 만들어 놓은 것이었다.</p>
+                <p>다음 날 아침, 나는 <b class="highlight">실</b> 한 봉지를 들고 주민 센터로 들어갔다.</p>
+                <p>은색 안경을 쓴 여자가 고개를 들었다. 그녀는 아주 차분하고 약간 <b class="highlight">힙스터</b> 느낌이 나는 스카프를 목에 두르고 있었다.</p>
+                <p>“기부인가요?” 그녀가 물었다.</p>
+                <p>“대부분은요.” 내가 말했다. “하지만 작은 프로젝트 하나만 남기고 싶어요.”</p>
+                <p>그녀가 고개를 끄덕였다. “간단한 걸로요?”</p>
+                <p>나는 가방 안의 작은 모자를 보았다.</p>
+                <p>“잠자기 전까지 끝낼 수 있는 걸로요.”</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "77630.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Cart Inspector 🛒</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🛒</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Cart Inspector</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">regret</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">후회하다 / 후회</td></tr>
+                <tr><td class="p-4"><b class="text-white">self-esteem</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">자존감</td></tr>
+                <tr><td class="p-4"><b class="text-white">psychiatrist</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">정신과 의사</td></tr>
+                <tr><td class="p-4"><b class="text-white">act out</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">부적절하게 행동하다 / 감정을 행동으로 표출하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">anomalies</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">이상한 점들 / 특이 사항들</td></tr>
+                <tr><td class="p-4"><b class="text-white">procrastinate</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">미루다</td></tr>
+                <tr><td class="p-4"><b class="text-white">sleep deprivation</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">수면 부족</td></tr>
+                <tr><td class="p-4"><b class="text-white">lethargic</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">무기력한 / 기운이 없는</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">act out</h3>
+                <p class="text-sm text-slate-300">감정을 말로 표현하지 않고 문제 행동으로 드러낼 때 자주 써요. 아이들뿐 아니라 어른에게도 쓸 수 있어요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">anomalies</h3>
+                <p class="text-sm text-slate-300">보통 예상과 다른 “이상한 점”을 뜻해요. 일상 대화보다는 보고서, 조사, 분석 상황에서 더 자연스러워요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">sleep deprivation</h3>
+                <p class="text-sm text-slate-300">단순히 “잠을 못 잠”보다 조금 더 심각하거나 지속적인 수면 부족 느낌이에요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">lethargic</h3>
+                <p class="text-sm text-slate-300">tired보다 더 무기력하고 몸이 무거운 느낌이에요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Minho’s weekend job was simple: collect shopping carts from the parking lot and push them back to the front of the supermarket. The manager said, “Just keep the entrance clear. Don’t stress.”</p>
+                <p class="mb-6">Minho nodded like he had been given a national mission.</p>
+                <p class="mb-6">By ten o’clock, he had drawn a map of the parking lot on a clipboard. He marked every cart with a number. He circled “danger zones” in red pen. When a woman left a cart beside her car, Minho hurried over.</p>
+                <p class="mb-6">“Excuse me,” he said. “That cart is facing northeast. That creates a rolling risk.”</p>
+                <p class="mb-6">The woman stared at him. “It’s not moving.”</p>
+                <p class="mb-6">“Not yet,” Minho said seriously.</p>
+                <p class="mb-6">At first, the manager thought it was funny. But then Minho got a little carried away. He began stopping customers to ask why they had not returned their carts “with pride.” He made a teenager repeat the cart-return process three times because the wheels were not straight.</p>
+                <p class="mb-6">“Minho,” the manager whispered, “don’t get carried away. This is a supermarket.”</p>
+                <p class="mb-6">“I understand,” Minho said. “But I’m seeing several <b class="highlight quiz-target" data-ans="anomalies" data-kor="이상한 점들">anomalies</b>.”</p>
+                <p class="mb-6">“Anomalies?”</p>
+                <p class="mb-6">“Three carts near the bakery entrance. Two abandoned near the flower stand. One cart with a cabbage in it and no owner.”</p>
+                <p class="mb-6">The manager closed his eyes.</p>
+                <p class="mb-6">By lunchtime, Minho had lost track of time. He forgot to eat. He also forgot that the job included helping elderly customers carry bags. Instead, he stood near the entrance giving a speech about “cart discipline.”</p>
+                <p class="mb-6">A little boy started crying because Minho wouldn’t let him ride in the cart.</p>
+                <p class="mb-6">“Kids sometimes <b class="highlight quiz-target" data-ans="act out" data-kor="감정을 행동으로 표출하다">act out</b> when they don’t understand rules,” Minho explained.</p>
+                <p class="mb-6">“He’s four,” the boy’s mother snapped.</p>
+                <p class="mb-6">Minho’s face turned red. He suddenly felt <b class="highlight quiz-target" data-ans="regret" data-kor="후회">regret</b>.</p>
+                <p class="mb-6">He had stayed up late the night before making a cart-safety poster, so the <b class="highlight quiz-target" data-ans="sleep deprivation" data-kor="수면 부족">sleep deprivation</b> was hitting him hard. He felt <b class="highlight quiz-target" data-ans="lethargic" data-kor="무기력한">lethargic</b>, but somehow he still couldn’t stop himself.</p>
+                <p class="mb-6">“Maybe you should talk to a <b class="highlight quiz-target" data-ans="psychiatrist" data-kor="정신과 의사">psychiatrist</b>,” one cashier muttered.</p>
+                <p class="mb-6">“That feels unnecessary,” Minho said quietly.</p>
+                <p class="mb-6">The final problem came when Minho blocked the automatic doors with twelve perfectly lined-up carts for a “training display.” Customers had to squeeze through the exit.</p>
+                <p class="mb-6">The manager pulled him aside. “You overdid it.”</p>
+                <p class="mb-6">Minho looked at the clipboard. “I think I went overboard with the system.”</p>
+                <p class="mb-6">“Yes.”</p>
+                <p class="mb-6">“And I made too big a deal out of it.”</p>
+                <p class="mb-6">“Yes.”</p>
+                <p class="mb-6">He apologized to the staff, the customers, and especially the four-year-old. Then he threw away the map.</p>
+                <p class="mb-6">The next Saturday, he tried to be more relaxed. When one cart sat alone near a tree, he took a deep breath.</p>
+                <p class="mb-6">“I can handle this,” he whispered.</p>
+                <p class="mb-6">Then he saw it slowly rolling toward a parked BMW.</p>
+                <p class="mb-6">Minho ran.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>민호의 주말 아르바이트는 간단했다. 주차장에서 쇼핑 카트를 모아 슈퍼마켓 입구 앞으로 다시 밀어 놓는 일이었다. 매니저는 말했다.</p>
+                <p>“그냥 입구만 막히지 않게 해요. 스트레스 받지 말고요.”</p>
+                <p>민호는 마치 국가적 임무를 받은 사람처럼 고개를 끄덕였다.</p>
+                <p>10시가 되자 그는 클립보드에 주차장 지도를 그려 놓았다. 그는 모든 카트에 번호를 붙였다. 빨간 펜으로 “위험 구역”도 표시했다. 한 여자가 자기 차 옆에 카트를 두고 가자, 민호는 급히 다가갔다.</p>
+                <p>“실례합니다,” 그가 말했다. “그 카트가 북동쪽을 향하고 있습니다. 굴러갈 위험이 생깁니다.”</p>
+                <p>여자는 그를 빤히 쳐다보았다. “안 움직이고 있는데요.”</p>
+                <p>“아직은요,” 민호가 진지하게 말했다.</p>
+                <p>처음에 매니저는 그 모습이 웃기다고 생각했다. 하지만 곧 민호는 조금 오버하기 시작했다. 그는 손님들을 멈춰 세우고 왜 “자부심을 가지고” 카트를 반납하지 않았는지 물었다. 한 십대에게는 바퀴가 똑바르지 않다는 이유로 카트 반납 과정을 세 번 반복하게 했다.</p>
+                <p>“민호 씨,” 매니저가 속삭였다. “너무 흥분하지 마세요. 여기는 슈퍼마켓이에요.”</p>
+                <p>“알겠습니다,” 민호가 말했다. “하지만 몇 가지 <b class="highlight">이상한 점들이</b> 보입니다.”</p>
+                <p>“이상한 점들이요?”</p>
+                <p>“빵집 입구 근처에 카트 세 대. 꽃 판매대 근처에 버려진 카트 두 대. 양배추가 들어 있는데 주인이 없는 카트 한 대요.”</p>
+                <p>매니저는 눈을 감았다.</p>
+                <p>점심시간이 되자 민호는 시간 가는 줄 몰랐다. 그는 밥 먹는 것도 잊었다. 노인 손님들이 장바구니를 옮기는 것을 도와야 한다는 것도 잊었다. 대신 그는 입구 근처에 서서 “카트 규율”에 대한 연설을 하고 있었다.</p>
+                <p>한 어린 남자아이는 민호가 카트에 타지 못하게 해서 울기 시작했다.</p>
+                <p>“아이들은 규칙을 이해하지 못하면 가끔 <b class="highlight">감정을 행동으로 표출하죠</b>,” 민호가 설명했다.</p>
+                <p>“얘 네 살이에요,” 아이의 엄마가 쏘아붙였다.</p>
+                <p>민호의 얼굴이 빨개졌다. 그는 갑자기 <b class="highlight">후회가</b> 밀려왔다.</p>
+                <p>전날 밤 카트 안전 포스터를 만드느라 늦게 잤기 때문에 <b class="highlight">수면 부족이</b> 심하게 느껴졌다. 몸은 <b class="highlight">무기력했지만</b>, 이상하게도 멈출 수가 없었다.</p>
+                <p>“<b class="highlight">정신과 의사랑</b> 상담해 봐야 하는 거 아니에요?” 한 계산원이 중얼거렸다.</p>
+                <p>“그건 좀 과한 것 같은데요,” 민호가 조용히 말했다.</p>
+                <p>마지막 문제는 민호가 “훈련용 전시”라며 자동문 앞을 완벽하게 줄 세운 카트 열두 대로 막았을 때 벌어졌다. 손님들은 출구 쪽으로 비집고 지나가야 했다.</p>
+                <p>매니저가 그를 따로 불렀다. “너무 많이 하셨어요.”</p>
+                <p>민호는 클립보드를 바라보았다. “제가 시스템을 좀 과하게 만든 것 같네요.”</p>
+                <p>“네.”</p>
+                <p>“그리고 별일 아닌 걸 너무 큰일로 만들었고요.”</p>
+                <p>“네.”</p>
+                <p>그는 직원들, 손님들, 그리고 특히 네 살짜리 아이에게 사과했다. 그러고는 지도를 버렸다.</p>
+                <p>다음 토요일, 그는 좀 더 편하게 일하려고 했다. 나무 근처에 카트 한 대가 홀로 놓여 있는 것을 보자, 그는 깊게 숨을 들이마셨다.</p>
+                <p>“난 이 정도는 처리할 수 있어,” 그가 속삭였다.</p>
+                <p>그때 그 카트가 주차된 BMW 쪽으로 천천히 굴러가기 시작했다.</p>
+                <p>민호는 달렸다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "78630.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

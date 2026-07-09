@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The White Marks</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🌧️</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The White Marks</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">isolated</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">고립된 / 외딴 / 외로운</td></tr>
+                <tr><td class="p-4"><b class="text-white">crutches</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">목발</td></tr>
+                <tr><td class="p-4"><b class="text-white">civil servants</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">공무원들</td></tr>
+                <tr><td class="p-4"><b class="text-white">hard water</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">경수 / 센물</td></tr>
+                <tr><td class="p-4"><b class="text-white">limestone</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">석회암</td></tr>
+                <tr><td class="p-4"><b class="text-white">residue</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">잔여물 / 찌꺼기 / 남은 자국</td></tr>
+                <tr><td class="p-4"><b class="text-white">squall</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">돌풍을 동반한 소나기 / 갑작스러운 폭풍우</td></tr>
+                <tr><td class="p-4"><b class="text-white">a chunk of your day</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">하루 중 꽤 많은 시간</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-white font-bold text-lg flex items-center gap-2"><span class="text-teal-400">▪</span> isolated</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">물리적으로 떨어져 있다는 뜻도 있고, 사람들과 연결되지 못해 외롭다는 뜻도 있어요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-white font-bold text-lg flex items-center gap-2"><span class="text-teal-400">▪</span> crutches</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">다리를 다쳤을 때 겨드랑이나 팔에 끼고 걷는 목발이에요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-white font-bold text-lg flex items-center gap-2"><span class="text-teal-400">▪</span> civil servants</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">정부나 공공기관에서 일하는 공무원들을 말해요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-white font-bold text-lg flex items-center gap-2"><span class="text-teal-400">▪</span> hard water</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">칼슘이나 마그네슘 같은 미네랄이 많이 들어 있는 물이에요. 비누가 잘 안 씻기거나 하얀 자국이 남을 수 있어요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-white font-bold text-lg flex items-center gap-2"><span class="text-teal-400">▪</span> limestone</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">석회암이에요. 물속 미네랄이나 하얀 물때를 설명할 때 관련되어 나올 수 있어요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-white font-bold text-lg flex items-center gap-2"><span class="text-teal-400">▪</span> residue</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">무언가를 닦거나 사용한 뒤 남는 찌꺼기, 얼룩, 자국을 말해요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-white font-bold text-lg flex items-center gap-2"><span class="text-teal-400">▪</span> squall</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">갑자기 강하게 부는 바람과 함께 오는 짧고 거친 비바람을 말해요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-white font-bold text-lg flex items-center gap-2"><span class="text-teal-400">▪</span> a chunk of your day</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">하루 전체는 아니지만 꽤 큰 시간 부분을 말해요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">When I first moved into my own apartment, I thought the bathroom was my biggest success.</p>
+                <p class="mb-6">It was small, but it was clean. I bought a blue bath mat, a nice towel, and a bottle of expensive soap that smelled like a hotel. Every morning, I looked around and thought, I’m really doing fine on my own.</p>
+                <p class="mb-6">Then the white marks appeared.</p>
+                <p class="mb-6">They were on the shower door, the faucet, the sink, even my black toothbrush cup. At first, I blamed the cheap cleaner. Then I blamed the building. Then I blamed myself for being bad at adult life. No matter how hard I scrubbed, the white <b class="highlight quiz-target" data-ans="residue" data-kor="잔여물">residue</b> came back the next day.</p>
+                <p class="mb-6">One Saturday, I spent almost <b class="highlight quiz-target" data-ans="a chunk of your day" data-kor="하루 중 꽤 많은 시간">a chunk of your day</b> cleaning the bathroom. I watched three videos, bought two brushes, and used so much cleaner that my eyes started to burn. When I finally finished, the faucet shone beautifully.</p>
+                <p class="mb-6">By Sunday morning, it looked cloudy again.</p>
+                <p class="mb-6">I stood there in my pajamas, holding a sponge, feeling personally attacked by my own sink.</p>
+                <p class="mb-6">My mother called while I was still staring at it.</p>
+                <p class="mb-6">“How’s the apartment?” she asked.</p>
+                <p class="mb-6">“Fine,” I said. “Except the water here is weird.”</p>
+                <p class="mb-6">“What do you mean?”</p>
+                <p class="mb-6">“It leaves white stuff everywhere.”</p>
+                <p class="mb-6">“Oh,” she said. “You probably have <b class="highlight quiz-target" data-ans="hard water" data-kor="경수">hard water</b>.”</p>
+                <p class="mb-6">I had never heard those words before. She explained that some water has a lot of minerals in it, especially in areas with rock like <b class="highlight quiz-target" data-ans="limestone" data-kor="석회암">limestone</b>. It was normal, she said. Annoying, but normal.</p>
+                <p class="mb-6">“So how do I stop it?”</p>
+                <p class="mb-6">“You don’t completely stop it,” she said. “You wipe things often. That’s why I always kept a small cloth near the sink.”</p>
+                <p class="mb-6">I suddenly remembered that cloth. At home, it had always been hanging there, boring and gray. I used to think my mother was too serious about tiny water spots. Now I realized those tiny spots had been fighting her every day.</p>
+                <p class="mb-6">Later that afternoon, I went out to buy vinegar and a better sponge. A sudden <b class="highlight quiz-target" data-ans="squall" data-kor="갑작스러운 폭풍우">squall</b> hit while I was walking back, and the <b class="highlight quiz-target" data-ans="sidewalk" data-kor="인도">sidewalk</b> filled with water. Near the bus stop, a man on <b class="highlight quiz-target" data-ans="crutches" data-kor="목발">crutches</b> was trying to move around a puddle. I helped him carry his bag to the dry side.</p>
+                <p class="mb-6">“Thanks,” he said. “This street is terrible when it rains.”</p>
+                <p class="mb-6">I looked at the drains, the dirty water, the uneven ground, and the people stepping around each other. For a moment, the city felt strangely <b class="highlight quiz-target" data-ans="isolated" data-kor="고립된">isolated</b>, like everyone was solving small problems alone.</p>
+                <p class="mb-6">At the corner, two <b class="highlight quiz-target" data-ans="civil servants" data-kor="공무원들">civil servants</b> were checking a blocked drain in the rain. Their shoes were soaked. Nobody thanked them.</p>
+                <p class="mb-6">When I got home, the bathroom still had white marks. But I didn’t feel defeated. I wiped the faucet, hung a small cloth beside the sink, and called my mother.</p>
+                <p class="mb-6">“I bought vinegar,” I said.</p>
+                <p class="mb-6">She laughed. “You’re learning.”</p>
+                <p class="mb-6">Maybe living alone was not about becoming independent all at once. Maybe it was noticing the quiet work behind ordinary comfort—and finally doing my part.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">처음 혼자 사는 아파트로 이사했을 때, 저는 화장실이 가장 큰 성공이라고 생각했습니다.</p>
+                <p class="mb-6">화장실은 작았지만 깨끗했습니다. 파란색 욕실 매트와 좋은 수건, 호텔 냄새가 나는 비싼 비누도 샀습니다. 매일 아침 저는 화장실을 둘러보며 생각했습니다. 나 혼자서도 정말 잘하고 있네.</p>
+                <p class="mb-6">그런데 하얀 자국들이 나타났습니다.</p>
+                <p class="mb-6">샤워 부스 문, 수도꼭지, 세면대, 심지어 검은색 칫솔 컵에도 자국이 있었습니다. 처음에는 싼 세제를 탓했습니다. 그다음에는 건물을 탓했습니다. 그다음에는 제가 어른 생활을 못해서 그런 거라고 생각했습니다. 아무리 세게 문질러도 하얀 <b class="highlight">잔여물</b>은 다음 날 다시 생겼습니다.</p>
+                <p class="mb-6">어느 토요일, 저는 화장실 청소에 거의 <b class="highlight">하루 중 꽤 많은 시간</b>을 썼습니다. 영상 세 개를 보고, 솔 두 개를 사고, 눈이 따가울 정도로 세제를 많이 썼습니다. 마침내 청소를 끝냈을 때, 수도꼭지는 아름답게 반짝였습니다.</p>
+                <p class="mb-6">일요일 아침이 되자 다시 뿌옇게 변해 있었습니다.</p>
+                <p class="mb-6">저는 잠옷 차림으로 스펀지를 들고 서서, 제 세면대에게 개인적으로 공격당한 기분이 들었습니다.</p>
+                <p class="mb-6">제가 아직 그것을 바라보고 있을 때 엄마에게서 전화가 왔습니다.</p>
+                <p class="mb-6">“아파트는 어때?” 엄마가 물었습니다.</p>
+                <p class="mb-6">“괜찮아요.” 제가 말했습니다. “근데 여기 물이 좀 이상해요.”</p>
+                <p class="mb-6">“무슨 뜻이야?”</p>
+                <p class="mb-6">“하얀 게 여기저기 남아요.”</p>
+                <p class="mb-6">“아.” 엄마가 말했습니다. “아마 <b class="highlight">경수</b>일 거야.”</p>
+                <p class="mb-6">저는 그 말을 들어 본 적이 없었습니다. 엄마는 어떤 물에는 미네랄이 많이 들어 있고, 특히 <b class="highlight">석회암</b> 같은 암석이 있는 지역에서는 그럴 수 있다고 설명해 주었습니다. 정상적인 현상이라고 했습니다. 짜증 나지만 정상이라고요.</p>
+                <p class="mb-6">“그럼 어떻게 막아요?”</p>
+                <p class="mb-6">“완전히 막을 수는 없어.” 엄마가 말했습니다. “자주 닦아야 해. 그래서 내가 항상 세면대 옆에 작은 천을 둔 거야.”</p>
+                <p class="mb-6">저는 갑자기 그 천이 생각났습니다. 집에서는 항상 거기에 걸려 있던, 재미없고 회색인 천이었습니다. 저는 엄마가 작은 물자국에 너무 예민하다고 생각하곤 했습니다. 이제야 그 작은 자국들이 매일 엄마와 싸우고 있었다는 것을 깨달았습니다.</p>
+                <p class="mb-6">그날 오후 늦게, 저는 식초와 더 좋은 스펀지를 사러 나갔습니다. 집으로 돌아오는 길에 갑작스러운 <b class="highlight">돌풍을 동반한 소나기</b>가 쏟아졌고, <b class="highlight">인도</b>에는 물이 고였습니다. 버스 정류장 근처에서 <b class="highlight">목발</b>을 짚은 남자가 물웅덩이를 피해 가려고 애쓰고 있었습니다. 저는 그의 가방을 마른 쪽으로 옮겨 주었습니다.</p>
+                <p class="mb-6">“고마워요.” 그가 말했습니다. “비가 오면 이 길은 정말 최악이에요.”</p>
+                <p class="mb-6">저는 배수구와 더러운 물, 울퉁불퉁한 땅, 서로를 피해 걷는 사람들을 바라봤습니다. 잠시 동안 도시는 이상하게 <b class="highlight">고립된</b> 느낌이 들었습니다. 모두가 작은 문제를 혼자 해결하고 있는 것 같았습니다.</p>
+                <p class="mb-6">모퉁이에서는 두 명의 <b class="highlight">공무원</b>이 빗속에서 막힌 배수구를 확인하고 있었습니다. 그들의 신발은 흠뻑 젖어 있었습니다. 아무도 그들에게 고맙다고 하지 않았습니다.</p>
+                <p class="mb-6">집에 돌아왔을 때, 화장실에는 여전히 하얀 자국이 있었습니다. 하지만 저는 더 이상 패배한 기분이 들지 않았습니다. 수도꼭지를 닦고, 세면대 옆에 작은 천을 걸고, 엄마에게 전화했습니다.</p>
+                <p class="mb-6">“식초 샀어요.” 제가 말했습니다.</p>
+                <p class="mb-6">엄마는 웃었습니다. “배우고 있네.”</p>
+                <p class="mb-6">어쩌면 혼자 산다는 것은 한꺼번에 독립적인 사람이 되는 것이 아닐지도 모릅니다. 어쩌면 평범한 편안함 뒤에 있는 조용한 노력을 알아차리고, 마침내 내 몫을 하기 시작하는 것인지도 모릅니다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "79830.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

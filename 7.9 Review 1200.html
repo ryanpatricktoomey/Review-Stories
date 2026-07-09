@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Bathroom Schedule</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🚽</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Bathroom Schedule</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">take time for granted</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">시간을 당연하게 여기다</td></tr>
+                <tr><td class="p-4"><b class="text-white">everyone will die</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">누구나 죽는다</td></tr>
+                <tr><td class="p-4"><b class="text-white">pay it forward</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">받은 도움을 다른 사람에게 베풀다</td></tr>
+                <tr><td class="p-4"><b class="text-white">civil servants</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">공무원들</td></tr>
+                <tr><td class="p-4"><b class="text-white">outhouse</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">옥외 화장실 / 재래식 외부 화장실</td></tr>
+                <tr><td class="p-4"><b class="text-white">the last resort</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">최후의 수단</td></tr>
+                <tr><td class="p-4"><b class="text-white">above ground</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">지상에 / 땅 위에</td></tr>
+                <tr><td class="p-4"><b class="text-white">that makes sense</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">말이 되네요 / 이해돼요</td></tr>
+                <tr><td class="p-4"><b class="text-white">I get it</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">알겠어요 / 이해했어요</td></tr>
+                <tr><td class="p-4"><b class="text-white">i get the gist of it</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">대충 요지는 알겠어요</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-white font-bold text-lg flex items-center gap-2"><span class="text-teal-400">▪</span> take time for granted</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">시간이 항상 충분히 있을 것처럼 생각하고 소중하게 여기지 않는다는 뜻이에요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-white font-bold text-lg flex items-center gap-2"><span class="text-teal-400">▪</span> pay it forward</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">직접 보답하기보다, 내가 받은 친절이나 도움을 나중에 다른 사람에게 베풀는 것을 말해요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-white font-bold text-lg flex items-center gap-2"><span class="text-teal-400">▪</span> the last resort</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">다른 방법이 모두 안 될 때 마지막으로 선택하는 방법이에요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-white font-bold text-lg flex items-center gap-2"><span class="text-teal-400">▪</span> above ground</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">물리적으로 “땅 위”라는 뜻이지만, 지하 시설이나 묻힌 구조물과 비교할 때 자주 써요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-white font-bold text-lg flex items-center gap-2"><span class="text-teal-400">▪</span> that makes sense</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">상대의 설명이 논리적으로 이해될 때 자연스럽게 하는 반응이에요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-white font-bold text-lg flex items-center gap-2"><span class="text-teal-400">▪</span> I get it</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">“이해했어요”라는 뜻이지만, 때로는 “이제 알겠어요”처럼 깨달음이 담길 수 있어요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-white font-bold text-lg flex items-center gap-2"><span class="text-teal-400">▪</span> i get the gist of it</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">세부사항은 다 모르지만 전체적인 핵심은 이해했다는 뜻이에요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">When I moved into my first apartment, I thought I had become independent because I could cook rice and remember my door code.</p>
+                <p class="mb-6">Then the bathroom stopped working.</p>
+                <p class="mb-6">It happened on a Saturday morning. I had planned to sleep late, clean a little, and waste the rest of the day watching videos. But when I flushed the toilet, the water rose instead of going down.</p>
+                <p class="mb-6">I froze.</p>
+                <p class="mb-6">I waited five minutes and tried again, which was a terrible decision. Soon I was standing in the hallway, calling the building office and speaking in the calm voice of a person who was not calm at all.</p>
+                <p class="mb-6">The repairman arrived with two other workers. He opened a small panel near the floor and explained that the problem was not only my toilet. A pipe under the building was blocked.</p>
+                <p class="mb-6">“How long will it take?” I asked.</p>
+                <p class="mb-6">“Hard to say,” he said. “The underground part is old. We may need to check the section <b class="highlight quiz-target" data-ans="above ground" data-kor="지상에">above ground</b> too.”</p>
+                <p class="mb-6">I nodded like I understood everything.</p>
+                <p class="mb-6">He looked at me. “Do you understand?”</p>
+                <p class="mb-6">“Honestly, <b class="highlight quiz-target" data-ans="i get the gist of it" data-kor="대충 요지는 알겠어요">i get the gist of it</b>,” I said. “But not the details.”</p>
+                <p class="mb-6">He smiled. “The details are dirty.”</p>
+                <p class="mb-6">For the next few hours, the bathroom was off-limits. At first, I was annoyed. I had emails to answer, laundry to do, and no desire to plan my entire life around a toilet.</p>
+                <p class="mb-6">Then I needed to use it.</p>
+                <p class="mb-6">Suddenly, ordinary comfort became urgent. I searched for nearby cafés. One required a purchase. Another had a broken restroom. A third had a line of six people. I walked around the neighborhood, feeling ridiculous and slightly desperate.</p>
+                <p class="mb-6">Outside a small public office, I saw two <b class="highlight quiz-target" data-ans="civil servants" data-kor="공무원들">civil servants</b> guiding people away from a blocked public restroom. One woman complained loudly, “Why is this taking so long?”</p>
+                <p class="mb-6">The man in the vest answered patiently, “We’re trying to fix it safely.”</p>
+                <p class="mb-6">I wanted to say, “<b class="highlight quiz-target" data-ans="I get it" data-kor="알겠어요">I get it</b>.” Instead, I just stood there, understanding too late how much invisible work keeps daily life clean and normal.</p>
+                <p class="mb-6">An old man beside me laughed softly. “When I was young, my grandparents had an <b class="highlight quiz-target" data-ans="outhouse" data-kor="옥외 화장실">outhouse</b>. In winter, nobody complained about a slow repair. We were just grateful if it wasn’t snowing.”</p>
+                <p class="mb-6">“Really?” I said.</p>
+                <p class="mb-6">He nodded. “People <b class="highlight quiz-target" data-ans="take time for granted" data-kor="시간을 당연하게 여기다">take time for granted</b>, too. They think small problems should disappear immediately.”</p>
+                <p class="mb-6">“<b class="highlight quiz-target" data-ans="That makes sense" data-kor="말이 되네요">That makes sense</b>,” I said.</p>
+                <p class="mb-6">In the end, a convenience store restroom became the <b class="highlight quiz-target" data-ans="the last resort" data-kor="최후의 수단">the last resort</b>. I bought gum I did not want and thanked the cashier like she had saved my life.</p>
+                <p class="mb-6">That evening, the repairman knocked on my door. “It’s fixed.”</p>
+                <p class="mb-6">“Thank you,” I said. “Really.”</p>
+                <p class="mb-6">He waved it off. “Just doing my job.”</p>
+                <p class="mb-6">But it did not feel small anymore. Clean water, working pipes, people who repair things before a whole building suffers—I had rarely given them a second thought.</p>
+                <p class="mb-6">Before he left, he said, “If your neighbor upstairs asks, tell her it’s working.”</p>
+                <p class="mb-6">I went upstairs and knocked. She looked tired and worried.</p>
+                <p class="mb-6">“It’s fixed,” I told her. “And the convenience store on the corner lets people use the restroom if they buy something.”</p>
+                <p class="mb-6">She laughed with relief. “Thank you.”</p>
+                <p class="mb-6">I shrugged. “Just trying to <b class="highlight quiz-target" data-ans="pay it forward" data-kor="받은 도움을 다른 사람에게 베풀다">pay it forward</b>.”</p>
+                <p class="mb-6">Later, I sat in my apartment and thought about the old man’s words. <b class="highlight quiz-target" data-ans="everyone will die" data-kor="누구나 죽는다">Everyone will die</b>, so maybe it sounds silly to care about a broken bathroom. But that day taught me something different. Because life is short, the ordinary things that protect our dignity matter more, not less.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">처음 제 아파트로 이사했을 때, 저는 밥을 짓고 현관 비밀번호를 기억할 수 있다는 이유만으로 제가 독립한 사람이라고 생각했습니다.</p>
+                <p class="mb-6">그러다 화장실이 고장 났습니다.</p>
+                <p class="mb-6">토요일 아침이었습니다. 저는 늦잠을 자고, 청소를 조금 하고, 남은 하루는 영상을 보며 낭비할 계획이었습니다. 그런데 변기 물을 내리자 물이 내려가는 대신 올라왔습니다.</p>
+                <p class="mb-6">저는 그대로 얼어붙었습니다.</p>
+                <p class="mb-6">5분을 기다렸다가 다시 물을 내렸는데, 그것은 정말 끔찍한 결정이었습니다. 곧 저는 복도에 서서 건물 관리실에 전화를 걸고 있었습니다. 전혀 침착하지 않은 사람이 침착한 척하는 목소리로요.</p>
+                <p class="mb-6">수리 기사님은 다른 작업자 두 명과 함께 도착했습니다. 그는 바닥 근처의 작은 패널을 열고 문제가 제 변기만의 문제가 아니라고 설명했습니다. 건물 아래의 배관이 막힌 것이었습니다.</p>
+                <p class="mb-6">“얼마나 걸릴까요?” 제가 물었습니다.</p>
+                <p class="mb-6">“확실히 말하기 어렵습니다.” 그가 말했습니다. “지하 부분이 오래됐어요. <b class="highlight">지상에</b> 있는 구간도 확인해야 할 수도 있습니다.”</p>
+                <p class="mb-6">저는 모든 것을 이해한 척 고개를 끄덕였습니다.</p>
+                <p class="mb-6">그가 저를 보았습니다. “이해하셨어요?”</p>
+                <p class="mb-6">“솔직히 말하면, <b class="highlight">대충 요지는 알겠어요</b>.” 제가 말했습니다. “하지만 세부사항은 모르겠어요.”</p>
+                <p class="mb-6">그는 웃었습니다. “세부사항은 더럽습니다.”</p>
+                <p class="mb-6">그 후 몇 시간 동안 화장실은 사용할 수 없었습니다. 처음에는 짜증이 났습니다. 답장해야 할 이메일도 있었고, 빨래도 해야 했고, 변기 하나 때문에 하루 전체를 계획하고 싶지는 않았습니다.</p>
+                <p class="mb-6">그러다 화장실에 가고 싶어졌습니다.</p>
+                <p class="mb-6">갑자기 평범한 편안함이 급한 문제가 되었습니다. 저는 근처 카페들을 검색했습니다. 한 곳은 음료를 사야 했습니다. 다른 곳은 화장실이 고장 나 있었습니다. 세 번째 곳에는 여섯 명이 줄을 서 있었습니다. 저는 우스꽝스럽고 조금 절박한 기분으로 동네를 돌아다녔습니다.</p>
+                <p class="mb-6">작은 주민센터 밖에서, 저는 두 명의 <b class="highlight">공무원들</b>이 막힌 공중화장실에서 사람들을 안내하는 모습을 보았습니다. 한 여자가 큰 소리로 불평했습니다. “왜 이렇게 오래 걸려요?”</p>
+                <p class="mb-6">조끼를 입은 남자가 참을성 있게 대답했습니다. “안전하게 고치려고 하고 있습니다.”</p>
+                <p class="mb-6">저는 “<b class="highlight">알겠어요</b>”라고 말하고 싶었습니다. 하지만 그냥 거기에 서 있었습니다. 일상을 깨끗하고 정상적으로 유지하는 보이지 않는 일이 얼마나 많은지 너무 늦게 이해하면서요.</p>
+                <p class="mb-6">제 옆에 있던 한 노인이 조용히 웃었습니다. “내가 어릴 때는 조부모님 댁에 <b class="highlight">옥외 화장실이</b> 있었어요. 겨울에는 수리가 느리다고 불평하는 사람이 없었죠. 눈이 안 오면 그저 감사했어요.”</p>
+                <p class="mb-6">“정말요?” 제가 말했습니다.</p>
+                <p class="mb-6">그가 고개를 끄덕였습니다. “사람들은 <b class="highlight">시간을 당연하게 여기기도</b> 해요. 작은 문제는 바로 사라져야 한다고 생각하죠.”</p>
+                <p class="mb-6">“<b class="highlight">말이 되네요</b>.” 제가 말했습니다.</p>
+                <p class="mb-6">결국 편의점 화장실이 <b class="highlight">최후의 수단이</b> 되었습니다. 저는 원하지도 않는 껌을 사고, 계산원에게 마치 제 목숨을 구해 준 사람처럼 감사 인사를 했습니다.</p>
+                <p class="mb-6">그날 저녁, 수리 기사님이 제 문을 두드렸습니다. “고쳤습니다.”</p>
+                <p class="mb-6">“감사합니다.” 제가 말했습니다. “정말로요.”</p>
+                <p class="mb-6">그는 대수롭지 않게 손을 저었습니다. “그냥 제 일입니다.”</p>
+                <p class="mb-6">하지만 더 이상 작은 일처럼 느껴지지 않았습니다. 깨끗한 물, 작동하는 배관, 건물 전체가 고생하기 전에 무언가를 고치는 사람들—저는 그런 것들에 대해 거의 생각조차 하지 않고 살았습니다.</p>
+                <p class="mb-6">그가 떠나기 전 말했습니다. “윗집 이웃이 물어보면 이제 된다고 전해 주세요.”</p>
+                <p class="mb-6">저는 위층으로 올라가 문을 두드렸습니다. 그녀는 피곤하고 걱정스러워 보였습니다.</p>
+                <p class="mb-6">“고쳐졌어요.” 제가 말했습니다. “그리고 모퉁이 편의점은 뭔가를 사면 화장실을 쓰게 해 줘요.”</p>
+                <p class="mb-6">그녀는 안도하며 웃었습니다. “고마워요.”</p>
+                <p class="mb-6">저는 어깨를 으쓱했습니다. “그냥 <b class="highlight">받은 도움을 다른 사람에게 베풀려고요</b>.”</p>
+                <p class="mb-6">나중에 저는 아파트에 앉아 그 노인의 말을 생각했습니다. <b class="highlight">누구나 죽는다는</b> 말을 생각하면 고장 난 화장실을 신경 쓰는 게 우습게 들릴 수도 있습니다. 하지만 그날 저는 다른 것을 배웠습니다. 삶이 짧기 때문에 우리의 존엄을 지켜 주는 평범한 것들은 덜 중요한 게 아니라, 오히려 더 중요하다는 것을요.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "791200.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

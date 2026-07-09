@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Bags by the Door</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🗑️</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Bags by the Door</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">reborn</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">다시 태어난 / 새로워진</td></tr>
+                <tr><td class="p-4"><b class="text-white">減ers</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">하수도</td></tr>
+                <tr><td class="p-4"><b class="text-white">sanitation worker</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">환경미화원 / 위생 관리 노동자</td></tr>
+                <tr><td class="p-4"><b class="text-white">how well I'm doing</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">내가 얼마나 잘하고 있는지</td></tr>
+                <tr><td class="p-4"><b class="text-white">puts her heart into it</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">진심을 다해 한다 / 정성을 쏟는다</td></tr>
+                <tr><td class="p-4"><b class="text-white">put on a good show</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">좋은 공연을 보여주다 / 겉으로 잘해 보이게 하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">put up a good fight</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">잘 버티다 / 끝까지 맞서 싸우다</td></tr>
+                <tr><td class="p-4"><b class="text-white">damned if you do, damned if you don't</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">이래도 욕먹고 저래도 욕먹는 상황</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-white font-bold text-lg flex items-center gap-2"><span class="text-teal-400">▪</span> reborn</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">실제로 다시 태어난다는 뜻도 있지만, 기분이나 삶이 완전히 새로워진 것처럼 느껴질 때도 써요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-white font-bold text-lg flex items-center gap-2"><span class="text-teal-400">▪</span> sewers</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">하수도를 뜻하는 단어입니다.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-white font-bold text-lg flex items-center gap-2"><span class="text-teal-400">▪</span> sanitation worker</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">단순히 “청소부”보다 공공 위생과 쓰레기 수거를 담당하는 직업을 더 존중 있게 표현하는 말이에요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-white font-bold text-lg flex items-center gap-2"><span class="text-teal-400">▪</span> how well I'm doing</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">문맥에 따라 “내가 얼마나 잘 지내는지” 또는 “내가 얼마나 잘 해내고 있는지”로 해석돼요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-white font-bold text-lg flex items-center gap-2"><span class="text-teal-400">▪</span> puts her heart into it</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">어떤 일을 대충 하지 않고 마음과 정성을 다한다는 뜻이에요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-white font-bold text-lg flex items-center gap-2"><span class="text-teal-400">▪</span> put on a good show</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">실제 공연뿐 아니라, 힘들어도 겉으로 괜찮아 보이게 행동한다는 뜻도 있어요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-white font-bold text-lg flex items-center gap-2"><span class="text-teal-400">▪</span> put up a good fight</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">싸움뿐 아니라 어려운 상황에서 포기하지 않고 버티는 데도 써요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-white font-bold text-lg flex items-center gap-2"><span class="text-teal-400">▪</span> damned if you do, damned if you don't</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">어떤 선택을 해도 비난받거나 문제가 생기는 난처한 상황을 말해요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">When I first moved out, I thought I was doing great.</p>
+                <p class="mb-6">My apartment was tiny, but I kept it looking clean enough. I washed dishes before they smelled. I bought my own toilet paper. I even called my mother every Sunday and told her <b class="highlight quiz-target" data-ans="how well I'm doing" data-kor="내가 얼마나 잘하고 있는지">how well I'm doing</b>. She always sounded proud, which made me stand a little taller.</p>
+                <p class="mb-6">The only thing I hated was taking out the trash.</p>
+                <p class="mb-6">At home, trash had always disappeared. I knew my mother took it out sometimes, and my father did too, but I had never paid attention. In my new building, there were different bags for food waste, plastic, paper, glass, and regular trash. The rules were taped to the wall downstairs in small letters, like an exam nobody had studied for.</p>
+                <p class="mb-6">One night, I stood by the bins with three bags in my hands. A man in an orange vest was sorting through a pile someone had left in the wrong place.</p>
+                <p class="mb-6">“You can’t put food waste there,” he said.</p>
+                <p class="mb-6">I wanted to defend myself, but he wasn’t even talking to me. He was just tired. He was a <b class="highlight quiz-target" data-ans="sanitation worker" data-kor="환경미화원">sanitation worker</b>, and it was clear he had already had a long night.</p>
+                <p class="mb-6">I looked at the bags by my feet. One was leaking something warm and terrible.</p>
+                <p class="mb-6">“Is this the right place?” I asked.</p>
+                <p class="mb-6">He checked my bags and sighed. “Almost. But this plastic needs to be rinsed. And this sticker should come off.”</p>
+                <p class="mb-6">I felt annoyed. “That’s a lot for one yogurt cup.”</p>
+                <p class="mb-6">He looked at me, not angry, just worn out. “People say that every day. Then they complain when the street smells or the drains block. Sometimes it feels like <b class="highlight quiz-target" data-ans="damned if you do, damned if you don't" data-kor="이래도 욕먹고 저래도 욕먹는 상황">damned if you do, damned if you don't</b>.</p>
+                <p class="mb-6">Behind him, dirty water moved slowly toward the <b class="highlight quiz-target" data-ans="sewers" data-kor="하수도">sewers</b>. For the first time, I noticed the smell, the bags, the sticky ground, and the fact that someone had to deal with all of it after I went upstairs.</p>
+                <p class="mb-6">“My mom always did this,” I said quietly.</p>
+                <p class="mb-6">He shrugged. “Somebody usually does.”</p>
+                <p class="mb-6">That sentence stayed with me.</p>
+                <p class="mb-6">The next Saturday, I cleaned every container before throwing it away. It was boring, but not hard. I realized my mother hadn’t just “kept the house clean.” She had managed a whole system, and she <b class="highlight quiz-target" data-ans="puts her heart into it" data-kor="진심을 다해 한다">puts her heart into it</b> even when nobody thanks her.</p>
+                <p class="mb-6">When she visited the next week, I tried to <b class="highlight quiz-target" data-ans="put on a good show" data-kor="좋은 모습을 보여주다">put on a good show</b>. The floor was clean, the trash was sorted, and the fridge had actual food in it.</p>
+                <p class="mb-6">She opened the cabinet under the sink and saw the labeled bags.</p>
+                <p class="mb-6">“Oh,” she said. “You’re learning.”</p>
+                <p class="mb-6">“I’m trying,” I said. “I had to <b class="highlight quiz-target" data-ans="put up a good fight" data-kor="끝까지 싸우다">put up a good fight</b> against a yogurt cup.”</p>
+                <p class="mb-6">She laughed so hard that I felt almost <b class="highlight quiz-target" data-ans="reborn" data-kor="새로 태어난">reborn</b>.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">처음 독립했을 때, 저는 제가 꽤 잘하고 있다고 생각했습니다.</p>
+                <p class="mb-6">제 아파트는 아주 작았지만, 그래도 꽤 깨끗해 보이게 유지했습니다. 냄새가 나기 전에 설거지를 했고, 화장지도 직접 샀습니다. 심지어 매주 일요일마다 엄마에게 전화해서 제가 <b class="highlight">얼마나 잘하고 있는지</b> 말했습니다. 엄마는 늘 자랑스러운 목소리였고, 그럴 때마다 저는 괜히 어깨가 펴졌습니다.</p>
+                <p class="mb-6">제가 유일하게 싫어한 일은 쓰레기를 버리는 일이었습니다.</p>
+                <p class="mb-6">집에서는 쓰레기가 항상 사라져 있었습니다. 엄마가 가끔 버리고 아빠도 버린다는 것은 알고 있었지만, 저는 신경 써 본 적이 없었습니다. 새 건물에서는 음식물 쓰레기, 플라스틱, 종이, 유리, 일반 쓰레기용 봉투가 따로 있었습니다. 아래층 벽에는 규칙이 작은 글씨로 붙어 있었는데, 마치 아무도 공부하지 않은 시험 같았습니다.</p>
+                <p class="mb-6">어느 날 밤, 저는 봉투 세 개를 들고 쓰레기통 앞에 서 있었습니다. 주황색 조끼를 입은 남자가 누군가 잘못 놓고 간 더미를 정리하고 있었습니다.</p>
+                <p class="mb-6">“음식물 쓰레기는 거기에 넣으면 안 돼요.” 그가 말했습니다.</p>
+                <p class="mb-6">저는 변명하고 싶었지만, 그는 저에게 말하는 것도 아니었습니다. 그냥 피곤해 보였습니다. 그는 <b class="highlight">환경미화원</b>이었고, 이미 긴 밤을 보낸 것이 분명했습니다.</p>
+                <p class="mb-6">저는 제 발밑에 있는 봉투들을 내려다보았습니다. 그중 하나에서는 따뜻하고 끔찍한 무언가가 새고 있었습니다.</p>
+                <p class="mb-6">“이건 여기 버리는 게 맞나요?” 제가 물었습니다.</p>
+                <p class="mb-6">그는 제 봉투를 확인하고 한숨을 쉬었습니다. “거의 맞아요. 그런데 이 플라스틱은 헹궈야 해요. 그리고 이 스티커는 떼야 하고요.”</p>
+                <p class="mb-6">저는 짜증이 났습니다. “요거트 컵 하나에 할 일이 너무 많은데요.”</p>
+                <p class="mb-6">그는 화난 표정은 아니었고, 그냥 지쳐 보였습니다. “사람들이 매일 그렇게 말해요. 그러고는 거리가 냄새나거나 배수구가 막히면 불평하죠. 가끔은 <b class="highlight">이래도 욕먹고 저래도 욕먹는 상황</b> 같아요.”</p>
+                <p class="mb-6">그의 뒤로 더러운 물이 천천히 <b class="highlight">하수도</b> 쪽으로 흘러갔습니다. 저는 처음으로 냄새와 봉투들, 끈적한 바닥, 그리고 제가 위층으로 올라간 뒤에도 누군가는 이 모든 것을 처리해야 한다는 사실을 알아차렸습니다.</p>
+                <p class="mb-6">“저희 엄마가 항상 이걸 하셨어요.” 제가 조용히 말했습니다.</p>
+                <p class="mb-6">그는 어깨를 으쓱했습니다. “보통 누군가는 하죠.”</p>
+                <p class="mb-6">그 문장이 계속 마음에 남았습니다.</p>
+                <p class="mb-6">그다음 토요일, 저는 버리기 전에 모든 용기를 씻었습니다. 지루했지만 어려운 일은 아니었습니다. 저는 엄마가 단순히 “집을 깨끗하게 유지한” 것이 아니라는 것을 깨달았습니다. 엄마는 하나의 시스템 전체를 관리하고 있었고, 아무도 고맙다고 하지 않아도 그 일에 <b class="highlight">진심을 다하고</b> 있었던 것입니다.</p>
+                <p class="mb-6">다음 주 엄마가 방문했을 때, 저는 <b class="highlight">좋은 모습을 보여주려고</b> 했습니다. 바닥은 깨끗했고, 쓰레기는 분리되어 있었고, 냉장고에는 진짜 음식도 들어 있었습니다.</p>
+                <p class="mb-6">엄마는 싱크대 아래 찬장을 열고 라벨이 붙은 봉투들을 보았습니다.</p>
+                <p class="mb-6">“오,” 엄마가 말했습니다. “배우고 있네.”</p>
+                <p class="mb-6">“노력 중이에요.” 제가 말했습니다. “요거트 컵과 <b class="highlight">끝까지 싸워야</b> 했어요.”</p>
+                <p class="mb-6">엄마는 너무 크게 웃었고, 저는 거의 <b class="highlight">새로 태어난</b> 기분이 들었습니다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "79715.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

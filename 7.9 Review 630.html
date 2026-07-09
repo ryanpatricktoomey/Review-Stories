@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The First Month Alone</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🏠</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The First Month Alone</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">get directions</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">길 안내를 받다 / 길을 찾다</td></tr>
+                <tr><td class="p-4"><b class="text-white">pay the bills</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">공과금/청구서를 내다</td></tr>
+                <tr><td class="p-4"><b class="text-white">step up</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">나서다 / 책임지고 행동하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">a must</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">꼭 필요한 것 / 필수</td></tr>
+                <tr><td class="p-4"><b class="text-white">employment insurance</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">고용보험</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-white font-bold text-lg flex items-center gap-2"><span class="text-teal-400">▪</span> get directions</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">지도 앱이나 사람에게 길을 안내받는다는 뜻이에요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-white font-bold text-lg flex items-center gap-2"><span class="text-teal-400">▪</span> pay the bills</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">전기세, 수도세, 통신비처럼 정기적으로 나오는 청구서를 낸다는 뜻이에요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-white font-bold text-lg flex items-center gap-2"><span class="text-teal-400">▪</span> step up</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">힘들거나 귀찮은 상황에서 피하지 않고 책임지고 나서는 느낌이에요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-white font-bold text-lg flex items-center gap-2"><span class="text-teal-400">▪</span> a must</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">“꼭 필요한 것”이라는 뜻으로, 물건이나 조건에 대해 자주 써요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-white font-bold text-lg flex items-center gap-2"><span class="text-teal-400">▪</span> employment insurance</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">실직이나 휴직 상황과 관련된 고용보험을 말해요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">When I moved out of my parents’ apartment, I felt proud for about three days.</p>
+                <p class="mb-6">My new place was small, but it was mine. I could eat cereal at midnight, leave dishes in the sink, and watch videos without anyone telling me to sleep. I told myself that living alone was freedom.</p>
+                <p class="mb-6">Then Monday came.</p>
+                <p class="mb-6">I woke up late because I had forgotten to charge my phone. There was no breakfast because I had forgotten to buy food. My white shirt was still wet because I had put too many clothes in the washing machine the night before. I wore a wrinkled T-shirt to work and pretended it was a style choice.</p>
+                <p class="mb-6">At lunch, my manager asked me if I had finished the form for <b class="highlight quiz-target" data-ans="employment insurance" data-kor="고용보험">employment insurance</b>.</p>
+                <p class="mb-6">I nodded too quickly. “Almost.”</p>
+                <p class="mb-6">Actually, I had no idea which form she meant.</p>
+                <p class="mb-6">After work, I stopped by the local office to ask about it, but I got off at the wrong bus stop. My phone battery was at three percent, so I couldn’t <b class="highlight quiz-target" data-ans="get directions" data-kor="길 안내를 받다">get directions</b> properly. I walked in a circle for twenty minutes before an old man at a fruit shop pointed me to the right building.</p>
+                <p class="mb-6">By the time I got home, I was tired and hungry. Then I saw an envelope under my door. It was my first electricity bill.</p>
+                <p class="mb-6">I stared at it like it was written in another language. At home, bills just disappeared from the table. I never asked who paid them or when. Now I had to <b class="highlight quiz-target" data-ans="pay the bills" data-kor="공과금을 내다">pay the bills</b> myself, and suddenly electricity felt less like a normal part of life and more like a serious relationship.</p>
+                <p class="mb-6">I called my mom.</p>
+                <p class="mb-6">She answered right away. “Are you eating?”</p>
+                <p class="mb-6">“Yes,” I lied, looking at an empty pot.</p>
+                <p class="mb-6">I wanted to ask her everything: how to read the bill, how to cook rice without burning it, how to know which plastic bags were for food waste. But I also wanted to sound grown-up.</p>
+                <p class="mb-6">There was a long silence.</p>
+                <p class="mb-6">Then she said, “Living alone means you have to <b class="highlight quiz-target" data-ans="step up" data-kor="책임지고 나서다">step up</b>. But it doesn’t mean you can’t ask questions.”</p>
+                <p class="mb-6">So I asked.</p>
+                <p class="mb-6">She laughed only once, very quietly, when I said I had washed my socks with a new red towel. Then she explained everything patiently.</p>
+                <p class="mb-6">That night, I made rice, paid my bill, and filled out the insurance form. None of it was exciting, but all of it felt important. I realized I had taken my parents’ quiet work for granted. Clean towels, warm meals, paid bills, toilet paper in the bathroom—those things didn’t appear by magic.</p>
+                <p class="mb-6">Freedom was nice, but clean socks were <b class="highlight quiz-target" data-ans="a must" data-kor="필수">a must</b>.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">부모님 아파트에서 나와 혼자 살기 시작했을 때, 저는 사흘 정도는 자랑스러운 기분이 들었습니다.</p>
+                <p class="mb-6">새집은 작았지만 제 공간이었습니다. 밤 12시에 시리얼을 먹을 수도 있었고, 설거지를 싱크대에 그대로 둘 수도 있었고, 누가 자라고 말하지 않아도 영상을 볼 수 있었습니다. 저는 혼자 사는 것이 자유라고 생각했습니다.</p>
+                <p class="mb-6">그러다 월요일이 왔습니다.</p>
+                <p class="mb-6">휴대폰 충전을 깜빡해서 늦잠을 잤습니다. 장을 보는 것도 깜빡해서 아침도 없었습니다. 전날 밤 세탁기에 옷을 너무 많이 넣는 바람에 흰 셔츠는 아직 젖어 있었습니다. 저는 구겨진 티셔츠를 입고 출근했고, 그것이 일부러 그런 스타일인 척했습니다.</p>
+                <p class="mb-6">점심시간에 매니저가 제게 <b class="highlight">고용보험</b> 서류를 다 작성했냐고 물었습니다.</p>
+                <p class="mb-6">저는 너무 빨리 고개를 끄덕였습니다. “거의 다 했어요.”</p>
+                <p class="mb-6">사실 저는 그녀가 어떤 서류를 말하는지 전혀 몰랐습니다.</p>
+                <p class="mb-6">퇴근 후 그것에 대해 물어보려고 동네 사무소에 들렀지만, 버스 정류장을 잘못 내렸습니다. 휴대폰 배터리는 3퍼센트밖에 남지 않아서 제대로 <b class="highlight">길 안내를 받을 수</b> 없었습니다. 저는 20분 동안 같은 곳을 빙빙 돌다가 과일 가게의 한 할아버지가 올바른 건물을 가리켜 주었습니다.</p>
+                <p class="mb-6">집에 도착했을 때는 지치고 배가 고팠습니다. 그런데 문 아래에 봉투 하나가 놓여 있었습니다. 제 첫 전기요금 고지서였습니다.</p>
+                <p class="mb-6">저는 그것을 마치 다른 언어로 쓰인 것처럼 바라봤습니다. 집에서는 청구서가 그냥 식탁에서 사라지곤 했습니다. 누가 언제 냈는지 물어본 적도 없었습니다. 이제는 제가 직접 <b class="highlight">공과금을 내야</b> 했고, 갑자기 전기는 평범한 생활의 일부가 아니라 진지하게 책임져야 할 무언가처럼 느껴졌습니다.</p>
+                <p class="mb-6">저는 엄마에게 전화했습니다.</p>
+                <p class="mb-6">엄마는 바로 받았습니다. “밥은 먹었니?”</p>
+                <p class="mb-6">“네.” 저는 빈 냄비를 보며 거짓말했습니다.</p>
+                <p class="mb-6">저는 모든 것을 묻고 싶었습니다. 고지서를 어떻게 읽는지, 밥을 태우지 않고 어떻게 짓는지, 어떤 비닐봉지가 음식물 쓰레기용인지 어떻게 아는지. 하지만 동시에 어른처럼 들리고 싶었습니다.</p>
+                <p class="mb-6">긴 침묵이 흘렀습니다.</p>
+                <p class="mb-6">그러자 엄마가 말했습니다. “혼자 산다는 건 네가 <b class="highlight">책임지고 나서야</b> 한다는 뜻이야. 하지만 질문하면 안 된다는 뜻은 아니야.”</p>
+                <p class="mb-6">그래서 저는 물어봤습니다.</p>
+                <p class="mb-6">제가 새 빨간 수건과 양말을 같이 빨았다고 말했을 때, 엄마는 딱 한 번 아주 조용히 웃었습니다. 그리고 모든 것을 차근차근 설명해 주었습니다.</p>
+                <p class="mb-6">그날 밤, 저는 밥을 짓고, 고지서를 내고, 보험 서류를 작성했습니다. 그중 어느 것도 신나는 일은 아니었지만, 모두 중요하게 느껴졌습니다. 저는 부모님의 조용한 노력을 당연하게 여기고 있었다는 것을 깨달았습니다. 깨끗한 수건, 따뜻한 밥, 납부된 공과금, 화장실에 있는 휴지—그런 것들은 마법처럼 나타나는 게 아니었습니다.</p>
+                <p class="mb-6">자유도 좋았지만, 깨끗한 양말은 <b class="highlight">필수</b>였습니다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "79630.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

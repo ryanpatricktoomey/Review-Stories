@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Ultimate Three-Stop Coyoacán Food Tour</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🌮</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Ultimate Three-Stop Coyoacán Food Tour</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">alley</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">골목</td></tr>
+                <tr><td class="p-4"><b class="text-white">aisle</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">통로</td></tr>
+                <tr><td class="p-4"><b class="text-white">two laps</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">두 바퀴</td></tr>
+                <tr><td class="p-4"><b class="text-white">charcoal</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">숯</td></tr>
+                <tr><td class="p-4"><b class="text-white">pork rinds</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">돼지껍질 튀김</td></tr>
+                <tr><td class="p-4"><b class="text-white">minced pork</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">다진 돼지고기</td></tr>
+                <tr><td class="p-4"><b class="text-white">crust</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">겉의 바삭한 부분, 빵 껍질</td></tr>
+                <tr><td class="p-4"><b class="text-white">sparrow</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">참새</td></tr>
+                <tr><td class="p-4"><b class="text-white">fed it to me</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그것을 나에게 먹여 주었다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">alley</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">건물 사이에 있는 좁은 골목을 뜻해요. 시장 밖의 좁은 길을 설명할 때 자연스럽습니다.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">aisle</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">시장이나 마트 안에서 진열대 사이로 사람들이 걸어 다니는 통로예요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">two laps</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">같은 장소를 두 바퀴 도는 것을 뜻해요. 시장을 둘러보며 음식을 고르는 상황에서 사용할 수 있습니다.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">pork rinds</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">돼지 껍질을 튀겨 바삭하게 만든 음식이에요. 멕시코에서는 보통 chicharrón이라고 합니다.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">crust</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">빵이나 페이스트리의 겉부분을 말해요. 피자의 가장자리나 바삭하게 튀겨진 음식의 표면을 설명할 때도 사용합니다.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">fed it to me</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">feed의 과거형인 fed가 사용되었어요. 직접 입에 넣어 주었다는 뜻도 있지만, 문맥에 따라 “그 음식을 나에게 먹여 보았다”라는 의미로도 쓰입니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">We’d start at Mercado de Coyoacán, a busy indoor market filled with produce, crafts, ingredients, and prepared food. The market is famous for its colorful tostada counters, where customers can choose from a wide range of toppings.</p>
+                <p class="mb-6">Before ordering, I recommend walking <b class="highlight quiz-target" data-ans="two laps" data-kor="두 바퀴">two laps</b> around the market. During the first lap, look at everything. During the second, decide which stall has the freshest ingredients and the liveliest crowd. Each <b class="highlight quiz-target" data-ans="aisle" data-kor="통로">aisle</b> is packed with fruit, vegetables, spices, souvenirs, and food counters, so it is easy to miss something interesting.</p>
+                <p class="mb-6">Our first stop would be a tostada stall. The thing to order is one seafood tostada and one chicharrón tostada. Chicharrón is made from crispy <b class="highlight quiz-target" data-ans="pork rinds" data-kor="돼지껍질">pork rinds</b>, although some versions are softened in salsa before being placed on the tostada. The best way to eat it is to add lime and a little salsa, then take a careful bite so the toppings do not fall off. The contrast between the juicy topping and the crunchy tostada <b class="highlight quiz-target" data-ans="crust" data-kor="겉부분">crust</b> is what makes it special.</p>
+                <p class="mb-6">From there, we’d head through a narrow <b class="highlight quiz-target" data-ans="alley" data-kor="골목">alley</b> near the market and stop by a small taco stand. The thing to order is a longaniza taco made with seasoned <b class="highlight quiz-target" data-ans="minced pork" data-kor="다진 돼지고기">minced pork</b>. At a good stand, the meat is cooked over <b class="highlight quiz-target" data-ans="charcoal" data-kor="숯">charcoal</b>, giving it a smoky flavor and crisp edges. A Mexican friend first <b class="highlight quiz-target" data-ans="fed it to me" data-kor="나에게 먹여 주었다">fed it to me</b> with grilled onions, cilantro, and a squeeze of lime, and that is still how I recommend eating it. Try the meat by itself first, then add the toppings.</p>
+                <p class="mb-6">We’d finish with freshly fried churros near Coyoacán’s central plaza. Churros are a popular sweet option in the neighborhood, and the plaza provides a pleasant place to sit after exploring the market.</p>
+                <p class="mb-6">Before eating dessert, drink a little water to cleanse your palate. Then order an original cinnamon-sugar churro with hot chocolate. The outside should have a crisp <b class="highlight quiz-target" data-ans="crust" data-kor="바삭한 겉부분">crust</b>, while the inside should remain soft. You may even see a <b class="highlight quiz-target" data-ans="sparrow" data-kor="참새">sparrow</b> waiting near your bench for a fallen crumb, but don’t share your chocolate with it.</p>
+                <p class="mb-6">It’s not just the food. The busy market, quiet side streets, and lively plaza are what make this tour special. Trust me on this one—you can’t go wrong with a route that gives you something fresh, smoky, crunchy, and sweet.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">활기찬 실내 시장인 코요아칸 시장에서 시작할 거예요. 이곳에는 농산물, 공예품, 식재료, 조리된 음식이 가득합니다. 특히 다양한 토핑을 고를 수 있는 화려한 토스타다 가게들로 유명해요.</p>
+                <p class="mb-6">주문하기 전에는 시장을 <b class="highlight">두 바퀴</b> 둘러보는 것을 추천해요. 첫 번째 바퀴에서는 모든 것을 구경하세요. 두 번째 바퀴에서는 어느 가게의 재료가 가장 신선하고 손님이 가장 많은지 살펴본 뒤 선택하세요. 각 <b class="highlight">통로</b>에는 과일, 채소, 향신료, 기념품, 음식 가게들이 빽빽하게 모여 있어서 흥미로운 것을 놓치기 쉽습니다.</p>
+                <p class="mb-6">첫 번째 코스는 토스타다 가게예요. 해산물 토스타다 하나와 치차론 토스타다 하나를 주문해야 해요. 치차론은 바삭하게 튀긴 <b class="highlight">돼지껍질</b>로 만들지만, 살사에 넣어 부드럽게 만든 것을 토스타다 위에 올리기도 합니다. 가장 맛있게 먹는 방법은 라임과 살사를 조금 더한 뒤 토핑이 떨어지지 않도록 조심스럽게 베어 먹는 거예요. 촉촉한 토핑과 바삭한 토스타다의 <b class="highlight">겉부분</b>이 대비되는 점이 이 음식을 특별하게 만들어요.</p>
+                <p class="mb-6">거기서 시장 근처의 좁은 <b class="highlight">골목</b>을 지나 작은 타코 가게로 이동할 거예요. 여기서는 양념한 <b class="highlight">다진 돼지고기</b>로 만든 롱가니사 타코를 주문해야 해요. 좋은 가게에서는 고기를 <b class="highlight">숯</b>불에 구워서 훈연 향과 바삭한 가장자리를 만들어 냅니다. 멕시코인 친구가 처음 이 음식을 <b class="highlight">먹여 주었을</b> 때 구운 양파, 고수, 라임즙을 함께 올려 주었는데, 지금도 저는 그 방법을 추천해요. 먼저 고기만 먹어 본 다음 토핑을 더하세요.</p>
+                <p class="mb-6">마지막은 코요아칸 중앙 광장 근처에서 갓 튀긴 추로스를 먹으며 마무리할 거예요. 이 동네에서 추로스는 인기 있는 디저트이고, 시장을 둘러본 뒤 광장에 앉아서 쉬기에도 좋아요.</p>
+                <p class="mb-6">디저트를 먹기 전에는 물을 조금 마셔 입안을 깔끔하게 하세요. 그런 다음 시나몬 설탕을 묻힌 기본 추로스와 따뜻한 초콜릿을 주문하세요. 겉은 <b class="highlight">바삭하고</b> 안쪽은 부드러워야 합니다. 벤치 근처에서 떨어진 부스러기를 기다리는 <b class="highlight">참새</b>를 볼 수도 있지만, 초콜릿은 나눠 주지 마세요.</p>
+                <p class="mb-6">음식만 좋은 것이 아니에요. 활기찬 시장과 조용한 골목, 생기 넘치는 광장이 이 투어를 특별하게 만들어요. 이건 저를 믿어도 돼요. 신선하고, 훈연 향이 나고, 바삭하고, 달콤한 음식을 모두 경험할 수 있는 이 코스를 선택하면 실패하지 않을 거예요.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "710830.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

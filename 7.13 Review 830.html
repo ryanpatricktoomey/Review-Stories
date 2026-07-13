@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Balcony Roof</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">⛈️</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Balcony Roof</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">kept raining</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">사흘 동안 계속 비가 내렸고</td></tr>
+                <tr><td class="p-4"><b class="text-white">acorn jelly</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">도토리묵</td></tr>
+                <tr><td class="p-4"><b class="text-white">soak in warm water</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">따뜻한 물에 담가 두다</td></tr>
+                <tr><td class="p-4"><b class="text-white">expertise</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">전문 지식 / 전문 기술</td></tr>
+                <tr><td class="p-4"><b class="text-white">thunderstorm</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">뇌우 / 천둥·번개를 동반한 폭풍우</td></tr>
+                <tr><td class="p-4"><b class="text-white">procrastinate</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">미루다</td></tr>
+                <tr><td class="p-4"><b class="text-white">it really grew on me</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">처음보다 점점 마음에 들게 되었다</td></tr>
+                <tr><td class="p-4"><b class="text-white">grew fond of</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">점점 좋아하게 되었다 / 정이 들었다</td></tr>
+                <tr><td class="p-4"><b class="text-white">impulse purchase</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">충동구매</td></tr>
+                <tr><td class="p-4"><b class="text-white">plastic wrap</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">비닐 랩</td></tr>
+                <tr><td class="p-4"><b class="text-white">better than nothing</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">없는 것보다는 낫다</td></tr>
+                <tr><td class="p-4"><b class="text-white">I can't be bothered</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">굳이 하고 싶지 않다 / 귀찮아서 못 하겠다</td></tr>
+                <tr><td class="p-4"><b class="text-white">I'm too lazy to...</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">나는 너무 귀찮아서 …하기 싫다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-3xl p-6 space-y-2"><h3 class="text-lg font-bold text-amber-400">grow on someone</h3><p class="text-slate-300 text-sm leading-relaxed">처음에는 별로였지만 시간이 지나면서 점점 마음에 들게 된다는 뜻이에요.</p></div>
+            <div class="glass rounded-3xl p-6 space-y-2"><h3 class="text-lg font-bold text-amber-400">grow fond of</h3><p class="text-slate-300 text-sm leading-relaxed">사람이나 사물에 점차 애정이나 정이 생기는 것을 말해요.</p></div>
+            <div class="glass rounded-3xl p-6 space-y-2"><h3 class="text-lg font-bold text-amber-400">impulse purchase</h3><p class="text-slate-300 text-sm leading-relaxed">미리 계획하지 않고 순간적인 기분으로 산 물건이나 구매를 뜻해요.</p></div>
+            <div class="glass rounded-3xl p-6 space-y-2"><h3 class="text-lg font-bold text-amber-400">better than nothing</h3><p class="text-slate-300 text-sm leading-relaxed">완벽하거나 충분하지는 않지만, 아무것도 없는 것보다는 낫다는 표현이에요.</p></div>
+            <div class="glass rounded-3xl p-6 space-y-2"><h3 class="text-lg font-bold text-amber-400">I can’t be bothered</h3><p class="text-slate-300 text-sm leading-relaxed">할 수 없다는 뜻이 아니라, 귀찮거나 노력할 가치가 없다고 느껴 굳이 하지 않겠다는 뜻이에요.</p></div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">For three days, it <b class="highlight quiz-target" data-ans="kept raining" data-kor="계속 비가 왔다">kept raining</b>, and water dripped through the small roof over Minho’s balcony.</p>
+                <p class="mb-6">His wife, Sora, placed a bucket under the leak. “The repair company can come tomorrow morning.”</p>
+                <p class="mb-6">Minho looked at the roof through the window. “For one tiny hole? I can fix that myself.”</p>
+                <p class="mb-6">“You have no roofing <b class="highlight quiz-target" data-ans="expertise" data-kor="전문 지식">expertise</b>.”</p>
+                <p class="mb-6">“How difficult can it be? You put something waterproof over the hole.”</p>
+                <p class="mb-6">Sora returned to the kitchen, where she was preparing <b class="highlight quiz-target" data-ans="acorn jelly" data-kor="도토리묵">acorn jelly</b> for her parents. “The forecast says there’ll be a <b class="highlight quiz-target" data-ans="thunderstorm" data-kor="뇌우">thunderstorm</b> tonight. Please call the company.”</p>
+                <p class="mb-6">Minho had already postponed the repair for two weeks. He tended to <b class="highlight quiz-target" data-ans="procrastinate" data-kor="미루다">procrastinate</b> until a problem became urgent, but he refused to admit that.</p>
+                <p class="mb-6">“I bought waterproof repair tape last month,” he said.</p>
+                <p class="mb-6">“That was an <b class="highlight quiz-target" data-ans="impulse purchase" data-kor="충동구매">impulse purchase</b> from a television shopping channel.”</p>
+                <p class="mb-6">“It was heavily discounted.”</p>
+                <p class="mb-6">The instructions said to clean and dry the surface before applying the tape. Unfortunately, the balcony roof was wet and covered with old glue. Another instruction suggested removing stubborn glue by letting a cloth <b class="highlight quiz-target" data-ans="soak in warm water" data-kor="따뜻한 물에 담가 두다">soak in warm water</b> and placing it over the area.</p>
+                <p class="mb-6">Minho read that line and sighed. “<b class="highlight quiz-target" data-ans="I can't be bothered" data-kor="굳이 하고 싶지 않다">I can't be bothered</b> to do all that. It’s going to rain soon.”</p>
+                <p class="mb-6">He climbed onto a chair and pressed the tape directly onto the wet roof. It fell off immediately.</p>
+                <p class="mb-6">Sora watched from the kitchen doorway. “Call the repair company.”</p>
+                <p class="mb-6">“<b class="highlight quiz-target" data-ans="I'm too lazy to" data-kor="너무 귀찮아서">I'm too lazy to</b> wait for someone to come. I’m already halfway finished.”</p>
+                <p class="mb-6">“You haven’t started.”</p>
+                <p class="mb-6">Minho found a roll of <b class="highlight quiz-target" data-ans="plastic wrap" data-kor="비닐 랩">plastic wrap</b> in a drawer. He stretched several layers across the leaking section and secured them with packing tape.</p>
+                <p class="mb-6">“It’s not professional,” he said, “but it’s <b class="highlight quiz-target" data-ans="better than nothing" data-kor="없는 것보다는 낫다">better than nothing</b>.”</p>
+                <p class="mb-6">The rain grew heavier. For ten minutes, the plastic held. Minho crossed his arms proudly.</p>
+                <p class="mb-6">Sora stared at the strange, shiny roof. “I hated the way that balcony looked when we moved in, but <b class="highlight quiz-target" data-ans="it really grew on me" data-kor="점점 마음에 들게 되었다">it really grew on me</b>.”</p>
+                <p class="mb-6">“See? Now it looks modern.”</p>
+                <p class="mb-6">“No. I mean I <b class="highlight quiz-target" data-ans="grew fond of" data-kor="정이 들었다">grew fond of</b> the old roof. I don’t want you to destroy it.”</p>
+                <p class="mb-6">A loud crack of thunder shook the windows. Wind rushed under the plastic, turning it into a large balloon. The packing tape tore free, and the plastic slapped Minho across the face. At the same moment, water poured through the original hole and three new gaps created by his tape.</p>
+                <p class="mb-6">The bucket overflowed. Rainwater spread across the balcony and entered the living room.</p>
+                <p class="mb-6">The repair had turned into a whole thing.</p>
+                <p class="mb-6">Minho called the company. Because it was an emergency evening visit, the fee was twice the original estimate.</p>
+                <p class="mb-6">After the workers left, Sora handed him a plate of acorn jelly.</p>
+                <p class="mb-6">“Was fixing it yourself worth the trouble?”</p>
+                <p class="mb-6">Minho looked at the damaged ceiling, the wet floor, and the ruined roll of plastic wrap.</p>
+                <p class="mb-6">“No,” he said. “I shouldn’t have bothered.”</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>사흘 동안 <b class="highlight">계속 비가 내렸고</b>, 민호의 베란다 위에 설치된 작은 지붕에서 물이 뚝뚝 떨어졌다.</p>
+                <p>아내 소라는 물이 새는 곳 아래에 양동이를 놓았다. “수리 업체에서 내일 아침에 올 수 있대.”</p>
+                <p>민호는 창문 너머로 지붕을 바라보았다. “저 작은 구멍 하나 때문에 사람을 부르자고? 내가 직접 고칠 수 있어.”</p>
+                <p>“당신은 지붕 수리에 관한 <b class="highlight">전문 지식</b>이 전혀 없잖아.”</p>
+                <p>“얼마나 어렵겠어? 구멍 위에 방수되는 걸 붙이면 되지.”</p>
+                <p>소라는 부모님께 드릴 <b class="highlight">도토리묵</b>을 만들던 주방으로 돌아갔다. “일기예보에서 오늘 밤에 <b class="highlight">뇌우</b>가 온다고 했어. 제발 업체에 전화해.”</p>
+                <p>민호는 이미 수리를 2주 동안 미룬 상태였다. 그는 문제가 다급해질 때까지 일을 <b class="highlight">미루는</b> 편이었지만, 그 사실을 인정하려 하지 않았다.</p>
+                <p>“지난달에 방수 보수 테이프를 샀어.” 그가 말했다.</p>
+                <p>“그건 홈쇼핑을 보다가 <b class="highlight">충동구매</b>한 거잖아.”</p>
+                <p>“할인을 많이 했다고.”</p>
+                <p>설명서에는 테이프를 붙이기 전에 표면을 깨끗하게 닦고 완전히 말리라고 적혀 있었다. 하지만 베란다 지붕은 젖어 있었고 오래된 접착제가 묻어 있었다. 또 다른 설명에는 잘 떨어지지 않는 접착제를 제거하려면 천을 <b class="highlight">따뜻한 물에 담갔다가</b> 그 부위에 올려놓으라고 쓰여 있었다.</p>
+                <p>민호는 그 문장을 읽고 한숨을 쉬었다. “<b class="highlight">그런 것까지 하기는 너무 귀찮아</b>. 곧 비가 올 거야.”</p>
+                <p>그는 의자 위로 올라가 젖은 지붕에 테이프를 곧바로 눌러 붙였다. 테이프는 즉시 떨어졌다.</p>
+                <p>소라는 주방 입구에서 그 모습을 지켜보았다. “수리 업체에 전화해.”</p>
+                <p>“사람이 올 때까지 기다리기는 <b class="highlight">너무 귀찮아</b>. 이미 절반은 끝냈어.”</p>
+                <p>“아직 시작도 안 했잖아.”</p>
+                <p>민호는 서랍에서 <b class="highlight">비닐 랩</b> 한 통을 찾았다. 물이 새는 부분에 랩을 여러 겹으로 팽팽하게 씌운 뒤 포장용 테이프로 고정했다.</p>
+                <p>“전문가답지는 않지만, <b class="highlight">아무것도 없는 것보다는 낫지</b>.”</p>
+                <p>빗줄기가 거세졌다. 10분 동안은 비닐이 잘 버텼다. 민호는 자랑스럽게 팔짱을 꼈다.</p>
+                <p>소라는 이상하게 반짝이는 지붕을 바라보았다. “이사 왔을 때는 저 베란다 모습이 싫었는데, <b class="highlight">시간이 지나면서 정말 마음에 들더라</b>.”</p>
+                <p>“그렇지? 이제 현대적으로 보이잖아.”</p>
+                <p>“아니. 원래 있던 낡은 지붕에 <b class="highlight">정이 들었다고</b>. 당신이 망가뜨리지 않았으면 좋겠어.”</p>
+                <p>커다란 천둥소리가 창문을 흔들었다. 바람이 비닐 아래로 들어가면서 비닐이 거대한 풍선처럼 부풀었다. 포장용 테이프가 떨어졌고, 비닐이 민호의 얼굴을 세게 때렸다. 동시에 원래 있던 구멍과 민호가 테이프로 만들어 버린 세 개의 새로운 틈으로 물이 쏟아졌다.</p>
+                <p>양동이는 넘쳤다. 빗물이 베란다 바닥에 퍼진 뒤 거실 안으로 들어왔다.</p>
+                <p>수리는 완전히 큰일로 번져 버렸다.</p>
+                <p>민호는 수리 업체에 전화했다. 저녁 긴급 출장이었기 때문에 비용은 원래 견적의 두 배였다.</p>
+                <p>작업자들이 떠난 뒤, 소라는 민호에게 도토리묵 한 접시를 건넸다.</p>
+                <p>“직접 고친 게 그 고생을 할 만큼 가치가 있었어?”</p>
+                <p>민호는 손상된 천장과 젖은 바닥, 망가진 비닐 랩을 바라보았다.</p>
+                <p>“아니.” 그가 말했다. “괜히 했어.”</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "713830.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

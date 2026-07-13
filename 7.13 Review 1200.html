@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Front Door Restoration</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🚪</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Front Door Restoration</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">a silver lining</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">불행 중 다행 / 안 좋은 상황 속 긍정적인 면</td></tr>
+                <tr><td class="p-4"><b class="text-white">we will be the judge of that</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그건 우리가 판단할게요</td></tr>
+                <tr><td class="p-4"><b class="text-white">attempts</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">시도들 / 여러 번의 시도</td></tr>
+                <tr><td class="p-4"><b class="text-white">write-off</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">완전히 망가져 쓸 수 없는 것 / 손실 처리 대상</td></tr>
+                <tr><td class="p-4"><b class="text-white">thrifty</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">돈을 알뜰하게 쓰는</td></tr>
+                <tr><td class="p-4"><b class="text-white">cheapskate</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">지나치게 돈을 아끼는 사람 / 구두쇠</td></tr>
+                <tr><td class="p-4"><b class="text-white">cost me an arm and a leg</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">엄청나게 비쌌다</td></tr>
+                <tr><td class="p-4"><b class="text-white">an acquired taste</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">처음에는 낯설지만 점차 좋아하게 되는 취향</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-3xl p-6 space-y-2"><h3 class="text-lg font-bold text-amber-400">a silver lining</h3><p class="text-slate-300 text-sm leading-relaxed">나쁜 상황 속에서도 찾을 수 있는 작은 장점이나 희망을 뜻해요.</p></div>
+            <div class="glass rounded-3xl p-6 space-y-2"><h3 class="text-lg font-bold text-amber-400">we will be the judge of that</h3><p class="text-slate-300 text-sm leading-relaxed">상대방의 주장에 동의하지 않고, 직접 확인한 뒤 판단하겠다는 표현이에요.</p></div>
+            <div class="glass rounded-3xl p-6 space-y-2"><h3 class="text-lg font-bold text-amber-400">write-off</h3><p class="text-slate-300 text-sm leading-relaxed">수리할 가치가 없을 만큼 심하게 망가진 물건을 가리킬 수 있어요.</p></div>
+            <div class="glass rounded-3xl p-6 space-y-2"><h3 class="text-lg font-bold text-amber-400">thrifty / cheapskate</h3><p class="text-slate-300 text-sm leading-relaxed">둘 다 돈을 아낀다는 뜻이 있지만, thrifty는 긍정적이고 cheapskate는 지나치게 인색하다는 부정적인 느낌이에요.</p></div>
+            <div class="glass rounded-3xl p-6 space-y-2"><h3 class="text-lg font-bold text-amber-400">cost an arm and a leg</h3><p class="text-slate-300 text-sm leading-relaxed">실제 신체와는 관계없이, 가격이 터무니없이 비쌌다는 뜻의 관용 표현이에요.</p></div>
+            <div class="glass rounded-3xl p-6 space-y-2"><h3 class="text-lg font-bold text-amber-400">an acquired taste</h3><p class="text-slate-300 text-sm leading-relaxed">처음에는 별로지만 여러 번 경험하면서 좋아하게 되는 음식, 음악, 스타일 등을 말해요.</p></div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Martin’s wife, Leah, wanted to replace their damaged front door before her parents visited.</p>
+                <p class="mb-6">“The carpenter said the frame is rotten,” she told him. “We should replace the whole thing.”</p>
+                <p class="mb-6">Martin examined the estimate and nearly dropped it.</p>
+                <p class="mb-6">“That would <b class="highlight quiz-target" data-ans="cost me an arm and a leg" data-kor="엄청나게 비쌌다">cost me an arm and a leg</b>. I can restore the door myself.”</p>
+                <p class="mb-6">Leah crossed her arms. “You call yourself <b class="highlight quiz-target" data-ans="thrifty" data-kor="알뜰하다고">thrifty</b>. My father calls you a <b class="highlight quiz-target" data-ans="cheapskate" data-kor="구두쇠">cheapskate</b>.”</p>
+                <p class="mb-6">“He’ll change his mind when he sees the finished door.”</p>
+                <p class="mb-6">“<b class="highlight quiz-target" data-ans="We'll be the judges of that" data-kor="그건 우리가 판단할게">We'll be the judges of that</b>,” Leah said.</p>
+                <p class="mb-6">Martin bought wood filler, paint remover, sandpaper, and a secondhand electric sander. His first two <b class="highlight quiz-target" data-ans="attempts" data-kor="시도들">attempts</b> to remove the old paint failed because he had bought the wrong chemical. On the third attempt, he left the paint remover on too long and damaged the wood underneath.</p>
+                <p class="mb-6">Still, he refused to call the carpenter.</p>
+                <p class="mb-6">“It just needs more effort,” he said.</p>
+                <p class="mb-6">By Saturday afternoon, the door had several deep scratches and would no longer close properly. Martin removed it from its hinges and carried it into the garage, where he planned to straighten it with heavy clamps.</p>
+                <p class="mb-6">One clamp snapped. The door fell against Leah’s bicycle and bent both wheels.</p>
+                <p class="mb-6">Leah stared at the damage. “That bicycle might be a <b class="highlight quiz-target" data-ans="write-off" data-kor="완전히 못 쓰게 된 것">write-off</b>.”</p>
+                <p class="mb-6">“There’s a <b class="highlight quiz-target" data-ans="silver lining" data-kor="불행 중 다행인 점">silver lining</b>,” Martin said quickly. “You wanted a new bicycle.”</p>
+                <p class="mb-6">“I wanted one next year.”</p>
+                <p class="mb-6">Martin spent the evening trying to repair the frame. He added too much wood filler, sanded one side unevenly, and painted the door dark orange instead of brown because he had bought discounted paint without checking the label.</p>
+                <p class="mb-6">When Leah’s parents arrived the next morning, there was no front door. Martin had covered the entrance with a plastic sheet and two dining chairs.</p>
+                <p class="mb-6">Leah’s father stepped inside and looked toward the garage. “Is that orange thing our old door?”</p>
+                <p class="mb-6">“It’s terracotta,” Martin said. “The color is an <b class="highlight quiz-target" data-ans="acquired taste" data-kor="처음에는 낯설지만 점점 좋아지는 취향">acquired taste</b>.”</p>
+                <p class="mb-6">Leah called the carpenter. Because it was a Sunday emergency, the new door and installation cost nearly twice the original estimate. They also had to replace her bicycle.</p>
+                <p class="mb-6">That evening, Martin looked at the bills and sighed.</p>
+                <p class="mb-6">“It became a whole thing.”</p>
+                <p class="mb-6">Leah nodded. “It was more trouble than it was worth.”</p>
+                <p class="mb-6">Martin touched the bright orange door lying on the garage floor. “Maybe someone will buy it.”</p>
+                <p class="mb-6">Leah looked at him.</p>
+                <p class="mb-6">“Don’t bother.”</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>마틴의 아내 리아는 부모님이 방문하기 전에 손상된 현관문을 교체하고 싶어 했다.</p>
+                <p>“목수가 문틀이 썩었다고 했어.” 그녀가 말했다. “전부 교체해야 한대.”</p>
+                <p>마틴은 견적서를 보고 거의 떨어뜨릴 뻔했다.</p>
+                <p>“이건 <b class="highlight">엄청나게 비싸잖아</b>. 내가 직접 복원할 수 있어.”</p>
+                <p>리아는 팔짱을 꼈다.</p>
+                <p>“당신은 스스로를 알뜰하다고 하지만, 우리 아버지는 당신을 <b class="highlight">구두쇠</b>라고 해.”</p>
+                <p>완성된 문을 보면 생각이 달라지실 거야.”</p>
+                <p>“<b class="highlight">그건 우리가 판단할게</b>.” 리아가 말했다.</p>
+                <p>마틴은 목재 보수제, 페인트 제거제, 사포, 중고 전동 샌더를 샀다. 오래된 페인트를 제거하려던 첫 두 번의 <b class="highlight">시도는</b> 잘못된 약품을 사는 바람에 실패했다. 세 번째 시도에서는 제거제를 너무 오래 발라 두어서 아래쪽 나무까지 손상시켰다.</p>
+                <p>그런데도 그는 목수에게 전화하지 않았다.</p>
+                <p>“조금 더 노력하면 돼.” 그가 말했다.</p>
+                <p>토요일 오후가 되었을 때 문에는 깊은 흠집이 여러 개 생겼고, 더 이상 제대로 닫히지도 않았다. 마틴은 문을 경첩에서 떼어 차고로 옮겼다. 큰 고정 장치로 문을 곧게 펼 생각이었다.</p>
+                <p>고정 장치 하나가 부러졌다. 문이 리아의 자전거 위로 넘어지면서 두 바퀴가 모두 휘었다.</p>
+                <p>리아는 손상된 자전거를 바라보았다.</p>
+                <p>“이 자전거는 <b class="highlight">완전히 못 쓰게 된 것</b> 같아.”</p>
+                <p>“<b class="highlight">불행 중 다행인 점도</b> 있어.” 마틴이 재빨리 말했다. “새 자전거를 사고 싶어 했잖아.”</p>
+                <p>“내년에 사고 싶었다고.”</p>
+                <p>마틴은 저녁 내내 문틀을 수리하려고 했다. 목재 보수제를 너무 많이 바르고, 한쪽을 고르지 않게 갈았으며, 할인 페인트를 살 때 라벨을 확인하지 않는 바람에 문을 갈색이 아닌 짙은 주황색으로 칠했다.</p>
+                <p>다음 날 아침 리아의 부모님이 도착했을 때 현관문은 없었다. 마틴은 입구를 비닐과 식탁 의자 두 개로 막아 놓았다.</p>
+                <p>리아의 아버지는 안으로 들어와 차고 쪽을 바라보았다.</p>
+                <p>“저 주황색 물건이 원래 현관문인가?”</p>
+                <p>“테라코타색이에요.” 마틴이 말했다. “<b class="highlight">처음에는 낯설지만 점점 좋아지는</b> 색이에요.”</p>
+                <p>리아는 목수에게 전화했다. 일요일 긴급 작업이었기 때문에 새 문과 설치 비용은 원래 견적의 거의 두 배였다. 자전거도 교체해야 했다.</p>
+                <p>그날 저녁 마틴은 청구서를 바라보며 한숨을 쉬었다.</p>
+                <p>“일이 너무 커져 버렸네.”</p>
+                <p>리아가 고개를 끄덕였다.</p>
+                <p>“들인 고생에 비해 전혀 가치가 없었어.”</p>
+                <p>마틴은 차고 바닥에 놓인 밝은 주황색 문을 만졌다.</p>
+                <p>“누군가 이걸 살 수도 있지 않을까?”</p>
+                <p>리아는 그를 바라보았다.</p>
+                <p>“굳이 그러지 마.”</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "7131200.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

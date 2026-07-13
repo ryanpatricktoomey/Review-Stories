@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Floor She Never Used</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">💃</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Floor She Never Used</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">indigestion</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">소화불량</td></tr>
+                <tr><td class="p-4"><b class="text-white">threw my back out</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">허리를 심하게 삐끗했다</td></tr>
+                <tr><td class="p-4"><b class="text-white">bleach</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">표백제</td></tr>
+                <tr><td class="p-4"><b class="text-white">elbow grease</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">힘을 들여 하는 고된 작업</td></tr>
+                <tr><td class="p-4"><b class="text-white">luggage</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">여행 가방 / 수하물</td></tr>
+                <tr><td class="p-4"><b class="text-white">cheer her on</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그녀를 응원하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">audience</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">관객</td></tr>
+                <tr><td class="p-4"><b class="text-white">in our own way</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">우리만의 방식으로</td></tr>
+                <tr><td class="p-4"><b class="text-white">have two left feet</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">춤에 소질이 없다 / 몸치다</td></tr>
+                <tr><td class="p-4"><b class="text-white">graceful</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">우아한 / 동작이 부드러운</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-3xl p-6 space-y-2"><h3 class="text-lg font-bold text-amber-400">elbow grease</h3><p class="text-slate-300 text-sm leading-relaxed">실제 기름이 아니라, 무언가를 닦거나 고칠 때 들이는 육체적인 노력과 수고를 뜻해요.</p></div>
+            <div class="glass rounded-3xl p-6 space-y-2"><h3 class="text-lg font-bold text-amber-400">cheer someone on</h3><p class="text-slate-300 text-sm leading-relaxed">누군가가 경기나 공연처럼 긴장되는 일에 도전할 때 말이나 행동으로 응원하는 표현이에요.</p></div>
+            <div class="glass rounded-3xl p-6 space-y-2"><h3 class="text-lg font-bold text-amber-400">in our own way</h3><p class="text-slate-300 text-sm leading-relaxed">일반적인 방법과 다르더라도 자신들만의 방식으로 한다는 뜻이에요.</p></div>
+            <div class="glass rounded-3xl p-6 space-y-2"><h3 class="text-lg font-bold text-amber-400">have two left feet</h3><p class="text-slate-300 text-sm leading-relaxed">춤을 아주 서투르게 추거나 몸을 자연스럽게 움직이지 못한다는 관용 표현이에요.</p></div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Paul’s daughter, Emma, had recently become serious about dancing. Every evening, she practiced in the living room, but her shoes kept catching on the thick carpet.</p>
+                <p class="mb-6">“We should install a proper wooden floor,” Paul announced.</p>
+                <p class="mb-6">His wife, Claire, stared at him. “She’s been taking lessons for three months. Let her use the studio.”</p>
+                <p class="mb-6">“A home practice space will help her improve. We can sit here as her <b class="highlight quiz-target" data-ans="audience" data-kor="관객">audience</b> and <b class="highlight quiz-target" data-ans="cheer her on" data-kor="그녀를 응원하다">cheer her on</b>.”</p>
+                <p class="mb-6">Claire suggested hiring a flooring company, but Paul rejected the estimate.</p>
+                <p class="mb-6">“We don’t need professionals. We’ll do it <b class="highlight quiz-target" data-ans="in our own way" data-kor="우리만의 방식으로">in our own way</b>.”</p>
+                <p class="mb-6">“You <b class="highlight quiz-target" data-ans="have two left feet" data-kor="춤에 소질이 없다">have two left feet</b>,” Claire said. “Why are you building a dance floor?”</p>
+                <p class="mb-6">“I don’t need to dance. I just need to install wood.”</p>
+                <p class="mb-6">On Saturday morning, Paul removed the carpet and found dark stains underneath. He poured <b class="highlight quiz-target" data-ans="bleach" data-kor="표백제">bleach</b> into a bucket and began scrubbing.</p>
+                <p class="mb-6">“All this needs is a little <b class="highlight quiz-target" data-ans="elbow grease" data-kor="고된 작업">elbow grease</b>,” he said.</p>
+                <p class="mb-6">After an hour of bending over, his <b class="highlight quiz-target" data-ans="indigestion" data-kor="소화불량">indigestion</b> got worse. When he stood up too quickly, pain shot through his lower back.</p>
+                <p class="mb-6">“I think I’ve <b class="highlight quiz-target" data-ans="thrown my back out" data-kor="허리를 심하게 삐끗한">thrown my back out</b>,” he whispered.</p>
+                <p class="mb-6">Claire told him to stop, but Paul refused. He had already bought boards, glue, tools, and a secondhand electric saw. Their <b class="highlight quiz-target" data-ans="luggage" data-kor="여행 가방">luggage</b>, still unpacked from a recent trip, was piled in the hallway because the furniture had been moved out of the living room.</p>
+                <p class="mb-6">The project was supposed to take two days. It took six weeks.</p>
+                <p class="mb-6">Paul cut several boards too short, damaged the baseboards, and glued one entire row at an angle. He ordered replacement wood twice. The color did not match, so he decided to sand and stain the whole floor.</p>
+                <p class="mb-6">Meanwhile, Emma’s interest in dancing began to fade. She had enjoyed learning the basic steps, and she was naturally <b class="highlight quiz-target" data-ans="graceful" data-kor="우아한">graceful</b>, but she hated competitions and performing in front of people.</p>
+                <p class="mb-6">One evening, while Paul was spreading stain across the final section, Emma stood in the doorway.</p>
+                <p class="mb-6">“Dad, I quit dance class.”</p>
+                <p class="mb-6">Paul froze. “What?”</p>
+                <p class="mb-6">“I joined the photography club instead.”</p>
+                <p class="mb-6">“But the floor is almost finished.”</p>
+                <p class="mb-6">“I know. It looks nice.”</p>
+                <p class="mb-6">Three days later, Paul completed the project. It had cost more than the professional estimate, and the family had been climbing over tools and luggage for more than a month.</p>
+                <p class="mb-6">He called Emma into the living room.</p>
+                <p class="mb-6">“Come try it.”</p>
+                <p class="mb-6">She stepped carefully onto the polished floor, took one slow turn, and smiled.</p>
+                <p class="mb-6">“It’s very smooth.”</p>
+                <p class="mb-6">“Do you want to practice?”</p>
+                <p class="mb-6">“No, thanks. I’m going out to take pictures.”</p>
+                <p class="mb-6">She picked up her camera and left.</p>
+                <p class="mb-6">Claire looked at the empty dance floor. “Was it worth the trouble?”</p>
+                <p class="mb-6">Paul lowered himself carefully onto the sofa and rubbed his back.</p>
+                <p class="mb-6">“No,” he said. “I shouldn’t have bothered.”</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>폴의 딸 에마는 최근 춤에 진지한 관심을 보이기 시작했다. 매일 저녁 거실에서 연습했지만, 두꺼운 카펫에 자꾸 신발이 걸렸다.</p>
+                <p>“제대로 된 나무 바닥을 설치해야겠어.” 폴이 선언했다.</p>
+                <p>아내 클레어는 그를 빤히 바라보았다. “춤을 배운 지 석 달밖에 안 됐어. 그냥 스튜디오를 이용하게 해.”</p>
+                <p>“집에 연습 공간이 있으면 실력이 더 빨리 늘 거야. 우리가 <b class="highlight">관객</b>이 돼서 여기 앉아 <b class="highlight">응원해</b> 줄 수도 있고.”</p>
+                <p>클레어는 바닥 업체를 부르자고 했지만, 폴은 견적을 거절했다.</p>
+                <p>“전문가는 필요 없어. <b class="highlight">우리만의 방식으로</b> 하면 돼.”</p>
+                <p>“당신은 <b class="highlight">몸치</b>잖아.” 클레어가 말했다. “그런데 왜 댄스 플로어를 만들려고 해?”</p>
+                <p>“내가 춤출 필요는 없어. 나무만 설치하면 돼.”</p>
+                <p>토요일 아침, 폴은 카펫을 제거했고 그 아래에서 검은 얼룩을 발견했다. 그는 양동이에 <b class="highlight">표백제</b>를 붓고 바닥을 문지르기 시작했다.</p>
+                <p>“<b class="highlight">힘을 조금만 쓰면</b> 다 해결돼.” 그가 말했다.</p>
+                <p>한 시간 동안 몸을 숙이고 있었더니 <b class="highlight">소화불량</b>이 심해졌다. 갑자기 일어서자 허리 아래쪽으로 통증이 퍼졌다.</p>
+                <p>“나 <b class="highlight">허리를 심하게 삐끗한</b> 것 같아.” 그가 작은 목소리로 말했다.</p>
+                <p>클레어는 그만하라고 했지만, 폴은 거절했다. 그는 이미 나무판, 접착제, 공구, 중고 전동 톱을 구입한 상태였다. 거실 가구를 모두 옮겨 놓았기 때문에 최근 여행에서 돌아온 뒤 아직 풀지 않은 <b class="highlight">여행 가방</b>들이 복도에 쌓여 있었다.</p>
+                <p>이 프로젝트는 이틀이면 끝날 예정이었다. 하지만 6주가 걸렸다.</p>
+                <p>폴은 나무판 여러 장을 너무 짧게 잘랐고, 걸레받이를 손상시켰으며, 한 줄 전체를 비스듬하게 붙였다. 그는 교체할 나무를 두 번이나 주문했다. 색이 맞지 않자 바닥 전체를 갈고 새로 칠하기로 했다.</p>
+                <p>그동안 춤에 대한 에마의 관심은 식기 시작했다. 그녀는 기본 동작을 배우는 것은 즐겼고 움직임도 자연스럽고 <b class="highlight">우아했지만</b>, 대회와 사람들 앞에서 공연하는 것은 싫어했다.</p>
+                <p>어느 날 저녁, 폴이 마지막 구역에 착색제를 바르고 있을 때 에마가 문간에 섰다.</p>
+                <p>“아빠, 저 춤 그만뒀어요.”</p>
+                <p>폴은 그대로 멈췄다. “뭐라고?”</p>
+                <p>“대신 사진 동아리에 들어갔어요.”</p>
+                <p>“하지만 바닥이 거의 다 끝났는데.”</p>
+                <p>“알아요. 멋져 보여요.”</p>
+                <p>사흘 뒤, 폴은 프로젝트를 완성했다. 비용은 전문 업체 견적보다 더 많이 들었고, 가족들은 한 달이 넘도록 공구와 여행 가방을 피해 다녀야 했다.</p>
+                <p>그는 에마를 거실로 불렀다. “한번 사용해 봐.”</p>
+                <p>에마는 반짝이는 바닥 위로 조심스럽게 올라가 천천히 한 바퀴 돌고 미소 지었다. “정말 매끄럽네요.”</p>
+                <p>“연습하고 싶어?”</p>
+                <p>“아니요, 괜찮아요. 사진 찍으러 나가려고요.”</p>
+                <p>그녀는 카메라를 들고 나갔다.</p>
+                <p>클레어는 텅 빈 댄스 플로어를 바라보았다. “그 고생을 할 만큼 가치가 있었어?”</p>
+                <p>폴은 조심스럽게 소파에 앉아 허리를 문질렀다. “아니.” 그가 말했다. “괜히 했어.”</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "7131020.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

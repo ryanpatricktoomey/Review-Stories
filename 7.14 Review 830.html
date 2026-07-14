@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Top 6 Survival Rules for Your First Late-Night Livestream</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🎥</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Top 6 Survival Rules for Your First Late-Night Livestream</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">angle</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">각도</td></tr>
+                <tr><td class="p-4"><b class="text-white">electric kettle</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">전기 주전자</td></tr>
+                <tr><td class="p-4"><b class="text-white">fake it</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그런 척하다, 자신 있는 척하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">door-to-door sales</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">방문 판매</td></tr>
+                <tr><td class="p-4"><b class="text-white">Karen</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">무례하게 불평하거나 특권 의식을 보이는 사람을 가리키는 속어</td></tr>
+                <tr><td class="p-4"><b class="text-white">strong cravings</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">강한 식욕이나 욕구</td></tr>
+                <tr><td class="p-4"><b class="text-white">late night snacks</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">야식</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">fake it</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">실제로는 자신이 없거나 잘 모르지만, 겉으로는 자신 있는 것처럼 행동한다는 뜻이에요. Fake it till you make it이라는 표현으로도 자주 사용돼요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">door-to-door sales</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">판매원이 집집마다 직접 방문하여 상품이나 서비스를 소개하는 판매 방식이에요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">Karen</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">직원에게 무리한 요구를 하거나 사소한 일로 공격적으로 불평하는 사람을 가리키는 인터넷 속어예요. 실제 이름이 Karen인 사람에게 직접 사용하면 모욕적일 수 있어요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">strong cravings</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">단순히 배가 고픈 것보다 특정 음식이 매우 강하게 먹고 싶은 상태를 뜻해요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Selling products during a livestream may seem easier than traditional <b class="highlight quiz-target" data-ans="door-to-door sales" data-kor="방문 판매">door-to-door sales</b>. You stay at home, speak to a camera, and wait for orders. However, it’s harder than people realize. You must talk, demonstrate products, answer questions, and watch the comments at the same time.<br>Here are six rules for surviving your first late-night broadcast.</p>
+                
+                <p class="mb-6">1. Check your camera before going live<br>The wrong camera <b class="highlight quiz-target" data-ans="angle" data-kor="각도">angle</b> can make a simple demonstration impossible to follow. Viewers should be able to see both your face and the product clearly. Record a short test video and watch it before the broadcast.<br>It might not seem important, but moving the camera slightly higher can make a huge difference. Also, remove anything private or embarrassing from the background.</p>
+                
+                <p class="mb-6">2. Prepare everything within reach<br>On paper, getting up to grab something takes only a few seconds. In practice, viewers may leave while staring at an empty chair.<br>Place the product, notes, water, and any demonstration equipment beside you. When presenting tea or instant coffee, fill your <b class="highlight quiz-target" data-ans="electric kettle" data-kor="전기 주전자">electric kettle</b> before starting. Whatever you do, don’t boil water near cables or electronic equipment.</p>
+                
+                <p class="mb-6">3. Don’t pretend to know everything<br>You may feel pressure to <b class="highlight quiz-target" data-ans="fake it" data-kor="아는 척하다">fake it</b> when someone asks a difficult question. That is tempting, but giving incorrect information can create a much bigger problem later.<br>You’re much better off saying, “I’m not completely sure, so I’ll check that for you.” Viewers usually trust an honest answer more than a confident guess.</p>
+                
+                <p class="mb-6">4. Stay calm with difficult comments<br>At some point, someone may behave like a stereotypical <b class="highlight quiz-target" data-ans="Karen" data-kor="진상 고객(비속어)">Karen</b>, demanding a discount or complaining that you have ignored them.<br>Don’t argue. Answer the reasonable part of the question once, explain the policy clearly, and move on. If the person becomes abusive, remove the comment or ask a moderator to handle it.</p>
+                
+                <p class="mb-6">5. Plan your food in advance<br>Long broadcasts can cause <b class="highlight quiz-target" data-ans="strong cravings" data-kor="강한 식욕">strong cravings</b>, especially when you are tired. The biggest mistake people make is keeping an open bag of chips beside the microphone. Everyone will hear every bite.<br>Prepare water and a quiet, simple snack. Avoid heavy <b class="highlight quiz-target" data-ans="late night snacks" data-kor="야식">late night snacks</b> that may make you sleepy or uncomfortable during the broadcast.</p>
+                
+                <p class="mb-6">6. Expect awkward moments<br>It’s completely normal to lose your words, press the wrong button, or forget what you planned to say. Pause, take a breath, and continue.<br>Everyone struggles with multitasking at first. After a few broadcasts, you’ll get the hang of it.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">라이브 방송에서 제품을 판매하는 것은 전통적인 <b class="highlight">방문 판매</b>보다 쉬워 보일 수 있어요. 집에 머물면서 카메라를 향해 말하고 주문을 기다리면 되니까요. 하지만 사람들이 생각하는 것보다 어렵습니다. 말하고, 제품을 보여 주고, 질문에 답하며, 동시에 댓글까지 확인해야 해요.<br>첫 심야 방송에서 살아남기 위한 여섯 가지 규칙을 소개합니다.</p>
+                
+                <p class="mb-6">1. 방송을 시작하기 전에 카메라를 확인하세요<br>카메라 <b class="highlight">각도</b>가 좋지 않으면 간단한 시연조차 이해하기 어려울 수 있어요. 시청자가 여러분의 얼굴과 제품을 모두 분명하게 볼 수 있어야 합니다. 짧은 테스트 영상을 촬영한 뒤 방송 전에 직접 확인하세요.<br>중요해 보이지 않을 수도 있지만, 카메라를 조금 높이는 것만으로도 큰 차이가 날 수 있어요. 배경에 개인적이거나 민망한 물건이 없는지도 확인하세요.</p>
+                
+                <p class="mb-6">2. 필요한 모든 물건을 손이 닿는 곳에 두세요<br>이론상으로는 물건을 가지러 일어나는 데 몇 초밖에 걸리지 않아요. 실제로는 시청자가 빈 의자를 바라보다가 방송에서 나갈 수도 있습니다.<br>제품, 메모, 물, 시연 장비를 모두 옆에 두세요. 차나 인스턴트커피를 소개한다면 방송 전에 <b class="highlight">전기 주전자</b>에 물을 채워 두세요. 무슨 일이 있어도 케이블이나 전자 장비 근처에서 물을 끓이지 마세요.</p>
+                
+                <p class="mb-6">3. 모든 것을 아는 척하지 마세요<br>누군가 어려운 질문을 하면 <b class="highlight">아는 척해야</b> 한다는 압박감을 느낄 수 있어요. 그렇게 하고 싶어지기 쉽지만, 잘못된 정보를 주면 나중에 훨씬 더 큰 문제가 생길 수 있습니다.<br>“정확히는 잘 모르기 때문에 확인해 보겠습니다”라고 말하는 편이 훨씬 나아요. 시청자는 자신감 넘치는 추측보다 솔직한 답변을 더 신뢰하는 경우가 많습니다.</p>
+                
+                <p class="mb-6">4. 까다로운 댓글에도 침착함을 유지하세요<br>어느 순간에는 할인을 요구하거나 자신의 댓글을 무시했다며 불평하는, 이른바 <b class="highlight">‘Karen’</b>처럼 행동하는 사람이 나타날 수도 있어요.<br>논쟁하지 마세요. 질문 중 합리적인 부분에 한 번 답하고, 정책을 명확하게 설명한 뒤 넘어가세요. 상대가 모욕적인 말을 하기 시작하면 댓글을 삭제하거나 진행 보조자에게 처리를 부탁하세요.</p>
+                
+                <p class="mb-6">5. 먹을 것을 미리 준비하세요<br>오랜 시간 방송하면, 특히 피곤할 때 <b class="highlight">특정 음식이 강하게 먹고 싶어질</b> 수 있어요. 사람들이 가장 많이 하는 실수는 열린 과자 봉지를 마이크 옆에 두는 것입니다. 시청자 모두가 여러분이 씹는 소리를 듣게 될 거예요.<br>물과 조용히 먹을 수 있는 간단한 간식을 준비하세요. 방송 중 졸리거나 속이 불편해질 수 있는 무거운 <b class="highlight">야식</b>은 피하는 것이 좋아요.</p>
+                
+                <p class="mb-6">6. 어색한 순간이 생길 것을 예상하세요<br>말문이 막히거나, 잘못된 버튼을 누르거나, 준비했던 말을 잊는 것은 완전히 자연스러운 일이에요. 잠시 멈추고 숨을 고른 뒤 계속하세요.<br>처음에는 누구나 여러 일을 동시에 처리하는 데 어려움을 겪습니다. 몇 번 방송하고 나면 곧 요령이 생길 거예요.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "714830.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Top 6 Survival Rules for Making Rice Bowls That Aren’t Boring</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🍚</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Top 6 Survival Rules for Making Rice Bowls That Aren’t Boring</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">carbs</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">탄수화물</td></tr>
+                <tr><td class="p-4"><b class="text-white">shrimp</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">새우</td></tr>
+                <tr><td class="p-4"><b class="text-white">sodium</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">나트륨</td></tr>
+                <tr><td class="p-4"><b class="text-white">soymilk</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">두유</td></tr>
+                <tr><td class="p-4"><b class="text-white">feel full</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">포만감을 느끼다, 배부르게 느끼다</td></tr>
+                <tr><td class="p-4"><b class="text-white">good for you</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">몸에 좋은 / 잘됐네요, 대단하네요</td></tr>
+                <tr><td class="p-4"><b class="text-white">most recently</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">가장 최근에는</td></tr>
+                <tr><td class="p-4"><b class="text-white">variety of rice</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">쌀의 종류</td></tr>
+                <tr><td class="p-4"><b class="text-white">every two weeks</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">2주마다</td></tr>
+                <tr><td class="p-4"><b class="text-white">barley</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">보리</td></tr>
+                <tr><td class="p-4"><b class="text-white">up my rice game</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">밥을 더 맛있고 다양하게 만드는 실력을 높이다</td></tr>
+                <tr><td class="p-4"><b class="text-white">she has game</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그녀는 실력이나 매력이 있다</td></tr>
+                <tr><td class="p-4"><b class="text-white">up my game</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">실력을 향상하다, 더 잘하다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">carbs</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">carbohydrates의 일상적인 줄임말이에요. 밥, 빵, 면 등에 포함된 탄수화물을 가리켜요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">good for you</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">음식이 “몸에 좋다”는 뜻도 있지만, 사람에게 말하면 “잘했네요” 또는 “대단하네요”라는 칭찬이 될 수 있어요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">up my rice game</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">up my game을 재미있게 변형한 표현으로, 밥 짓는 방법이나 밥 요리의 수준을 높인다는 뜻이에요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">she has game</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">문맥에 따라 그 여성이 특정 분야에 능숙하거나, 사람을 끄는 매력과 자신감이 있다는 뜻이에요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">up my game</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">지금보다 더 노력해서 실력이나 결과의 수준을 높인다는 뜻의 일상적인 표현이에요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">A rice bowl is one of the easiest meals to prepare, but eating plain rice with the same topping every day gets boring quickly. A lot of beginners assume that making healthier rice bowls means removing all the <b class="highlight quiz-target" data-ans="carbs" data-kor="탄수화물">carbs</b>. It doesn’t work like that. The real challenge is creating a meal that tastes satisfying, contains enough variety, and is still easy to prepare.</p>
+                
+                <p class="mb-6">1. Choose your rice before choosing your toppings<br>There is more than one <b class="highlight quiz-target" data-ans="variety of rice" data-kor="쌀의 종류">variety of rice</b>, and each type gives the meal a different texture. Short-grain rice is soft and slightly sticky, while brown rice is firmer and nuttier.<br>Try mixing white rice with <b class="highlight quiz-target" data-ans="barley" data-kor="보리">barley</b> if you want more texture. Start with a small amount because barley can make the mixture noticeably chewier. It might not seem important, but changing the grain is one of the easiest ways to <b class="highlight quiz-target" data-ans="up my rice game" data-kor="밥 실력을 높이다">up my rice game</b>.</p>
+                
+                <p class="mb-6">2. Add something that helps you feel satisfied<br>Rice alone may not help you <b class="highlight quiz-target" data-ans="feel full" data-kor="포만감을 느끼다">feel full</b> for very long. Add a source of protein, such as eggs, tofu, chicken, beans, or <b class="highlight quiz-target" data-ans="shrimp" data-kor="새우">shrimp</b>.<br>Cooked shrimp is especially useful when you need a fast meal, but dry it before adding it to a hot pan. Otherwise, it may release water and become rubbery instead of browning properly.</p>
+                
+                <p class="mb-6">3. Watch the sauce, not only the rice<br>People tend to underestimate how much <b class="highlight quiz-target" data-ans="sodium" data-kor="나트륨">sodium</b> can be hiding in bottled sauces. Soy sauce, chili paste, and packaged dressings can all add up quickly.<br>That does not mean you must eat flavorless food. Use a smaller amount of sauce and add garlic, vinegar, sesame seeds, herbs, or fresh chili. You’re much better off building flavor gradually than pouring in a large amount at once.</p>
+                
+                <p class="mb-6">4. Prepare components, not identical meals<br>Cook grains and prepare two or three toppings <b class="highlight quiz-target" data-ans="every two weeks" data-kor="2주마다">every two weeks</b>, then freeze them in small portions. Do not assemble fourteen identical bowls. You will probably get tired of them long before you finish them.<br>Instead, change the vegetables, protein, and sauce. <b class="highlight quiz-target" data-ans="most recently" data-kor="가장 최근에는">Most recently</b>, I tried roasted mushrooms with barley rice and a soft-boiled egg. It was simple, but it felt completely different from my usual bowl.</p>
+                
+                <p class="mb-6">5. Don’t trust every “healthy” label<br>A product may be advertised as <b class="highlight quiz-target" data-ans="good for you" data-kor="몸에 좋은">good for you</b>, but that does not mean it suits your needs. Check the ingredients and portion size rather than relying only on the front of the package.<br>The same applies to drinks. Unsweetened <b class="highlight quiz-target" data-ans="soymilk" data-kor="두유">soymilk</b> can be useful in a smoothie or savory sauce, but sweetened versions may taste very different.</p>
+                
+                <p class="mb-6">6. Learn from confident home cooks<br>When someone can turn leftovers into an excellent meal, you might say, “<b class="highlight quiz-target" data-ans="she has game" data-kor="그녀는 실력이 있다">She has game</b>.” Watch how experienced cooks balance texture, salt, and acidity instead of copying only their recipes.<br>You do not need expensive equipment to <b class="highlight quiz-target" data-ans="up my game" data-kor="실력을 향상하다">up my game</b>. Start with one new grain, one reliable sauce, and one topping you can prepare well. Everyone struggles with meal planning at first, but you’ll get the hang of it.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">지루하지 않은 덮밥을 만들기 위한 6가지 생존 규칙<br>덮밥은 준비하기 가장 쉬운 식사 중 하나이지만, 매일 똑같은 반찬과 흰밥만 먹으면 금방 지루해집니다. 많은 초보자는 더 건강한 덮밥을 만들려면 <b class="highlight">탄수화물</b>을 전부 빼야 한다고 생각해요. 하지만 실제로는 그렇지 않습니다. 진짜 어려운 점은 맛과 다양성이 충분하면서도 준비하기 쉬운 식사를 만드는 것입니다.</p>
+                
+                <p class="mb-6">1. 토핑보다 먼저 쌀을 선택하세요<br>쌀에는 여러 종류가 있으며, 종류마다 식사의 식감이 달라집니다. 단립종 쌀은 부드럽고 약간 찰기가 있지만, 현미는 더 단단하고 고소합니다.<br>식감을 더하고 싶다면 흰쌀에 <b class="highlight">보리</b>를 섞어 보세요. 보리를 넣으면 밥이 확실히 더 쫄깃해질 수 있으므로 처음에는 소량만 넣는 것이 좋아요. 중요해 보이지 않을 수도 있지만, 곡물을 바꾸는 것은 <b class="highlight">밥의 수준을 높이는</b> 가장 쉬운 방법 중 하나입니다.</p>
+                
+                <p class="mb-6">2. 포만감을 주는 재료를 추가하세요<br>밥만 먹으면 오랫동안 <b class="highlight">배부르게 느끼지</b> 못할 수도 있어요. 달걀, 두부, 닭고기, 콩 또는 <b class="highlight">새우</b> 같은 단백질을 추가하세요.<br>익힌 새우는 빠른 식사가 필요할 때 특히 유용합니다. 하지만 뜨거운 팬에 넣기 전에 물기를 닦아 주세요. 그렇지 않으면 새우에서 물이 나와 노릇해지는 대신 질겨질 수 있어요.</p>
+                
+                <p class="mb-6">3. 밥뿐 아니라 소스도 확인하세요<br>사람들은 시판 소스에 얼마나 많은 <b class="highlight">나트륨</b>이 숨어 있는지 과소평가하는 경향이 있어요. 간장, 고추장, 포장된 드레싱을 함께 사용하면 나트륨의 양이 빠르게 늘어날 수 있습니다.<br>그렇다고 맛없는 음식을 먹어야 한다는 뜻은 아니에요. 소스의 양을 줄이고 마늘, 식초, 참깨, 허브 또는 생고추를 더하세요. 처음부터 소스를 많이 붓기보다 맛을 조금씩 더해 가는 편이 훨씬 낫습니다.</p>
+                
+                <p class="mb-6">4. 똑같은 식사가 아니라 재료를 준비하세요<br><b class="highlight">2주마다</b> 곡물을 조리하고 토핑 두세 가지를 준비한 뒤 작은 양으로 나누어 냉동하세요. 똑같은 덮밥 열네 개를 완성해서 보관하지는 마세요. 다 먹기 훨씬 전에 질릴 가능성이 높습니다.<br>그 대신 채소, 단백질, 소스를 바꿔 보세요. <b class="highlight">가장 최근에는</b> 구운 버섯, 보리밥, 반숙 달걀을 함께 먹어 봤어요. 간단했지만 평소에 먹던 덮밥과는 완전히 다른 느낌이었습니다.</p>
+                
+                <p class="mb-6">5. 모든 ‘건강식’ 표시를 그대로 믿지 마세요<br>어떤 제품이 <b class="highlight">몸에 좋다고</b> 광고되더라도 반드시 자신의 필요에 맞는 것은 아닙니다. 포장 앞면의 문구만 믿지 말고 성분과 1회 제공량을 확인하세요.<br>음료도 마찬가지예요. 무가당 <b class="highlight">두유</b>는 스무디나 짭짤한 소스를 만들 때 유용할 수 있지만, 가당 두유는 맛이 매우 다를 수 있습니다.</p>
+                
+                <p class="mb-6">6. 자신감 있는 집밥 고수에게 배우세요<br>누군가가 남은 재료를 훌륭한 식사로 바꿀 수 있다면 “<b class="highlight">그 사람 실력 있네</b>”라고 말할 수 있어요. 숙련된 요리사의 레시피만 따라 하지 말고, 그들이 식감과 짠맛, 산미의 균형을 맞추는 방법을 관찰하세요.<br>실력을 향상하기 위해 비싼 장비가 필요한 것은 아닙니다. 새로운 곡물 한 가지, 믿고 사용할 수 있는 소스 한 가지, 능숙하게 준비할 수 있는 토핑 한 가지로 시작하세요. 처음에는 누구나 식사 계획 때문에 어려움을 겪지만, 곧 요령이 생길 거예요.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "7141020.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Survival Guide to Your First Live Cooking Demonstration</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">👨‍🍳</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Survival Guide to Your First Live Cooking Demonstration</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">preheat</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">미리 예열하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">turn up the heat</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">불을 세게 하다 / 강도나 압박을 높이다</td></tr>
+                <tr><td class="p-4"><b class="text-white">cast iron</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">무쇠, 주철</td></tr>
+                <tr><td class="p-4"><b class="text-white">it's a hassle</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">번거로워요</td></tr>
+                <tr><td class="p-4"><b class="text-white">patience</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">인내심</td></tr>
+                <tr><td class="p-4"><b class="text-white">it just happens</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그냥 그런 일이 생겨요</td></tr>
+                <tr><td class="p-4"><b class="text-white">public speaking</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">사람들 앞에서 말하기, 대중 연설</td></tr>
+                <tr><td class="p-4"><b class="text-white">run its course</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">자연스러운 과정이 끝날 때까지 진행되다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">turn up the heat</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">요리에서는 불을 세게 한다는 뜻이고, 비유적으로는 압박이나 강도를 높인다는 뜻이에요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">cast iron</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">보통 a cast-iron pan처럼 쓰며, 열을 오래 유지하는 무거운 무쇠 팬을 뜻해요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">it’s a hassle</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">어떤 일이 귀찮고 번거롤 때 사용하는 자연스러운 표현이에요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">run its course</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">어떤 상황이 자연스럽게 진행되어 끝날 때까지 두는 것을 뜻합니다. (교재 내 run it's course는 run its course가 올바른 표기입니다.)</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Giving a cooking demonstration combines two skills that can make beginners nervous: cooking under pressure and <b class="highlight quiz-target" data-ans="public speaking" data-kor="대중 연설">public speaking</b>. You must explain each step clearly while watching the food, answering questions, and pretending not to notice that twenty people are staring at your hands.<br>Here is how to survive your first demonstration without burning the food or losing your place.</p>
+                
+                <p class="mb-6">1. Prepare more than you think you need to<br>Before anyone arrives, measure every ingredient and place your tools in the order you will use them. <b class="highlight quiz-target" data-ans="preheat" data-kor="예열하다">Preheat</b> the oven and check that every burner works.<br>It may feel like <b class="highlight quiz-target" data-ans="it's a hassle" data-kor="번거로운 일">it's a hassle</b> to prepare backup ingredients, but accidents are common during demonstrations. An egg may fall, a sauce may spill, or someone may accidentally take the spoon you need. The sooner you organize everything, the easier the demonstration will be.</p>
+                
+                <p class="mb-6">2. Choose equipment you can control<br>A <b class="highlight quiz-target" data-ans="cast iron" data-kor="무쇠">cast iron</b> pan looks impressive and holds heat well, but it is heavy and stays hot for a long time. Do not use one for the first time in front of an audience.<br>Whatever you do, don’t grab the handle without protection. Place a towel or handle cover on it as a visual reminder. What nobody tells you is that people often forget the handle is hot after the pan leaves the stove.</p>
+                
+                <p class="mb-6">3. Explain before changing the temperature<br>Tell the audience what you are about to do before you do it. Say, “I’m going to <b class="highlight quiz-target" data-ans="turn up the heat" data-kor="불을 세게 하다">turn up the heat</b> so the vegetables brown instead of steaming.”<br>If you change the temperature silently, beginners may not understand why the food behaves differently. A cooking demonstration should explain decisions, not merely show actions.</p>
+                
+                <p class="mb-6">4. Do not panic when something goes wrong<br>Food does not always behave perfectly. Oil may splash, onions may brown too quickly, or the sauce may take longer to thicken. Sometimes <b class="highlight quiz-target" data-ans="it just happens" data-kor="그냥 그런 일이 생겨요">it just happens</b>.<br>Pause, explain the problem, and show how to fix it. This is often more useful than a flawless demonstration because the audience learns what to do at home.</p>
+                
+                <p class="mb-6">5. Let nervousness pass naturally<br>Your voice may shake during the first few minutes. Don’t worry too much about it. Nervousness usually needs time to <b class="highlight quiz-target" data-ans="run its course" data-kor="자연히 흘러가다">run its course</b>.<br>Speak slowly, take short pauses, and focus on the next cooking step rather than the entire audience. Successful demonstrations require preparation, but they also require <b class="highlight quiz-target" data-ans="patience" data-kor="인내심">patience</b>. You do not need to look perfectly confident. You only need to remain clear, safe, and calm enough to continue.<br>Everyone struggles with cooking and talking at the same time at first. After a few demonstrations, you’ll get the hang of it.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">요리 시연에는 초보자를 긴장하게 만들 수 있는 두 가지 기술이 결합되어 있습니다. 바로 압박 속에서 요리하는 것과 <b class="highlight">사람들 앞에서 말하는 것</b>이에요. 각 단계를 명확히 설명하면서 음식을 살피고, 질문에 답하며, 스무 명이 자신의 손을 바라보고 있다는 사실을 모르는 척해야 합니다.<br>음식을 태우거나 말할 순서를 잊지 않고 첫 시연을 무사히 마치는 방법을 소개합니다.</p>
+                
+                <p class="mb-6">1. 필요하다고 생각하는 것보다 더 많이 준비하세요<br>사람들이 도착하기 전에 모든 재료의 양을 재고, 사용할 순서대로 도구를 배치하세요. 오븐을 <b class="highlight">미리 예열하고</b> 모든 화구가 제대로 작동하는지도 확인하세요.<br>여분의 재료를 준비하는 일이 <b class="highlight">번거롭게</b> 느껴질 수 있지만, 시연 중에는 사고가 자주 생깁니다. 달걀이 바닥에 떨어지거나, 소스가 쏟아지거나, 누군가 여러분에게 필요한 숟가락을 실수로 가져갈 수도 있어요. 모든 것을 빨리 정리해 둘수록 시연이 더 쉬워집니다.</p>
+                
+                <p class="mb-6">2. 자신이 다룰 수 있는 조리도구를 선택하세요<br><b class="highlight">무쇠</b> 팬은 보기에도 근사하고 열을 잘 유지하지만, 무겁고 오랫동안 뜨거운 상태로 남습니다. 사람들 앞에서 처음 사용하지는 마세요.<br>무슨 일이 있어도 보호 장비 없이 손잡이를 잡지 마세요. 시각적으로 기억할 수 있도록 손잡이에 수건이나 덮개를 씌워 두세요. 사람들이 예상하지 못하는 점은 팬을 불에서 내린 뒤 손잡이가 뜨겁다는 사실을 자주 잊는다는 것입니다.</p>
+                
+                <p class="mb-6">3. 온도를 바꾸기 전에 먼저 설명하세요<br>무언가를 하기 전에 무엇을 할 것인지 청중에게 알려 주세요. “채소가 찌듯이 익지 않고 노릇해지도록 <b class="highlight">불을 세게 하겠습니다</b>”라고 말할 수 있어요.<br>설명 없이 온도를 바꾸면 초보자들은 음식이 왜 다르게 익는지 이해하지 못할 수 있습니다. 요리 시연은 행동만 보여 주는 것이 아니라 결정의 이유도 설명해야 합니다.</p>
+                
+                <p class="mb-6">4. 문제가 생겨도 당황하지 마세요<br>음식은 항상 완벽하게 반응하지 않습니다. 기름이 튀거나, 양파가 너무 빨리 갈색으로 변하거나, 소스가 걸쭉해지는 데 예상보다 오래 걸릴 수 있어요. <b class="highlight">그냥 그런 일이 생기기도 합니다</b>.<br>잠시 멈추고 문제를 설명한 뒤 해결 방법을 보여 주세요. 완벽한 시연보다 이런 상황이 더 유용할 때가 많습니다. 청중이 집에서 같은 문제가 생겼을 때 어떻게 해야 하는지 배울 수 있기 때문이에요.</p>
+                
+                <p class="mb-6">5. 긴장감이 자연스럽게 지나가도록 두세요<br>처음 몇 분 동안 목소리가 떨릴 수 있습니다. 너무 걱정하지 마세요. 긴장감은 <b class="highlight">자연스럽게 지나갈</b> 시간이 필요한 경우가 많아요.<br>천천히 말하고, 짧게 멈추며, 청중 전체보다는 다음 요리 단계에 집중하세요. 성공적인 시연에는 준비가 필요하지만 <b class="highlight">인내심</b>도 필요합니다. 완벽하게 자신 있어 보일 필요는 없어요. 명확하고 안전하게 설명하면서 계속할 수 있을 정도로 침착하면 됩니다.<br>처음에는 누구나 요리와 설명을 동시에 하는 것을 어려워합니다. 몇 번 시연하고 나면 곧 요령이 생길 거예요.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "7141200.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

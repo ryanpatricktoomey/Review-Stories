@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Top 5 Survival Rules for an Office Potluck While Dieting</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🥗</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Top 5 Survival Rules for an Office Potluck While Dieting</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">eat less</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">덜 먹다</td></tr>
+                <tr><td class="p-4"><b class="text-white">yo-yo effect</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">요요 현상</td></tr>
+                <tr><td class="p-4"><b class="text-white">scale</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">체중계</td></tr>
+                <tr><td class="p-4"><b class="text-white">be extroverted</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">외향적이다</td></tr>
+                <tr><td class="p-4"><b class="text-white">touchy feely person</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">신체 접촉이나 감정 표현을 좋아하는 사람</td></tr>
+                <tr><td class="p-4"><b class="text-white">blinders</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">주변의 다른 것을 보지 못하게 하는 눈가리개, 편협한 시야</td></tr>
+                <tr><td class="p-4"><b class="text-white">potluck</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">각자 음식을 하나씩 가져와 나누어 먹는 모임</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">yo-yo effect</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">체중이 줄었다가 다시 늘어나는 현상이 반복되는 것을 말해요. 영어로는 yo-yo dieting이라고도 해요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">scale</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">여기서는 무게나 체중을 재는 “체중계”라는 뜻이에요. 상황에 따라 규모, 등급, 음계라는 뜻도 될 수 있어요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">touchy feely person</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">포옹이나 가벼운 신체 접촉을 좋아하고 감정을 적극적으로 표현하는 사람을 뜻해요. 상황에 따라 약간 장난스럽거나 부정적으로 들릴 수 있습니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">blinders</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">원래 말이 옆을 보지 못하도록 씌우는 눈가리개예요. 비유적으로는 다른 가능성이나 주변 상황을 보지 못하는 태도를 뜻합니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">potluck</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">참석자들이 각자 음식을 가져와 함께 나누어 먹는 식사 모임이에요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">An office <b class="highlight quiz-target" data-ans="potluck" data-kor="포트럭 모임">potluck</b> can be difficult when you are trying to manage your weight. There may be ten desserts, three kinds of pasta, and a coworker who keeps asking why your plate is so empty. You might think the solution is simply to <b class="highlight quiz-target" data-ans="eat less" data-kor="덜 먹다">eat less</b>, but that approach can leave you hungry, uncomfortable, and standing beside the dessert table an hour later.<br>Here are five ways to enjoy the event without turning lunch into a test of willpower.</p>
+                
+                <p class="mb-6">1. Don’t arrive extremely hungry<br>The biggest mistake people make is skipping breakfast to “save calories.” It sounds sensible on paper, but in practice, extreme hunger makes careful decisions much harder. Eat a normal breakfast and have a light snack before the event if necessary.<br>Strict restriction can also contribute to the <b class="highlight quiz-target" data-ans="yo-yo effect" data-kor="요요 현상">yo-yo effect</b>. You’re much better off making reasonable choices than trying to be perfect for one afternoon.</p>
+                
+                <p class="mb-6">2. Look at everything before filling your plate<br>Walk around the table once before choosing anything. Otherwise, you might fill your plate with ordinary food and then discover something you genuinely wanted at the other end.<br>But don’t put on imaginary <b class="highlight quiz-target" data-ans="blinders" data-kor="눈가리개(시야 제한)">blinders</b> and focus only on calories. Food is also part of the social event. Choose a few things you will actually enjoy, add some vegetables or protein, and eat slowly.</p>
+                
+                <p class="mb-6">3. Prepare a simple answer<br>Someone may comment on your food or ask whether you are dieting. You do not owe anyone a detailed explanation. Try saying, “I’m just taking a little of everything,” or “This is enough for me right now.”<br>Whatever you do, don’t begin discussing the number on your <b class="highlight quiz-target" data-ans="scale" data-kor="체중계">scale</b> with the entire office. Personal health information can quickly become a group conversation you never intended to have.</p>
+                
+                <p class="mb-6">4. Socialize in your own way<br>You do not have to <b class="highlight quiz-target" data-ans="be extroverted" data-kor="외향적이다">be extroverted</b> to participate. Ask one person about the dish they brought or offer to help arrange the table. A few short conversations are enough.<br>You also don’t need to become a <b class="highlight quiz-target" data-ans="touchy feely person" data-kor="스킨십이나 정표현이 과한 사람">touchy feely person</b>. If coworkers greet each other with hugs and that makes you uncomfortable, a smile and a friendly hello are perfectly acceptable.</p>
+                
+                <p class="mb-6">5. Treat one meal as one meal<br>What nobody tells you is that guilt often causes more trouble than the food itself. One large lunch will not destroy your progress. Enjoy the meal, return to your normal routine afterward, and don’t punish yourself by skipping dinner.<br>It’s completely normal to find these events challenging. The sooner you develop a flexible plan, the easier they’ll become.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">체중을 관리하려고 할 때 회사 <b class="highlight">포트럭</b>은 어려울 수 있어요. 디저트가 열 종류나 있고, 파스타도 세 종류이며, 접시가 왜 그렇게 비어 있냐고 계속 묻는 동료도 있을 수 있습니다. 단순히 <b class="highlight">덜 먹으면</b> 된다고 생각할 수 있지만, 그렇게 하면 배가 고프고 불편해진 채 한 시간 뒤 디저트 테이블 옆에 서 있게 될 수도 있어요.<br>점심시간을 의지력 시험으로 만들지 않으면서 행사를 즐길 수 있는 다섯 가지 방법을 소개합니다.</p>
+                
+                <p class="mb-6">1. 지나치게 배고픈 상태로 가지 마세요<br>사람들이 가장 많이 하는 실수는 칼로리를 아끼기 위해 아침을 거르는 거예요. 이론상으로는 합리적으로 들리지만, 실제로는 배가 지나치게 고프면 신중한 결정을 내리기가 훨씬 어려워집니다. 평소처럼 아침을 먹고, 필요하다면 행사 전에 가벼운 간식도 드세요.<br>과도한 식사 제한은 <b class="highlight">요요 현상</b>으로 이어질 수도 있습니다. 한 끼 동안 완벽해지려고 하기보다 합리적인 선택을 하는 편이 훨씬 나아요.</p>
+                
+                <p class="mb-6">2. 접시에 담기 전에 모든 음식을 살펴보세요<br>음식을 선택하기 전에 테이블을 한 바퀴 둘러보세요. 그렇지 않으면 평범한 음식으로 접시를 가득 채운 뒤 반대편에서 정말 먹고 싶었던 음식을 발견할 수도 있어요.<br>하지만 상상의 <b class="highlight">눈가리개</b>를 쓰고 칼로리에만 집중하지는 마세요. 음식도 사교 행사의 일부입니다. 실제로 즐기고 싶은 음식 몇 가지를 고르고, 채소나 단백질을 더한 뒤 천천히 드세요.</p>
+                
+                <p class="mb-6">3. 간단한 답변을 준비하세요<br>누군가 여러분의 음식을 언급하거나 다이어트 중인지 물을 수 있어요. 자세한 설명을 해야 할 의무는 없습니다. “모든 음식을 조금씩 먹어 보려고요.” 또는 “지금은 이 정도면 충분해요.”라고 말해 보세요.<br>무슨 일이 있어도 <b class="highlight">체중계</b>에 나온 숫자를 사무실 전체와 이야기하기 시작하지 마세요. 개인적인 건강 정보가 원하지 않았던 단체 대화로 빠르게 발전할 수 있습니다.</p>
+                
+                <p class="mb-6">4. 자신에게 편한 방식으로 사람들과 어울리세요<br>행사에 참여하기 위해 <b class="highlight">외향적</b>일 필요는 없어요. 한 사람에게 그 사람이 가져온 음식에 관해 물어보거나 테이블 정리를 돕겠다고 해 보세요. 짧은 대화 몇 번이면 충분합니다.<br>신체 접촉이나 감정 표현을 좋아하는 사람이 될 필요도 없어요. 동료들이 포옹으로 인사하는데 그것이 불편하다면, 미소를 짓고 친절하게 인사하는 것만으로도 충분합니다.</p>
+                
+                <p class="mb-6">5. 한 끼는 그저 한 끼로 생각하세요<br>아무도 알려 주지 않는 것은 음식 자체보다 죄책감이 더 큰 문제를 일으키는 경우가 많다는 점이에요. 점심을 한 번 많이 먹었다고 해서 지금까지의 노력이 무너지지는 않습니다. 식사를 즐기고, 그 후 평소 생활로 돌아가며, 저녁을 거르는 방식으로 자신을 벌하지 마세요.<br>이런 행사가 어렵게 느껴지는 것은 완전히 자연스러운 일이에요. 유연한 계획을 빨리 만들수록 점점 더 편해질 거예요.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "714715.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

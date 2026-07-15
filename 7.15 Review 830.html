@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Back of the Van</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🚐</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Back of the Van</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">don't get hot easily</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">더위를 잘 타지 않는다</td></tr>
+                <tr><td class="p-4"><b class="text-white">not sensitive to the heat</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">더위에 민감하지 않다</td></tr>
+                <tr><td class="p-4"><b class="text-white">face gets flushed</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">얼굴이 벌게진다</td></tr>
+                <tr><td class="p-4"><b class="text-white">wide-brimmed hat</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">챙이 넓은 모자</td></tr>
+                <tr><td class="p-4"><b class="text-white">brain freeze</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">차가운 것을 빨리 먹을 때 머리가 찌릿한 현상</td></tr>
+                <tr><td class="p-4"><b class="text-white">the world is going crazy</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">세상이 미쳐 돌아가고 있다</td></tr>
+                <tr><td class="p-4"><b class="text-white">heat wave</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">폭염</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-3xl p-6 space-y-2 border border-white/5">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <span class="text-teal-400">💡</span> don’t get hot easily
+                </h3>
+                <p class="text-slate-300 text-sm leading-relaxed">다른 사람보다 쉽게 덥다고 느끼지 않는다는 뜻이에요. 성격이 아니라 체질이나 신체 반응을 말합니다.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2 border border-white/5">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <span class="text-teal-400">💡</span> face gets flushed
+                </h3>
+                <p class="text-slate-300 text-sm leading-relaxed">더위, 운동, 긴장, 술 등으로 얼굴이 붉어지는 것을 뜻해요. flush는 얼굴에 피가 몰려 붉어지는 상태를 나타냅니다.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2 border border-white/5">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <span class="text-teal-400">💡</span> brain freeze
+                </h3>
+                <p class="text-slate-300 text-sm leading-relaxed">아이스크림이나 아주 차가운 음료를 너무 빨리 먹었을 때 이마 안쪽이 갑자기 아픈 현상을 말해요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2 border border-white/5">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <span class="text-teal-400">💡</span> the world is going crazy
+                </h3>
+                <p class="text-slate-300 text-sm leading-relaxed">세상이나 현재 상황이 비정상적이고 통제 불가능하게 느껴질 때 쓰는 과장된 일상 표현이에요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">I always told people that I <b class="highlight quiz-target" data-ans="didn't get hot easily" data-kor="더위를 잘 타지 않는다">didn't get hot easily</b>.</p>
+                <p class="mb-6">While everyone else complained about summer, I kept working. I delivered packages through July afternoons without carrying a fan or even extra water. I was <b class="highlight quiz-target" data-ans="not sensitive to the heat" data-kor="더위에 민감하지 않다">not sensitive to the heat</b>, or at least that was what I believed.</p>
+                <p class="mb-6">Then the van door slammed shut behind me.</p>
+                <p class="mb-6">I was standing in the cargo area, looking for a missing box, when the damaged lock clicked. I grabbed the handle. Nothing happened.</p>
+                <p class="mb-6">“Very funny,” I said, although no one was there.</p>
+                <p class="mb-6">The metal walls were already warm. Within minutes, the heat became stifling. I kicked the door and shouted, but the parking lot outside was empty. My phone was on the driver’s seat.</p>
+                <p class="mb-6">That morning, the news had warned about a severe <b class="highlight quiz-target" data-ans="heat wave" data-kor="폭염">heat wave</b>. I had laughed and said, “<b class="highlight quiz-target" data-ans="The world is going crazy" data-kor="세상이 미쳐 돌아가고 있다">The world is going crazy</b>. Every hot day gets a dramatic name now.”</p>
+                <p class="mb-6">I stopped laughing.</p>
+                <p class="mb-6">My shirt darkened with sweat. My <b class="highlight quiz-target" data-ans="face gets flushed" data-kor="얼굴이 벌게진다">face got flushed</b>, and my heartbeat became loud and fast. I tried to breathe slowly, but the air inside the van felt like it had been used too many times.</p>
+                <p class="mb-6">My mind began producing pictures of every cold thing I had ignored that morning.</p>
+                <p class="mb-6">There was a frozen bottle of water in my freezer. I had left it there because it was too heavy to carry. I imagined pressing it against my neck. I imagined the ice melting over my fingers.</p>
+                <p class="mb-6">Then I saw a convenience-store freezer in my mind. Cups of bingsu, ice cream bars, chilled watermelon, and bottles covered with drops of water. I would have eaten the bingsu so quickly that I got <b class="highlight quiz-target" data-ans="brain freeze" data-kor="차가운 것을 빨리 먹을 때 머리가 찌릿한 현상">brain freeze</b>, and I would have enjoyed every painful second.</p>
+                <p class="mb-6">I pictured my neighbor walking outside in her enormous <b class="highlight quiz-target" data-ans="wide-brimmed hat" data-kor="챙이 넓은 모자">wide-brimmed hat</b>. I had once joked that she looked like a beach umbrella. Now I understood. That hat was not fashion. It was survival equipment.</p>
+                <p class="mb-6">I thought about cold showers, swimming pools, shaded riverside paths, and the frozen-food aisle at the supermarket. Nothing beats standing in front of an open freezer during the dog days of summer.</p>
+                <p class="mb-6">The van seemed to tilt.</p>
+                <p class="mb-6">I sat on the floor and tried to stay awake. My hands felt weak. The sweating had slowed, which terrified me. I struck the wall with a package, but the sound was dull.</p>
+                <p class="mb-6">Then I heard a cart rolling nearby.</p>
+                <p class="mb-6">I kicked the door with both feet.</p>
+                <p class="mb-6">“Help!”</p>
+                <p class="mb-6">The cart stopped.</p>
+                <p class="mb-6">A worker shouted, “Is someone in there?”</p>
+                <p class="mb-6">“Yes!”</p>
+                <p class="mb-6">He called emergency services and used a metal bar to force the door open. Sunlight burst inside, followed by fresh air.</p>
+                <p class="mb-6">The worker gave me water and placed a cold towel around my neck.</p>
+                <p class="mb-6">“You okay?”</p>
+                <p class="mb-6">I nodded slowly.</p>
+                <p class="mb-6">“I thought you didn’t get hot easily,” he said. He recognized me from the loading area.</p>
+                <p class="mb-6">I looked at the bottle in my shaking hands.</p>
+                <p class="mb-6">“Apparently,” I said, “I was wrong.”</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>나는 늘 사람들에게 내가 <b class="highlight">더위를 잘 타지 않는다</b>고 말했다.</p>
+                <p>다른 사람들이 여름에 대해 불평할 때도 나는 계속 일했다. 7월 오후에도 선풍기나 여분의 물조차 챙기지 않고 택배를 배달했다. 나는 <b class="highlight">더위에 민감하지 않다</b>고 믿었다. 적어도 그때까지는 그랬다.</p>
+                <p>그러다 밴의 문이 내 뒤에서 쾅 닫혔다.</p>
+                <p>나는 사라진 상자를 찾기 위해 화물칸에 들어가 있었는데, 고장 난 잠금장치가 딸깍 소리를 내며 잠겼다. 손잡이를 잡아당겼지만 아무 일도 일어나지 않았다.</p>
+                <p>“참 재미있네.” 나는 말했지만, 그곳에는 아무도 없었다.</p>
+                <p>금속 벽은 이미 따뜻했다. 몇 분 안에 더위는 숨이 막힐 정도로 심해졌다. 나는 문을 걷어차고 소리쳤지만, 밖의 주차장은 비어 있었다. 휴대전화는 운전석 위에 있었다.</p>
+                <p>그날 아침 뉴스에서는 심한 <b class="highlight">폭염</b>을 경고했다. 나는 웃으며 말했다.</p>
+                <p>“<b class="highlight">세상이 미쳐 돌아가고 있다</b>. 이제는 더운 날마다 거창한 이름을 붙이는군.”</p>
+                <p>더 이상 웃음이 나오지 않았다.</p>
+                <p>셔츠는 땀으로 젖었다. <b class="highlight">얼굴이 벌게진다</b>고 느꼈고 심장 소리는 크고 빠르게 들렸다. 천천히 숨을 쉬려고 했지만, 밴 안의 공기는 이미 너무 여러 번 사용된 것처럼 느껴졌다.</p>
+                <p>머릿속에는 그날 아침 내가 무시했던 차가운 것들이 하나씩 떠오르기 시작했다.</p>
+                <p>냉동실에는 얼린 물병이 하나 있었다. 너무 무겁다는 이유로 가져오지 않았다. 그것을 목에 대는 모습을 상상했다. 얼음물이 손가락 위로 녹아 흐르는 장면도 떠올렸다.</p>
+                <p>그러고는 편의점 냉동고가 머릿속에 나타났다. 컵빙수, 아이스크림 바, 차가운 수박, 표면에 물방울이 맺힌 음료수 병들이 보였다. 나는 <b class="highlight">머리가 찌릿할 정도로 빠르게 빙수를 먹을 때</b>처럼 빙수를 먹었을 것이고, 그 고통스러운 순간마저 즐겼을 것이다.</p>
+                <p>나는 이웃이 거대한 <b class="highlight">챙이 넓은 모자</b>를 쓰고 걷는 모습을 떠올렸다. 예전에 나는 그녀가 해변용 파라솔처럼 보인다고 놀린 적이 있었다. 이제는 이해할 수 있었다. 그 모자는 패션이 아니었다. 생존 장비였다.</p>
+                <p>찬물 샤워, 수영장, 그늘진 강변 산책로, 슈퍼마켓 냉동식품 코너가 떠올랐다. 삼복더위에는 열린 냉동고 앞에 서 있는 것만 한 것도 없었다.</p>
+                <p>밴이 기울어지는 것처럼 느껴졌다.</p>
+                <p>나는 바닥에 앉아 깨어 있으려고 애썼다. 손에 힘이 빠졌다. 땀이 줄어들기 시작했고, 그 사실이 나를 공포에 빠뜨렸다. 상자로 벽을 내리쳤지만, 둔탁한 소리만 났다.</p>
+                <p>그때 근처에서 카트가 굴러가는 소리가 들렸다.</p>
+                <p>나는 두 발로 문을 걷어찼다.</p>
+                <p>“도와주세요!”</p>
+                <p>카트가 멈췄다.</p>
+                <p>한 직원이 소리쳤다.</p>
+                <p>“안에 사람 있어요?”</p>
+                <p>“네!”</p>
+                <p>그는 응급 서비스에 전화한 뒤 쇠막대를 사용해 문을 강제로 열었다. 햇빛이 안으로 쏟아졌고, 뒤이어 신선한 공기가 들어왔다.</p>
+                <p>직원은 내게 물을 주고 차가운 수건을 목에 둘러 주었다.</p>
+                <p>“괜찮아요?”</p>
+                <p>나는 천천히 고개를 끄덕였다.</p>
+                <p>“더위를 잘 타지 않는다고 하지 않았어요?” 그가 물었다. 그는 하역장에서 나를 본 적이 있었다.</p>
+                <p>나는 떨리는 손에 들린 물병을 내려다보았다.</p>
+                <p>“그런데 보니,” 내가 말했다. “내가 틀렸네요.”</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "715830.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

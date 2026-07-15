@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | Lost in the Heat</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">☀️</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">Lost in the Heat</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">soles of my feet</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">발바닥</td></tr>
+                <tr><td class="p-4"><b class="text-white">seasick</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">배멀미가 나는</td></tr>
+                <tr><td class="p-4"><b class="text-white">electric flyswatter</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">전기 모기채</td></tr>
+                <tr><td class="p-4"><b class="text-white">allergy to mosquitoes</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">모기 알레르기</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-3xl p-6 space-y-2 border border-white/5">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <span class="text-teal-400">💡</span> soles of my feet
+                </h3>
+                <p class="text-slate-300 text-sm leading-relaxed">발의 아랫부분, 즉 바닥에 닿는 “발바닥”을 뜻해요. sole은 신발의 밑창을 가리킬 때도 사용합니다.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2 border border-white/5">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <span class="text-teal-400">💡</span> seasick
+                </h3>
+                <p class="text-slate-300 text-sm leading-relaxed">배의 흔들림 때문에 메스껍고 어지러운 상태를 말해요. 이야기에서는 실제 배가 아니라, 심한 어지럼증이 배멀미처럼 느껴진다는 뜻으로 사용했어요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2 border border-white/5">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <span class="text-teal-400">💡</span> electric flyswatter
+                </h3>
+                <p class="text-slate-300 text-sm leading-relaxed">전기가 흐르는 망으로 모기나 파리를 잡는 도구예요. 한국어의 “전기 모기채”에 해당합니다.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2 border border-white/5">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <span class="text-teal-400">💡</span> allergy to mosquitoes
+                </h3>
+                <p class="text-slate-300 text-sm leading-relaxed">모기에 물렸을 때 일반적인 가려움보다 훨씬 심하게 붓거나 반응하는 상태를 뜻해요. 자연스러운 문장에서는 I’m allergic to mosquitoes라고도 자주 말합니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">The sun was scorching when I realized I had taken the wrong trail.</p>
+                <p class="mb-6">I had left the main path twenty minutes earlier, thinking the narrow trail would lead back to the parking lot. Instead, it led deeper into the mountain. My water bottle was empty, my phone had no signal, and the air felt like breathing soup.</p>
+                <p class="mb-6">Even the <b class="highlight quiz-target" data-ans="soles of my feet" data-kor="발바닥">soles of my feet</b> were burning through my hiking shoes.</p>
+                <p class="mb-6">“Stay calm,” I told myself. “Find shade. Save your energy.”</p>
+                <p class="mb-6">But there was almost no shade. The trees were thin, and the afternoon sun fell directly on the rocks. Sweat ran into my eyes. My shirt stuck to my back. I tried to walk slowly, but the ground seemed to move under me.</p>
+                <p class="mb-6">I felt <b class="highlight quiz-target" data-ans="seasick" data-kor="배멀미가 나는">seasick</b>, even though I was standing on dry land.</p>
+                <p class="mb-6">My thoughts became strange and scattered. I imagined opening my freezer at home. Frozen grapes rolled across the drawer. A bottle of water was covered in ice. There was a metal bowl of cold noodles with cucumber on top.</p>
+                <p class="mb-6">Nothing hits the spot like cold watermelon on a day like this, I thought.</p>
+                <p class="mb-6">Then I pictured my bathroom. I could almost feel a cold shower running over my head and shoulders. I would stand under it for twenty minutes. Maybe thirty. I couldn’t imagine summer without cold showers, and at that moment, I couldn’t imagine surviving another hour without one.</p>
+                <p class="mb-6">A swimming pool appeared in my mind. Blue water. White tiles. The sharp smell of chlorine. I pictured myself jumping in fully dressed and sinking to the bottom, where the water was quiet and cool.</p>
+                <p class="mb-6">Then I thought about the convenience store near my apartment. Its air conditioner was always too strong. I used to complain about it.</p>
+                <p class="mb-6">“I’d be lost without that place,” I whispered.</p>
+                <p class="mb-6">I imagined opening the glass refrigerator and taking out an ice-cold sports drink. Beside it were cups of bingsu, chilled peaches, and slices of melon. Nothing beats fresh fruit straight from the fridge in July.</p>
+                <p class="mb-6">Then I pictured my bedroom. Blackout curtains. A fan at the foot of the bed. Cooling sheets under my back. My dehumidifier humming in the corner. Those sheets had been a total game-changer for me, but now they seemed like objects from another world.</p>
+                <p class="mb-6">I would have traded my wallet, my phone, and possibly my car for ten minutes in an air-conditioned bookstore. I could see myself sitting on the floor between the shelves, holding a cold coffee against my neck. Sometimes I needed my air-conditioned bookstore fix after a terrible summer day.</p>
+                <p class="mb-6">Even my cheap neck fan would have helped. It came in handy whenever I had to walk outside in humid weather. Instead, the only thing in my backpack was an <b class="highlight quiz-target" data-ans="electric flyswatter" data-kor="전기 모기채">electric flyswatter</b> I had bought at a mountain shop as a joke.</p>
+                <p class="mb-6">I laughed once, but it came out like a cough.</p>
+                <p class="mb-6">Mosquitoes gathered around my face. That was especially bad because I had an <b class="highlight quiz-target" data-ans="allergy to mosquitoes" data-kor="모기 알레르기">allergy to mosquitoes</b>. One bite usually caused terrible swelling. I swung the flyswatter weakly, but it was useless without batteries.</p>
+                <p class="mb-6">My legs finally gave out beside a large rock.</p>
+                <p class="mb-6">I lay there, staring at the bright sky. My heart was racing, but the rest of my body felt heavy. I tried to think of somewhere cold: a movie theater, a subway car, a mountain stream, the frozen-food aisle of a supermarket.</p>
+                <p class="mb-6">For a moment, I imagined lying under a tree beside a river with a good book and a cold drink. There was nothing like a shaded riverside path on a breezy evening.</p>
+                <p class="mb-6">But there was no breeze.</p>
+                <p class="mb-6">I knew overheating could become dangerous. I needed water and help immediately.</p>
+                <p class="mb-6">Then I heard a bell.</p>
+                <p class="mb-6">At first, I thought I was imagining it. A moment later, a rescue dog appeared between the trees. A park ranger followed, carrying a radio and two bottles of water.</p>
+                <p class="mb-6">“Don’t drink too fast,” she said, kneeling beside me.</p>
+                <p class="mb-6">She poured water over a towel and placed it on my neck. Another ranger arrived with a stretcher.</p>
+                <p class="mb-6">As they carried me toward the main trail, cold water touched my lips.</p>
+                <p class="mb-6">Nothing had ever tasted better.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>햇볕이 타는 듯이 뜨거운 가운데, 나는 길을 잘못 들었다는 것을 깨달았다.</p>
+                <p>나는 좁은 길이 주차장으로 이어질 거라고 생각해 20분 전에 주 등산로를 벗어났다. 하지만 그 길은 산속 더 깊은 곳으로 이어졌다. 물병은 비어 있었고, 휴대전화는 신호가 잡히지 않았으며, 공기는 마치 국 속에서 숨 쉬는 것처럼 무겁고 눅눅했다.</p>
+                <p>등산화를 신고 있었는데도 <b class="highlight">발바닥</b>이 타는 것 같았다.</p>
+                <p>“침착하자.” 나는 나 자신에게 말했다. “그늘을 찾고, 힘을 아껴.”</p>
+                <p>하지만 그늘은 거의 없었다. 나무는 듬성듬성했고, 오후의 햇빛이 바위 위로 그대로 내리쬐었다. 땀이 눈으로 흘러 들어갔다. 셔츠는 등에 달라붙었다. 천천히 걸으려고 했지만, 땅이 내 아래에서 움직이는 것처럼 느껴졌다.</p>
+                <p>마른 땅 위에 서 있었는데도 <b class="highlight">배멀미가 나는</b> 것 같았다.</p>
+                <p>생각이 이상하고 두서없이 흩어지기 시작했다. 집 냉동실을 여는 모습을 상상했다. 얼린 포도들이 서랍 안에서 굴러다녔다. 물병 하나는 얼음으로 뒤덮여 있었다. 오이가 올라간 차가운 국수 한 그릇도 있었다.</p>
+                <p>이런 날에는 차가운 수박만큼 딱 좋은 것도 없다고 생각했다.</p>
+                <p>그러고는 욕실이 떠올랐다. 찬물이 머리와 어깨 위로 흐르는 감각이 거의 느껴지는 것 같았다. 나는 그 아래에 20분쯤 서 있을 것이다. 어쩌면 30분. 찬물 샤워 없는 여름은 상상이 안 됐고, 그 순간에는 찬물 샤워 없이 한 시간을 더 버티는 것도 상상이 안 됐다.</p>
+                <p>수영장이 머릿속에 떠올랐다. 파란 물, 하얀 타일, 코를 찌르는 염소 냄새. 옷을 입은 채로 뛰어들어 물이 조용하고 차가운 바닥까지 가라앉는 모습을 상상했다.</p>
+                <p>그러고는 아파트 근처 편의점이 생각났다. 그곳 에어컨은 늘 너무 강했다. 나는 예전에는 그 점을 불평하곤 했다.</p>
+                <p>“그곳이 없으면 정말 힘들 거야.” 나는 중얼거렸다.</p>
+                <p>유리 냉장고를 열고 얼음처럼 차가운 스포츠음료를 꺼내는 모습을 상상했다. 그 옆에는 컵빙수, 차갑게 식힌 복숭아, 잘라 놓은 멜론이 있었다. 7월에는 냉장고에서 바로 꺼낸 신선한 과일만 한 게 없었다.</p>
+                <p>그러고는 침실이 떠올랐다. 암막 커튼, 침대 발치의 선풍기, 등 아래 깔린 냉감 침구, 구석에서 웅웅거리며 돌아가는 제습기. 그 냉감 침구는 내 여름 생활을 완전히 바꿔 놓았지만, 지금은 다른 세계의 물건처럼 느껴졌다.</p>
+                <p>에어컨이 시원한 서점에서 10분만 있을 수 있다면 지갑도, 휴대전화도, 어쩌면 차까지도 내줄 수 있을 것 같았다. 서가 사이 바닥에 앉아 차가운 커피를 목에 대고 있는 나를 상상할 수 있었다. 끔찍하게 더운 여름날이 지나고 나면 가끔은 에어컨이 시원한 서점에서 꼭 시간을 보내줘야 했다.</p>
+                <p>값싼 목걸이형 선풍기조차 도움이 되었을 것이다. 그것은 습한 날씨에 밖을 걸어야 할 때마다 유용했다. 하지만 배낭에 들어 있는 것은 산 아래 가게에서 장난으로 산 <b class="highlight">전기 모기채</b>뿐이었다.</p>
+                <p>나는 한 번 웃었지만, 기침 같은 소리가 나왔다.</p>
+                <p>모기들이 얼굴 주위로 몰려들었다. 나는 <b class="highlight">모기 알레르기</b>가 있었기 때문에 특히 위험했다. 한 번만 물려도 보통 심하게 부였다. 힘없이 전기 모기채를 휘둘렀지만, 배터리가 없어서 아무 소용이 없었다.</p>
+                <p>결국 큰 바위 옆에서 다리에 힘이 풀렸다.</p>
+                <p>나는 그곳에 누워 밝은 하늘을 바라보았다. 심장은 빠르게 뛰었지만, 몸의 나머지 부분은 무겁게 느껴졌다. 영화관, 지하철 객차, 산속 계곡, 슈퍼마켓의 냉동식품 코너처럼 차가운 장소를 떠올리려고 했다.</p>
+                <p>잠시 동안, 강가의 나무 아래에서 좋은 책과 차가운 음료를 옆에 두고 누워 있는 모습을 상상했다. 바람 부는 저녁에는 그늘진 강변 산책로만 한 곳도 없었다.</p>
+                <p>하지만 바람은 불지 않았다.</p>
+                <p>체온이 지나치게 올라가면 위험해질 수 있다는 것을 알고 있었다. 당장 물과 도움이 필요했다.</p>
+                <p>그때 방울 소리가 들렸다.</p>
+                <p>처음에는 환청이라고 생각했다. 잠시 뒤, 구조견 한 마리가 나무 사이에서 나타났다. 무전기와 물 두 병을 든 공원 관리인이 그 뒤를 따라왔다.</p>
+                <p>“너무 빨리 마시면 안 돼요.” 그녀가 내 옆에 무릎을 꿇으며 말했다.</p>
+                <p>그녀는 수건에 물을 붓고 내 목에 올려 주었다. 곧 다른 구조대원이 들것을 가지고 도착했다.</p>
+                <p>그들이 나를 주 등산로 쪽으로 옮기는 동안, 차가운 물이 내 입술에 닿았다.</p>
+                <p>Nothing had ever tasted better.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "715630.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

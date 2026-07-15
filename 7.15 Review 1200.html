@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Rooftop Greenhouse</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🏗️</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Rooftop Greenhouse</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">store it in the fridge</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">냉장고에 보관하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">keep it in the fridge</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">냉장고에 넣어 두다</td></tr>
+                <tr><td class="p-4"><b class="text-white">put it together</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">조립하다, 여러 부분을 합치다</td></tr>
+                <tr><td class="p-4"><b class="text-white">set it up</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">설치하다, 사용할 수 있게 준비하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">temperature difference</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">온도 차이</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-3xl p-6 space-y-2 border border-white/5">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <span class="text-teal-400">💡</span> store it in the fridge
+                </h3>
+                <p class="text-slate-300 text-sm leading-relaxed">음식이나 물건을 나중에 사용하기 위해 냉장고에 보관한다는 뜻이에요. store는 비교적 계획적으로 보관한다는 느낌이 있습니다.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2 border border-white/5">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <span class="text-teal-400">💡</span> keep it in the fridge
+                </h3>
+                <p class="text-slate-300 text-sm leading-relaxed">냉장 상태를 유지하기 위해 냉장고에 계속 넣어 둔다는 뜻이에요. 일상 대화에서 매우 자연스럽게 사용합니다.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2 border border-white/5">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <span class="text-teal-400">💡</span> put it together
+                </h3>
+                <p class="text-slate-300 text-sm leading-relaxed">부품을 연결해 물건을 조립한다는 뜻도 있고, 여러 단서나 정보를 종합해 상황을 이해한다는 뜻도 있어요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2 border border-white/5">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <span class="text-teal-400">💡</span> set it up
+                </h3>
+                <p class="text-slate-300 text-sm leading-relaxed">기계나 장비를 설치하고 바로 사용할 수 있는 상태로 준비한다는 뜻이에요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2 border border-white/5">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <span class="text-teal-400">💡</span> temperature difference
+                </h3>
+                <p class="text-slate-300 text-sm leading-relaxed">두 장소, 시간대, 물체 사이의 온도 차이를 뜻합니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">I entered the rooftop greenhouse at noon to repair the cooling system.</p>
+                <p class="mb-6">It was supposed to take ten minutes.</p>
+                <p class="mb-6">The building manager had left a portable fan in a box beside the door. “Just <b class="highlight quiz-target" data-ans="put it together" data-kor="조립하다, 여러 부분을 합치다">put it together</b> and <b class="highlight quiz-target" data-ans="set it up" data-kor="설치하다, 사용할 수 있게 준비하다">set it up</b> near the tomatoes,” he had told me.</p>
+                <p class="mb-6">The moment I stepped inside, the automatic door closed behind me. I heard the lock click.</p>
+                <p class="mb-6">The greenhouse was made almost entirely of glass. Sunlight poured through the roof, and the air was stifling. The broken ventilation system had trapped the heat inside all morning.</p>
+                <p class="mb-6">I pulled the handle. Nothing happened.</p>
+                <p class="mb-6">“Okay,” I said. “Don’t panic.”</p>
+                <p class="mb-6">My phone showed one bar of signal, but every call failed. The digital thermometer on the wall read forty-seven degrees. Outside, it was thirty-four.</p>
+                <p class="mb-6">The <b class="highlight quiz-target" data-ans="temperature difference" data-kor="온도 차이">temperature difference</b> made the greenhouse feel less like a garden and more like an oven.</p>
+                <p class="mb-6">I opened the fan box with shaking hands. The fan came in eight pieces. There were screws, plastic tubes, and instructions printed in tiny letters.</p>
+                <p class="mb-6">Normally, I could have assembled it in five minutes. In that heat, I could barely understand the pictures.</p>
+                <p class="mb-6">I tried to put it together, but one of the poles would not fit. Then I remembered that the fan needed electricity. The nearest outlet was on the other side of the locked door.</p>
+                <p class="mb-6">I laughed, but it sounded wrong.</p>
+                <p class="mb-6">My thoughts drifted toward everything cold.</p>
+                <p class="mb-6">I pictured the bottle of barley tea in my kitchen. My wife always told me to <b class="highlight quiz-target" data-ans="store it in the fridge" data-kor="냉장고에 보관하다">store it in the fridge</b> after making it. I imagined opening the door, feeling the cold air on my face, and drinking directly from the bottle.</p>
+                <p class="mb-6">Then I saw a bowl of sliced watermelon. “<b class="highlight quiz-target" data-ans="Keep it in the fridge" data-kor="냉장고에 넣어 두다">Keep it in the fridge</b>,” my mother always said. “It tastes better cold.”</p>
+                <p class="mb-6">She was right. Nothing hits the spot like refrigerated watermelon during the dog days of summer.</p>
+                <p class="mb-6">I imagined cold noodles, frozen grapes, an air-conditioned bookstore, and the swimming pool near my apartment. I would have jumped in wearing my work clothes.</p>
+                <p class="mb-6">My face was flushed. Sweat ran into my eyes. I sat beneath a table to escape the direct sunlight, but the metal floor radiated heat through my pants.</p>
+                <p class="mb-6">I needed to get the door open.</p>
+                <p class="mb-6">Using a steel support from the fan, I struck the emergency-release cover beside the lock. Once. Twice. The plastic cracked.</p>
+                <p class="mb-6">My vision narrowed.</p>
+                <p class="mb-6">On the third strike, the cover broke. I pulled the release cable, and the door slid open.</p>
+                <p class="mb-6">Cooler air rushed in.</p>
+                <p class="mb-6">I crawled into the stairwell and lay on the concrete floor. A security guard found me minutes later and called an ambulance.</p>
+                <p class="mb-6">As he pressed a cold bottle against my neck, I stared back at the unfinished fan.</p>
+                <p class="mb-6">Ten minutes, I thought.</p>
+                <p class="mb-6">That was what I had said.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>나는 정오에 냉각 장치를 수리하기 위해 옥상 온실에 들어갔다.</p>
+                <p>10분이면 끝날 일이었다.</p>
+                <p>건물 관리인은 문 옆 상자에 휴대용 선풍기를 두었다. 그는 “그냥 <b class="highlight">조립해서</b> 토마토 근처에 <b class="highlight">설치해 주세요</b>”라고 말했다.</p>
+                <p>내가 안으로 들어서자 자동문이 뒤에서 닫혔다. 잠금장치가 딸깍거리는 소리가 들렸다.</p>
+                <p>온실은 거의 전부 유리로 만들어져 있었다. 햇빛이 지붕을 통해 쏟아졌고, 공기는 숨이 막힐 정도로 뜨거웠다. 고장 난 환기 장치 때문에 아침 내내 열기가 안에 갇혀 있었다.</p>
+                <p>나는 손잡이를 당겼다. 아무 일도 일어나지 않았다.</p>
+                <p>“괜찮아.” 내가 말했다. “당황하지 마.”</p>
+                <p>휴대전화에는 신호가 한 칸 잡혔지만, 전화는 모두 연결되지 않았다. 벽에 있는 디지털 온도계는 47도를 가리켰다. 밖은 34도였다.</p>
+                <p>그 <b class="highlight">온도 차이</b> 때문에 온실은 정원이 아니라 오븐처럼 느껴졌다.</p>
+                <p>나는 떨리는 손으로 선풍기 상자를 열었다. 선풍기는 여덟 개의 부품으로 나뉘어 있었다. 나사와 플라스틱 관, 아주 작은 글씨로 인쇄된 설명서가 들어 있었다.</p>
+                <p>평소라면 5분 안에 조립할 수 있었을 것이다. 하지만 그 더위 속에서는 그림조차 제대로 이해하기 어려웠다.</p>
+                <p>조립하려고 했지만 기둥 하나가 맞지 않았다. 그러다 선풍기를 작동하려면 전기가 필요하다는 사실이 떠올랐다. 가장 가까운 콘센트는 잠긴 문 반대편에 있었다.</p>
+                <p>나는 웃었지만 이상한 소리가 났다.</p>
+                <p>생각은 차가운 것들로 흘러갔다.</p>
+                <p>집 부엌에 있는 보리차 병이 떠올랐다. 아내는 보리차를 만든 뒤에는 항상 <b class="highlight">냉장고에 보관하</b>라고 했다. 냉장고 문을 열고, 차가운 공기가 얼굴에 닿는 것을 느끼며, 병째로 마시는 모습을 상상했다.</p>
+                <p>그러고는 잘라 놓은 수박 한 그릇이 보였다. 어머니는 항상 “<b class="highlight">냉장고에 넣어 둬</b>. 차가울 때 더 맛있어”라고 말했다.</p>
+                <p>어머니 말이 맞았다. 삼복더위에는 냉장고에서 꺼낸 차가운 수박만큼 딱 좋은 것도 없었다.</p>
+                <p>냉면, 얼린 포도, 에어컨이 시원한 서점, 아파트 근처 수영장을 떠올렸다. 작업복을 입은 채로라도 수영장에 뛰어들고 싶었다.</p>
+                <p>얼굴은 벌게졌고, 땀이 눈으로 흘러 들어갔다. 직사광선을 피하려고 탁자 아래에 앉았지만, 금속 바닥의 열기가 바지를 뚫고 올라왔다.</p>
+                <p>문을 열어야 했다.</p>
+                <p>나는 선풍기의 철제 지지대를 이용해 잠금장치 옆 비상 해제 장치 덮개를 내리쳤다. 한 번, 두 번. 플라스틱에 금이 갔다.</p>
+                <p>시야가 좁아졌다.</p>
+                <p>세 번째로 내리치자 덮개가 부서졌다. 나는 비상 해제 줄을 당겼고, 문이 옆으로 열렸다.</p>
+                <p>조금 더 차가운 공기가 안으로 밀려 들어왔다.</p>
+                <p>나는 계단실로 기어 나가 콘크리트 바닥에 누웠다. 몇 분 뒤 경비원이 나를 발견하고 구급차를 부렀다.</p>
+                <p>그가 차가운 물병을 내 목에 대 주는 동안, 나는 미완성 상태로 남은 선풍기를 바라보았다.</p>
+                <p>10분이면 된다고 생각했다.</p>
+                <p>내가 그렇게 말했었다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "7151200.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | Waiting for One Last Message</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🛫</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">Waiting for One Last Message</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">repetitive</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">반복적인 / 되풀이되는</td></tr>
+                <tr><td class="p-4"><b class="text-white">stagnant</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">정체된 / 발전이 멈춘</td></tr>
+                <tr><td class="p-4"><b class="text-white">discomfort</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">불편함 / 불쾌감</td></tr>
+                <tr><td class="p-4"><b class="text-white">inconvenience</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">불편 / 번거로움</td></tr>
+                <tr><td class="p-4"><b class="text-white">potholes</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">도로에 움푹 팬 구멍들</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-6 rounded-3xl space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">stagnant</h3>
+                <p class="text-slate-300 text-sm">경제, 직장, 지역 또는 개인의 삶이 오랫동안 발전하거나 변화하지 않는 상태를 뜻해요.</p>
+            </div>
+            <div class="glass p-6 rounded-3xl space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">discomfort / inconvenience</h3>
+                <p class="text-slate-300 text-sm">discomfort는 몸이나 마음으로 직접 느끼는 불편함이고, inconvenience는 일정이나 행동을 어렵게 만드는 번거로움을 뜻하는 경우가 많아요.</p>
+            </div>
+            <div class="glass p-6 rounded-3xl space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">potholes</h3>
+                <p class="text-slate-300 text-sm">도로가 손상되어 표면에 생긴 움푹 팬 구멍들을 말해요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Mark stood near the airport security entrance, refreshing his phone every few seconds.</p>
+                <p class="mb-6">His friend Soojin watched him from beside his suitcase.</p>
+                <p class="mb-6">“Who are you waiting to hear from?”</p>
+                <p class="mb-6">“The owner of a café in Hongdae.”</p>
+                <p class="mb-6">Soojin frowned. “Why?”</p>
+                <p class="mb-6">“I asked him for a job.”</p>
+                <p class="mb-6">“Your flight boards in forty minutes.”</p>
+                <p class="mb-6">“He said he would think about it.”</p>
+                <p class="mb-6">“You don’t have a work visa.”</p>
+                <p class="mb-6">Mark refreshed the screen. “That’s only an <b class="highlight quiz-target" data-ans="inconvenience" data-kor="불편">inconvenience</b>.”</p>
+                <p class="mb-6">“No, it’s a legal requirement.”</p>
+                <p class="mb-6">For the past two weeks, Mark had insisted that Korea was the perfect place to live. He praised the public transportation, late-night restaurants, safety, and fast service. Whenever Soojin mentioned a problem, he dismissed it as temporary or unimportant.</p>
+                <p class="mb-6">“One thing Korea does really well is making daily life convenient,” he said. “Back home, the buses are unreliable, and the roads are full of <b class="highlight quiz-target" data-ans="potholes" data-kor="도로에 움푹 팬 구멍들">potholes</b>.”</p>
+                <p class="mb-6">“That doesn’t mean life here is easy for everyone.”</p>
+                <p class="mb-6">Mark sighed. “You keep saying that.”</p>
+                <p class="mb-6">“Because your answers are becoming <b class="highlight quiz-target" data-ans="repetitive" data-kor="반복적인">repetitive</b>. I mention housing prices, and you talk about food delivery. I mention long working hours, and you talk about clean subways.”</p>
+                <p class="mb-6">“Those things matter.”</p>
+                <p class="mb-6">“They do. That’s something worth protecting. At the same time, there’s another side to it.”</p>
+                <p class="mb-6">Mark stopped looking at his phone.</p>
+                <p class="mb-6">Soojin continued. “Some smaller towns feel economically <b class="highlight quiz-target" data-ans="stagnant" data-kor="정체된">stagnant</b> because young people leave for Seoul. Many workers deal with long hours and little job security. Convenience for customers can come from pressure placed on employees.”</p>
+                <p class="mb-6">Mark shifted uncomfortably. “I don’t want to hear all this on my last day.”</p>
+                <p class="mb-6">“I know it causes <b class="highlight quiz-target" data-ans="discomfort" data-kor="불편함">discomfort</b>, but you said you wanted to live here. You should understand the country beyond what you experienced as a tourist.”</p>
+                <p class="mb-6">His phone finally vibrated.</p>
+                <p class="mb-6">Mark opened the message immediately.</p>
+                <p class="mb-6">The café owner thanked him for visiting but explained that he could not hire someone without the correct visa or sufficient Korean ability.</p>
+                <p class="mb-6">Mark read it twice.</p>
+                <p class="mb-6">“So that’s it,” he said quietly.</p>
+                <p class="mb-6">“For now,” Soojin replied.</p>
+                <p class="mb-6">His face tightened as he looked toward security. “I thought that if I found a job today, I wouldn’t have to leave.”</p>
+                <p class="mb-6">“You would still have to follow the proper process.”</p>
+                <p class="mb-6">Mark’s eyes filled with tears. “I really loved being here.”</p>
+                <p class="mb-6">Soojin put a hand on his shoulder. “Then return with a realistic plan. Korea has a lot to value, but loving it doesn’t require pretending it has no problems.”</p>
+                <p class="mb-6">Mark nodded and picked up his suitcase.</p>
+                <p class="mb-6">“I’ll study Korean, save money, and apply for the right visa.”</p>
+                <p class="mb-6">At the entrance, he hugged her tightly.</p>
+                <p class="mb-6">“I’ll come back as soon as I can.”</p>
+                <p class="mb-6">“I’ll be here,” Soojin said. “But next time, start planning before the day your visa expires.”</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>마크는 공항 보안 검색대 입구 근처에 서서 몇 초마다 휴대전화를 새로고침하고 있었다.</p>
+                <p>친구 수진은 그의 여행 가방 옆에서 그 모습을 지켜보았다.</p>
+                <p>“누구한테 연락 오기를 기다리는 거야?”</p>
+                <p>“홍대에 있는 카페 사장님.”</p>
+                <p>수진은 인상을 찌푸렸다. “왜?”</p>
+                <p>“일자리를 달라고 부탁했어.”</p>
+                <p>“네 비행기는 40분 후에 탑승을 시작해.”</p>
+                <p>“생각해 보겠다고 했어.”</p>
+                <p>“너는 취업 비자가 없잖아.”</p>
+                <p>마크는 화면을 새로고침했다. “그건 그냥 <b class="highlight">불편</b>한 문제일 뿐이야.”</p>
+                <p>“아니, 법적인 요건이야.”</p>
+                <p>지난 2주 동안 마크는 한국이 살기에 완벽한 곳이라고 계속 주장했다. 그는 대중교통, 늦은 밤까지 문을 여는 식당, 치안, 빠른 서비스를 칭찬했다. 수진이 문제를 하나 언급할 때마다 그는 그것을 일시적이거나 중요하지 않은 것으로 넘겼다.</p>
+                <p>“한국이 정말 잘하는 것 중 하나는 일상을 편리하게 만드는 거야.” 그가 말했다. “우리 고향은 버스도 믿을 수 없고, 도로에는 <b class="highlight">움푹 팬 구멍들</b>이 가득해.”</p>
+                <p>“그렇다고 여기에서의 삶이 모두에게 쉽다는 뜻은 아니야.”</p>
+                <p>마크는 한숨을 쉬었다. “넌 계속 그 말만 하네.”</p>
+                <p>“네 대답이 너무 <b class="highlight">반복적</b>이 되고 있으니까. 내가 집값을 말하면 넌 음식 배달 이야기를 하고, 긴 노동시간을 말하면 깨끗한 지하철 이야기를 하잖아.”</p>
+                <p>“그런 것도 중요해.”</p>
+                <p>“맞아. 그건 지킬 가치가 있는 부분이야. 동시에 또 다른 면도 있어.”</p>
+                <p>마크는 휴대전화를 바라보던 것을 멈췄다.</p>
+                <p>수진은 말을 이었다. “어떤 작은 도시들은 젊은 사람들이 서울로 떠나면서 경제적으로 <b class="highlight">정체된</b> 느낌을 줄 수 있어. 많은 직장인은 긴 노동시간과 불안정한 고용을 견뎌야 하고. 소비자들의 편리함은 직원들에게 가해지는 압박에서 나올 수도 있어.”</p>
+                <p>마크는 불편한 듯 몸을 움직였다. “마지막 날에 이런 얘기는 듣고 싶지 않아.”</p>
+                <p>“<b class="highlight">불편함</b>을 느끼는 건 알아. 하지만 너는 여기서 살고 싶다고 했잖아. 관광객으로 경험한 것 이상으로 이 나라를 이해해야 해.”</p>
+                <p>마침내 그의 휴대전화가 진동했다.</p>
+                <p>마크는 즉시 메시지를 열었다.</p>
+                <p>카페 사장은 방문해 줘서 고맙다고 말했지만, 적절한 비자와 충분한 한국어 실력이 없는 사람을 고용할 수는 없다고 설명했다.</p>
+                <p>마크는 메시지를 두 번 읽었다.</p>
+                <p>“그럼 끝이네.” 그가 조용히 말했다.</p>
+                <p>“지금은 그렇지.” 수진이 대답했다.</p>
+                <p>그는 보안 검색대 쪽을 바라보며 얼굴을 굳혔다. “오늘 일자리만 구하면 떠나지 않아도 될 줄 알았어.”</p>
+                <p>“그래도 정식 절차를 따라야 해.”</p>
+                <p>마크의 눈에 눈물이 고였다. “여기 있는 게 정말 좋았어.”</p>
+                <p>수진은 그의 어깨에 손을 올렸다. “그럼 현실적인 계획을 세워서 돌아와. 한국에는 소중하게 여길 것이 많지만, 한국에 문제가 없는 척해야 사랑할 수 있는 건 아니야.”</p>
+                <p>마크는 고개를 끄덕이고 여행 가방을 들었다.</p>
+                <p>“한국어를 공부하고, 돈을 모으고, 제대로 된 비자를 신청할게.”</p>
+                <p>입구에서 그는 수진을 꼭 안았다.</p>
+                <p>“가능한 한 빨리 돌아올게.”</p>
+                <p>“난 여기 있을게.” 수진이 말했다. “하지만 다음에는 비자가 만료되는 날보다 일찍 계획을 시작해.”</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "7161200.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

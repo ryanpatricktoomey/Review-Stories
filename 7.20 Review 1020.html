@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Open Gate</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🚪</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Open Gate</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">put out the fires</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">불을 끄다 / 급한 문제들을 수습하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">pebbles</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">조약돌들</td></tr>
+                <tr><td class="p-4"><b class="text-white">play house</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">소꿉놀이를 하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">violate</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">위반하다 / 침해하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">caught off guard</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">예상하지 못해 당황한 / 허를 찔린</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">put out the fires</h3>
+                <p class="text-sm text-slate-300">실제 불을 끈다는 뜻도 있지만, 계속 발생하는 문제나 위기를 급하게 해결한다는 비유적 의미로 자주 사용됩니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">play house</h3>
+                <p class="text-sm text-slate-300">아이들이 가족이나 집안일을 흉내 내며 역할놀이를 하는 것을 뜻합니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">violate</h3>
+                <p class="text-sm text-slate-300">법, 규정, 약속, 권리 등을 어기거나 침해할 때 사용하는 비교적 격식 있는 단어입니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">caught off guard</h3>
+                <p class="text-sm text-slate-300">예상하지 못한 상황이나 질문 때문에 준비 없이 당황한 상태를 뜻합니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Jake looked through the kitchen window for the third time in five minutes.</p>
+                <p class="mb-6">His eight-year-old sister, Lily, was sitting in the backyard, arranging <b class="highlight quiz-target" data-ans="pebbles" data-kor="조약돌들">pebbles</b> on a plastic plate.</p>
+                <p class="mb-6">Grandpa lowered his coffee. “She’s still there.”</p>
+                <p class="mb-6">“I know.”</p>
+                <p class="mb-6">“Then why do you keep checking?”</p>
+                <p class="mb-6">“Dad told me to watch her while he finishes his meeting.”</p>
+                <p class="mb-6">Grandpa glanced outside. “She’s playing with stones in a fenced yard. What could happen?”</p>
+                <p class="mb-6">“She could open the gate.”</p>
+                <p class="mb-6">“Then tell her not to.”</p>
+                <p class="mb-6">“I did.”</p>
+                <p class="mb-6">Grandpa shook his head. “When I was her age, I disappeared after breakfast and came home for dinner.”</p>
+                <p class="mb-6">“Did your parents know where you were?”</p>
+                <p class="mb-6">“Usually.”</p>
+                <p class="mb-6">“Usually?”</p>
+                <p class="mb-6">“As far as I remember.”</p>
+                <p class="mb-6">Jake looked outside again.</p>
+                <p class="mb-6">Lily held up the plate. “Jake! I made soup!”</p>
+                <p class="mb-6">“With rocks?”</p>
+                <p class="mb-6">“They’re potatoes!”</p>
+                <p class="mb-6">Grandpa smiled. “At least she knows how to <b class="highlight quiz-target" data-ans="play house" data-kor="소꿉놀이를 하다">play house</b>. Let her enjoy herself.”</p>
+                <p class="mb-6">“I am letting her enjoy herself.”</p>
+                <p class="mb-6">“You’re watching her like a prison guard.”</p>
+                <p class="mb-6">Jake turned from the window. “People expect parents to supervise children now. If something happens, Dad gets blamed.”</p>
+                <p class="mb-6">“For letting his daughter play in her own yard?”</p>
+                <p class="mb-6">“You’ve seen the neighborhood messages. Mrs. Harris complained because someone’s ball touched her flowers.”</p>
+                <p class="mb-6">“That woman needs a hobby.”</p>
+                <p class="mb-6">“She also has a camera facing our gate.”</p>
+                <p class="mb-6">Grandpa looked <b class="highlight quiz-target" data-ans="caught off guard" data-kor="예상하지 못해 당황한">caught off guard</b>. “Isn’t that a little extreme?”</p>
+                <p class="mb-6">“Exactly. If Lily leaves the yard, there’ll be a video online before Dad even knows she’s gone.”</p>
+                <p class="mb-6">Grandpa frowned. “That sounds like a <b class="highlight quiz-target" data-ans="violation" data-kor="위반">violation</b> of privacy.”</p>
+                <p class="mb-6">“Maybe, but it doesn’t stop people from doing it.”</p>
+                <p class="mb-6">From the hallway, Jake’s father, Paul, closed his laptop. He had been listening from the dining room.</p>
+                <p class="mb-6">“Dad, you’re right that children had more freedom,” Paul said.</p>
+                <p class="mb-6">Grandpa nodded. “Thank you.”</p>
+                <p class="mb-6">“But you had freedom because adults expected children to manage themselves. When I was Jake’s age, you made me watch my two younger brothers.”</p>
+                <p class="mb-6">“That taught you responsibility.”</p>
+                <p class="mb-6">You left me alone with them all day. There were no mobile phones, no emergency numbers on the refrigerator, and no way to reach you.</p>
+                <p class="mb-6">“We didn’t know any different.”</p>
+                <p class="mb-6">“I know. But when something went wrong, I had to <b class="highlight quiz-target" data-ans="put out the fires" data-kor="급한 문제들을 수습하다">put out the fires</b> before you came home.”</p>
+                <p class="mb-6">Jake leaned against the counter. “And now?”</p>
+                <p class="mb-6">Paul sighed. “Now Jake has responsibility, but everyone watches how he handles it. I send him instructions, the neighbors have cameras, and people online judge parents after seeing ten seconds of a situation.”</p>
+                <p class="mb-6">Grandpa considered this. “So I had freedom.”</p>
+                <p class="mb-6">“You did.”</p>
+                <p class="mb-6">“You had responsibility.”</p>
+                <p class="mb-6">“Without much support.”</p>
+                <p class="mb-6">“And Jake?”</p>
+                <p class="mb-6">Paul looked at his son. “Responsibility with constant supervision.”</p>
+                <p class="mb-6">Jake nodded. “That’s what I was trying to say.”</p>
+                <p class="mb-6">Grandpa looked toward the backyard. “Fair point.”</p>
+                <p class="mb-6">There was a brief silence.</p>
+                <p class="mb-6">Then Paul frowned.</p>
+                <p class="mb-6">“Where’s Lily?”</p>
+                <p class="mb-6">All three turned toward the window.</p>
+                <p class="mb-6">The plastic plate was still on the grass. The pebbles were scattered beside it.</p>
+                <p class="mb-6">The gate was open.</p>
+                <p class="mb-6">Grandpa slowly put down his coffee.</p>
+                <p class="mb-6">Jake whispered, “Uh-oh.”</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>제이크는 5분 사이에 세 번째로 부엌 창밖을 확인했다.</p>
+                <p>여덟 살인 여동생 릴리는 뒷마당에 앉아 플라스틱 접시 위에 <b class="highlight">조약돌들</b>을 늘어놓고 있었다.</p>
+                <p>할아버지는 커피잔을 내려놓았다. “아직 거기 있구나.”</p>
+                <p>“알아요.”</p>
+                <p>“그런데 왜 계속 확인하는 거냐?”</p>
+                <p>“아빠가 회의를 끝낼 동안 릴리를 지켜보라고 했어요.”</p>
+                <p>할아버지는 밖을 바라보았다. “울타리가 있는 마당에서 돌을 가지고 놀고 있잖아. 무슨 일이 생기겠니?”</p>
+                <p>“문을 열고 나갈 수도 있죠.”</p>
+                <p>“그러면 나가지 말라고 하면 되잖아.”</p>
+                <p>“말했어요.”</p>
+                <p>할아버지는 고개를 저었다. “내가 릴리 나이였을 때는 아침을 먹고 나가서 저녁에 돌아왔어.”</p>
+                <p>“증조부모님은 할아버지가 어디 있는지 아셨어요?”</p>
+                <p>“대부분은.”</p>
+                <p>“대부분이요?”</p>
+                <p>“제가 기억하기로는.”</p>
+                <p>제이크는 다시 밖을 확인했다.</p>
+                <p>릴리가 접시를 들어 보였다. “제이크! 수프 만들었어!”</p>
+                <p>“돌로?”</p>
+                <p>“감자야!”</p>
+                <p>할아버지가 미소를 지었다. “적어도 <b class="highlight">소꿉놀이를 하다</b>할 줄은 아는구나. 편하게 놀게 둬라.”</p>
+                <p>“편하게 놀게 두고 있어요.”</p>
+                <p>“교도관처럼 지켜보고 있잖아.”</p>
+                <p>제이크는 창문에서 몸을 돌렸다. “요즘은 부모가 아이를 감독해야 한다고 모두가 생각해요. 무슨 일이 생기면 아빠가 비난받는다고요.”</p>
+                <p>“자기 집 마당에서 딸을 놀게 했다는 이유로?”</p>
+                <p>“동네 단체 메시지 보셨잖아요. 해리스 아주머니는 어떤 아이의 공이 자기 꽃에 닿았다고 불평했어요.”</p>
+                <p>“그 여자는 취미가 필요해.”</p>
+                <p>“우리 집 문을 향하고 있는 카메라도 있어요.”</p>
+                <p>할아버지는 <b class="highlight">예상하지 못해 당황한</b> 듯 당황했다. “그건 좀 지나치지 않니?”</p>
+                <p>“바로 그거예요. 릴리가 마당을 나가면 아빠가 사라진 걸 알기도 전에 영상이 인터넷에 올라갈걸요.”</p>
+                <p>할아버지는 얼굴을 찌푸렸다. “그건 사생활 <b class="highlight">침해</b>처럼 들리는데.”</p>
+                <p>“그럴 수도 있지만, 사람들이 그런 행동을 하는 걸 막아 주지는 않죠.”</p>
+                <p>복도에서 제이크의 아빠 폴이 노트북을 닫았다. 그는 식당에서 두 사람의 대화를 듣고 있었다.</p>
+                <p>“아버지, 예전 아이들에게 자유가 더 많았다는 건 맞아요.” 폴이 말했다.</p>
+                <p>할아버지가 고개를 끄덕였다. “고맙구나.”</p>
+                <p>“하지만 그 자유는 어른들이 아이들이 스스로 알아서 하기를 기대했기 때문에 가능했던 거예요. 제가 제이크 나이였을 때 아버지는 저에게 어린 두 동생을 돌보게 하셨죠.”</p>
+                <p>“그렇게 책임감을 배운 거야.”</p>
+                <p>“하루 종일 저 혼자 두 아이를 돌보게 하셨잖아요. 휴대전화도 없었고, 냉장고에 비상 연락처도 없었고, 아버지께 연락할 방법도 없었어요.”</p>
+                <p>“그때는 다른 방법이 있는 줄 몰랐어.”</p>
+                <p>“알아요. 하지만 무슨 일이 생기면 아버지가 돌아오기 전에 제가 문제를 전부 <b class="highlight">수습해야 했어요</b>.”</p>
+                <p>제이크는 조리대에 기대었다. “그럼 지금은요?”</p>
+                <p>폴이 한숨을 쉬었다. “지금 제이크에게도 책임은 있지만, 모두가 그 책임을 어떻게 처리하는지 지켜봐. 나는 제이크에게 지시를 보내고, 이웃들은 카메라를 달아 놓고, 인터넷 사람들은 상황을 10초만 보고 부모를 평가하지.”</p>
+                <p>할아버지는 잠시 생각했다. “그러면 나에게는 자유가 있었고.”</p>
+                <p>“그랬죠.”</p>
+                <p>“너에게는 책임이 있었고.”</p>
+                <p>“도움은 거의 없었고요.”</p>
+                <p>“제이크는?”</p>
+                <p>폴은 아들을 바라보았다. “끊임없는 감시 속에서 책임을 지고 있지.”</p>
+                <p>제이크가 고개를 끄덕였다. “제가 말하려던 게 바로 그거예요.”</p>
+                <p>할아버지는 뒷마당을 바라보았다. “일리 있는 말이구나.”</p>
+                <p>잠시 침묵이 흘렀다.</p>
+                <p>그러다 폴이 얼굴을 찌푸렸다.</p>
+                <p>“릴리는 어디 있지?”</p>
+                <p>세 사람은 동시에 창문을 바라보았다.</p>
+                <p>플라스틱 접시는 여전히 잔디 위에 있었다. 조약돌들은 그 옆에 흩어져 있었다.</p>
+                <p>마당 문이 여려 있었다.</p>
+                <p>할아버지는 천천히 커피잔을 내려놓았다.</p>
+                <p>제이크가 작은 목소리로 말했다.</p>
+                <p>“큰일 났다.”</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "7201020.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

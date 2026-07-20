@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | A Message That Took Three Weeks</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">📼</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">A Message That Took Three Weeks</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">penpal</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">펜팔 친구</td></tr>
+                <tr><td class="p-4"><b class="text-white">nephew</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">조카</td></tr>
+                <tr><td class="p-4"><b class="text-white">made him read a book</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그에게 책을 읽게 했다</td></tr>
+                <tr><td class="p-4"><b class="text-white">cafeteria room</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">구내식당 / 급식실</td></tr>
+                <tr><td class="p-4"><b class="text-white">the best part</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">가장 좋은 부분 / 백미</td></tr>
+                <tr><td class="p-4"><b class="text-white">curfew</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">귀가 시간</td></tr>
+                <tr><td class="p-4"><b class="text-white">mixtape</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">여러 곡을 골라 녹음한 모음 테이프</td></tr>
+                <tr><td class="p-4"><b class="text-white">analog</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">아날로그 방식의</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">penpal</h3>
+                <p class="text-sm text-slate-300">편지를 주고받으며 관계를 이어 가는 친구를 뜻합니다. 직접 만난 적이 없는 사람일 수도 있습니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">made him read a book</h3>
+                <p class="text-sm text-slate-300">make + 사람 + 동사원형 구조로, 누군가에게 어떤 행동을 하도록 시켰다는 뜻입니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">the best part</h3>
+                <p class="text-sm text-slate-300">단순히 물건의 “가장 좋은 부분”뿐 아니라, 경험에서 가장 즐겁거나 인상적인 순간을 말할 때도 씁니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">curfew</h3>
+                <p class="text-sm text-slate-300">정해진 시간까지 집이나 기숙사로 돌아와야 하는 규칙입니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">mixtape</h3>
+                <p class="text-sm text-slate-300">좋아하는 노래들을 카세트테이프에 직접 녹음해 만든 모음집입니다. 과거에는 친구나 좋아하는 사람에게 선물하기도 했습니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">analog</h3>
+                <p class="text-sm text-slate-300">디지털 방식이 아닌, 테이프·바늘·필름처럼 물리적인 신호나 장치를 사용하는 방식을 말합니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Grandpa was holding a cassette tape when his grandson, Owen, walked into the living room.</p>
+                <p class="mb-6">“What is that?” Owen asked.</p>
+                <p class="mb-6">“A <b class="highlight quiz-target" data-ans="mixtape" data-kor="모음 테이프">mixtape</b>,” Grandpa said. “I made it for your grandmother before our first date.”</p>
+                <p class="mb-6">“You gave her a broken rectangle?”</p>
+                <p class="mb-6">“It isn’t broken. It’s <b class="highlight quiz-target" data-ans="analog" data-kor="아날로그 방식">analog</b>.”</p>
+                <p class="mb-6">Owen turned it over. “How did you send her the songs?”</p>
+                <p class="mb-6">“I recorded them from the radio.”</p>
+                <p class="mb-6">“How long did that take?”</p>
+                <p class="mb-6">“Several evenings. You had to wait for the right song and press the button at exactly the right moment.”</p>
+                <p class="mb-6">Owen stared at him. “Why didn’t you just send her a playlist?”</p>
+                <p class="mb-6">Grandpa sighed. “Because playlists didn’t exist. Back in my day, effort meant something.”</p>
+                <p class="mb-6">Owen sat down. “Sending a playlist takes effort. You have to choose the songs.”</p>
+                <p class="mb-6">“That takes five minutes.”</p>
+                <p class="mb-6">“It can take twenty.”</p>
+                <p class="mb-6">Grandpa looked offended. “Twenty minutes?”</p>
+                <p class="mb-6">Owen’s father, Peter, entered with two cups of tea. He had been listening from the kitchen.</p>
+                <p class="mb-6">Grandpa continued, “Young people today expect everything immediately. I had a <b class="highlight quiz-target" data-ans="penpal" data-kor="펜팔 친구">penpal</b> in Canada. A letter took three weeks to arrive.”</p>
+                <p class="mb-6">“That sounds terrible,” Owen said.</p>
+                <p class="mb-6">“That was <b class="highlight quiz-target" data-ans="the best part" data-kor="가장 좋은 부분">the best part</b>. Waiting made it exciting.”</p>
+                <p class="mb-6">“No, receiving the letter was the best part. Waiting was just waiting.”</p>
+                <p class="mb-6">Peter handed Grandpa a cup but remained silent.</p>
+                <p class="mb-6">Grandpa pointed at Owen’s phone. “You message your friends all day, yet you never make real plans.”</p>
+                <p class="mb-6">“I do make plans.”</p>
+                <p class="mb-6">“Last Saturday, you changed the meeting time six times.”</p>
+                <p class="mb-6">“That’s because everyone kept replying.”</p>
+                <p class="mb-6">When I was your age, we agreed on a place at school and simply appeared.”</p>
+                <p class="mb-6">“And if someone didn’t appear?”</p>
+                <p class="mb-6">“We waited.”</p>
+                <p class="mb-6">“For how long?”</p>
+                <p class="mb-6">“Sometimes an hour.”</p>
+                <p class="mb-6">Owen laughed. “Your generation wasted a lot of time.”</p>
+                <p class="mb-6">“We were patient.”</p>
+                <p class="mb-6">“You had no choice.”</p>
+                <p class="mb-6">Grandpa leaned forward. “Your father understood patience. When he was twelve, I took away his television and <b class="highlight quiz-target" data-ans="made him read a book" data-kor="책을 읽게 했다">made him read a book</b>.”</p>
+                <p class="mb-6">Peter finally spoke. “You took away the television because I missed my <b class="highlight quiz-target" data-ans="curfew" data-kor="귀가 시간">curfew</b> by ten minutes.”</p>
+                <p class="mb-6">“You needed discipline.”</p>
+                <p class="mb-6">“I missed it because the bus was late.”</p>
+                <p class="mb-6">“You should have taken an earlier bus.”</p>
+                <p class="mb-6">“The earlier bus came forty minutes earlier.”</p>
+                <p class="mb-6">Grandpa shrugged. “Then you would have been home safely.”</p>
+                <p class="mb-6">Owen smiled. “Dad, it sounds like Grandpa was pretty strict.”</p>
+                <p class="mb-6">Peter sat between them. “You both had it easier.”</p>
+                <p class="mb-6">Both turned toward him.</p>
+                <p class="mb-6">Grandpa frowned. “Explain.”</p>
+                <p class="mb-6">“Dad only had one house phone, so I couldn’t contact him when plans changed. Owen has a smartphone, so everyone expects me to know where he is every second.”</p>
+                <p class="mb-6">“That sounds convenient,” Grandpa said.</p>
+                <p class="mb-6">“It isn’t. When Owen doesn’t reply for five minutes, I worry. When I call, he says I’m controlling. When I don’t call, you say I’m too lenient.”</p>
+                <p class="mb-6">Owen looked down at his phone.</p>
+                <p class="mb-6">Peter continued, “I also have to organize family plans. Yesterday, your <b class="highlight quiz-target" data-ans="nephew" data-kor="조카">nephew</b> changed dinner twice, Owen changed it three times, and Dad arrived at the restaurant before anyone had agreed on a restaurant.”</p>
+                <p class="mb-6">“I was being prepared,” Grandpa said.</p>
+                <p class="mb-6">“You were sitting alone in a school <b class="highlight quiz-target" data-ans="cafeteria room" data-kor="급식실">cafeteria room</b>.”</p>
+                <p class="mb-6">Grandpa paused. “The buildings looked similar.”</p>
+                <p class="mb-6">Owen laughed.</p>
+                <p class="mb-6">Peter picked up the mixtape. “Your generation waited because you had no information. Owen’s generation never waits because it has too much information. My generation has to manage both.”</p>
+                <p class="mb-6">Grandpa nodded slowly. “Fair point.”</p>
+                <p class="mb-6">Owen held out his phone. “Can we listen to the mixtape?”</p>
+                <p class="mb-6">Grandpa smiled. “Certainly.”</p>
+                <p class="mb-6">Peter examined the tape. “Does anyone own a cassette player?”</p>
+                <p class="mb-6">The room went quiet.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>할아버지는 카세트테이프를 들고 있었고, 손자 오언이 거실로 들어왔다.</p>
+                <p>“그게 뭐예요?” 오언이 물었다.</p>
+                <p>“<b class="highlight">믹스테이프</b>야.” 할아버지가 말했다. “네 할머니와 첫 데이트를 하기 전에 만들어 줬지.”</p>
+                <p>“할머니한테 고장 난 직사각형을 주셨어요?”</p>
+                <p>“고장 난 게 아니야. <b class="highlight">아날로그 방식</b>인 거지.”</p>
+                <p>오언은 테이프를 뒤집어 보았다. “노래는 어떻게 보내셨어요?”</p>
+                <p>“라디오에서 직접 녹음했어.”</p>
+                <p>“얼마나 걸렸는데요?”</p>
+                <p>“며칠 저녁이 걸렸지. 원하는 노래가 나올 때까지 기다렸다가 정확한 순간에 녹음 버튼을 눌러야 했어.”</p>
+                <p>오언은 할아버지를 바라보았다. “그냥 재생 목록을 보내면 되잖아요.”</p>
+                <p>할아버지가 한숨을 쉬었다. “그때는 재생 목록이 없었어. 우리 때는 정성이 중요했지.”</p>
+                <p>오언은 자리에 앉았다. “재생 목록을 보내는 것도 정성이 필요해요. 노래를 골라야 하잖아요.”</p>
+                <p>“5분이면 되잖아.”</p>
+                <p>“20분 걸릴 수도 있어요.”</p>
+                <p>할아버지는 충격받은 표정을 지었다. “20분이나?”</p>
+                <p>오언의 아빠 피터가 차 두 잔을 들고 들어왔다. 그는 부엌에서 대화를 듣고 있었다.</p>
+                <p>할아버지가 계속 말했다. “요즘 젊은 사람들은 모든 것을 즉시 얻으려고 해. 나는 캐나다에 <b class="highlight">펜팔 친구</b>가 있었는데, 편지 한 통이 도착하는 데 3주나 걸렸어.”</p>
+                <p>“끔찍한데요.” 오언이 말했다.</p>
+                <p>“기다리는 게 <b class="highlight">가장 좋은 부분</b>이었어. 기다림이 있었기 때문에 더 설렜지.”</p>
+                <p>“아니요. 편지를 받는 게 가장 좋은 부분이었죠. 기다리는 건 그냥 기다리는 거예요.”</p>
+                <p>피터는 할아버지에게 차를 건넸지만 여전히 아무 말도 하지 않았다.</p>
+                <p>할아버지는 오언의 휴대전화를 가리켰다. “너는 하루 종일 친구들에게 메시지를 보내면서도 제대로 약속을 정하지 못하잖아.”</p>
+                <p>“저도 약속 정해요.”</p>
+                <p>“지난 토요일에는 만나는 시간을 여섯 번이나 바꿨잖아.”</p>
+                <p>“모두 계속 답장을 했기 때문이에요.”</p>
+                <p>“내가 네 나이였을 때는 학교에서 장소를 정하고 그냥 그곳에 나타났어.”</p>
+                <p>“누가 안 나타나면요?”</p>
+                <p>“기다렸지.”</p>
+                <p>“얼마나요?”</p>
+                <p>“한 시간 정도 기다릴 때도 있었어.”</p>
+                <p>오언이 웃었다. “할아버지 세대는 시간을 정말 많이 낭비했네요.”</p>
+                <p>“우리는 참을성이 있었어.”</p>
+                <p>“다른 선택이 없었던 거죠.”</p>
+                <p>할아버지는 몸을 앞으로 기울였다. “네 아버지는 인내심을 이해했어. 열두 살 때 내가 텔레비전을 치우고 <b class="highlight">책을 읽게 했</b>거든.”</p>
+                <p>피터가 마침내 입을 열었다. “제가 <b class="highlight">귀가 시간</b>보다 10분 늦었다고 텔레비전을 치우신 거잖아요.”</p>
+                <p>“훈육이 필요했어.”</p>
+                <p>“버스가 늦어서 그런 거였어요.”</p>
+                <p>“더 이른 버스를 탔어야지.”</p>
+                <p>“그 버스는 40분이나 일찍 왔어요.”</p>
+                <p>할아버지는 어깨를 으쓱했다. “그러면 안전하게 집에 왔을 거 아니냐.”</p>
+                <p>오언이 미소를 지었다. “아빠, 할아버지는 꽤 엄격했던 것 같네요.”</p>
+                <p>피터는 두 사람 사이에 앉았다. “두 분 다 저보다 편하게 살았어요.”</p>
+                <p>두 사람은 피터를 바라보았다.</p>
+                <p>할아버지가 얼굴을 찌푸렸다. “설명해 봐라.”</p>
+                <p>“아버지 세대에는 집 전화가 한 대뿐이라서 계획이 바뀌어도 연락할 수 없었어요. 오언에게는 스마트폰이 있으니 모두가 제가 아이의 위치를 매 순간 알고 있을 거라고 기대하죠.”</p>
+                <p>“편리한 것 같은데.” 할아버지가 말했다.</p>
+                <p>“그렇지 않아요. 오언이 5분 동안 답장을 안 하면 저는 걱정해요. 전화를 하면 통제하려 든다고 하고, 전화를 안 하면 아버지는 제가 너무 관대하다고 하시죠.”</p>
+                <p>오언은 휴대전화를 내려다보았다.</p>
+                <p>피터가 계속 말했다. “가족 약속도 제가 정리해야 해요. 어제는 아버지의 <b class="highlight">조카</b>가 저녁 시간을 두 번 바꾸고, 오언은 세 번 바꿨어요. 그런데 아버지는 식당이 정해지기도 전에 식당에 가 계셨죠.”</p>
+                <p>“난 준비성이 있었던 거야.” 할아버지가 말했다.</p>
+                <p>“아버지는 학교 <b class="highlight">급식실</b>에 혼자 앉아 계셨어요.”</p>
+                <p>할아버지는 잠시 멈췄다. “건물들이 비슷하게 생겼더구나.”</p>
+                <p>오언이 웃었다.</p>
+                <p>피터는 믹스테이프를 집어 들었다. “아버지 세대는 정보가 없어서 기다렸고, 오언 세대는 정보가 너무 많아서 전혀 기다리지 않아요. 제 세대는 그 두 세대를 모두 관리해야 해요.”</p>
+                <p>할아버지는 천천히 고개를 끄덕였다. “일리 있는 말이구나.”</p>
+                <p>오언은 휴대전화를 내밀었다. “그 믹스테이프를 들어 봐도 돼요?”</p>
+                <p>할아버지가 미소를 지었다. “물론이지.”</p>
+                <p>피터는 테이프를 살펴보았다. “그런데 우리 집에 카세트 플레이어가 있나요?”</p>
+                <p>방 안이 조용해졌다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "720830.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

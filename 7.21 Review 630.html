@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Expert’s First Day</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">📄</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Expert’s First Day</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">have more expertise</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">더 많은 전문 지식이 있다 / 더 전문성이 있다</td></tr>
+                <tr><td class="p-4"><b class="text-white">claude</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">클로드</td></tr>
+                <tr><td class="p-4"><b class="text-white">test screening</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">시사회 / 시험 상영</td></tr>
+                <tr><td class="p-4"><b class="text-white">Come to think of it...</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">생각해 보니…</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                <h3 class="font-bold text-teal-400">have more expertise</h3>
+                <p class="text-sm text-slate-300">보통 비교 대상이나 분야를 함께 말합니다. 예: She has more expertise in marketing than I do.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                <h3 class="font-bold text-teal-400">Claude</h3>
+                <p class="text-sm text-slate-300">문맥에 따라 사람 이름일 수도 있고, AI 서비스 이름일 수도 있습니다. 여기서는 회사에서 사용하는 AI 도구로 해석했습니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                <h3 class="font-bold text-teal-400">test screening</h3>
+                <p class="text-sm text-slate-300">영화나 광고를 정식 공개하기 전에 소수의 관객에게 먼저 보여 주고 반응을 확인하는 시험 상영을 뜻합니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                <h3 class="font-bold text-teal-400">Come to think of it...</h3>
+                <p class="text-sm text-slate-300">이야기하다가 갑자기 관련된 사실이 떠올랐을 때 쓰는 표현입니다. “그러고 보니”에 가깝습니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Daniel had written his résumé late at night after watching a video called Fake It Till You Make It. By midnight, he was an expert in artificial intelligence, international marketing, film production, and team management.</p>
+                <p class="mb-6">None of that was true.</p>
+                <p class="mb-6">On his first morning at BrightSide Media, his manager, Nina, introduced him to the content team.</p>
+                <p class="mb-6">“This is Daniel,” she said. “According to his résumé, he <b class="highlight quiz-target" data-ans="has more expertise" data-kor="더 전문성이 있다">has more expertise</b> in AI tools than anyone else here.”</p>
+                <p class="mb-6">Daniel smiled carefully. “Well, I’ve worked with several systems.”</p>
+                <p class="mb-6">A designer named Mia turned around. “Great. We’ve been having problems with <b class="highlight quiz-target" data-ans="Claude" data-kor="클로드">Claude</b>. It keeps changing the tone of our advertisements. Could you look at our prompts?”</p>
+                <p class="mb-6">“Of course,” Daniel said.</p>
+                <p class="mb-6">He had heard the name <b class="highlight quiz-target" data-ans="Claude" data-kor="클로드">Claude</b> once, but he thought it might be a French graphic designer.</p>
+                <p class="mb-6">Before he could escape, Nina took him to another department. A producer named Greg shook his hand.</p>
+                <p class="mb-6">“I’m glad you’re here,” Greg said. “We’re holding a <b class="highlight quiz-target" data-ans="test screening" data-kor="시험 상영">test screening</b> for our new commercial this afternoon. Nina says you have experience analyzing audience reactions.”</p>
+                <p class="mb-6">Daniel nodded. “Extensive experience.”</p>
+                <p class="mb-6">“Perfect. You can lead the discussion afterward.”</p>
+                <p class="mb-6">At lunch, Daniel met Sora from the international marketing team.</p>
+                <p class="mb-6">“I saw that you managed campaigns in Japan and France,” she said. “Which market was more difficult?”</p>
+                <p class="mb-6">Daniel took a long drink of water.</p>
+                <p class="mb-6">“They were difficult in different ways.”</p>
+                <p class="mb-6">“How?”</p>
+                <p class="mb-6">“The cultural… differences.”</p>
+                <p class="mb-6">Sora waited.</p>
+                <p class="mb-6">Daniel pointed toward the window. “That building has an interesting design.”</p>
+                <p class="mb-6">At two o’clock, Mia found him hiding near the printer.</p>
+                <p class="mb-6">“Did you fix the <b class="highlight quiz-target" data-ans="Claude" data-kor="클로드">Claude</b> problem?”</p>
+                <p class="mb-6">“I’m still reviewing it.”</p>
+                <p class="mb-6">“Reviewing what?”</p>
+                <p class="mb-6">“The general situation.”</p>
+                <p class="mb-6">Greg appeared behind her. “Daniel, the audience is ready for the <b class="highlight quiz-target" data-ans="screening" data-kor="시사회">screening</b>.”</p>
+                <p class="mb-6">Then Nina walked over with two executives.</p>
+                <p class="mb-6">“Daniel,” she said, “these are our company directors. They want to hear your AI strategy before the <b class="highlight quiz-target" data-ans="screening" data-kor="시사회">screening</b>.”</p>
+                <p class="mb-6">Daniel looked at Mia, Greg, Nina, and the directors. Everyone was waiting for him to demonstrate a skill he did not have.</p>
+                <p class="mb-6">“<b class="highlight quiz-target" data-ans="Come to think of it" data-kor="그러고 보니">Come to think of it</b>...” Nina said slowly, “your résumé doesn’t name any of the companies you worked for.”</p>
+                <p class="mb-6">Daniel opened his mouth, but no sound came out.</p>
+                <p class="mb-6">Mia folded her arms. “Do you actually know what <b class="highlight quiz-target" data-ans="Claude" data-kor="클로드">Claude</b> is?”</p>
+                <p class="mb-6">“Yes,” Daniel said weakly. “He’s… French?”</p>
+                <p class="mb-6">Nobody spoke.</p>
+                <p class="mb-6">Ten minutes later, Daniel was sitting in the lobby with his box of belongings. He had survived only five hours at BrightSide Media.</p>
+                <p class="mb-6">It was still longer than his “three years of management experience.”</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>다니엘은 ‘될 때까지 된 척하라’라는 영상을 본 뒤 늦은 밤에 이력서를 작성했다. 자정이 되었을 무렵, 그는 인공지능, 국제 마케팅, 영화 제작, 팀 관리 전문가가 되어 있었다.</p>
+                <p>물론 그중 사실인 것은 하나도 없었다.</p>
+                <p>브라이트사이드 미디어에서의 첫 출근 날 아침, 매니저 니나는 그를 콘텐츠 팀에 소개했다.</p>
+                <p>“이쪽은 다니엘이에요. 이력서에 따르면 우리 회사의 누구보다 AI 도구에 대한 <b class="highlight">전문성이 뛰어나다고</b> 하네요.”</p>
+                <p>다니엘은 조심스럽게 미소를 지었다.</p>
+                <p>“여러 시스템을 사용해 본 경험이 있습니다.”</p>
+                <p>미아라는 디자이너가 의자를 돌렸다.</p>
+                <p>“잘됐네요. 저희가 <b class="highlight">클로드</b> 때문에 계속 문제가 생기고 있거든요. 광고 문구의 분위기를 자꾸 바꿔 버려요. 프롬프트를 한번 봐 주실 수 있나요?”</p>
+                <p>“물론이죠.” 다니엘이 말했다.</p>
+                <p>그는 <b class="highlight">클로드</b>라는 이름을 한 번 들어 본 적은 있었지만, 프랑스인 그래픽 디자이너의 이름일지도 모른다고 생각했다.</p>
+                <p>그가 도망치기도 전에 니나는 그를 다른 부서로 데려갔다. 그렉이라는 프로듀서가 그의 손을 잡았다.</p>
+                <p>“와 주셔서 정말 다행이에요. 오늘 오후에 새 광고 <b class="highlight">시사회</b>를 열 예정입니다. 니나 말로는 관객 반응 분석 경험이 있으시다면서요?”</p>
+                <p>다니엘은 고개를 끄덕였다.</p>
+                <p>“경험이 아주 많습니다.”</p>
+                <p>“완벽하네요. 상영 후 토론을 진행해 주세요.”</p>
+                <p>점심시간에 다니엘은 국제 마케팅 팀의 소라를 만났다.</p>
+                <p>“일본과 프랑스에서 캠페인을 관리하셨다고 봤어요. 어느 시장이 더 어려웠나요?”</p>
+                <p>다니엘은 물을 한참 마셨다.</p>
+                <p>“서로 다른 면에서 어려웠습니다.”</p>
+                <p>“어떤 면에서요?”</p>
+                <p>“문화적인… 차이요.”</p>
+                <p>소라는 대답을 기다렸다.</p>
+                <p>다니엘은 창밖을 가리켰다.</p>
+                <p>“저 건물 디자인이 흥미롭네요.”</p>
+                <p>두 시가 되자 미아는 프린터 근처에 숨어 있는 그를 발견했다.</p>
+                <p>“<b class="highlight">클로드</b> 문제는 해결하셨어요?”</p>
+                <p>“아직 검토 중입니다.”</p>
+                <p>“무엇을 검토하고 있는데요?”</p>
+                <p>“전반적인 상황이요.”</p>
+                <p>그때 그렉이 미아 뒤에 나타났다.</p>
+                <p>“다니엘, 관객들이 <b class="highlight">시사회</b>를 기다리고 있어요.”</p>
+                <p>그러자 니나가 임원 두 명과 함께 걸어왔다.</p>
+                <p>“다니엘, 이분들은 우리 회사 임원분들이에요. <b class="highlight">시사회</b> 전에 당신의 AI 전략을 듣고 싶어 하세요.”</p>
+                <p>다니엘은 미아와 그렉, 니나, 그리고 임원들을 바라보았다. 모두가 그에게 실제로는 없는 능력을 보여 주기를 기다리고 있었다.</p>
+                <p>“<b class="highlight">그러고 보니</b>…” 니나가 천천히 말했다. “이력서에 근무했던 회사 이름이 하나도 적혀 있지 않네요.”</p>
+                <p>다니엘은 입을 열었지만 아무 소리도 나오지 않았다.</p>
+                <p>미아가 팔짱을 꼈다.</p>
+                <p>“<b class="highlight">클로드</b>가 뭔지는 정말 알고 있어요?”</p>
+                <p>“네.” 다니엘이 힘없이 말했다. “프랑스 사람… 아닌가요?”</p>
+                <p>아무도 말하지 않았다.</p>
+                <p>10분 후, 다니엘은 자신의 물건이 든 상자를 들고 로비에 앉아 있었다. 브라이트사이드 미디어에서 그는 겨우 다섯 시간을 버텼다.</p>
+                <p>그래도 이력서에 적힌 ‘3년의 관리 경험’보다는 긴 시간이었다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "721630.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

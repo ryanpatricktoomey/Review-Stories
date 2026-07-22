@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Singer Returns</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🎤</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Singer Returns</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">foggy</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">안개가 낀 / 기억이 흐릿한</td></tr>
+                <tr><td class="p-4"><b class="text-white">book cover</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">책 표지</td></tr>
+                <tr><td class="p-4"><b class="text-white">enthusiastic</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">열정적인 / 의욕이 넘치는</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">foggy</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">날씨가 안개 낀 상태뿐 아니라 기억이나 생각이 선명하지 않은 상태도 표현할 수 있어요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">book cover</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">문자 그대로는 책 표지예요. 사람의 겉모습을 뜻하는 비유와 함께 쓰이기도 해요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">At fifty-one, Daniel decided that he had become boring.</p>
+                <p class="mb-6">He used to sing in a rock band in high school. They had performed at school festivals, birthday parties, and one restaurant opening where nobody listened.</p>
+                <p class="mb-6">Still, Daniel remembered himself as a powerful singer.</p>
+                <p class="mb-6">His memories were a little <b class="highlight quiz-target" data-ans="foggy" data-kor="기억이 흐릿한">foggy</b>, but he clearly remembered people cheering.</p>
+                <p class="mb-6">One evening, he saw an advertisement for an open-mic night at a music café. He immediately signed up.</p>
+                <p class="mb-6">When he arrived, the café was full of young musicians carrying tablets, wireless microphones, and small electronic instruments. Daniel carried a dusty folder of printed lyrics.</p>
+                <p class="mb-6">A very <b class="highlight quiz-target" data-ans="enthusiastic" data-kor="열정적인 / 의욕이 넘치는">enthusiastic</b> host met him at the door.</p>
+                <p class="mb-6">“Daniel! You’re our oldest performer tonight.”</p>
+                <p class="mb-6">Daniel paused.</p>
+                <p class="mb-6">“I prefer ‘most experienced.’”</p>
+                <p class="mb-6">“Of course.”</p>
+                <p class="mb-6">The host showed him a tablet. “Please upload your backing track.”</p>
+                <p class="mb-6">“My what?”</p>
+                <p class="mb-6">“The music you’ll sing over.”</p>
+                <p class="mb-6">Daniel opened his folder. “I brought the lyrics.”</p>
+                <p class="mb-6">The host waited.</p>
+                <p class="mb-6">Daniel waited too.</p>
+                <p class="mb-6">Finally, the host asked, “Do you have the song on your phone?”</p>
+                <p class="mb-6">Daniel did, but only as a video someone had sent him through a family group chat. The first twenty seconds included his sister talking about a recipe.</p>
+                <p class="mb-6">They managed to cut that part out.</p>
+                <p class="mb-6">While Daniel waited backstage, he noticed a poster for the event. His name appeared beside a photograph from social media.</p>
+                <p class="mb-6">The photo showed him wearing reading glasses and holding a gardening tool.</p>
+                <p class="mb-6">“That picture makes me look old,” he said.</p>
+                <p class="mb-6">The host looked at the poster. “It was the only public photo we found.”</p>
+                <p class="mb-6">Daniel pointed at it. “You shouldn’t judge a book by its <b class="highlight quiz-target" data-ans="book cover" data-kor="책 표지">cover</b>.”</p>
+                <p class="mb-6">“I’m not judging you.”</p>
+                <p class="mb-6">“The audience will.”</p>
+                <p class="mb-6">When his name was announced, Daniel walked confidently onto the stage.</p>
+                <p class="mb-6">Then the backing track started in the wrong key.</p>
+                <p class="mb-6">Daniel missed the first line.</p>
+                <p class="mb-6">He tried again, but the lyrics on the screen moved too quickly. He leaned forward to read them, accidentally touched the screen, and opened an advertisement.</p>
+                <p class="mb-6">The music continued without him.</p>
+                <p class="mb-6">Someone in the audience shouted, “You can do it!”</p>
+                <p class="mb-6">Daniel lifted the microphone and began singing from memory.</p>
+                <p class="mb-6">His voice cracked on the first high note.</p>
+                <p class="mb-6">He lowered the song by an octave.</p>
+                <p class="mb-6">Then another octave.</p>
+                <p class="mb-6">By the final chorus, he was almost speaking.</p>
+                <p class="mb-6">The audience still clapped, partly because he had finished and partly because he looked exhausted.</p>
+                <p class="mb-6">The host returned to the stage.</p>
+                <p class="mb-6">“How do you feel?”</p>
+                <p class="mb-6">Daniel took a long breath.</p>
+                <p class="mb-6">“Different from how I remember.”</p>
+                <p class="mb-6">“Will you perform again?”</p>
+                <p class="mb-6">Daniel looked at the cheering crowd.</p>
+                <p class="mb-6">“Yes,” he said. “But next time, I’m bringing a chair.”</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>쉰한 살이 된 대니얼은 자신이 지루한 사람이 되었다고 생각했다.</p>
+                <p>그는 고등학생 때 록 밴드에서 노래했다. 그는 학교 축제와 생일 파티, 그리고 아무도 듣지 않았던 한 식당 개업식에서도 공연했다.</p>
+                <p>그래도 대니얼은 자신이 힘 있는 가수였다고 기억했다.</p>
+                <p>기억은 조금 <b class="highlight">흐릿했지만</b>, 사람들이 환호했다는 것은 분명히 기억했다.</p>
+                <p>어느 날 저녁, 그는 한 음악 카페에서 열리는 오픈 마이크 행사 광고를 보았다. 그는 즉시 신청했다.</p>
+                <p>카페에 도착하자 젊은 음악가들이 태블릿과 무선 마이크, 작은 전자 악기를 들고 있었다. 대니얼은 오래된 종이 가사 폴더를 들고 왔다.</p>
+                <p>아주 <b class="highlight">열정적인</b> 진행자가 입구에서 그를 맞았다.</p>
+                <p>“대니얼 씨! 오늘 가장 나이가 많은 공연자세요.”</p>
+                <p>대니얼은 잠시 멈췄다.</p>
+                <p>“가장 경험이 많은 공연자라고 해 주세요.”</p>
+                <p>“물론이죠.”</p>
+                <p>진행자는 그에게 태블릿을 보여 주었다.</p>
+                <p>“반주 음원을 업로드해 주세요.”</p>
+                <p>“뭘요?”</p>
+                <p>“노래하실 때 사용할 음악이요.”</p>
+                <p>대니얼은 폴더를 열었다.</p>
+                <p>“가사는 가져왔어요.”</p>
+                <p>진행자는 기다렸다.</p>
+                <p>대니얼도 기다렸다.</p>
+                <p>마침내 진행자가 물었다.</p>
+                <p>“노래가 휴대전화에 있나요?”</p>
+                <p>노래는 있었지만, 가족 단체 채팅방에서 누군가 보내 준 영상으로만 있었다. 첫 20초에는 여동생이 요리법에 대해 이야기하는 소리가 들어 있었다.</p>
+                <p>그들은 그 부분을 겨우 잘라 냈다.</p>
+                <p>무대 뒤에서 기다리던 대니얼은 행사 포스터를 발견했다. 그의 이름 옆에는 SNS에서 가져온 사진이 있었다.</p>
+                <p>사진 속 그는 돋보기를 쓰고 원예 도구를 들고 있었다.</p>
+                <p>“이 사진은 나를 늙어 보이게 해요.”</p>
+                <p>그가 말했다.</p>
+                <p>진행자는 포스터를 보았다.</p>
+                <p>“공개된 사진이 그것뿐이었어요.”</p>
+                <p>대니얼은 사진을 가리켰다.</p>
+                <p>“<b class="highlight">책 표지만</b> 보고 판단하면 안 되죠.”</p>
+                <p>“저는 판단하지 않았어요.”</p>
+                <p>“관객이 할 거예요.”</p>
+                <p>이름이 불리자 대니얼은 자신 있게 무대로 걸어 나갔다.</p>
+                <p>그런데 반주가 잘못된 음정으로 시작됐다.</p>
+                <p>대니얼은 첫 소절을 놓쳤다.</p>
+                <p>다시 시도했지만 화면의 가사가 너무 빠르게 움직였다. 그는 읽으려고 몸을 앞으로 숙이다 화면을 잘못 눌러 광고를 열었다.</p>
+                <p>음악은 그 없이 계속 흘러갔다.</p>
+                <p>관객 중 누군가가 외쳤다.</p>
+                <p>“할 수 있어요!”</p>
+                <p>대니얼은 마이크를 들고 기억에 의지해 노래하기 시작했다.</p>
+                <p>첫 고음에서 목소리가 갈라졌다.</p>
+                <p>그는 한 옥타브 낮춰 불렀다.</p>
+                <p>그다음에는 한 옥타브를 더 낮췄다.</p>
+                <p>마지막 후렴에서는 거의 말하듯 노래하고 있었다.</p>
+                <p>관객들은 그래도 박수를 쳤다. 그가 끝까지 마쳤기 때문이기도 했고, 너무 지쳐 보였기 때문이기도 했다.</p>
+                <p>진행자가 무대로 돌아왔다.</p>
+                <p>“기분이 어떠세요?”</p>
+                <p>대니얼은 길게 숨을 쉬었다.</p>
+                <p>“기억하던 것과 다르네요.”</p>
+                <p>“다시 공연하실 건가요?”</p>
+                <p>대니얼은 환호하는 관객을 바라보았다.</p>
+                <p>“네. 하지만 다음에는 의자를 가져올 겁니다.”</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "722830.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

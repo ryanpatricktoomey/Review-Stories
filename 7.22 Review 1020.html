@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Black Belt</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🥋</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Black Belt</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">once a year</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">일 년에 한 번</td></tr>
+                <tr><td class="p-4"><b class="text-white">she is the glue</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그녀가 사람들을 하나로 묶어 주는 중심이다</td></tr>
+                <tr><td class="p-4"><b class="text-white">attached at the hip</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">항상 붙어 다니다</td></tr>
+                <tr><td class="p-4"><b class="text-white">the next day</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">다음 날</td></tr>
+                <tr><td class="p-4"><b class="text-white">my muscles were aching</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">근육이 쑤시고 아팠어요</td></tr>
+                <tr><td class="p-4"><b class="text-white">so sore</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">몸이 너무 뻐근한 / 너무 아픈</td></tr>
+                <tr><td class="p-4"><b class="text-white">high blood sugar</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">고혈당 / 높은 혈당 수치</td></tr>
+                <tr><td class="p-4"><b class="text-white">it's my life</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">내 인생이야</td></tr>
+                <tr><td class="p-4"><b class="text-white">none of your business</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">네가 상관할 일이 아니야</td></tr>
+                <tr><td class="p-4"><b class="text-white">i only recently...</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">나는 최근에야 비로소…</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">she is the glue</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">그녀가 가족이나 모임의 사람들을 서로 이어 주는 중심이라는 비유예요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">attached at the hip</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">두 사람이 거의 항상 함께 다니며 매우 가까운 사이라는 뜻이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">none of your business</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">“네가 상관할 일이 아니야”라는 강한 표현이에요. 말투에 따라 무례하게 들릴 수 있어요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">I only recently…</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">어떤 일을 최근에야 시작했거나 알게 되었다는 점을 강조해요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">At forty-nine, Michael began telling people that he needed a challenge.</p>
+                <p class="mb-6">His wife said he needed more sleep. His doctor said he needed to watch his <b class="highlight quiz-target" data-ans="high blood sugar" data-kor="높은 혈당 수치">high blood sugar</b>. Michael ignored both of them.</p>
+                <p class="mb-6">As a teenager, he had studied karate. He had been fast, flexible, and completely convinced that he was dangerous.</p>
+                <p class="mb-6">He had not entered a martial arts studio in thirty years, but he still attended a school reunion <b class="highlight quiz-target" data-ans="once a year" data-kor="일 년에 한 번">once a year</b> and told the same story about breaking a board with one kick.</p>
+                <p class="mb-6">His wife, Anna, usually stopped him before the story became too long. In their family, <b class="highlight quiz-target" data-ans="she was the glue" data-kor="그녀가 사람들을 하나로 묶어 주는 중심이었다">she was the glue</b>. She remembered birthdays, solved arguments, and prevented Michael from making unnecessary purchases.</p>
+                <p class="mb-6">So when Michael bought a new uniform and announced that he was returning to karate, Anna asked one question.</p>
+                <p class="mb-6">“Why?”</p>
+                <p class="mb-6">“<b class="highlight quiz-target" data-ans="It's my life" data-kor="내 인생이야">It’s my life</b>.”</p>
+                <p class="mb-6">“That is not an answer.”</p>
+                <p class="mb-6">Michael tied his belt. “You wouldn’t understand.”</p>
+                <p class="mb-6">Anna looked at the bright white uniform. “You and bad decisions are <b class="highlight quiz-target" data-ans="attached at the hip" data-kor="항상 붙어 다니다">attached at the hip</b>.”</p>
+                <p class="mb-6">At the studio, the instructor was a woman in her twenties.</p>
+                <p class="mb-6">Michael smiled politely. “I trained before you were born.”</p>
+                <p class="mb-6">She smiled back. “Then you may remember how to bow.”</p>
+                <p class="mb-6">Michael bowed too deeply and nearly fell forward.</p>
+                <p class="mb-6">The class began with stretching.</p>
+                <p class="mb-6">After three minutes, Michael’s legs were shaking.</p>
+                <p class="mb-6">A teenager beside him asked, “Are you okay?”</p>
+                <p class="mb-6">“<b class="highlight quiz-target" data-ans="None of your business" data-kor="네가 상관할 일이 아니야">None of your business</b>,” Michael whispered.</p>
+                <p class="mb-6">The teenager moved away.</p>
+                <p class="mb-6">When the instructor asked everyone to kick a padded target, Michael volunteered to go first.</p>
+                <p class="mb-6">He stepped forward dramatically.</p>
+                <p class="mb-6">“<b class="highlight quiz-target" data-ans="I only recently" data-kor="나는 최근에야 비로소">I only recently</b> started training again,” he said, “but the body remembers.”</p>
+                <p class="mb-6">He kicked.</p>
+                <p class="mb-6">His supporting foot slipped, his arms flew out, and he landed on the mat with one leg still raised.</p>
+                <p class="mb-6">The room became silent.</p>
+                <p class="mb-6">Michael slowly lowered his leg.</p>
+                <p class="mb-6">The instructor crouched beside him. “Should I call someone?”</p>
+                <p class="mb-6">“No. That was controlled.”</p>
+                <p class="mb-6">“It did not look controlled.”</p>
+                <p class="mb-6">“It was an advanced fall.”</p>
+                <p class="mb-6">She helped him stand and suggested he join the beginner group.</p>
+                <p class="mb-6">Michael wanted to object, but the beginner group was watching. Most of them were children.</p>
+                <p class="mb-6">He spent the rest of class learning how to stand properly.</p>
+                <p class="mb-6"><b class="highlight quiz-target" data-ans="The next day" data-kor="다음 날">The next day</b>, Anna found him moving sideways down the stairs.</p>
+                <p class="mb-6">“What happened?”</p>
+                <p class="mb-6">“<b class="highlight quiz-target" data-ans="My muscles were aching" data-kor="근육이 쑤시고 아팠어요">My muscles were aching</b> when I woke up.”</p>
+                <p class="mb-6">She waited.</p>
+                <p class="mb-6">“I’m <b class="highlight quiz-target" data-ans="so sore" data-kor="몸이 너무 뻐근한">so sore</b> that turning around has become a major decision.”</p>
+                <p class="mb-6">“Are you going back?”</p>
+                <p class="mb-6">Michael carefully lowered himself onto a chair.</p>
+                <p class="mb-6">“Yes.”</p>
+                <p class="mb-6">Anna looked surprised.</p>
+                <p class="mb-6">He sighed. “But I may need the children’s class.”</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>마흔아홉 살이 된 마이클은 자신에게 도전이 필요하다고 사람들에게 말하기 시작했다.</p>
+                <p>아내는 잠을 더 자야 한다고 했고, 의사는 <b class="highlight">높은 혈당을</b> 조심해야 한다고 했다. 마이클은 둘 다 무시했다.</p>
+                <p>십 대 시절 그는 가라테를 배웠다. 그는 빠르고 유연했으며, 자신이 매우 위험한 사람이라고 굳게 믿었다.</p>
+                <p>30년 동안 무술 도장에 들어간 적은 없었지만, 그는 <b class="highlight">일 년에 한 번</b> 동창회에 참석해 한 번의 발차기로 송판을 깼던 이야기를 반복했다.</p>
+                <p>아내 안나는 보통 그 이야기가 너무 길어지기 전에 막았다. 가족 안에서 <b class="highlight">그녀는 사람들을 하나로 묶어 주는 중심이었다</b>. 그녀는 생일을 기억하고, 다툼을 해결하고, 마이클이 불필요한 물건을 사는 것을 막았다.</p>
+                <p>그래서 마이클이 새 도복을 사고 가라테를 다시 시작하겠다고 발표했을 때, 안나는 한 가지를 물었다.</p>
+                <p>“왜?”</p>
+                <p>“<b class="highlight">내 인생이야</b>.”</p>
+                <p>“그건 대답이 아니야.”</p>
+                <p>마이클은 띠를 묶었다.</p>
+                <p>“당신은 이해 못 할 거야.”</p>
+                <p>안나는 새하얀 도복을 바라보았다.</p>
+                <p>“당신이랑 나쁜 결정은 <b class="highlight">늘 붙어 다니네</b>.”</p>
+                <p>도장에 도착하자 지도자는 스무 살쯤 되어 보이는 여성이었다.</p>
+                <p>마이클은 정중하게 미소를 지었다.</p>
+                <p>“당신이 태어나기 전부터 수련했어요.”</p>
+                <p>그녀도 미소를 지었다.</p>
+                <p>“그럼 인사하는 법은 기억하시겠네요.”</p>
+                <p>마이클은 너무 깊이 숙여 앞으로 넘어질 뻔했다.</p>
+                <p>수업은 스트레칭으로 시작했다.</p>
+                <p>3분이 지나자 마이클의 다리가 떨리기 시작했다.</p>
+                <p>옆에 있던 십 대 학생이 물었다.</p>
+                <p>“괜찮으세요?”</p>
+                <p>“<b class="highlight">네가 상관할 일이 아니야</b>.” 마이클이 작은 목소리로 말했다.</p>
+                <p>그 학생은 멀리 이동했다.</p>
+                <p>지도자가 모두에게 패드를 발로 차 보라고 하자, 마이클은 먼저 하겠다고 나섰다.</p>
+                <p>그는 극적으로 앞으로 걸어 나갔다.</p>
+                <p>“<b class="highlight">최근에야</b> 다시 수련을 시작했지만 몸은 기억합니다.” 그가 말했다.</p>
+                <p>그는 발차기를 했다.</p>
+                <p>버티고 있던 발이 미끄러졌고, 두 팔이 허공으로 뻗었으며, 한쪽 다리를 든 채 매트 위에 쓰러졌다.</p>
+                <p>도장은 조용해졌다.</p>
+                <p>마이클은 천천히 다리를 내렸다.</p>
+                <p>지도자는 그의 옆에 쪼그려 앉았다.</p>
+                <p>“누군가 불러 드릴까요?”</p>
+                <p>“아니요. 통제된 동작이었습니다.”</p>
+                <p>“통제된 것처럼 보이지 않았는데요.”</p>
+                <p>“고급 낙법이었어요.”</p>
+                <p>그녀는 마이클을 일으켜 세운 뒤 초급반에 들어가 보라고 제안했다.</p>
+                <p>마이클은 반대하고 싶었지만, 초급반 학생들이 그를 보고 있었다. 대부분 아이들이었다.</p>
+                <p>그는 남은 시간 동안 제대로 서는 법을 배웠다.</p>
+                <p><b class="highlight">다음 날</b>, 안나는 마이클이 계단을 옆으로 내려오는 모습을 발견했다.</p>
+                <p>“무슨 일이야?”</p>
+                <p>“아침에 일어났더니 <b class="highlight">근육이 쑤시고 아팠어</b>.”</p>
+                <p>안나는 기다렸다.</p>
+                <p>“<b class="highlight">몸이 너무 뻐근해서</b> 방향을 바꾸는 것도 큰 결정이 됐어.”</p>
+                <p>“다시 갈 거야?”</p>
+                <p>마이클은 조심스럽게 의자에 앉았다.</p>
+                <p>“응.”</p>
+                <p>안나는 놀란 표정을 지었다.</p>
+                <p>그가 한숨을 쉬었다.</p>
+                <p>“하지만 어린이 반에 들어가야 할지도 몰라.”</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved =="false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "7221020.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Outdoor Expert</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🥾</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Outdoor Expert</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">prairies</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">대초원</td></tr>
+                <tr><td class="p-4"><b class="text-white">plains</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">평원</td></tr>
+                <tr><td class="p-4"><b class="text-white">cardio</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">유산소 운동</td></tr>
+                <tr><td class="p-4"><b class="text-white">resistance training</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">저항 운동 / 근력 운동</td></tr>
+                <tr><td class="p-4"><b class="text-white">trekking</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">트레킹 / 장거리 걷기</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">prairies</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">나무가 거의 없고 풀이 넓게 펼쳐진 대초원 지대를 뜻해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">plains</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">넓고 평평한 땅을 가리키는 일반적인 지형 표현이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">cardio</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">심장 박동을 높이는 유산소 운동을 뜻하는 캐주얼한 표현이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">resistance training</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">웨이트, 밴드, 체중 등을 이용해 근육에 저항을 주는 운동이에요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">At fifty-two, Graham began to worry that he had become too comfortable.</p>
+                <p class="mb-6">He drove everywhere, used the elevator to reach the second floor, and considered walking to the mailbox a serious form of <b class="highlight quiz-target" data-ans="cardio" data-kor="유산소 운동">cardio</b>.</p>
+                <p class="mb-6">Then he found an old photograph from his university days. In it, Graham stood on a mountain trail with a huge backpack and a confident smile.</p>
+                <p class="mb-6">He had loved <b class="highlight quiz-target" data-ans="trekking" data-kor="트레킹 / 장거리 걷기">trekking</b> when he was young. At least, that was how he remembered it.</p>
+                <p class="mb-6">A week later, he signed up for a weekend hiking course called “Across the Open <b class="highlight quiz-target" data-ans="Plains" data-kor="평원">Plains</b>.” The advertisement showed healthy people walking through golden <b class="highlight quiz-target" data-ans="prairies" data-kor="대초원">prairies</b> beneath a clear blue sky.</p>
+                <p class="mb-6">Graham bought expensive boots, a professional backpack, and two metal walking poles. He also wore a shirt that said ADVENTURE HAS NO AGE.</p>
+                <p class="mb-6">At the meeting point, the guide looked at his equipment.</p>
+                <p class="mb-6">“Have you done much hiking recently?”</p>
+                <p class="mb-6">Graham smiled. “I used to do this all the time.”</p>
+                <p class="mb-6">“How recently?”</p>
+                <p class="mb-6">Graham pretended not to hear.</p>
+                <p class="mb-6">The group began walking across a wide grassy field. There were no mountains, steep paths, or dangerous cliffs. Graham felt disappointed.</p>
+                <p class="mb-6">“This is easier than I expected,” he told a young man beside him.</p>
+                <p class="mb-6">Ten minutes later, Graham was breathing heavily.</p>
+                <p class="mb-6">The young man asked, “Are you okay?”</p>
+                <p class="mb-6">“Of course. I’m controlling my breathing.”</p>
+                <p class="mb-6">Graham tried to drink from the tube attached to his water bag. Instead, he blew air into it and made the bag swell inside his backpack.</p>
+                <p class="mb-6">The guide stopped.</p>
+                <p class="mb-6">“Your water system is connected backward.”</p>
+                <p class="mb-6">“I was testing the pressure.”</p>
+                <p class="mb-6">After another twenty minutes, the group reached a small hill.</p>
+                <p class="mb-6">Graham raised both walking poles and announced, “Now the real challenge begins.”</p>
+                <p class="mb-6">The hill took less than a minute to climb.</p>
+                <p class="mb-6">At the top, Graham leaned forward with both hands on his knees.</p>
+                <p class="mb-6">The guide said, “We recommend <b class="highlight quiz-target" data-ans="resistance training" data-kor="저항 운동 / 근력 운동">resistance training</b> before the advanced course.”</p>
+                <p class="mb-6">“I already do that.”</p>
+                <p class="mb-6">“What kind?”</p>
+                <p class="mb-6">Graham thought for a moment. “I carry groceries.”</p>
+                <p class="mb-6">During lunch, he tried to sit on a portable camping stool. It folded under him, and he slowly disappeared into the tall grass with his sandwich still in his hand.</p>
+                <p class="mb-6">Nobody spoke.</p>
+                <p class="mb-6">Graham lifted the sandwich above the grass.</p>
+                <p class="mb-6">“It’s fine,” he said. “The food survived.”</p>
+                <p class="mb-6">By the end of the course, his new boots had given him two blisters, one walking pole was bent, and the words on his shirt were covered in mud.</p>
+                <p class="mb-6">The guide asked whether he planned to return.</p>
+                <p class="mb-6">Graham looked across the peaceful plains.</p>
+                <p class="mb-6">“Yes,” he said. “But first, I’m going to start with the mailbox.”</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>쉰두 살이 된 그레이엄은 자신이 너무 편안한 삶에 익숙해진 것은 아닌지 걱정하기 시작했다.</p>
+                <p>그는 어디든 차를 타고 다녔고, 2층에 갈 때도 엘리베이터를 이용했으며, 우편함까지 걷는 것을 상당한 <b class="highlight">유산소 운동이라고</b> 생각했다.</p>
+                <p>그러던 중 그는 대학 시절 찍은 오래된 사진 한 장을 발견했다. 사진 속 그레이엄은 커다란 배낭을 메고 자신감 넘치는 미소를 지으며 산길에 서 있었다.</p>
+                <p>그는 젊었을 때 <b class="highlight">트레킹을</b> 좋아했다. 적어도 그의 기억 속에서는 그랬다.</p>
+                <p>일주일 뒤, 그는 ‘탁 트인 <b class="highlight">평원</b> 횡단’이라는 주말 하이킹 과정에 신청했다. 광고에는 건강해 보이는 사람들이 맑고 푸른 하늘 아래 황금빛 <b class="highlight">대초원을</b> 걷는 모습이 담겨 있었다.</p>
+                <p>그레이엄은 비싼 등산화와 전문가용 배낭, 금속 등산 스틱 두 개를 샀다. 그리고 ‘모험에는 나이가 없다’라고 적힌 셔츠도 입었다.</p>
+                <p>집합 장소에서 가이드가 그의 장비를 바라보았다.</p>
+                <p>“최근에 하이킹을 많이 하셨나요?”</p>
+                <p>그레이엄은 미소를 지었다.</p>
+                <p>“예전에는 항상 했죠.”</p>
+                <p>“얼마나 최근에요?”</p>
+                <p>그레이엄은 못 들은 척했다.</p>
+                <p>일행은 넓은 풀밭을 가로질러 걷기 시작했다. 산도, 가파른 길도, 위험한 절벽도 없었다. 그레이엄은 실망했다.</p>
+                <p>“생각보다 쉽네요.”</p>
+                <p>그는 옆에 있던 젊은 남자에게 말했다.</p>
+                <p>10분 뒤, 그레이엄은 거칠게 숨을 쉬고 있었다.</p>
+                <p>젊은 남자가 물었다.</p>
+                <p>“괜찮으세요?”</p>
+                <p>“물론이죠. 호흡을 조절하고 있는 겁니다.”</p>
+                <p>그레이엄은 물주머니에 연결된 호스로 물을 마시려고 했다. 하지만 물을 마시는 대신 호스 안으로 바람을 불어넣었고, 배낭 속 물주머니가 부풀어 올랐다.</p>
+                <p>가이드가 멈춰 섰다.</p>
+                <p>“급수 장치를 반대로 연결하셨어요.”</p>
+                <p>“압력을 시험하고 있었습니다.”</p>
+                <p>20분쯤 더 걸은 뒤, 일행은 작은 언덕에 도착했다.</p>
+                <p>그레이엄은 등산 스틱 두 개를 들어 올리며 선언했다.</p>
+                <p>“이제 진짜 도전이 시작되는군요.”</p>
+                <p>언덕을 오르는 데는 1분도 걸리지 않았다.</p>
+                <p>정상에 도착한 그레이엄은 두 손으로 무릎을 짚고 몸을 숙였다.</p>
+                <p>가이드가 말했다.</p>
+                <p>“고급 과정에 참가하시기 전에 <b class="highlight">근력 운동을</b> 하시는 게 좋겠습니다.”</p>
+                <p>“이미 하고 있어요.”</p>
+                <p>“어떤 운동이요?”</p>
+                <p>그레이엄은 잠시 생각했다.</p>
+                <p>“장을 본 뒤 식료품을 들어요.”</p>
+                <p>점심시간에 그는 휴대용 캠핑 의자에 앉으려고 했다. 의자는 그의 몸 아래에서 접혀 버렸고, 그는 샌드위치를 손에 든 채 천천히 키 큰 풀 속으로 사라졌다.</p>
+                <p>아무도 말하지 않았다.</p>
+                <p>그레이엄은 풀 위로 샌드위치를 들어 올렸다.</p>
+                <p>“괜찮아요. 음식은 살아남았습니다.”</p>
+                <p>과정이 끝날 무렵, 새 등산화 때문에 물집이 두 개 생겼고, 등산 스틱 하나는 휘었으며, 셔츠의 문구는 진흙으로 뒤덮여 있었다.</p>
+                <p>가이드가 다시 참가할 계획이 있는지 물었다.</p>
+                <p>그레이엄은 평화로운 평원을 바라보았다.</p>
+                <p>“네. 하지만 그전에 우편함부터 시작하려고요.”</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "7221200.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

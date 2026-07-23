@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Spare Key</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🏠</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Spare Key</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">able-bodied</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">신체적으로 장애가 없는</td></tr>
+                <tr><td class="p-4"><b class="text-white">have no conscience</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">양심이 없다</td></tr>
+                <tr><td class="p-4"><b class="text-white">unconscious</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">의식을 잃은</td></tr>
+                <tr><td class="p-4"><b class="text-white">unconscientious</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">무책임한 / 성실하지 않은</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold">able-bodied</h3>
+                <p class="text-slate-300 text-sm">신체적 장애가 없고 일반적인 신체 활동을 할 수 있는 상태를 뜻해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold">have no conscience</h3>
+                <p class="text-slate-300 text-sm">다른 사람에게 해를 끼치고도 죄책감이나 도덕적 책임을 느끼지 않는다는 뜻이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold">unconscious</h3>
+                <p class="text-slate-300 text-sm">부상이나 질병 등으로 의식을 잃은 상태를 말해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold">unconscientious</h3>
+                <p class="text-slate-300 text-sm">자신의 책임이나 의무를 제대로 다하지 않는다는 뜻이에요. 일상에서는 irresponsible이 더 흔하게 쓰여요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Mrs. Han had given me a spare key to her apartment six months earlier.</p>
+                <p class="mb-6">“Only for emergencies,” she had said.</p>
+                <p class="mb-6">That morning, I heard her television playing through the wall. It was still playing when I came home from work ten hours later. Her lights were on, but she did not answer the door.</p>
+                <p class="mb-6">I told myself it was none of my business. Mrs. Han often fell asleep in front of the television.</p>
+                <p class="mb-6">Then I heard her phone ringing inside.</p>
+                <p class="mb-6">I used the key.</p>
+                <p class="mb-6">She was lying <b class="highlight quiz-target" data-ans="unconscious" data-kor="의식을 잃은">unconscious</b> beside the kitchen table.</p>
+                <p class="mb-6">I called an ambulance, and the doctors said she had become severely dehydrated. She would recover, but only because I had found her before morning.</p>
+                <p class="mb-6">Her son, Jun, arrived at the hospital an hour later. He was forty, healthy, and completely <b class="highlight quiz-target" data-ans="able-bodied" data-kor="신체적으로 장애가 없는">able-bodied</b>. He lived fifteen minutes away.</p>
+                <p class="mb-6">At first, I was furious.</p>
+                <p class="mb-6">Mrs. Han had told me that Jun was supposed to visit every evening. Her refrigerator was almost empty. Several unopened medicine packets were lying on the counter.</p>
+                <p class="mb-6">What kind of son leaves his mother like that?</p>
+                <p class="mb-6">Then Jun explained that he worked two jobs and had a child with a disability. His wife had left the family, and he was caring for the child alone. He called his mother every day, but that week she had repeatedly said she was fine.</p>
+                <p class="mb-6">That changed things.</p>
+                <p class="mb-6">Still, he had promised to visit.</p>
+                <p class="mb-6">Mrs. Han’s daughter arrived next. She lived overseas and had not seen her mother in three years. She pointed at Jun and said, “You <b class="highlight quiz-target" data-ans="have no conscience" data-kor="양심이 없다">have no conscience</b>. You were here, and you did nothing.”</p>
+                <p class="mb-6">Was she right? Or was it easy for her to judge from another country?</p>
+                <p class="mb-6">Jun showed us messages from his mother. She had told him not to come because she did not want to be a burden. Suppose he had ignored her and visited anyway. Would that have been caring, or would it have meant refusing to respect her independence?</p>
+                <p class="mb-6">The doctor said Mrs. Han should no longer live alone.</p>
+                <p class="mb-6">Her daughter wanted to place her in a care facility. Jun refused. He said his mother hated those places and had always begged him never to send her to one.</p>
+                <p class="mb-6">But could she safely stay home?</p>
+                <p class="mb-6">The hospital social worker asked whether I had noticed signs of neglect. If I said yes, the family might be investigated. Jun could lose the right to make decisions for his mother. If I said no, Mrs. Han might return to the same apartment and collapse again.</p>
+                <p class="mb-6">Was Jun an <b class="highlight quiz-target" data-ans="unconscientious" data-kor="무책임한 / 성실하지 않은">unconscientious</b> caregiver, or simply an exhausted son trying to manage more than one person could handle?</p>
+                <p class="mb-6">Mrs. Han opened her eyes and looked at me.</p>
+                <p class="mb-6">“Please,” she whispered. “Don’t cause trouble for my son.”</p>
+                <p class="mb-6">The social worker waited for my answer.</p>
+                <p class="mb-6">What would you do?</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">한 여사는 6개월 전에 내게 자신의 아파트 여분 열쇠를 주었다.</p>
+                <p class="mb-6">“응급 상황일 때만 써요.” 그녀는 그렇게 말했다.</p>
+                <p class="mb-6">그날 아침, 벽 너머로 한 여사의 텔레비전 소리가 들렸다. 10시간 뒤 퇴근했을 때도 텔레비전은 계속 켜져 있었다. 집 안의 불도 켜져 있었지만, 그녀는 문을 열어 주지 않았다.</p>
+                <p class="mb-6">나는 내가 상관할 일이 아니라고 스스로에게 말했다. 한 여사는 텔레비전을 보다가 자주 잠들곤 했다.</p>
+                <p class="mb-6">그때 집 안에서 전화벨이 울리는 소리가 들렸다.</p>
+                <p class="mb-6">나는 열쇠를 사용했다.</p>
+                <p class="mb-6">그녀는 부엌 식탁 옆에 <b class="highlight">의식을 잃은</b> 채 쓰러져 있었다.</p>
+                <p class="mb-6">나는 구급차를 불렀다. 의사들은 그녀가 심각한 탈수 상태였다고 말했다. 회복할 수는 있지만, 내가 아침이 되기 전에 발견했기 때문에 가능한 일이었다.</p>
+                <p class="mb-6">그녀의 아들 준은 한 시간 뒤 병원에 도착했다. 그는 마흔 살이었고 건강했으며 <b class="highlight">신체적으로 아무런 장애가 없었다</b>. 집도 15분 거리였다.</p>
+                <p class="mb-6">처음에는 화가 났다.</p>
+                <p class="mb-6">한 여사는 준이 매일 저녁 방문하기로 했다고 내게 말한 적이 있었다. 냉장고는 거의 비어 있었고, 뜯지 않은 약 봉지들이 조리대 위에 놓여 있었다.</p>
+                <p class="mb-6">어떤 아들이 자기 어머니를 저런 상태로 내버려 두는 걸까?</p>
+                <p class="mb-6">그러나 준은 자신이 직장을 두 개 다니고 있으며 장애가 있는 아이를 키우고 있다고 설명했다. 아내는 가족을 떠났고, 그는 혼자 아이를 돌보고 있었다. 그는 매일 어머니에게 전화했지만, 그 주 내내 어머니는 괜찮다고만 말했다.</p>
+                <p class="mb-6">그러자 이야기가 달라졌다.</p>
+                <p class="mb-6">그래도 그는 방문하겠다고 약속했었다.</p>
+                <p class="mb-6">그때 한 여사의 딸이 도착했다. 그녀는 해외에 살았고 3년 동안 어머니를 만나지 않았다. 그녀는 준을 가리키며 말했다.</p>
+                <p class="mb-6">“넌 <b class="highlight">양심도 없어</b>. 가까이 있으면서도 아무것도 하지 않았잖아.”</p>
+                <p class="mb-6">그녀의 말이 맞을까? 아니면 다른 나라에 살면서 판단하는 것은 쉬운 일일까?</p>
+                <p class="mb-6">준은 어머니가 보낸 메시지를 보여 주었다. 어머니는 짐이 되고 싶지 않으니 오지 말라고 했다. 준이 그 말을 무시하고 방문했다고 가정해 보자. 그것은 돌봄이었을까, 아니면 어머니가 독립적으로 살 권리를 존중하지 않은 것이었을까?</p>
+                <p class="mb-6">의사는 한 여사가 더 이상 혼자 살아서는 안 된다고 말했다.</p>
+                <p class="mb-6">딸은 어머니를 요양 시설에 모시고 싶어 했다. 준은 반대했다. 어머니는 그런 곳을 싫어했고, 절대로 자신을 시설에 보내지 말라고 늘 부탁했다고 했다.</p>
+                <p class="mb-6">하지만 집에서 안전하게 지낼 수 있을까?</p>
+                <p class="mb-6">병원 사회복지사는 내가 방임의 징후를 본 적이 있는지 물었다. 그렇다고 대답하면 가족에 대한 조사가 시작될 수도 있었다. 준은 어머니에 관한 결정을 내릴 권리를 잃을 수도 있었다. 아니라고 대답하면 한 여사는 같은 아파트로 돌아갔다가 또 쓰러질 수도 있었다.</p>
+                <p class="mb-6">준은 <b class="highlight">무책임한</b> 보호자였을까, 아니면 한 사람이 감당하기에는 너무 많은 책임을 떠안은 지친 아들이었을까?</p>
+                <p class="mb-6">한 여사가 눈을 뜨고 나를 바라보았다.</p>
+                <p class="mb-6">“부탁이에요.” 그녀가 속삭였다. “우리 아들 곤란하게 만들지 말아요.”</p>
+                <p class="mb-6">사회복지사는 내 대답을 기다리고 있었다.</p>
+                <p class="mb-6">당신이라면 어떻게 하겠는가?</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "7231020.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

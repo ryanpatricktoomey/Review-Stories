@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Missing Money</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">💳</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Missing Money</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">very rarely</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">아주 드물게</td></tr>
+                <tr><td class="p-4"><b class="text-white">it will happen eventually</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">결국 언젠가는 일어날 것이다</td></tr>
+                <tr><td class="p-4"><b class="text-white">the truth always comes out</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">진실은 언제나 결국 드러난다</td></tr>
+                <tr><td class="p-4"><b class="text-white">loan sharks</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">불법 고리대금업자들</td></tr>
+                <tr><td class="p-4"><b class="text-white">nagging</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">계속 잔소리하는 / 끈질기게 신경 쓰이는</td></tr>
+                <tr><td class="p-4"><b class="text-white">standard</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">기준 / 일반적인 수준</td></tr>
+                <tr><td class="p-4"><b class="text-white">resent</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">원망하다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold">it will happen eventually</h3>
+                <p class="text-slate-300 text-sm">정확한 시점은 모르지만, 시간이 지나면 결국 일어날 것이라는 뜻이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold">the truth always comes out</h3>
+                <p class="text-slate-300 text-sm">숨긴 사실은 언젠가 밝혀진다는 뜻으로 자주 쓰는 표현이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold">loan sharks</h3>
+                <p class="text-slate-300 text-sm">매우 높은 이자를 요구하고 협박이나 폭력을 사용하기도 하는 불법 대출업자들을 말해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold">nagging</h3>
+                <p class="text-slate-300 text-sm">사람에게 반복해서 잔소리한다는 뜻도 있고, 생각이나 통증이 계속 사라지지 않는다는 뜻도 있어요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold">resent</h3>
+                <p class="text-slate-300 text-sm">부당한 일을 당했다고 느껴 누군가에게 오래도록 분노나 서운함을 품는다는 뜻이에요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">My mother called me because she could not find her bank card.</p>
+                <p class="mb-6">That was not unusual. Since her memory began getting worse, she lost things constantly. But she <b class="highlight quiz-target" data-ans="very rarely" data-kor="아주 드물게">very rarely</b> checked her bank account, so I opened the banking app for her.</p>
+                <p class="mb-6">Eight thousand dollars was missing.</p>
+                <p class="mb-6">At first, I thought it had to be fraud. Then I saw the transfers. Every payment had gone to my younger brother, Alex.</p>
+                <p class="mb-6">By any <b class="highlight quiz-target" data-ans="standard" data-kor="기준 / 일반적인 수준">standard</b>, it was theft.</p>
+                <p class="mb-6">I called him from my mother’s kitchen.</p>
+                <p class="mb-6">“I was going to put it back,” he said immediately.</p>
+                <p class="mb-6">“What did you spend it on?”</p>
+                <p class="mb-6">There was a long silence.</p>
+                <p class="mb-6">Alex had borrowed money from <b class="highlight quiz-target" data-ans="loan sharks" data-kor="불법 고리대금업자들">loan sharks</b> after his restaurant failed. At first, the debt had been small. Then came the interest, late fees, and threatening messages. Two men had appeared outside his daughter’s school.</p>
+                <p class="mb-6">That changed things.</p>
+                <p class="mb-6">He had not taken the money for a vacation or a new car. He had taken it because he was afraid someone would hurt his child.</p>
+                <p class="mb-6">But it was still our mother’s money.</p>
+                <p class="mb-6">“What if she needs it for medical care?” I asked.</p>
+                <p class="mb-6">“She doesn’t even remember how much she has,” he said. “And I’ll repay everything when I sell the restaurant equipment.”</p>
+                <p class="mb-6">Would he? He had made promises before. There was always a reason he could not keep them.</p>
+                <p class="mb-6">A <b class="highlight quiz-target" data-ans="nagging" data-kor="계속 잔소리하는 / 끈질기게 신경 쓰이는">nagging</b> thought would not leave me alone: if I protected him now, he might do it again.</p>
+                <p class="mb-6">I could tell our mother. But what exactly would that accomplish? She might understand for an hour and then forget. Later, she might discover the missing money repeatedly and experience the same shock each time.</p>
+                <p class="mb-6">I could report Alex to the police. That might stop him from taking more, but he could go to prison. His daughter would lose her father, and the men demanding money would not disappear.</p>
+                <p class="mb-6">I could quietly replace the money myself. I had enough savings, but that money was supposed to be the deposit for my apartment. Would I eventually <b class="highlight quiz-target" data-ans="resent" data-kor="원망하다">resent</b> my brother? Would I start blaming my mother too, even though none of this was her fault?</p>
+                <p class="mb-6">Alex begged me not to tell anyone.</p>
+                <p class="mb-6">“Once the equipment sells, it’s over,” he said.</p>
+                <p class="mb-6">But what if it did not sell? Suppose the lenders demanded more. If fear had made him steal once, <b class="highlight quiz-target" data-ans="it will happen eventually" data-kor="결국 언젠가는 일어날 것이다">it will happen eventually</b> again.</p>
+                <p class="mb-6">Our father used to say that <b class="highlight quiz-target" data-ans="the truth always comes out" data-kor="진실은 언제나 결국 드러난다">the truth always comes out</b>. But was telling the truth still right when the person being protected might not remember it and the person being exposed might lose everything?</p>
+                <p class="mb-6">My mother entered the kitchen.</p>
+                <p class="mb-6">“Did you find my card?” she asked.</p>
+                <p class="mb-6">Alex was still waiting on the phone.</p>
+                <p class="mb-6">What would you do?</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">어머니는 은행 카드를 찾을 수 없다며 내게 전화하셨다.</p>
+                <p class="mb-6">특별히 이상한 일은 아니었다. 기억력이 나빠지기 시작한 뒤로 어머니는 계속 물건을 잃어버리셨다. 하지만 은행 계좌를 확인하는 일은 <b class="highlight">아주 드물었기</b> 때문에, 나는 어머니를 대신해 은행 앱을 열었다.</p>
+                <p class="mb-6">8천 달러가 사라져 있었다.</p>
+                <p class="mb-6">처음에는 금융 사기일 것이라고 생각했다. 그러다 이체 내역을 발견했다. 모든 돈이 남동생 알렉스에게 보내져 있었다.</p>
+                <p class="mb-6">어떤 <b class="highlight">기준으로</b> 보아도 그것은 절도였다.</p>
+                <p class="mb-6">나는 어머니의 부엌에서 알렉스에게 전화했다.</p>
+                <p class="mb-6">“다시 돌려놓으려고 했어.” 그는 곧바로 말했다.</p>
+                <p class="mb-6">“어디에 썼는데?”</p>
+                <p class="mb-6">긴 침묵이 이어졌다.</p>
+                <p class="mb-6">알렉스는 식당이 망한 뒤 <b class="highlight">불법 고리대금업자들에게</b> 돈을 빌렸다. 처음에는 빚이 많지 않았다. 하지만 이자와 연체료, 협박 메시지가 계속 붙었다. 남자 두 명이 그의 딸이 다니는 학교 앞에 나타나기도 했다.</p>
+                <p class="mb-6">그러자 이야기가 달라졌다.</p>
+                <p class="mb-6">그는 휴가를 가거나 새 차를 사기 위해 돈을 가져간 것이 아니었다. 누군가가 자신의 아이를 해칠까 봐 두려워서 가져간 것이었다.</p>
+                <p class="mb-6">하지만 그래도 그것은 어머니의 돈이었다.</p>
+                <p class="mb-6">“어머니가 치료비로 그 돈을 써야 하면 어떡할 건데?” 내가 물었다.</p>
+                <p class="mb-6">“어머니는 자신에게 돈이 얼마나 있는지도 기억하지 못해. 식당 장비를 팔면 전부 갚을게.”</p>
+                <p class="mb-6">정말 갚을까? 그는 전에도 약속을 했었다. 그리고 약속을 지킬 수 없는 이유는 늘 있었다.</p>
+                <p class="mb-6">한 가지 생각이 <b class="highlight">끈질기게</b> 머릿속에서 떠나지 않았다. 지금 그를 보호해 주면 또 같은 일을 할지도 몰랐다.</p>
+                <p class="mb-6">어머니에게 사실을 말할 수도 있었다. 하지만 그러면 정확히 무엇이 해결될까? 어머니는 한 시간 동안은 이해하실지도 모르지만, 곧 잊어버리실 것이다. 나중에 사라진 돈을 다시 발견하고 똑같은 충격을 반복해서 경험하실 수도 있었다.</p>
+                <p class="mb-6">알렉스를 경찰에 신고할 수도 있었다. 그러면 더 많은 돈을 가져가는 것을 막을 수 있겠지만, 그는 감옥에 갈 수도 있었다. 그의 딸은 아버지를 잃게 되고, 돈을 요구하는 사람들은 사라지지 않을 것이다.</p>
+                <p class="mb-6">내가 몰래 돈을 대신 채워 넣을 수도 있었다. 저축한 돈은 충분했지만, 그 돈은 내 아파트 보증금으로 사용할 예정이었다. 나는 결국 남동생을 <b class="highlight">원망하게</b> 될까? 아무 잘못도 없는 어머니까지 탓하게 될까?</p>
+                <p class="mb-6">알렉스는 아무에게도 말하지 말아 달라고 애원했다.</p>
+                <p class="mb-6">“장비만 팔리면 전부 끝나.” 그가 말했다.</p>
+                <p class="mb-6">하지만 장비가 팔리지 않으면 어떡할까? 대출업자들이 더 많은 돈을 요구한다고 가정해 보자. 두려움 때문에 한 번 도둑질을 했다면, <b class="highlight">결국 언젠가는</b> 다시 같은 일이 일어날 것이다.</p>
+                <p class="mb-6">아버지는 <b class="highlight">진실은 언제나 결국 드러난다고</b> 말씀하시곤 했다. 하지만 보호하려는 사람은 그 진실을 기억하지 못할 수도 있고, 폭로되는 사람은 모든 것을 잃을 수도 있다면, 그래도 진실을 말하는 것이 옳을까?</p>
+                <p class="mb-6">어머니가 부엌으로 들어오셨다.</p>
+                <p class="mb-6">“내 카드 찾았니?” 어머니가 물으셨다.</p>
+                <p class="mb-6">알렉스는 여전히 전화기 너머에서 기다리고 있었다.</p>
+                <p class="mb-6">당신이라면 어떻게 하겠는가?</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "7231200.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

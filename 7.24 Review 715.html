@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Purchase Order</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🚕</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Purchase Order</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">procurement</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">조달 / 구매 업무</td></tr>
+                <tr><td class="p-4"><b class="text-white">glass half full</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">상황의 긍정적인 면을 보는 태도</td></tr>
+                <tr><td class="p-4"><b class="text-white">glass half empty</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">상황의 부정적인 면을 보는 태도</td></tr>
+                <tr><td class="p-4"><b class="text-white">procrastinate</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">미루다 / 꾸물거리다</td></tr>
+                <tr><td class="p-4"><b class="text-white">put off</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">미루다</td></tr>
+                <tr><td class="p-4"><b class="text-white">put it off</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그것을 미루다</td></tr>
+                <tr><td class="p-4"><b class="text-white">take off</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">휴가를 내다 / 떠나다</td></tr>
+                <tr><td class="p-4"><b class="text-white">spontaneous</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">즉흥적인 / 자발적인</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border border-white/5">
+                <h3 class="text-teal-400 font-bold mb-2">procurement</h3>
+                <p class="text-slate-300 text-sm">회사나 기관에서 필요한 물품이나 서비스를 조사하고 구매하는 업무 또는 부서를 말해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5">
+                <h3 class="text-teal-400 font-bold mb-2">glass half full</h3>
+                <p class="text-slate-300 text-sm">좋지 않은 상황에서도 긍정적인 면을 보는 태도를 뜻해요. 보통 see the glass as half full처럼 사용합니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5">
+                <h3 class="text-teal-400 font-bold mb-2">glass half empty</h3>
+                <p class="text-slate-300 text-sm">상황에서 문제나 부족한 점을 먼저 보는 부정적인 태도를 뜻해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5">
+                <h3 class="text-teal-400 font-bold mb-2">put off / put it off</h3>
+                <p class="text-slate-300 text-sm">둘 다 “미루다”라는 뜻이에요. 목적어가 대명사인 it일 때는 반드시 가운데에 넣어 put it off라고 해야 해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5">
+                <h3 class="text-teal-400 font-bold mb-2">take off</h3>
+                <p class="text-slate-300 text-sm">문맥에 따라 “이륙하다,” “벗다,” “급히 떠나다,” “휴가를 내다” 등 여러 의미로 쓰여요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">I woke up at 7:51 with my face pressed against my laptop keyboard.</p>
+                <p class="mb-6">I had fallen asleep while checking a spreadsheet for the <b class="highlight quiz-target" data-ans="procurement" data-kor="구매 업무">procurement</b> meeting scheduled at eight thirty. My alarm was silent because I had left my phone under a pile of laundry.</p>
+                <p class="mb-6">I ran to the bathroom and turned on the shower. No water came out.</p>
+                <p class="mb-6">A message from my building manager explained that emergency repairs had started at seven. I stared at myself in the mirror. My hair was flat on one side and standing up on the other.</p>
+                <p class="mb-6">“Look at the <b class="highlight quiz-target" data-ans="glass half full" data-kor="긍정적인 면">glass half full</b>,” I told myself. “You’re working from home.”</p>
+                <p class="mb-6">Then my manager messaged me.</p>
+                <p class="mb-6">The director wants everyone in the office today.</p>
+                <p class="mb-6">I could feel the <b class="highlight quiz-target" data-ans="glass half empty" data-kor="부정적인 면">glass half empty</b> winning.</p>
+                <p class="mb-6">I changed clothes, sprayed dry shampoo into my hair, and opened the refrigerator. The milk smelled terrible, so breakfast was two crackers eaten over the sink.</p>
+                <p class="mb-6">I had been working nonstop for weeks. My schedule was wearing me out, and I was running on empty. The purchase order had been sitting unfinished on my desktop because I had started to <b class="highlight quiz-target" data-ans="procrastinate" data-kor="미루다">procrastinate</b> whenever I felt overwhelmed.</p>
+                <p class="mb-6">I had planned to <b class="highlight quiz-target" data-ans="put off" data-kor="미루다">put off</b> the final review until lunch. When my manager asked about it during the taxi ride, I tried to sound calm.</p>
+                <p class="mb-6">“I was going to finish it this morning.”</p>
+                <p class="mb-6">“You can’t <b class="highlight quiz-target" data-ans="put it off" data-kor="그것을 미루다">put it off</b>,” she said. “The supplier needs it before nine.”</p>
+                <p class="mb-6">I opened my laptop in the back seat. The battery was at four percent.</p>
+                <p class="mb-6">Then the driver slammed on the brakes. My laptop slid off my knees, and a cracker fell out of my coat pocket onto the keyboard.</p>
+                <p class="mb-6">“Long morning?” he asked.</p>
+                <p class="mb-6">“It’s been a long year.”</p>
+                <p class="mb-6">At the office, I connected my laptop to a charger with three minutes left. I opened the purchase order and saw that I had entered 800 office chairs instead of 80.</p>
+                <p class="mb-6">The director was already walking toward the meeting room.</p>
+                <p class="mb-6">I fixed the number, submitted the order, and followed everyone inside. When the director asked me to explain the pricing, I looked at the screen and realized I had attached my personal budget instead of the supplier’s estimate.</p>
+                <p class="mb-6">At the top of the document was a section titled: “Money for a Vacation Before I Completely Lose My Mind.”</p>
+                <p class="mb-6">Nobody spoke.</p>
+                <p class="mb-6">My manager slowly closed the file.</p>
+                <p class="mb-6">“Perhaps you should <b class="highlight quiz-target" data-ans="take off" data-kor="휴가를 내다">take off</b> a few days,” she said.</p>
+                <p class="mb-6">That afternoon, I did something completely <b class="highlight quiz-target" data-ans="spontaneous" data-kor="즉흥적인">spontaneous</b>. I booked a small room by the sea, turned off my work notifications, and packed one bag.</p>
+                <p class="mb-6">I didn’t need a detailed itinerary. I needed quiet mornings, a full night’s sleep, and enough time to feel like myself again.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>나는 오전 7시 51분에 노트북 키보드에 얼굴을 댄 채 눈을 떴다.</p>
+                <p>8시 30분에 예정된 <b class="highlight">구매 업무</b> 회의용 스프레드시트를 확인하다가 잠들어 버린 것이었다. 휴대폰을 빨랫더미 아래에 두는 바람에 알람 소리도 듣지 못했다.</p>
+                <p>나는 화장실로 뛰어가 샤워기를 틀었다. 물이 나오지 않았다.</p>
+                <p>건물 관리자가 보낸 메시지에는 긴급 수리가 7시에 시작됐다고 적혀 있었다. 나는 거울 속 내 모습을 바라봤다. 머리카락은 한쪽은 납작하게 눌려 있었고 반대쪽은 위로 솟아 있었다.</p>
+                <p>“<b class="highlight">긍정적인 면</b>을 보자.” 나는 혼잣말을 했다. “오늘은 재택근무니까.”</p>
+                <p>그때 팀장에게 메시지가 왔다.</p>
+                <p>오늘은 임원 지시로 모두 사무실에 출근해야 해요.</p>
+                <p>상황의 <b class="highlight">부정적인 면</b>이 이기기 시작하는 것이 느껴졌다.</p>
+                <p>나는 옷을 갈아입고 머리에 드라이 샴푸를 뿌린 뒤 냉장고를 열었다. 우유에서는 이상한 냄새가 났고, 결국 싱크대 앞에 서서 크래커 두 개로 아침을 해결했다.</p>
+                <p>나는 몇 주 동안 쉬지 않고 일해 왔다. 일정 때문에 완전히 지쳐 있었고, 기운은 바닥난 상태였다. 구매 주문서는 미완성인 채 컴퓨터 바탕 화면에 놓여 있었다. 부담을 느낄 때마다 일을 <b class="highlight">미루기</b> 시작했기 때문이다.</p>
+                <p>최종 검토는 점심까지 <b class="highlight">미룰</b> 생각이었다. 택시를 타고 가는 동안 팀장이 진행 상황을 물었고, 나는 침착하게 들리려고 노력했다.</p>
+                <p>“오늘 아침에 끝낼 생각이었어요.”</p>
+                <p>“그걸 <b class="highlight">미루면</b> 안 돼요. 공급업체가 9시 전에 받아야 해요.”</p>
+                <p>나는 택시 뒷좌석에서 노트북을 열었다. 배터리가 4퍼센트밖에 남지 않았다.</p>
+                <p>그 순간 운전기사가 급브레이크를 밟았다. 노트북이 무릎에서 미끄러졌고, 코트 주머니에 있던 크래커 한 조각이 키보드 위로 떨어졌다.</p>
+                <p>“힘든 아침인가 봐요?” 운전기사가 물었다.</p>
+                <p>“힘든 한 해였어요.”</p>
+                <p>사무실에 도착했을 때 남은 시간은 3분이었다. 나는 노트북을 충전기에 연결하고 구매 주문서를 열었다. 사무실 의자 80개가 아니라 800개를 입력해 놓은 것을 발견했다.</p>
+                <p>임원은 이미 회의실로 걸어가고 있었다.</p>
+                <p>나는 숫자를 수정하고 주문서를 제출한 뒤 사람들을 따라 회의실에 들어갔다. 임원이 가격을 설명해 달라고 했을 때 화면을 바라보던 나는 공급업체의 견적서가 아니라 개인 예산표를 첨부했다는 사실을 깨달았다.</p>
+                <p>문서 맨 위에는 이런 제목이 적혀 있었다.</p>
+                <p>“완전히 정신을 잃기 전에 떠날 휴가 비용.”</p>
+                <p>아무도 말하지 않았다.</p>
+                <p>팀장은 천천히 파일을 닫았다.</p>
+                <p>“며칠 <b class="highlight">휴가를 내는</b> 게 좋겠네요.”</p>
+                <p>그날 오후, 나는 완전히 <b class="highlight">즉흥적인</b> 행동을 했다. 바닷가에 있는 작은 숙소를 예약하고, 업무 알림을 끄고, 가방 하나를 쌌다.</p>
+                <p>세부적인 여행 일정은 필요하지 않았다. 조용한 아침과 밤새 푹 자는 시간, 그리고 다시 나 자신처럼 느껴질 수 있는 시간이 필요했다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "724715.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Security Audit</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🔐</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Security Audit</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">goes over my head</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">너무 어려워서 이해가 안 된다</td></tr>
+                <tr><td class="p-4"><b class="text-white">make me uncomfortable</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">나를 불편하게 만들다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border border-white/5">
+                <h3 class="text-teal-400 font-bold mb-2">goes over my head</h3>
+                <p class="text-slate-300 text-sm">설명이나 내용이 너무 복잡하거나 전문적이어서 이해하지 못한다는 뜻이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5">
+                <h3 class="text-teal-400 font-bold mb-2">make me uncomfortable</h3>
+                <p class="text-slate-300 text-sm">사람의 말이나 행동, 또는 어떤 상황이 긴장감이나 어색함을 느끼게 한다는 뜻이에요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">I woke up at 7:34 with my laptop open beside me and an unfinished spreadsheet on the screen.</p>
+                <p class="mb-6">The security audit began at eight.</p>
+                <p class="mb-6">I was the office manager at a small medical equipment company. My job was supposed to involve schedules, invoices, and supplies. During the previous month, however, two employees had resigned, and their work had quietly become mine.</p>
+                <p class="mb-6">I had been working nonstop. I answered messages before breakfast, during dinner, and from bed. I felt like I was always switched on.</p>
+                <p class="mb-6">That morning, I was responsible for preparing our equipment records and employee-access list for an outside cybersecurity consultant.</p>
+                <p class="mb-6">Neither document was finished.</p>
+                <p class="mb-6">I pulled on clean clothes, tied my hair back, and ran to the kitchen. There was no coffee. I made tea and immediately knocked it onto the floor.</p>
+                <p class="mb-6">At 7:47, my manager called.</p>
+                <p class="mb-6">“Are the audit documents ready?”</p>
+                <p class="mb-6">“Almost,” I said.</p>
+                <p class="mb-6">“The consultant has arrived early.”</p>
+                <p class="mb-6">My stomach tightened.</p>
+                <p class="mb-6">I joined the meeting from a taxi while trying to complete the access list on my phone. The consultant began discussing encryption, network permissions, and security vulnerabilities.</p>
+                <p class="mb-6">Most technical language <b class="highlight quiz-target" data-ans="goes over my head" data-kor="너무 어려워서 이해가 안 된다">goes over my head</b>, especially when I haven’t slept properly.</p>
+                <p class="mb-6">Then he shared his screen.</p>
+                <p class="mb-6">“Why are nine employees using the same password?” he asked.</p>
+                <p class="mb-6">My manager looked at me.</p>
+                <p class="mb-6">“I planned to update the system,” I said.</p>
+                <p class="mb-6">“When?” the consultant asked.</p>
+                <p class="mb-6">“This week.”</p>
+                <p class="mb-6">It was Friday.</p>
+                <p class="mb-6">When I reached the office, the consultant asked to speak with me privately. He closed the meeting-room door and placed a report on the table.</p>
+                <p class="mb-6">“Several employees said your manager asks them to share account passwords,” he said. “Is that correct?”</p>
+                <p class="mb-6">Questions about my manager <b class="highlight quiz-target" data-ans="make me uncomfortable" data-kor="나를 불편하게 만들다">make me uncomfortable</b>. She had given me too much work, but I depended on her recommendation for a promotion.</p>
+                <p class="mb-6">Before I could answer, my phone rang.</p>
+                <p class="mb-6">It was my father.</p>
+                <p class="mb-6">“You were going to drive me to my hospital appointment.”</p>
+                <p class="mb-6">I looked at the time.</p>
+                <p class="mb-6">I had completely forgotten.</p>
+                <p class="mb-6">On the table were the unfinished records. On my phone were messages from my father, my manager, and three suppliers. Through the glass wall, I could see two coworkers waiting for me to solve separate problems.</p>
+                <p class="mb-6">Something inside me stopped working.</p>
+                <p class="mb-6">“I can’t answer anything right now,” I said.</p>
+                <p class="mb-6">Then I began to cry.</p>
+                <p class="mb-6">The consultant gave me a tissue and suggested pausing the interview. My manager entered, saw my face, and finally realized how much work had been placed on me.</p>
+                <p class="mb-6">The audit continued without me. My manager reassigned the unfinished records and approved the leave request I submitted that afternoon.</p>
+                <p class="mb-6">I booked four quiet nights in the countryside.</p>
+                <p class="mb-6">I wanted no passwords, no meetings, and no urgent messages. I wanted to catch up on sleep, clear my head, and come back able to think clearly.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>나는 오전 7시 34분에 눈을 떴다. 옆에는 노트북이 열린 채 놓여 있었고, 화면에는 완성하지 못한 스프레드시트가 떠 있었다.</p>
+                <p>보안 감사는 8시에 시작될 예정이었다.</p>
+                <p>나는 작은 의료기기 회사에서 사무 관리자로 일했다. 원래 내 업무는 일정, 청구서, 비품을 관리하는 것이었다. 하지만 지난달 직원 두 명이 퇴사했고, 그들이 하던 일은 조용히 내 업무가 되었다.</p>
+                <p>나는 쉬지 않고 일했다. 아침 식사 전에도, 저녁을 먹으면서도, 침대에 누워서도 메시지에 답했다. 항상 긴장을 늦출 수 없는 기분이었다.</p>
+                <p>그날 아침에는 외부 사이버 보안 컨설턴트를 위해 회사 장비 기록과 직원 접근 권한 목록을 준비해야 했다.</p>
+                <p>두 문서 모두 완성하지 못했다.</p>
+                <p>나는 깨끗한 옷을 입고 머리를 묶은 뒤 부엌으로 뛰어갔다. 커피는 없었다. 차를 만들었지만 곧바로 바닥에 쏟았다.</p>
+                <p>7시 47분, 팀장이 전화했다.</p>
+                <p>“감사 서류는 준비됐어요?”</p>
+                <p>“거의 다 됐어요.”</p>
+                <p>“컨설턴트가 일찍 도착했어요.”</p>
+                <p>속이 조여 왔다.</p>
+                <p>나는 택시에서 회의에 접속하면서 휴대폰으로 접근 권한 목록을 완성하려 했다. 컨설턴트는 암호화와 네트워크 권한, 보안 취약점에 관해 이야기하기 시작했다.</p>
+                <p>그런 전문적인 기술 용어는 대부분 내가 <b class="highlight">이해하기에는 너무 어려웠다</b>. 특히 잠을 제대로 자지 못한 상태에서는 더 그랬다.</p>
+                <p>그러다 컨설턴트가 화면을 공유했다.</p>
+                <p>“왜 직원 아홉 명이 같은 비밀번호를 사용하고 있죠?”</p>
+                <p>팀장이 나를 바라봤다.</p>
+                <p>“시스템을 변경할 계획이었습니다.”</p>
+                <p>“언제요?”</p>
+                <p>“이번 주에요.”</p>
+                <p>그날은 금요일이었다.</p>
+                <p>회사에 도착하자 컨설턴트는 나와 따로 이야기하고 싶다고 했다. 그는 회의실 문을 닫고 보고서를 테이블 위에 놓았다.</p>
+                <p>“직원 몇 명이 팀장이 계정 비밀번호를 공유하라고 요구한다고 말했습니다. 사실인가요?”</p>
+                <p>팀장에 관한 질문은 나를 <b class="highlight">불편하게 했다</b>. 팀장은 내게 너무 많은 일을 맡겼지만, 나는 승진을 위해 그녀의 추천이 필요했다.</p>
+                <p>내가 대답하기 전에 휴대폰이 울렸다.</p>
+                <p>아버지였다.</p>
+                <p>“오늘 병원 예약에 데려다주기로 했잖니.”</p>
+                <p>나는 시간을 확인했다.</p>
+                <p>완전히 잊고 있었다.</p>
+                <p>테이블에는 완성하지 못한 기록이 놓여 있었다. 휴대폰에는 아버지와 팀장, 공급업체 세 곳에서 온 메시지가 있었다. 유리벽 너머에서는 두 명의 동료가 각자 다른 문제를 해결해 달라며 기다리고 있었다.</p>
+                <p>내 안의 무언가가 작동을 멈췄다.</p>
+                <p>“지금은 아무것도 대답할 수 없어요.”</p>
+                <p>그러고는 울기 시작했다.</p>
+                <p>컨설턴트는 휴지를 건네고 인터뷰를 잠시 중단하자고 했다. 팀장은 회의실에 들어와 내 얼굴을 보고서야 내게 얼마나 많은 일이 맡겨졌는지 깨달았다.</p>
+                <p>감사는 나 없이 계속되었다. 팀장은 미완성 기록 업무를 다른 직원들에게 배정했고, 내가 그날 오후 제출한 휴가 신청을 승인했다.</p>
+                <p>나는 시골의 조용한 숙소에서 나흘을 보내기로 했다.</p>
+                <p>비밀번호도, 회의도, 긴급 메시지도 원하지 않았다. 부족한 잠을 보충하고, 머리를 식히고, 다시 명확하게 생각할 수 있는 상태로 돌아오고 싶었다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "7241200.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

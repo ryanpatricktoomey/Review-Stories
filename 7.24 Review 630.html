@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Morning That Broke Me</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">⏰</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Morning That Broke Me</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">annual review</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">연례 인사 평가</td></tr>
+                <tr><td class="p-4"><b class="text-white">wave pool</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">파도 풀 / 인공 파도 수영장</td></tr>
+                <tr><td class="p-4"><b class="text-white">a nap</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">낮잠</td></tr>
+                <tr><td class="p-4"><b class="text-white">same-day</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">당일의 / 같은 날 이루어지는</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border border-white/5">
+                <h3 class="text-teal-400 font-bold mb-2">annual review</h3>
+                <p class="text-slate-300 text-sm">회사에서 직원의 지난 1년간 성과를 평가하고 앞으로의 목표를 이야기하는 공식적인 면담이나 절차예요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5">
+                <h3 class="text-teal-400 font-bold mb-2">same-day</h3>
+                <p class="text-slate-300 text-sm">명사 앞에서 “당일의”라는 뜻으로 쓰이는 형용사예요. 보통 same-day delivery, same-day booking처럼 하이픈을 넣습니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">My alarm was supposed to ring at 6:30.</p>
+                <p class="mb-6">I opened my eyes at 7:42.</p>
+                <p class="mb-6">For several seconds, I stared at the ceiling and wondered why the room was so bright. Then I saw the time, jumped out of bed, and hit my knee on the nightstand.</p>
+                <p class="mb-6">I had an important client presentation at 8:30. My <b class="highlight quiz-target" data-ans="annual review" data-kor="연례 인사 평가">annual review</b> was scheduled for ten.</p>
+                <p class="mb-6">My phone had died during the night. When I plugged it in, seventeen work messages appeared. My manager had called three times.</p>
+                <p class="mb-6">I brushed my teeth while reading the messages. Then I put on a clean blouse, made coffee, and spilled the entire cup down the front of it.</p>
+                <p class="mb-6">After changing clothes, I ran outside just as my bus pulled away.</p>
+                <p class="mb-6">“Please!” I shouted, waving both arms.</p>
+                <p class="mb-6">The driver looked directly at me and kept going.</p>
+                <p class="mb-6">My manager called immediately.</p>
+                <p class="mb-6">“Where are you?”</p>
+                <p class="mb-6">“I’m having a small transportation problem,” I said, trying to catch my breath.</p>
+                <p class="mb-6">“You sound exhausted.”</p>
+                <p class="mb-6">“I’m fine.”</p>
+                <p class="mb-6">I was not fine. I had been working nonstop for weeks. I hadn’t had any real downtime, and even at home, I felt like I was always switched on.</p>
+                <p class="mb-6">Then my sister called.</p>
+                <p class="mb-6">“You’re taking Mom to her hospital appointment, right?”</p>
+                <p class="mb-6">My stomach dropped. The appointment was at eleven. I had completely forgotten.</p>
+                <p class="mb-6">“I’ll handle it,” I said, although I had no idea how.</p>
+                <p class="mb-6">A taxi finally stopped. As I got in, my niece sent me a voice message.</p>
+                <p class="mb-6">“Aunt Mina, you promised we could go to the <b class="highlight quiz-target" data-ans="wave pool" data-kor="파도 풀">wave pool</b> today!”</p>
+                <p class="mb-6">I closed my eyes. I had made that promise three weeks earlier, before my calendar became impossible.</p>
+                <p class="mb-6">I reached the office with two minutes to spare. During the presentation, the client asked me a simple question. I knew the answer because I had written the report myself.</p>
+                <p class="mb-6">But my mind went completely blank.</p>
+                <p class="mb-6">My manager quietly took over. Afterward, she asked me to come into her office.</p>
+                <p class="mb-6">“I’m postponing your <b class="highlight quiz-target" data-ans="annual review" data-kor="연례 인사 평가">annual review</b>,” she said.</p>
+                <p class="mb-6">My eyes filled with tears. “Am I being fired?”</p>
+                <p class="mb-6">“No. You’re taking three days off.”</p>
+                <p class="mb-6">“I can’t. There’s too much to do.”</p>
+                <p class="mb-6">“You need more than <b class="highlight quiz-target" data-ans="a nap" data-kor="낮잠">a nap</b>,” she said. “You desperately need a vacation.”</p>
+                <p class="mb-6">At lunch, I found a quiet hotel near the coast that accepted <b class="highlight quiz-target" data-ans="same-day" data-kor="당일의">same-day</b> reservations. I booked a room before I could change my mind.</p>
+                <p class="mb-6">That afternoon, I turned off my work notifications and went home to pack. I wanted no schedule, no alarms, and no activities. I wanted to catch up on sleep, clear my head, and do absolutely nothing.</p>
+                <p class="mb-6">For the first time in months, breathing felt easy.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>내 알람은 6시 30분에 울릴 예정이었다.</p>
+                <p>내가 눈을 뜬 시간은 7시 42분이었다.</p>
+                <p>몇 초 동안 나는 천장을 바라보며 방이 왜 이렇게 밝은지 생각했다. 그러다 시간을 확인하고 침대에서 벌떡 일어나다가 무릎을 협탁에 부딪혔다.</p>
+                <p>8시 30분에는 중요한 고객 발표가 있었다. 10시에는 <b class="highlight">연례 인사 평가</b>가 예정되어 있었다.</p>
+                <p>밤사이 휴대폰 배터리가 꺼져 있었다. 충전기를 연결하자 업무 메시지 열일곱 개가 나타났다. 팀장은 세 번이나 전화를 걸어 놓았다.</p>
+                <p>나는 메시지를 읽으면서 이를 닦았다. 깨끗한 블라우스를 입고 커피를 만들었지만, 커피 한 잔을 전부 옷 앞부분에 쏟았다.</p>
+                <p>옷을 갈아입은 뒤 밖으로 뛰어나갔지만, 바로 그 순간 버스가 출발했다.</p>
+                <p>“잠시만요!” 나는 두 팔을 흔들며 소리쳤다.</p>
+                <p>운전기사는 나를 똑바로 보고도 계속 운전해 갔다.</p>
+                <p>곧바로 팀장에게 전화가 왔다.</p>
+                <p>“지금 어디예요?”</p>
+                <p>“교통에 약간 문제가 생겼어요.”</p>
+                <p>나는 숨을 고르려고 애쓰며 말했다.</p>
+                <p>“목소리가 완전히 지쳐 보이는데요.”</p>
+                <p>“저 괜찮아요.”</p>
+                <p>나는 괜찮지 않았다. 몇 주 동안 쉬지 않고 일해 왔다. 제대로 쉴 시간도 전혀 없었고, 집에 있을 때조차 계속 긴장을 늦출 수 없는 기분이었다.</p>
+                <p>그때 언니에게 전화가 왔다.</p>
+                <p>“엄마 병원 예약에 모시고 가는 거 맞지?”</p>
+                <p>가슴이 철렁 내려앉았다. 예약은 11시였다. 나는 완전히 잊고 있었다.</p>
+                <p>“내가 해결할게.”</p>
+                <p>어떻게 해결할지는 전혀 몰랐지만 그렇게 말했다.</p>
+                <p>마침내 택시 한 대가 멈췄다. 차에 올라타자 조카에게서 음성 메시지가 왔다.</p>
+                <p>“이모, 오늘 <b class="highlight">파도 풀</b>에 가기로 약속했잖아!”</p>
+                <p>나는 눈을 감았다. 그 약속을 한 것은 3주 전이었다. 내 일정이 감당할 수 없을 정도로 바빠지기 전이었다.</p>
+                <p>나는 발표 시작 2분 전에 회사에 도착했다. 발표 도중 고객이 간단한 질문을 했다. 나는 답을 알고 있었다. 그 보고서를 내가 직접 작성했기 때문이다.</p>
+                <p>하지만 머릿속이 완전히 하얘졌다.</p>
+                <p>팀장이 조용히 발표를 대신 이어 갔다. 발표가 끝난 뒤, 팀장은 나에게 사무실로 들어오라고 했다.</p>
+                <p>“<b class="highlight">연례 인사 평가</b>는 미룰 거예요.”</p>
+                <p>내 눈에 눈물이 고였다.</p>
+                <p>“저 해고되는 건가요?”</p>
+                <p>“아니요. 3일 동안 쉬세요.”</p>
+                <p>“안 돼요. 할 일이 너무 많아요.”</p>
+                <p>“<b class="highlight">낮잠</b> 정도로는 부족해요. 지금은 휴가가 정말 절실해요.”</p>
+                <p>점심시간에 나는 해안 근처의 조용한 호텔을 발견했다. 그곳은 <b class="highlight">당일</b> 예약을 받고 있었다. 마음이 바뀌기 전에 방을 예약했다.</p>
+                <p>그날 오후, 나는 업무 알림을 끄고 짐을 싸러 집으로 갔다. 정해진 일정도, 알람도, 활동도 원하지 않았다. 부족한 잠을 보충하고, 머리를 식히고, 정말 아무것도 하지 않고 싶었다.</p>
+                <p>몇 달 만에 처음으로 숨 쉬는 것이 편하게 느껴졌다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "724630.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

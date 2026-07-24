@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Surprise Inspection</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🥾</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Surprise Inspection</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">didn't know what to do</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">어떻게 해야 할지 몰랐다</td></tr>
+                <tr><td class="p-4"><b class="text-white">caught me off guard</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">예상하지 못해 당황하게 했다</td></tr>
+                <tr><td class="p-4"><b class="text-white">eel</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">장어</td></tr>
+                <tr><td class="p-4"><b class="text-white">hiking trail</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">등산로 / 하이킹 코스</td></tr>
+                <tr><td class="p-4"><b class="text-white">waterfall</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">폭포</td></tr>
+                <tr><td class="p-4"><b class="text-white">dehydrated</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">탈수 상태인</td></tr>
+                <tr><td class="p-4"><b class="text-white">sunstroke</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">일사병</td></tr>
+                <tr><td class="p-4"><b class="text-white">heatstroke</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">열사병</td></tr>
+                <tr><td class="p-4"><b class="text-white">stroke</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">뇌졸중</td></tr>
+                <tr><td class="p-4"><b class="text-white">nightmare</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">악몽</td></tr>
+                <tr><td class="p-4"><b class="text-white">timid</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">소심한 / 겁이 많은</td></tr>
+                <tr><td class="p-4"><b class="text-white">wuss</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">겁쟁이 / 약골</td></tr>
+                <tr><td class="p-4"><b class="text-white">slush</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">슬러시 / 녹다 만 눈이나 얼음</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border border-white/5">
+                <h3 class="text-teal-400 font-bold mb-2">caught me off guard</h3>
+                <p class="text-slate-300 text-sm">예상하지 못한 일이 생겨 준비되지 않은 상태에서 당황했다는 뜻이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5">
+                <h3 class="text-teal-400 font-bold mb-2">sunstroke / heatstroke</h3>
+                <p class="text-slate-300 text-sm">sunstroke는 강한 햇빛에 노출되어 생긴 열 관련 질환을 가리키고, heatstroke는 원인과 관계없이 체온이 위험하게 높아진 심각한 상태를 뜻해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5">
+                <h3 class="text-teal-400 font-bold mb-2">stroke</h3>
+                <p class="text-slate-300 text-sm">보통 뇌졸중을 뜻하며, heatstroke와는 다른 질환이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5">
+                <h3 class="text-teal-400 font-bold mb-2">wuss</h3>
+                <p class="text-slate-300 text-sm">겁이 많거나 힘든 일을 견디지 못하는 사람을 놀리는 비격식 표현이에요. 무례하게 들릴 수 있습니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">I woke up at 6:35 after having a <b class="highlight quiz-target" data-ans="nightmare" data-kor="악몽">nightmare</b> that my work calendar was chasing me down a hallway.</p>
+                <p class="mb-6">My train left in twenty-five minutes.</p>
+                <p class="mb-6">I worked for a company that organized corporate retreats. That morning, I was supposed to inspect a mountain resort before recommending it to a large client.</p>
+                <p class="mb-6">I had stayed up past midnight answering emails and checking contracts. I was exhausted, but I had no time to think about it.</p>
+                <p class="mb-6">I ran into the kitchen, grabbed a half-frozen fruit <b class="highlight quiz-target" data-ans="slush" data-kor="슬러시">slush</b> from the freezer, and took it with me instead of breakfast.</p>
+                <p class="mb-6">At the resort, the sales manager greeted me in hiking clothes.</p>
+                <p class="mb-6">“We’ll start with the <b class="highlight quiz-target" data-ans="hiking trail" data-kor="등산로">hiking trail</b>,” she said. “The <b class="highlight quiz-target" data-ans="waterfall" data-kor="폭포">waterfall</b> is the property’s main attraction.”</p>
+                <p class="mb-6">Her words <b class="highlight quiz-target" data-ans="caught me off guard" data-kor="당황하게 했다">caught me off guard</b>. The schedule I had received only mentioned a tour of the guest rooms and conference facilities.</p>
+                <p class="mb-6">I was wearing office trousers and flat leather shoes.</p>
+                <p class="mb-6">“I didn’t realize we were hiking,” I said.</p>
+                <p class="mb-6">“It’s not difficult,” she replied. “Only about two hours.”</p>
+                <p class="mb-6">I <b class="highlight quiz-target" data-ans="didn't know what to do" data-kor="어떻게 해야 할지 몰랐다">didn't know what to do</b>. Refusing in front of a potential business partner felt awkward, so I followed her.</p>
+                <p class="mb-6">The temperature rose quickly. I had finished the <b class="highlight quiz-target" data-ans="slush" data-kor="슬러시">slush</b> on the train and had forgotten to buy water.</p>
+                <p class="mb-6">After forty minutes, I was breathing heavily.</p>
+                <p class="mb-6">The sales manager’s assistant smiled at me. “I’m usually too <b class="highlight quiz-target" data-ans="timid" data-kor="소심한">timid</b> to do outdoor activities, but this trail is fine.”</p>
+                <p class="mb-6">“I’m not <b class="highlight quiz-target" data-ans="timid" data-kor="소심한">timid</b>,” I said. “I’m tired.”</p>
+                <p class="mb-6">She laughed. “Don’t be a <b class="highlight quiz-target" data-ans="wuss" data-kor="겁쟁이">wuss</b>.”</p>
+                <p class="mb-6">I knew she meant it as a joke, but it irritated me.</p>
+                <p class="mb-6">An hour later, my mouth was dry and my head was pounding. The path seemed to move beneath my feet.</p>
+                <p class="mb-6">The sales manager stopped. “You look <b class="highlight quiz-target" data-ans="dehydrated" data-kor="탈수 상태인">dehydrated</b>.”</p>
+                <p class="mb-6">“I’m fine,” I said, although I clearly wasn’t.</p>
+                <p class="mb-6">A few minutes later, I had to sit down.</p>
+                <p class="mb-6">The resort guide checked on me and called the first-aid team. The nurse said I was showing signs of heat exhaustion and needed water, shade, and rest before it developed into <b class="highlight quiz-target" data-ans="heatstroke" data-kor="열사병">heatstroke</b>. She explained that <b class="highlight quiz-target" data-ans="sunstroke" data-kor="일사병">sunstroke</b> was related to heat and sun exposure, while a <b class="highlight quiz-target" data-ans="stroke" data-kor="뇌졸중">stroke</b> was a different medical emergency.</p>
+                <p class="mb-6">At the clinic, I received water and a cool towel. The inspection was postponed.</p>
+                <p class="mb-6">The staff brought lunch, including grilled <b class="highlight quiz-target" data-ans="eel" data-kor="장어">eel</b>, but I was too nauseated to eat.</p>
+                <p class="mb-6">While I rested, I looked at my work phone. There were thirty-two unread messages.</p>
+                <p class="mb-6">For months, I had organized relaxing trips for other people while giving myself no real downtime.</p>
+                <p class="mb-6">I called my manager, explained what had happened, and requested a week off.</p>
+                <p class="mb-6">That evening, I booked a quiet hotel with room service, air conditioning, and no hiking program.</p>
+                <p class="mb-6">I didn’t need adventure. I needed sleep, silence, and enough time to feel like myself again.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>나는 업무 일정표가 복도에서 나를 쫓아오는 <b class="highlight">악몽</b>을 꾸다가 오전 6시 35분에 눈을 떴다.</p>
+                <p>기차는 25분 뒤에 출발할 예정이었다.</p>
+                <p>나는 기업 연수 여행을 기획하는 회사에서 일했다. 그날 아침에는 대형 고객에게 추천하기 전에 산속 리조트를 점검해야 했다.</p>
+                <p>자정이 넘도록 이메일에 답하고 계약서를 확인했다. 완전히 지쳐 있었지만 그 사실을 생각할 시간조차 없었다.</p>
+                <p>부엌으로 뛰어가 냉동실에 있던 반쯤 얼어 있는 과일 <b class="highlight">슬러시</b>를 집어 들었다. 그것이 아침 식사 대신이었다.</p>
+                <p>리조트에 도착하자 영업 담당자가 등산복 차림으로 나를 맞이했다.</p>
+                <p>“<b class="highlight">등산로</b>부터 둘러보겠습니다. <b class="highlight">폭포</b>가 저희 리조트의 가장 중요한 관광지예요.”</p>
+                <p>전혀 <b class="highlight">예상하지 못한</b> 말이라 당황했다. 내가 받은 일정에는 객실과 회의 시설을 둘러본다는 내용만 있었다.</p>
+                <p>나는 정장 바지와 납작한 가죽 구두를 신고 있었다.</p>
+                <p>“등산을 하는 줄은 몰랐어요.”</p>
+                <p>“어렵지 않아요. 두 시간 정도밖에 걸리지 않습니다.”</p>
+                <p>나는 <b class="highlight">어떻게 해야 할지 몰랐다</b>. 잠재적인 사업 파트너 앞에서 거절하기가 어색해서 결국 그녀를 따라갔다.</p>
+                <p>기온은 빠르게 올라갔다. <b class="highlight">슬러시</b>는 기차에서 다 마셨고, 물을 사는 것은 깜빡했다.</p>
+                <p>40분쯤 지나자 숨이 거칠어졌다.</p>
+                <p>영업 담당자의 조수가 나를 보며 웃었다.</p>
+                <p>“저는 원래 야외 활동을 무서워할 정도로 <b class="highlight">소심하지만</b>, 이 길은 괜찮아요.”</p>
+                <p>“<b class="highlight">소심한</b> 게 아니라 피곤한 거예요.”</p>
+                <p>그녀가 웃었다.</p>
+                <p>“<b class="highlight">약한 소리</b> 하지 마세요.”</p>
+                <p>농담이라는 것은 알았지만 기분이 나빴다.</p>
+                <p>한 시간 뒤에는 입이 마르고 머리가 심하게 아팠다. 발밑의 길이 움직이는 것처럼 느껴졌다.</p>
+                <p>영업 담당자가 멈춰 섰다.</p>
+                <p>“<b class="highlight">탈수 상태인</b> 것 같아요.”</p>
+                <p>“괜찮아요.”</p>
+                <p>전혀 괜찮지 않았지만 그렇게 말했다.</p>
+                <p>몇 분 뒤 나는 앉아야 했다.</p>
+                <p>리조트 안내원이 상태를 확인하고 응급 처치팀을 불렀다. 간호사는 내가 열탈진 증상을 보이고 있으며, <b class="highlight">열사병</b>으로 발전하기 전에 물과 그늘, 휴식이 필요하다고 말했다. <b class="highlight">일사병</b>은 햇빛과 더위에 노출되어 생기는 질환이고, <b class="highlight">뇌졸중</b>은 전혀 다른 응급 질환이라고도 설명했다.</p>
+                <p>진료실에서 물을 마시고 목에 차가운 수건을 올렸다. 리조트 점검은 연기되었다.</p>
+                <p>직원들이 구운 <b class="highlight">장어</b>가 포함된 점심을 가져왔지만, 속이 좋지 않아 먹을 수 없었다.</p>
+                <p>쉬면서 업무용 휴대폰을 확인했다. 읽지 않은 메시지가 32개나 있었다.</p>
+                <p>몇 달 동안 다른 사람들을 위한 편안한 여행은 계획하면서 나 자신에게는 제대로 쉴 시간을 전혀 주지 않았다.</p>
+                <p>나는 상사에게 전화해 상황을 설명하고 일주일 휴가를 신청했다.</p>
+                <p>그날 저녁, 룸서비스와 에어컨이 있고 하이킹 프로그램은 없는 조용한 호텔을 예약했다.</p>
+                <p>모험은 필요하지 않았다. 잠과 고요함, 그리고 다시 나 자신처럼 느낄 수 있는 시간이 필요했다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "7241020.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

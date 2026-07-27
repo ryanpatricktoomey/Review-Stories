@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | Five Surprisingly Useful Ways to Use a Kitchen Sponge</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🧽</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">Five Surprisingly Useful Ways to Use a Kitchen Sponge</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">plunger</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">뚫어뻥, 압축기</td></tr>
+                <tr><td class="p-4"><b class="text-white">plumber</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">배관공</td></tr>
+                <tr><td class="p-4"><b class="text-white">sand it</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그것을 사포로 갈다</td></tr>
+                <tr><td class="p-4"><b class="text-white">pipes</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">배관, 파이프</td></tr>
+                <tr><td class="p-4"><b class="text-white">insulation</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">단열재 / 절연재</td></tr>
+                <tr><td class="p-4"><b class="text-white">pincushion</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">바늘꽂이</td></tr>
+                <tr><td class="p-4"><b class="text-white">steering wheel</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">자동차 핸들</td></tr>
+                <tr><td class="p-4"><b class="text-white">tangled</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">엉킨</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border border-white/5"><h3 class="text-teal-400 font-bold mb-1">sand it</h3><p class="text-sm text-slate-300">사포로 표면을 문질러 거칠거나 날카로운 부분을 매끄럽게 만들라는 뜻이에요.</p></div>
+            <div class="glass p-5 rounded-2xl border border-white/5"><h3 class="text-teal-400 font-bold mb-1">insulation</h3><p class="text-sm text-slate-300">열, 소리, 전기가 쉽게 통하지 않도록 막아 주는 재료나 기능을 뜻해요.</p></div>
+            <div class="glass p-5 rounded-2xl border border-white/5"><h3 class="text-teal-400 font-bold mb-1">pincushion</h3><p class="text-sm text-slate-300">바늘과 핀을 안전하게 꽂아 보관하는 작은 쿠션이에요.</p></div>
+            <div class="glass p-5 rounded-2xl border border-white/5"><h3 class="text-teal-400 font-bold mb-1">tangled</h3><p class="text-sm text-slate-300">실, 전선, 머리카락 등이 복잡하게 엉킨 상태를 나타내요.</p></div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">A kitchen sponge is normally used for washing dishes, but its soft texture, absorbency, and flexible shape make it useful for many other household tasks. Here are five practical uses, beginning with a simple storage trick and ending with an emergency bathroom solution.</p>
+                <p class="mb-6">1. Protect fragile objects<br>You could cut a clean, dry sponge into small pieces and place them between glasses, plates, or decorations inside a box. The sponge would provide light <b class="highlight quiz-target" data-ans="insulation" data-kor="단열재 / 절연재">insulation</b> and absorb small impacts while the box is being moved. That way, the objects would be less likely to crack or become scratched.</p>
+                <p class="mb-6">2. Keep cords organized<br>Make several small cuts along the side of a thick sponge. Then press a charging cable or earphone wire into each opening. The sponge will keep the cords separated, so they will not become <b class="highlight quiz-target" data-ans="tangled" data-kor="엉킨">tangled</b> inside a drawer. This could be especially useful beside a desk or on a crowded nightstand.</p>
+                <p class="mb-6">3. Make a simple pincushion<br>A dry sponge can easily be turned into a <b class="highlight quiz-target" data-ans="pincushion" data-kor="바늘꽂이">pincushion</b>. Put it inside a small cup and push your sewing needles into the top. If the cup is made of rough wood, you should <b class="highlight quiz-target" data-ans="sand it" data-kor="그것을 사포로 갈다">sand it</b> first so that the edges do not scratch your hand. The sponge will hold the needles upright and make them easier to find.</p>
+                <p class="mb-6">4. Clean narrow or curved surfaces<br>A sponge can be cut into a long strip and wrapped around a ruler, wooden spoon, or other narrow object. This creates a flexible cleaning tool that can reach behind furniture or between appliances. A small piece could also help clean dust from the textured surface of a <b class="highlight quiz-target" data-ans="steering wheel" data-kor="자동차 핸들">steering wheel</b>. However, the sponge should be only slightly damp so that water does not enter any electrical controls.</p>
+                <p class="mb-6">5. Create a temporary drain stopper<br>A thick sponge can temporarily slow water from escaping through a sink or bathtub drain. Press it firmly over the opening and place a heavy cup on top. It will not work as well as a real stopper or a <b class="highlight quiz-target" data-ans="plunger" data-kor="뚫어뻥, 압축기">plunger</b>, but it may be useful during a quick cleaning job.</p>
+                <p class="mb-6">Do not push the sponge deep into the <b class="highlight quiz-target" data-ans="pipes" data-kor="배관, 파이프">pipes</b>. If it becomes stuck, you may have to call a <b class="highlight quiz-target" data-ans="plumber" data-kor="배관공">plumber</b>. This method should therefore be used carefully and only for a short time.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">주방용 스펀지는 보통 설거지를 할 때 사용하지만, 부드러운 질감과 흡수력, 유연한 모양 덕분에 다른 여러 가지 집안일에도 유용하게 활용할 수 있습니다. 간단한 보관 방법부터 비상시에 사용할 수 있는 욕실 아이디어까지 다섯 가지 실용적인 활용법을 소개합니다.</p>
+                <p class="mb-6">1. 깨지기 쉬운 물건 보호하기<br>깨끗하고 마른 스펀지를 작은 조각으로 잘라 상자 안의 유리잔, 접시 또는 장식품 사이에 넣을 수 있어요. 스펀지는 가벼운 <b class="highlight">단열재이자</b> 완충재 역할을 하여 상자를 옮길 때 발생하는 작은 충격을 흡수합니다. 그렇게 하면 물건에 금이 가거나 흠집이 생길 가능성이 줄어들어요.</p>
+                <p class="mb-6">2. 전선 정리하기<br>두꺼운 스펀지 옆면에 작은 틈을 여러 개 만드세요. 그런 다음 충전 케이블이나 이어폰 선을 각 틈에 끼우면 됩니다. 스펀지가 전선을 서로 떨어뜨려 놓기 때문에 서랍 안에서 <b class="highlight">엉키는</b> 것을 막을 수 있어요. 책상 옆이나 물건이 많은 침대 옆 탁자에서 특히 유용할 수 있습니다.</p>
+                <p class="mb-6">3. 간단한 바늘꽂이 만들기<br>마른 스펀지는 쉽게 <b class="highlight">바늘꽂이로</b> 바꿀 수 있어요. 작은 컵 안에 스펀지를 넣고 위쪽에 바느질용 바늘을 꽂으세요. 컵이 거친 나무로 만들어졌다면 가장자리에 손이 긁히지 않도록 먼저 <b class="highlight">사포로 갈아야</b> 합니다. 스펀지가 바늘을 세운 상태로 잡아 주기 때문에 더 쉽게 찾을 수 있어요.</p>
+                <p class="mb-6">4. 좁거나 굽은 표면 청소하기<br>스펀지를 긴 조각으로 자른 뒤 자, 나무 숟가락 또는 다른 가느다란 물건에 감을 수 있어요. 그러면 가구 뒤쪽이나 가전제품 사이에 닿을 수 있는 유연한 청소 도구가 됩니다. 작은 스펀지 조각은 <b class="highlight">자동차 핸들의</b> 울퉁불퉁한 표면에서 먼지를 닦는 데도 도움이 될 수 있어요. 하지만 전자 장치 안으로 물이 들어가지 않도록 스펀지를 아주 살짝만 적셔야 합니다.</p>
+                <p class="mb-6">5. 임시 배수구 마개 만들기<br>두꺼운 스펀지는 싱크대나 욕조에서 물이 빠지는 속도를 일시적으로 늦출 수 있어요. 배수구 입구에 단단히 누른 뒤 무거운 컵을 위에 올려놓으세요. 제대로 된 마개나 <b class="highlight">뚫어뻥만큼</b> 효과적이지는 않지만, 짧은 청소 작업을 할 때 유용할 수 있습니다.</p>
+                <p class="mb-6">스펀지를 <b class="highlight">배관</b> 깊숙이 밀어 넣어서는 안 됩니다. 안쪽에 끼면 <b class="highlight">배관공을</b> 불러야 할 수도 있어요. 따라서 이 방법은 조심스럽게 짧은 시간 동안만 사용해야 합니다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "727715.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

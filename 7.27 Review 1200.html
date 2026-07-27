@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | Five Unexpectedly Useful Ways to Use a Towel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🧺</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">Five Unexpectedly Useful Ways to Use a Towel</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">caught off guard</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">갑작스러운 일에 당황한 / 허를 찔린</td></tr>
+                <tr><td class="p-4"><b class="text-white">lose it</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그것을 잃어버리다 / 이성을 잃다</td></tr>
+                <tr><td class="p-4"><b class="text-white">deserted island</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">무인도</td></tr>
+                <tr><td class="p-4"><b class="text-white">potholder</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">냄비 받침 / 뜨거운 냄비를 잡는 천</td></tr>
+                <tr><td class="p-4"><b class="text-white">humidifier</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">가습기</td></tr>
+                <tr><td class="p-4"><b class="text-white">dehumidifier</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">제습기</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border border-white/5"><h3 class="text-teal-400 font-bold mb-1">caught off guard</h3><p class="text-sm text-slate-300">예상하지 못한 일이 갑자기 생겨 준비하지 못하거나 당황한 상태를 뜻해요.</p></div>
+            <div class="glass p-5 rounded-2xl border border-white/5"><h3 class="text-teal-400 font-bold mb-1">lose it</h3><p class="text-sm text-slate-300">문맥에 따라 ‘물건을 잃어버리다’ 또는 ‘감정을 통제하지 못하다’라는 뜻이 될 수 있어요.</p></div>
+            <div class="glass p-5 rounded-2xl border border-white/5"><h3 class="text-teal-400 font-bold mb-1">deserted island</h3><p class="text-sm text-slate-300">사람이 살지 않는 외딴섬, 즉 ‘무인도’를 뜻해요.</p></div>
+            <div class="glass p-5 rounded-2xl border border-white/5"><h3 class="text-teal-400 font-bold mb-1">potholder</h3><p class="text-sm text-slate-300">뜨거운 냄비를 들거나 식탁 위에 놓을 때 사용하는 두꺼운 천이나 받침이에요.</p></div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">A towel is usually used to dry your body, but its absorbent material, flexible shape, and soft surface make it useful for many other purposes. Here are five practical uses, beginning with a simple kitchen trick and ending with an emergency survival tool.</p>
+                <p class="mb-6">1. Use it as an emergency potholder<br>A thick, completely dry towel can double as a <b class="highlight quiz-target" data-ans="potholder" data-kor="냄비 받침 / 뜨거운 냄비를 잡는 천">potholder</b> when oven gloves are unavailable. Fold it several times before touching a warm pan or pot handle. The extra layers would slow the transfer of heat and protect your hand.<br>However, never use a damp towel. Water transfers heat quickly, so a wet towel could cause a burn. It should also be kept away from open flames.</p>
+                <p class="mb-6">2. Keep small objects together while traveling<br>Lay a hand towel flat and place small items such as chargers, pens, or toiletries in the center. Roll the towel tightly and secure it with a rubber band.<br>That way, the objects will stay together inside your suitcase, and you will be less likely to <b class="highlight quiz-target" data-ans="lose them" data-kor="그것을 잃어버리다 / 이성을 잃다">lose them</b>. The towel will also provide light padding for fragile items.</p>
+                <p class="mb-6">3. Make a temporary humidifier<br>If the air in your room feels very dry, soak a small towel in water, squeeze out the excess, and hang it near—but not directly on—a safe heat source. As the water slowly evaporates, the towel will act like a basic <b class="highlight quiz-target" data-ans="humidifier" data-kor="가습기">humidifier</b>.<br>It would come in handy when you are <b class="highlight quiz-target" data-ans="caught off guard" data-kor="갑작스러운 일에 당황한 / 허를 찔린">caught off guard</b> by dry air in a hotel room. However, it will not control the moisture level as accurately as an electric machine.</p>
+                <p class="mb-6">4. Reduce moisture in a small space<br>A dry towel cannot replace a real <b class="highlight quiz-target" data-ans="dehumidifier" data-kor="제습기">dehumidifier</b>, but it can absorb moisture from a small area. Place one near a foggy window, under wet shoes, or beside a bathroom door after a shower.<br>Replace or dry the towel regularly. Otherwise, it may begin to smell or develop mold. This method is useful for dealing with a small amount of water, not for controlling humidity throughout an entire room.</p>
+                <p class="mb-6">5. Create an emergency carrying bag<br>In an emergency, place supplies in the center of a large towel and tie two opposite corners together. Then tie the remaining corners to create a simple carrying bag.<br>The idea is to transport food, clothing, or first-aid supplies when no proper bag is available. It could even be useful on a <b class="highlight quiz-target" data-ans="deserted island" data-kor="무인도">deserted island</b>, where ordinary objects would need to serve several purposes. The towel could later be untied and used for shade, warmth, or collecting rainwater.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">수건은 보통 몸을 닦는 데 사용하지만, 흡수력이 좋은 재질과 유연한 모양, 부드러운 표면 덕분에 다른 여러 용도로도 유용하게 사용할 수 있습니다. 간단한 주방 활용법부터 비상시 생존 도구까지 다섯 가지 실용적인 사용법을 소개합니다.</p>
+                <p class="mb-6">1. 비상용 냄비 잡는 천으로 사용하기<br>두껍고 완전히 마른 수건은 오븐 장갑이 없을 때 <b class="highlight">냄비 잡는 천</b> 역할을 할 수 있어요. 따뜻한 프라이팬이나 냄비 손잡이를 만지기 전에 수건을 여러 번 접으세요. 여러 겹의 천이 열의 전달을 늦춰 손을 보호해 줄 거예요.<br>하지만 젖은 수건은 절대 사용하면 안 됩니다. 물은 열을 빠르게 전달하기 때문에 젖은 수건을 사용하면 화상을 입을 수 있어요. 또한 불꽃 가까이에 두어서도 안 됩니다.</p>
+                <p class="mb-6">2. 여행할 때 작은 물건들을 함께 보관하기<br>작은 수건을 평평하게 펼치고 충전기, 펜, 세면도구 같은 작은 물건들을 가운데에 놓으세요. 수건을 단단히 말고 고무줄로 고정하면 됩니다.<br>그렇게 하면 물건들이 여행 가방 안에서 한곳에 모여 있어 <b class="highlight">잃어버릴</b> 가능성이 줄어듭니다. 수건은 깨지기 쉬운 물건을 위한 가벼운 완충재 역할도 해요.</p>
+                <p class="mb-6">3. 임시 가습기 만들기<br>방 안의 공기가 매우 건조하다면 작은 수건을 물에 적시고 물기를 짠 뒤 안전한 열원 근처에 걸어 둘 수 있어요. 단, 열원 위에 직접 올려놓으면 안 됩니다. 수건의 물이 천천히 증발하면서 간단한 <b class="highlight">가습기</b> 역할을 합니다.<br>호텔방의 건조한 공기에 갑자기 <b class="highlight">당황했을 때</b> 유용할 수 있어요. 하지만 전기 가습기만큼 정확하게 습도를 조절할 수는 없습니다.</p>
+                <p class="mb-6">4. 작은 공간의 습기 줄이기<br>마른 수건이 진짜 <b class="highlight">제습기를</b> 대신할 수는 없지만, 좁은 공간에 있는 습기를 흡수할 수 있어요. 김이 서린 창문 근처, 젖은 신발 아래 또는 샤워 후 욕실 문 옆에 놓아 보세요.<br>수건은 정기적으로 교체하거나 말려야 합니다. 그렇지 않으면 냄새가 나거나 곰팡이가 생길 수 있어요. 이 방법은 소량의 물을 처리하는 데는 유용하지만, 방 전체의 습도를 조절하는 데는 적합하지 않습니다.</p>
+                <p class="mb-6">5. 비상용 운반 가방 만들기<br>비상시에는 큰 수건 가운데에 필요한 물건들을 놓고 서로 마주 보는 두 모서리를 묶으세요. 그런 다음 나머지 두 모서리도 묶으면 간단한 운반 가방을 만들 수 있습니다.<br>제대로 된 가방이 없을 때 음식, 옷 또는 구급용품을 옮기는 것이 핵심이에요. 평범한 물건을 여러 용도로 사용해야 하는 <b class="highlight">무인도에서도</b> 유용할 수 있습니다. 나중에는 매듭을 풀어 수건을 햇빛 가리개, 보온 도구 또는 빗물을 모으는 도구로 사용할 수도 있어요.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "7271200.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

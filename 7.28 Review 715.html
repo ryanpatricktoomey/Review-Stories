@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Harbor Rescue Officer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🚤</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Harbor Rescue Officer</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">making an impact</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">의미 있는 변화를 만들어 내는 것</td></tr>
+                <tr><td class="p-4"><b class="text-white">the latter one</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">뒤에 언급된 것</td></tr>
+                <tr><td class="p-4"><b class="text-white">the former one</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">앞에 언급된 것</td></tr>
+                <tr><td class="p-4"><b class="text-white">theoretical</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">이론적인</td></tr>
+                <tr><td class="p-4"><b class="text-white">practical</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">실용적인, 실제적인</td></tr>
+                <tr><td class="p-4"><b class="text-white">public servant</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">공무원, 공공을 위해 일하는 사람</td></tr>
+                <tr><td class="p-4"><b class="text-white">lay off</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">해고하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">sense of duty</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">책임감, 의무감</td></tr>
+                <tr><td class="p-4"><b class="text-white">selfless</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">이타적인</td></tr>
+                <tr><td class="p-4"><b class="text-white">altruist</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">이타주의자, 남을 먼저 생각하는 사람</td></tr>
+                <tr><td class="p-4"><b class="text-white">landlubber</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">바다 생활에 익숙하지 않은 사람</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border border-white/5 flex flex-col justify-between">
+                <div>
+                    <h3 class="text-teal-400 font-bold text-lg mb-1">making an impact</h3>
+                    <p class="text-slate-300 text-sm">단순히 일을 하는 것이 아니라 사람이나 사회에 의미 있는 변화를 만드는 것을 뜻해요.</p>
+                </div>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 flex flex-col justify-between">
+                <div>
+                    <h3 class="text-teal-400 font-bold text-lg mb-1">the former one / the latter one</h3>
+                    <p class="text-slate-300 text-sm">두 가지를 언급했을 때 former는 앞의 것, latter는 뒤의 것을 가리켜요.</p>
+                </div>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 flex flex-col justify-between">
+                <div>
+                    <h3 class="text-teal-400 font-bold text-lg mb-1">lay off</h3>
+                    <p class="text-slate-300 text-sm">직원의 잘못보다는 회사 사정 때문에 해고한다는 의미로 자주 쓰여요.</p>
+                </div>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 flex flex-col justify-between">
+                <div>
+                    <h3 class="text-teal-400 font-bold text-lg mb-1">sense of duty</h3>
+                    <p class="text-slate-300 text-sm">해야 할 일이라고 느껴 책임지고 행동하려는 마음이에요.</p>
+                </div>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 flex flex-col justify-between">
+                <div>
+                    <h3 class="text-teal-400 font-bold text-lg mb-1">altruist</h3>
+                    <p class="text-slate-300 text-sm">자신의 이익보다 다른 사람의 행복과 안전을 중요하게 생각하는 사람이에요.</p>
+                </div>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 flex flex-col justify-between">
+                <div>
+                    <h3 class="text-teal-400 font-bold text-lg mb-1">landlubber</h3>
+                    <p class="text-slate-300 text-sm">배나 바다에 익숙하지 않은 사람을 장난스럽게 부르는 표현이에요.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">After Martin was <b class="highlight quiz-target" data-ans="laid off" data-kor="해고된">laid off</b> from his accounting job, he decided that his next career needed to involve <b class="highlight quiz-target" data-ans="making an impact" data-kor="의미 있는 변화를 만들어 내는 것">making an impact</b>.</p>
+                <p class="mb-6">“I don’t want to sit behind a desk anymore,” he told his sister. “I want to become a <b class="highlight quiz-target" data-ans="public servant" data-kor="공무원">public servant</b>. Someone brave and <b class="highlight quiz-target" data-ans="selfless" data-kor="이타적인">selfless</b>.”</p>
+                <p class="mb-6">His sister looked at the harbor-rescue recruitment page on his laptop.</p>
+                <p class="mb-6">“You get seasick in swimming pools.”</p>
+                <p class="mb-6">“That happened once.”</p>
+                <p class="mb-6">“It happened in a hotel bathtub.”</p>
+                <p class="mb-6">Martin ignored her. He had always considered himself an <b class="highlight quiz-target" data-ans="altruist" data-kor="이타주의자">altruist</b> with a strong <b class="highlight quiz-target" data-ans="sense of duty" data-kor="책임감을">sense of duty</b>. A rescue officer seemed like the perfect fit.</p>
+                <p class="mb-6">The training program had two parts: a <b class="highlight quiz-target" data-ans="theoretical" data-kor="이론적인">theoretical</b> exam and a <b class="highlight quiz-target" data-ans="practical" data-kor="실기">practical</b> test. Martin loved <b class="highlight quiz-target" data-ans="the former one" data-kor="앞의 시험을">the former one</b>. He memorized emergency codes, rescue procedures, and the names of every part of a boat.</p>
+                <p class="mb-6">During the written exam, the instructor asked, “Would you rather take the theoretical test or the practical test first?”</p>
+                <p class="mb-6">“Definitely <b class="highlight quiz-target" data-ans="the former one" data-kor="앞의 것이요">the former one</b>,” Martin said.</p>
+                <p class="mb-6">He scored 98 percent.</p>
+                <p class="mb-6">Then came the boat.</p>
+                <p class="mb-6">The moment Martin stepped onto it, he grabbed the railing.</p>
+                <p class="mb-6">“Is the dock moving?” he asked.</p>
+                <p class="mb-6">“No,” said Captain Lee. “The boat is.”</p>
+                <p class="mb-6">“That seems unnecessarily confusing.”</p>
+                <p class="mb-6">For the first exercise, Martin had to throw a life ring toward a training dummy. His first throw landed behind him. His second hit Captain Lee. His third remained in his hand because he forgot to release it.</p>
+                <p class="mb-6">“Perhaps throwing isn’t my strength,” Martin said.</p>
+                <p class="mb-6">“Then steer us toward the dummy.”</p>
+                <p class="mb-6">Martin took the wheel and immediately turned away from it.</p>
+                <p class="mb-6">“Left!” Captain Lee shouted.</p>
+                <p class="mb-6">“Your left or my left?”</p>
+                <p class="mb-6">“We’re facing the same direction!”</p>
+                <p class="mb-6">Martin spun the wheel too far. The boat made a sharp circle, and he collapsed onto the floor.</p>
+                <p class="mb-6">Captain Lee stopped the engine. “You’re a complete <b class="highlight quiz-target" data-ans="landlubber" data-kor="바다 초보자">landlubber</b>.”</p>
+                <p class="mb-6">Martin raised one finger. “That sounds like a <b class="highlight quiz-target" data-ans="theoretical" data-kor="이론적인">theoretical</b> judgment. I’d like a more <b class="highlight quiz-target" data-ans="practical" data-kor="실제적인">practical</b> evaluation.”</p>
+                <p class="mb-6">“You threw rescue equipment at your captain and drove away from the victim.”</p>
+                <p class="mb-6">“Fair.”</p>
+                <p class="mb-6">The final exercise involved climbing down a short ladder into calm water. Martin placed one foot on the first step, looked down, and froze.</p>
+                <p class="mb-6">“How deep is it?”</p>
+                <p class="mb-6">“One meter.”</p>
+                <p class="mb-6">“Is that measured from the surface or the bottom?”</p>
+                <p class="mb-6">Captain Lee stared at him. “Those are the only two options.”</p>
+                <p class="mb-6">Martin stayed on the ladder for twelve minutes. Eventually, two trainees had to rescue him, although he was still attached to the boat.</p>
+                <p class="mb-6">Back on land, Captain Lee gave him a choice: office administration or another day of boat training.</p>
+                <p class="mb-6">“<b class="highlight quiz-target" data-ans="The latter one" data-kor="뒤의 것이">The latter one</b> sounds heroic,” Martin said, “but I’ll take <b class="highlight quiz-target" data-ans="the former one" data-kor="앞의 것을">the former one</b>.”</p>
+                <p class="mb-6">A month later, Martin was coordinating rescue schedules from a desk. The work involved repetitive tasks, careful planning, and absolutely no waves.</p>
+                <p class="mb-6">He was finally <b class="highlight quiz-target" data-ans="making an impact" data-kor="의미 있는 변화를 만들어 내고">making an impact</b>—and keeping both feet on dry land.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>마틴은 회계사 직장에서 <b class="highlight">해고된</b> 후, 다음 직업은 반드시 <b class="highlight">의미 있는 변화를 만들어 내는</b> 일이어야 한다고 결심했다.</p>
+                <p>“이제 더는 책상 뒤에 앉아 있고 싶지 않아.” 그가 여동생에게 말했다. “나는 <b class="highlight">공무원이</b> 되고 싶어. 용감하고 <b class="highlight">이타적인</b> 사람 말이야.”</p>
+                <p>여동생은 그의 노트북에 떠 있는 항구 구조대 채용 페이지를 보았다.</p>
+                <p>“오빠는 수영장에서도 멀미하잖아.”</p>
+                <p>“한 번뿐이었어.”</p>
+                <p>“호텔 욕조에서 그랬잖아.”</p>
+                <p>마틴은 그 말을 무시했다. 그는 언제나 자신이 강한 <b class="highlight">책임감을</b> 지닌 <b class="highlight">이타주의자라고</b> 생각했다. 구조대원은 자신에게 완벽한 직업처럼 보였다.</p>
+                <p>훈련 과정은 <b class="highlight">이론적인</b> 시험과 <b class="highlight">실기</b> 시험, 두 부분으로 구성되어 있었다. 마틴은 <b class="highlight">앞의 시험을</b> 아주 좋아했다. 그는 비상 코드, 구조 절차, 배의 모든 부위 명칭을 외웠다.</p>
+                <p>필기시험 중 교관이 물었다.</p>
+                <p>“이론 시험과 실기 시험 중 어느 것을 먼저 보고 싶습니까?”</p>
+                <p>“당연히 <b class="highlight">앞의 것이요</b>.” 마틴이 말했다.</p>
+                <p>그는 98점을 받았다.</p>
+                <p>그런 다음 배를 탈 차례가 왔다.</p>
+                <p>마틴은 배에 발을 올리는 순간 난간을 붙잡았다.</p>
+                <p>“부두가 움직이고 있나요?”</p>
+                <p>“아니요.” 이 선장이 말했다. “배가 움직이고 있습니다.”</p>
+                <p>“쓸데없이 혼란스럽네요.”</p>
+                <p>첫 번째 훈련에서 마틴은 훈련용 인형을 향해 구명환을 던져야 했다. 첫 번째 것은 그의 뒤에 떨어졌다. 두 번째 것은 이 선장을 맞혔다. 세 번째 것은 손을 놓는 것을 잊어버려서 손에 그대로 남았다.</p>
+                <p>“아무래도 던지기는 제 장점이 아닌 것 같습니다.”</p>
+                <p>“그렇다면 인형 쪽으로 배를 조종하세요.”</p>
+                <p>마틴은 운전대를 잡고 즉시 인형과 반대 방향으로 움직였다.</p>
+                <p>“왼쪽!” 이 선장이 소리쳤다.</p>
+                <p>“선장님 왼쪽이요, 제 왼쪽이요?”</p>
+                <p>“우리는 같은 방향을 보고 있잖아요!”</p>
+                <p>마틴은 운전대를 너무 많이 돌렸다. 배가 갑자기 원을 그리자 그는 바닥에 쓰러졌다.</p>
+                <p>이 선장은 엔진을 껐다.</p>
+                <p>“당신은 완전한 <b class="highlight">바다 초보자군요</b>.”</p>
+                <p>마틴은 손가락 하나를 들었다.</p>
+                <p>“그건 <b class="highlight">이론적인</b> 판단처럼 들립니다. 좀 더 <b class="highlight">실제적인</b> 평가를 받고 싶습니다.”</p>
+                <p>“당신은 구조 장비를 선장에게 던졌고, 조난자에게서 멀어지는 방향으로 배를 몰았습니다.”</p>
+                <p>“그건 인정하겠습니다.”</p>
+                <p>마지막 훈련은 짧은 사다리를 타고 잔잔한 물속으로 내려가는 것이었다. 마틴은 첫 번째 발판에 한쪽 발을 올리고 아래를 내려다본 뒤 얼어붙었다.</p>
+                <p>“수심이 얼마나 되나요?”</p>
+                <p>“1미터입니다.”</p>
+                <p>“수면에서부터 측정한 건가요, 바닥에서부터 측정한 건가요?”</p>
+                <p>이 선장은 그를 바라보았다.</p>
+                <p>“가능한 기준은 그 두 개뿐입니다.”</p>
+                <p>마틴은 사다리에서 12분 동안 움직이지 않았다. 결국 다른 훈련생 두 명이 그를 구조해야 했다. 그는 여전히 배에 붙어 있었는데도 말이다.</p>
+                <p>육지로 돌아온 뒤 이 선장은 그에게 행정 업무와 하루 더 배에서 훈련하는 것 중 하나를 선택하라고 했다.</p>
+                <p>“<b class="highlight">뒤의 것이</b> 더 영웅적으로 들리지만, <b class="highlight">앞의 것을</b> 선택하겠습니다.”</p>
+                <p>한 달 뒤, 마틴은 책상에서 구조 일정을 조정하고 있었다. 그 일에는 반복적인 업무와 꼼꼼한 계획이 필요했으며, 파도는 전혀 없었다.</p>
+                <p>마침내 그는 두 발을 육지에 단단히 붙인 채 <b class="highlight">의미 있는 변화를 만들어 내고</b> 있었다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "728715.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

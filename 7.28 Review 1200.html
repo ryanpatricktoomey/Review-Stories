@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | Trading Places</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🏠</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">Trading Places</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">analysis</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">분석</td></tr>
+                <tr><td class="p-4"><b class="text-white">manage the household</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">집안 살림을 관리하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">cashier</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">계산원</td></tr>
+                <tr><td class="p-4"><b class="text-white">repetitive tasks</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">반복적인 일</td></tr>
+                <tr><td class="p-4"><b class="text-white">yardwork</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">정원 관리, 마당일</td></tr>
+                <tr><td class="p-4"><b class="text-white">grocery shopping</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">장보기</td></tr>
+                <tr><td class="p-4"><b class="text-white">run errands</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">볼일을 보러 다니다</td></tr>
+                <tr><td class="p-4"><b class="text-white">do some errands</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">몇 가지 볼일을 보다</td></tr>
+                <tr><td class="p-4"><b class="text-white">stumble upon</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">우연히 발견하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">discomfort</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">불편함</td></tr>
+                <tr><td class="p-4"><b class="text-white">duh</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">당연하지, 그걸 몰라?</td></tr>
+                <tr><td class="p-4"><b class="text-white">on the record</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">공식적으로 밝혀도 되는</td></tr>
+                <tr><td class="p-4"><b class="text-white">off the record</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">비공식적으로, 공개하지 않는 조건으로</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border border-white/5 flex flex-col justify-between">
+                <div>
+                    <h3 class="text-teal-400 font-bold text-lg mb-1">manage the household</h3>
+                    <p class="text-slate-300 text-sm">청소뿐 아니라 식사, 장보기, 일정, 공과금, 아이들 돌보기 등 집안 전체를 책임지는 뜻이에요.</p>
+                </div>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 flex flex-col justify-between">
+                <div>
+                    <h3 class="text-teal-400 font-bold text-lg mb-1">run errands / do some errands</h3>
+                    <p class="text-slate-300 text-sm">은행, 우체국, 세탁소처럼 여러 곳을 다니며 자잘한 볼일을 처리한다는 뜻이에요.</p>
+                </div>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 flex flex-col justify-between">
+                <div>
+                    <h3 class="text-teal-400 font-bold text-lg mb-1">stumble upon</h3>
+                    <p class="text-slate-300 text-sm">일부러 찾은 것이 아니라 우연히 발견한다는 뜻이에요.</p>
+                </div>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 flex flex-col justify-between">
+                <div>
+                    <h3 class="text-teal-400 font-bold text-lg mb-1">duh</h3>
+                    <p class="text-slate-300 text-sm">너무 당연한 사실을 상대가 몰랐을 때 쓰는 아주 비격식적인 표현이에요. 무례하게 들릴 수 있어요.</p>
+                </div>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 flex flex-col justify-between">
+                <div>
+                    <h3 class="text-teal-400 font-bold text-lg mb-1">on the record / off the record</h3>
+                    <p class="text-slate-300 text-sm">각각 공개해도 되는 공식 발언과 공개하지 않기로 한 비공식 발언을 뜻해요.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">When David came home from work every evening, the house was clean, dinner was ready, and the children had finished their homework.</p>
+                <p class="mb-6">His wife, Mina, made it look easy.</p>
+                <p class="mb-6">One Friday, David watched her fold laundry while answering a school message and checking the oven.</p>
+                <p class="mb-6">“I honestly think I could do this,” he said.</p>
+                <p class="mb-6">Mina stopped folding.</p>
+                <p class="mb-6">“Do what?”</p>
+                <p class="mb-6">“<b class="highlight quiz-target" data-ans="Manage the household" data-kor="집안 살림을 관리하는 것">Manage the household</b>. It’s mostly planning and a few <b class="highlight quiz-target" data-ans="repetitive tasks" data-kor="반복적인 일">repetitive tasks</b>.”</p>
+                <p class="mb-6">She looked at him for several seconds.</p>
+                <p class="mb-6">“Fine. Let’s trade places for one week.”</p>
+                <p class="mb-6">David smiled. “You’re going to be impressed.”</p>
+                <p class="mb-6">On Monday morning, Mina left for his office job, and David began with an <b class="highlight quiz-target" data-ans="analysis" data-kor="분석부터">analysis</b> of the household schedule. He created categories for meals, cleaning, children, and transportation.</p>
+                <p class="mb-6">Then the youngest child spilled cereal into the heating vent.</p>
+                <p class="mb-6">David’s schedule did not include cereal in the heating vent.</p>
+                <p class="mb-6">By nine o’clock, he was late for <b class="highlight quiz-target" data-ans="grocery shopping" data-kor="장보기에">grocery shopping</b>. At the supermarket, he called Mina six times to ask where the bread was, which milk they bought, and whether carrots expired.</p>
+                <p class="mb-6">At the checkout, the <b class="highlight quiz-target" data-ans="cashier" data-kor="계산원이">cashier</b> asked, “Do you need bags?”</p>
+                <p class="mb-6">David stared at the groceries.</p>
+                <p class="mb-6">“<b class="highlight quiz-target" data-ans="Duh" data-kor="당연하지">Duh</b>,” said his eight-year-old daughter.</p>
+                <p class="mb-6">“Don’t say that to adults,” David replied.</p>
+                <p class="mb-6">“You said it to Mom yesterday.”</p>
+                <p class="mb-6">After lunch, he had to <b class="highlight quiz-target" data-ans="run errands" data-kor="볼일을 보러 다녀야">run errands</b>. He needed to collect a prescription, return a library book, and pick up a repaired shoe.</p>
+                <p class="mb-6">“I’ll <b class="highlight quiz-target" data-ans="do some errands" data-kor="몇 가지 볼일을 보고">do some errands</b> and be back in thirty minutes,” he announced.</p>
+                <p class="mb-6">He returned two hours later with the wrong prescription, an overdue fine, and someone else’s shoe.</p>
+                <p class="mb-6">On the way home, he <b class="highlight quiz-target" data-ans="stumbled upon" data-kor="우연히 발견해">stumbled upon</b> a school bake sale and bought twelve cupcakes because he had forgotten to prepare snacks.</p>
+                <p class="mb-6">That afternoon, he attempted the <b class="highlight quiz-target" data-ans="yardwork" data-kor="마당일을">yardwork</b>. Ten minutes later, he came inside holding his back.</p>
+                <p class="mb-6">“This is causing serious physical <b class="highlight quiz-target" data-ans="discomfort" data-kor="불편함을">discomfort</b>,” he said.</p>
+                <p class="mb-6">Mina, who had just returned from work, looked through the window.</p>
+                <p class="mb-6">“You moved one flowerpot.”</p>
+                <p class="mb-6">“It was heavier than it looked.”</p>
+                <p class="mb-6">By Wednesday, the laundry was pink, the refrigerator contained only juice and mustard, and David had started hiding dirty dishes inside the oven.</p>
+                <p class="mb-6">Mina opened it.</p>
+                <p class="mb-6">“Would you like to explain this?”</p>
+                <p class="mb-6">“Is this conversation <b class="highlight quiz-target" data-ans="on the record" data-kor="공식적으로 공개되는 거야">on the record</b>?”</p>
+                <p class="mb-6">“Yes.”</p>
+                <p class="mb-6">“Then no.”</p>
+                <p class="mb-6">That evening, David admitted that he had believed staying home was easier than working in an office.</p>
+                <p class="mb-6">“Can I say something <b class="highlight quiz-target" data-ans="off the record" data-kor="비공개로">off the record</b>?” he asked.</p>
+                <p class="mb-6">Mina nodded.</p>
+                <p class="mb-6">“I wouldn’t last another week.”</p>
+                <p class="mb-6">She smiled. “I knew that on Monday.”</p>
+                <p class="mb-6">They switched back the next morning. David returned to his office, where nobody spilled cereal into the walls and every problem stayed inside a spreadsheet.</p>
+                <p class="mb-6">He had never been so happy to sit behind a desk.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>데이비드가 매일 저녁 퇴근해 집에 오면 집은 깨끗했고, 저녁 식사는 준비되어 있었으며, 아이들은 숙제를 끝낸 상태였다.</p>
+                <p>아내 미나는 모든 일을 아주 쉽게 해내는 것처럼 보였다.</p>
+                <p>어느 금요일, 데이비드는 아내가 빨래를 개면서 학교 메시지에 답하고 오븐까지 확인하는 모습을 지켜보았다.</p>
+                <p>“솔직히 나도 이 정도는 할 수 있을 것 같아.” 그가 말했다.</p>
+                <p>미나는 빨래를 개다 말고 멈췄다.</p>
+                <p>“뭘?”</p>
+                <p>“<b class="highlight">집안 살림을 관리하는 것</b> 말이야. 대부분 계획 세우기랑 몇 가지 <b class="highlight">반복적인 일</b>이잖아.”</p>
+                <p>미나는 몇 초 동안 그를 바라보았다.</p>
+                <p>“좋아. 일주일 동안 역할을 바꿔 보자.”</p>
+                <p>데이비드는 웃었다.</p>
+                <p>“당신, 나한테 감탄하게 될걸.”</p>
+                <p>월요일 아침, 미나는 데이비드의 회사로 출근했고 데이비드는 집안 일정에 대한 <b class="highlight">분석부터</b> 시작했다. 그는 식사, 청소, 아이들, 이동을 항목별로 나눴다.</p>
+                <p>그러자 막내가 시리얼을 난방 통풍구 안에 쏟았다.</p>
+                <p>그의 일정표에는 난방 통풍구 속 시리얼이 없었다.</p>
+                <p>아홉 시가 되었을 때 그는 이미 <b class="highlight">장보기에</b> 늦었다. 슈퍼마켓에서 그는 빵이 어디 있는지, 어떤 우유를 사는지, 당근도 유통기한이 있는지를 묻기 위해 미나에게 여섯 번이나 전화했다.</p>
+                <p>계산대에서 <b class="highlight">계산원이</b> 물었다.</p>
+                <p>“봉투 필요하세요?”</p>
+                <p>데이비드는 산 물건들을 바라보았다.</p>
+                <p>“<b class="highlight">당연하지</b>.” 여덟 살 딸이 말했다.</p>
+                <p>“어른에게 그런 말 쓰면 안 돼.” 데이비드가 말했다.</p>
+                <p>“아빠가 어제 엄마한테 그랬잖아.”</p>
+                <p>점심 식사 후에는 <b class="highlight">볼일을 보러 다녀야</b> 했다. 처방약을 찾고, 도서관 책을 반납하고, 수선한 신발도 찾아야 했다.</p>
+                <p>“<b class="highlight">몇 가지 볼일을 보고</b> 30분 안에 돌아올게.” 그가 선언했다.</p>
+                <p>그는 두 시간 뒤에 잘못된 처방약, 연체료 영수증, 그리고 다른 사람의 신발을 들고 돌아왔다.</p>
+                <p>집에 오는 길에는 학교 바자회를 <b class="highlight">우연히 발견해</b>, 간식 준비를 잊었다는 사실을 떠올리고 컵케이크 열두 개를 샀다.</p>
+                <p>그날 오후 그는 <b class="highlight">마당일을</b> 시도했다. 10분 뒤, 그는 허리를 붙잡은 채 집 안으로 들어왔다.</p>
+                <p>“이 일은 심각한 신체적 <b class="highlight">불편함을</b> 유발하고 있어.” 그가 말했다.</p>
+                <p>퇴근한 미나는 창밖을 보았다.</p>
+                <p>“화분 하나 옮겼잖아.”</p>
+                <p>“보기보다 무거웠어.”</p>
+                <p>수요일이 되자 빨래는 전부 분홍색이 되었고, 냉장고에는 주스와 머스터드밖에 없었으며, 데이비드는 더러운 접시를 오븐 안에 숨기기 시작했다.</p>
+                <p>미나가 오븐을 열었다.</p>
+                <p>“이걸 설명해 줄래?”</p>
+                <p>“이 대화는 <b class="highlight">공식적으로 공개되는 거야</b>?”</p>
+                <p>“응.”</p>
+                <p>“그럼 설명 안 할래.”</p>
+                <p>그날 저녁, 데이비드는 집에 있는 일이 회사에서 일하는 것보다 쉽다고 생각했었다고 인정했다.</p>
+                <p>“<b class="highlight">비공개로</b> 한마디 해도 돼?” 그가 물었다.</p>
+                <p>미나는 고개를 끄덕였다.</p>
+                <p>“나 일주일 더는 못 버틸 것 같아.”</p>
+                <p>미나는 웃었다.</p>
+                <p>“난 월요일부터 알고 있었어.”</p>
+                <p>두 사람은 다음 날 아침 원래 역할로 돌아갔다. 데이비드는 회사로 복귀했다. 그곳에서는 아무도 벽 안에 시리얼을 쏟지 않았고, 모든 문제는 스프레드시트 안에 얌전히 머물렀다.</p>
+                <p>그는 책상 뒤에 앉는 것이 그렇게 행복했던 적이 없었다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "7281200.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The World’s Least Calm Physical Therapist</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🏥</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The World’s Least Calm Physical Therapist</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">splint</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">부목</td></tr>
+                <tr><td class="p-4"><b class="text-white">sprain</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">삐다, 염좌</td></tr>
+                <tr><td class="p-4"><b class="text-white">statistics</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">통계</td></tr>
+                <tr><td class="p-4"><b class="text-white">static</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">정적인, 움직임이 거의 없는</td></tr>
+                <tr><td class="p-4"><b class="text-white">it drains me</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그건 나를 완전히 지치게 한다</td></tr>
+                <tr><td class="p-4"><b class="text-white">chaos</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">혼란, 아수라장</td></tr>
+                <tr><td class="p-4"><b class="text-white">survive</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">살아남다, 버텨 내다</td></tr>
+                <tr><td class="p-4"><b class="text-white">rich and unemployed</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">부유하지만 무직인</td></tr>
+                <tr><td class="p-4"><b class="text-white">on your feet</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">서서, 계속 움직이며</td></tr>
+                <tr><td class="p-4"><b class="text-white">putting out fires all day</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">하루 종일 끊임없이 문제를 해결하는 것</td></tr>
+                <tr><td class="p-4"><b class="text-white">tangled</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">엉킨, 뒤얽힌</td></tr>
+                <tr><td class="p-4"><b class="text-white">chill</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">느긋한, 편안한</td></tr>
+                <tr><td class="p-4"><b class="text-white">low-key person</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">조용하고 튀지 않는 사람</td></tr>
+                <tr><td class="p-4"><b class="text-white">drama queen</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">사소한 일에도 지나치게 호들갑을 떠는 사람</td></tr>
+                <tr><td class="p-4"><b class="text-white">down to earth</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">현실적이고 소탈한</td></tr>
+                <tr><td class="p-4"><b class="text-white">go with the flow</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">상황에 맞춰 유연하게 행동하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">candidate</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">후보자, 지원자</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border border-white/5 flex flex-col justify-between">
+                <div>
+                    <h3 class="text-teal-400 font-bold text-lg mb-1">it drains me</h3>
+                    <p class="text-slate-300 text-sm">어떤 활동이 신체적·정신적 에너지를 완전히 빼앗는다는 뜻이에요.</p>
+                </div>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 flex flex-col justify-between">
+                <div>
+                    <h3 class="text-teal-400 font-bold text-lg mb-1">on your feet</h3>
+                    <p class="text-slate-300 text-sm">단순히 서 있다는 뜻뿐 아니라, 오랜 시간 계속 걸어 다니며 일한다는 의미로도 쓰여요.</p>
+                </div>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 flex flex-col justify-between">
+                <div>
+                    <h3 class="text-teal-400 font-bold text-lg mb-1">putting out fires all day</h3>
+                    <p class="text-slate-300 text-sm">실제 불을 끄는 것이 아니라, 계속 생기는 긴급한 문제를 처리한다는 비유적 표현이에요.</p>
+                </div>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 flex flex-col justify-between">
+                <div>
+                    <h3 class="text-teal-400 font-bold text-lg mb-1">low-key person</h3>
+                    <p class="text-slate-300 text-sm">관심을 끌거나 요란하게 행동하지 않는 조용하고 차분한 사람이에요.</p>
+                </div>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 flex flex-col justify-between">
+                <div>
+                    <h3 class="text-teal-400 font-bold text-lg mb-1">drama queen</h3>
+                    <p class="text-slate-300 text-sm">작은 문제에도 감정적으로 과하게 반응하는 사람을 가리키는 비격식 표현이에요.</p>
+                </div>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 flex flex-col justify-between">
+                <div>
+                    <h3 class="text-teal-400 font-bold text-lg mb-1">go with the flow</h3>
+                    <p class="text-slate-300 text-sm">계획을 고집하지 않고 상황이 흘러가는 대로 유연하게 대처한다는 뜻이에요.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Evan applied for a job at a busy sports clinic because he wanted a career that was active but stable. The advertisement said the ideal <b class="highlight quiz-target" data-ans="candidate" data-kor="지원자가">candidate</b> should be patient, energetic, and comfortable working in unpredictable situations.</p>
+                <p class="mb-6">Evan considered himself perfect.</p>
+                <p class="mb-6">He was a <b class="highlight quiz-target" data-ans="chill" data-kor="느긋하고">chill</b>, <b class="highlight quiz-target" data-ans="down-to-earth" data-kor="소탈하며">down-to-earth</b>, <b class="highlight quiz-target" data-ans="low-key person" data-kor="조용한 사람">low-key person</b> who hated office work.</p>
+                <p class="mb-6">“Anything too <b class="highlight quiz-target" data-ans="static" data-kor="정적인 일은">static</b> <b class="highlight quiz-target" data-ans="drains me" data-kor="저를 완전히 지치게 해요">drains me</b>,” he told the clinic manager. “I want to be <b class="highlight quiz-target" data-ans="on my feet" data-kor="계속 서서 움직이며">on my feet</b>, helping people.”</p>
+                <p class="mb-6">The manager hired him as an assistant physical therapist.</p>
+                <p class="mb-6">His confidence lasted eleven minutes.</p>
+                <p class="mb-6">His first patient was a basketball player with a mild ankle <b class="highlight quiz-target" data-ans="sprain" data-kor="염좌가">sprain</b>. When Evan saw the swelling, he stepped backward and hit a cabinet.</p>
+                <p class="mb-6">“Is that normal?” he whispered.</p>
+                <p class="mb-6">“It’s a minor injury,” said Dr. Kim. “Bring me a <b class="highlight quiz-target" data-ans="splint" data-kor="부목을">splint</b>.”</p>
+                <p class="mb-6">Evan returned carrying a mop.</p>
+                <p class="mb-6">“That’s not a splint.”</p>
+                <p class="mb-6">“I panicked.”</p>
+                <p class="mb-6">The second patient had several resistance bands wrapped around his legs. Evan tried to help, but the bands became <b class="highlight quiz-target" data-ans="tangled" data-kor="엉켜">tangled</b> around his own ankles. He fell into a pile of exercise balls, which rolled across the clinic and knocked over a water dispenser.</p>
+                <p class="mb-6">Within seconds, the waiting room was in <b class="highlight quiz-target" data-ans="chaos" data-kor="아수라장이">chaos</b>.</p>
+                <p class="mb-6">A patient screamed, “My shoes are wet!”</p>
+                <p class="mb-6">Another shouted, “That ball hit my knee!”</p>
+                <p class="mb-6">Evan crawled out from under a foam mat. “Everybody needs to calm down.”</p>
+                <p class="mb-6">“You’re the only one shouting,” Dr. Kim said.</p>
+                <p class="mb-6">“I’m responding to the energy in the room.”</p>
+                <p class="mb-6">During lunch, Evan studied the clinic’s injury <b class="highlight quiz-target" data-ans="statistics" data-kor="통계를">statistics</b>. Most patients recovered without serious complications, but this did not comfort him. Instead, he calculated how many injuries could theoretically happen during one shift.</p>
+                <p class="mb-6">By two o’clock, he had warned three patients that stretching might be dangerous.</p>
+                <p class="mb-6">“You’re being a <b class="highlight quiz-target" data-ans="drama queen" data-kor="너무 호들갑을 떠는">drama queen</b>,” Dr. Kim told him.</p>
+                <p class="mb-6">“I’m being cautious.”</p>
+                <p class="mb-6">“You put a helmet on a man using a stationary bicycle.”</p>
+                <p class="mb-6">“He could fall sideways.”</p>
+                <p class="mb-6">The final patient was an elderly woman recovering from knee surgery. She was calm, practical, and clearly better suited to the clinic than Evan was.</p>
+                <p class="mb-6">“You have to <b class="highlight quiz-target" data-ans="go with the flow" data-kor="상황에 맞춰 유연하게 대처해야 해요">go with the flow</b>,” she told him as he adjusted her exercise machine. “People get hurt. Then they recover.”</p>
+                <p class="mb-6">“I don’t know how anyone can <b class="highlight quiz-target" data-ans="survive" data-kor="버티는지">survive</b> this job,” Evan said. “It feels like we’re <b class="highlight quiz-target" data-ans="putting out fires all day" data-kor="하루 종일 계속 긴급한 문제를 해결하는">putting out fires all day</b>.”</p>
+                <p class="mb-6">The woman looked around the quiet room. “Nothing is happening.”</p>
+                <p class="mb-6">At that moment, Evan heard a loud crack from the hallway. He dropped the clipboard and hid behind her chair.</p>
+                <p class="mb-6">A nurse entered holding a broken plastic ruler.</p>
+                <p class="mb-6">Evan slowly stood up.</p>
+                <p class="mb-6">At the end of the shift, the manager asked whether he planned to return.</p>
+                <p class="mb-6">Evan shook his head. “I’ve learned something important. I’m not built for medical work.”</p>
+                <p class="mb-6">“What are you built for?”</p>
+                <p class="mb-6">“Honestly? Being <b class="highlight quiz-target" data-ans="rich and unemployed" data-kor="부유하지만 무직인">rich and unemployed</b>.”</p>
+                <p class="mb-6">The next week, Evan found a job entering statistics for an insurance company. He sat at a desk all day, rarely spoke to anyone, and never saw an ankle.</p>
+                <p class="mb-6">The work was repetitive and <b class="highlight quiz-target" data-ans="static" data-kor="정적이었다">static</b>.</p>
+                <p class="mb-6">It suited him perfectly.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>에번은 활동적이면서도 안정적인 직업을 원해 바쁜 스포츠 재활 클리닉에 지원했다. 채용 공고에는 이상적인 <b class="highlight">지원자가</b> 인내심이 있고, 활력이 넘치며, 예측할 수 없는 상황에서도 편안하게 일할 수 있어야 한다고 적혀 있었다.</p>
+                <p>에번은 자신이 완벽한 사람이라고 생각했다.</p>
+                <p>그는 사무직을 싫어하는 <b class="highlight">느긋하고</b>, <b class="highlight">소탈하며</b>, <b class="highlight">조용한 사람이었다</b>.</p>
+                <p>“너무 <b class="highlight">정적인 일은</b> 저를 <b class="highlight">완전히 지치게 해요</b>.” 그가 클리닉 관리자에게 말했다. “저는 <b class="highlight">계속 서서 움직이며</b> 사람들을 돕고 싶어요.”</p>
+                <p>관리자는 그를 물리치료 보조사로 채용했다.</p>
+                <p>그의 자신감은 11분 동안 지속되었다.</p>
+                <p>첫 번째 환자는 발목에 가벼운 <b class="highlight">염좌가</b> 생긴 농구 선수였다. 에번은 부어오른 발목을 보자 뒤로 물러나다가 캐비닛에 부딪혔다.</p>
+                <p>“저게 정상인가요?” 그가 속삭였다.</p>
+                <p>“가벼운 부상이에요.” 김 선생님이 말했다. “<b class="highlight">부목을</b> 가져오세요.”</p>
+                <p>에번은 대걸레를 들고 돌아왔다.</p>
+                <p>“그건 부목이 아니에요.”</p>
+                <p>“당황했어요.”</p>
+                <p>두 번째 환자는 여러 개의 저항 밴드를 다리에 감고 있었다. 에번은 도우려 했지만 밴드가 자신의 발목에 <b class="highlight">엉켜</b> 버렸다. 그는 운동용 공 더미 위로 넘어졌고, 공들이 클리닉 안을 굴러가 정수기를 쓰러뜨렸다.</p>
+                <p>몇 초 만에 대기실은 <b class="highlight">아수라장이</b> 되었다.</p>
+                <p>한 환자가 소리쳤다.</p>
+                <p>“신발이 젖었잖아요!”</p>
+                <p>다른 환자도 외쳤다.</p>
+                <p>“저 공이 제 무릎을 쳤어요!”</p>
+                <p>에번은 폼 매트 아래에서 기어 나왔다.</p>
+                <p>“모두 진정하셔야 합니다.”</p>
+                <p>“지금 소리치는 사람은 당신뿐이에요.” 김 선생님이 말했다.</p>
+                <p>“방 안의 분위기에 반응하고 있는 겁니다.”</p>
+                <p>점심시간에 에번은 클리닉의 부상 <b class="highlight">통계를</b> 살펴보았다. 대부분의 환자는 심각한 문제 없이 회복했지만, 그 사실은 그를 안심시키지 못했다. 대신 그는 한 근무 시간 동안 이론적으로 몇 건의 부상이 발생할 수 있는지 계산했다.</p>
+                <p>오후 두 시까지 그는 환자 세 명에게 스트레칭이 위험할 수 있다고 경고했다.</p>
+                <p>“당신은 <b class="highlight">너무 호들갑을 떠는</b> 사람이에요.” 김 선생님이 말했다.</p>
+                <p>“저는 조심하는 겁니다.”</p>
+                <p>“고정식 자전거를 타는 사람에게 헬멧을 씌웠잖아요.”</p>
+                <p>“옆으로 넘어질 수도 있잖아요.”</p>
+                <p>마지막 환자는 무릎 수술 후 회복 중인 노년 여성이었다. 그녀는 침착하고 현실적이었으며, 에번보다 확실히 이 클리닉에 더 잘 어울렸다.</p>
+                <p>“<b class="highlight">상황에 맞춰 유연하게 대처해야 해요</b>.” 에번이 운동 기계를 조절하는 동안 그녀가 말했다. “사람들은 다치고, 그다음에는 회복해요.”</p>
+                <p>“어떻게 사람들이 이 직업에서 <b class="highlight">버티는지</b> 모르겠어요.” 에번이 말했다. “<b class="highlight">하루 종일 계속 긴급한 문제를 해결하는</b> 기분이에요.”</p>
+                <p>여자는 조용한 방을 둘러보았다.</p>
+                <p>“아무 일도 일어나지 않고 있는데요.”</p>
+                <p>그 순간 복도에서 큰 ‘딱’ 소리가 들렸다. 에번은 클립보드를 떨어뜨리고 여자의 의자 뒤에 숨었다.</p>
+                <p>간호사가 부러진 플라스틱 자를 들고 들어왔다.</p>
+                <p>에번은 천천히 일어섰다.</p>
+                <p>근무가 끝나자 관리자는 그에게 다시 출근할 생각인지 물었다.</p>
+                <p>에번은 고개를 저었다.</p>
+                <p>“중요한 사실을 깨달았습니다. 저는 의료 업무를 감당할 체질이 아니에요.”</p>
+                <p>“그럼 어떤 일에 적합한데요?”</p>
+                <p>“솔직히요? <b class="highlight">부유하지만 무직인</b> 사람이요.”</p>
+                <p>다음 주, 에번은 보험 회사에서 통계를 입력하는 일자리를 구했다. 그는 하루 종일 책상에 앉아 있었고, 사람들과 거의 대화하지 않았으며, 발목을 볼 일도 전혀 없었다.</p>
+                <p>그 일은 반복적이고 <b class="highlight">정적이었다</b>.</p>
+                <p>그에게 완벽하게 잘 맞았다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "728830.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Woman in the Window Seat</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">📚</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Woman in the Window Seat</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">too predictable</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">너무 뻔한 / 너무 예측 가능한</td></tr>
+                <tr><td class="p-4"><b class="text-white">in my mid 20's</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">20대 중반에</td></tr>
+                <tr><td class="p-4"><b class="text-white">fortune telling</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">점보기 / 운세 보기</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-400 space-y-2">
+                <h3 class="font-bold text-white text-lg">too predictable</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">사람의 행동이나 상황이 늘 비슷해서 다음에 무슨 일이 생길지 쉽게 예상할 수 있다는 뜻이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-400 space-y-2">
+                <h3 class="font-bold text-white text-lg">in my mid 20's</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">보통 24세에서 26세 정도를 가리킵니다. 표준 표기는 in my mid-20s예요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-400 space-y-2">
+                <h3 class="font-bold text-white text-lg">fortune telling</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">타로 카드, 손금, 사주 등을 이용해 미래나 운세를 알아보는 것을 뜻합니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">I was <b class="highlight quiz-target" data-ans="in my mid-20s" data-kor="20대 중반에">in my mid-20s</b> when I started seeing her at the library.</p>
+                <p class="mb-6">She always sat in the same window seat on Saturday afternoons. She brought a coffee, opened a notebook, and stayed for about two hours. I usually sat one table away and tried not to look in her direction too often.</p>
+                <p class="mb-6">My routine was embarrassingly <b class="highlight quiz-target" data-ans="predictable" data-kor="뻔했다">predictable</b>.</p>
+                <p class="mb-6">I arrived at two, chose the same chair, opened a book, and spent most of the afternoon pretending to read. At four, she packed her things and left. Then I went home annoyed with myself.</p>
+                <p class="mb-6">One Saturday, I decided I would finally talk to her.</p>
+                <p class="mb-6">I prepared a simple opening line: “Excuse me, have you read that book before?”</p>
+                <p class="mb-6">It was not impressive, but it was normal.</p>
+                <p class="mb-6">When I arrived, however, someone else was sitting in my usual chair. I had to sit directly across from her.</p>
+                <p class="mb-6">That should have made things easier.</p>
+                <p class="mb-6">It did not.</p>
+                <p class="mb-6">For forty minutes, I read the same paragraph. Every time she moved, I thought she was about to speak. Every time she looked up, I looked down.</p>
+                <p class="mb-6">Then a folded piece of paper fell from her notebook and landed near my shoe.</p>
+                <p class="mb-6">I picked it up.</p>
+                <p class="mb-6">At the top, it said, “Questions for the fortune-teller.”</p>
+                <p class="mb-6">I handed it back to her.</p>
+                <p class="mb-6">“Are you getting your future told?” I asked.</p>
+                <p class="mb-6">She looked embarrassed. “My friend is making me go to a <b class="highlight quiz-target" data-ans="fortune-telling" data-kor="점보는">fortune-telling</b> place tonight.”</p>
+                <p class="mb-6">“Do you believe in it?”</p>
+                <p class="mb-6">“Not really. But she says my life is <b class="highlight quiz-target" data-ans="too predictable" data-kor="너무 뻔한">too predictable</b>.”</p>
+                <p class="mb-6">I laughed before I could stop myself.</p>
+                <p class="mb-6">“What?”</p>
+                <p class="mb-6">“My friends say the same thing about me.”</p>
+                <p class="mb-6">She looked at the book in front of me.</p>
+                <p class="mb-6">“Have you been reading that page for the past forty minutes?”</p>
+                <p class="mb-6">I glanced down. “Possibly.”</p>
+                <p class="mb-6">“Is it difficult?”</p>
+                <p class="mb-6">“No. I’ve been trying to work up the courage to talk to you.”</p>
+                <p class="mb-6">The words came out before I had time to make them sound better.</p>
+                <p class="mb-6">She stared at me for a second.</p>
+                <p class="mb-6">Then she smiled.</p>
+                <p class="mb-6">“You could have just asked about the book.”</p>
+                <p class="mb-6">“That was the plan.”</p>
+                <p class="mb-6">“And what happened?”</p>
+                <p class="mb-6">“I spent forty minutes improving the plan until it became impossible.”</p>
+                <p class="mb-6">She closed her notebook.</p>
+                <p class="mb-6">“My friend and I are getting coffee before the fortune-teller. You could join us.”</p>
+                <p class="mb-6">I hesitated.</p>
+                <p class="mb-6">She raised an eyebrow. “Unless that would be too unpredictable.”</p>
+                <p class="mb-6">I picked up my coat.</p>
+                <p class="mb-6">“Unpredictable sounds good.”</p>
+                <p class="mb-6">For the first time, I left the library before she did.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">나는 <b class="highlight">20대 중반이었을</b> 때 도서관에서 그녀를 보기 시작했다.</p>
+                <p class="mb-6">그녀는 토요일 오후마다 늘 같은 창가 자리에 앉았다. 커피를 가져와 공책을 펼치고 약 두 시간 동안 머물렀다. 나는 보통 한 테이블 떨어진 곳에 앉아 그녀 쪽을 너무 자주 보지 않으려고 애썼다.</p>
+                <p class="mb-6">내 일상은 민망할 정도로 <b class="highlight">뻔했다</b>.</p>
+                <p class="mb-6">두 시에 도착해 같은 의자를 고르고 책을 펼친 뒤, 오후 대부분을 책을 읽는 척하며 보냈다. 네 시가 되면 그녀는 짐을 챙겨 떠났다. 그러면 나는 내 자신에게 짜증이 난 채 집으로 돌아갔다.</p>
+                <p class="mb-6">어느 토요일, 나는 마침내 그녀에게 말을 걸기로 결심했다.</p>
+                <p class="mb-6">나는 간단한 첫마디를 준비했다.</p>
+                <p class="mb-6">“실례합니다. 그 책 전에 읽어 보셨어요?”</p>
+                <p class="mb-6">인상적인 말은 아니었지만 평범하고 자연스러웠다.</p>
+                <p class="mb-6">하지만 도착해 보니 다른 사람이 내가 늘 앉던 자리에 앉아 있었다. 나는 그녀의 바로 맞은편에 앉아야 했다.</p>
+                <p class="mb-6">그러면 일이 더 쉬워졌어야 했다.</p>
+                <p class="mb-6">전혀 그렇지 않았다.</p>
+                <p class="mb-6">나는 40분 동안 같은 문단만 읽었다. 그녀가 움직일 때마다 말을 걸려는 줄 알았다. 그녀가 고개를 들 때마다 나는 고개를 숙였다.</p>
+                <p class="mb-6">그러다 그녀의 공책에서 접힌 종이 한 장이 떨어져 내 신발 근처에 떨어졌다.</p>
+                <p class="mb-6">나는 그것을 주웠다.</p>
+                <p class="mb-6">맨 위에는 ‘점쟁이에게 물어볼 질문’이라고 적혀 있었다.</p>
+                <p class="mb-6">나는 종이를 그녀에게 돌려줬다.</p>
+                <p class="mb-6">“미래를 보러 가세요?” 내가 물었다.</p>
+                <p class="mb-6">그녀는 조금 창피한 표정을 지었다.</p>
+                <p class="mb-6">“친구가 오늘 밤 <b class="highlight">점보는</b> 곳에 억지로 데려간대요.”</p>
+                <p class="mb-6">“그런 걸 믿으세요?”</p>
+                <p class="mb-6">“별로요. 하지만 친구는 제 인생이 <b class="highlight">너무 뻔하대요</b>.”</p>
+                <p class="mb-6">나는 참지 못하고 웃었다.</p>
+                <p class="mb-6">“왜요?”</p>
+                <p class="mb-6">“제 친구들도 저한테 똑같이 말하거든요.”</p>
+                <p class="mb-6">그녀는 내 앞에 놓인 책을 바라봤다.</p>
+                <p class="mb-6">“지난 40분 동안 같은 페이지만 읽고 있었어요?”</p>
+                <p class="mb-6">나는 책을 내려다봤다.</p>
+                <p class="mb-6">“그럴 수도 있어요.”</p>
+                <p class="mb-6">“어려운 내용이에요?”</p>
+                <p class="mb-6">“아니요. 당신에게 말을 걸 용기를 내고 있었어요.”</p>
+                <p class="mb-6">더 자연스럽게 고쳐 말할 틈도 없이 말이 먼저 나왔다.</p>
+                <p class="mb-6">그녀는 잠시 나를 바라봤다.</p>
+                <p class="mb-6">그러고는 미소를 지었다.</p>
+                <p class="mb-6">“그냥 책에 대해 물어보면 됐잖아요.”</p>
+                <p class="mb-6">“그게 원래 계획이었어요.”</p>
+                <p class="mb-6">“그런데 무슨 일이 있었어요?”</p>
+                <p class="mb-6">“40분 동안 계획을 개선하다가 결국 실행할 수 없게 만들었어요.”</p>
+                <p class="mb-6">그녀는 공책을 덮었다.</p>
+                <p class="mb-6">“친구랑 점보러 가기 전에 커피를 마실 건데, 같이 가도 돼요.”</p>
+                <p class="mb-6">나는 잠시 망설였다.</p>
+                <p class="mb-6">그녀가 눈썹을 올렸다.</p>
+                <p class="mb-6">“너무 예측할 수 없는 일이라서 싫어요?”</p>
+                <p class="mb-6">나는 코트를 집어 들었다.</p>
+                <p class="mb-6">“예측할 수 없는 것도 괜찮을 것 같네요.”</p>
+                <p class="mb-6">나는 처음으로 그녀보다 먼저 도서관을 나섰다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "7301020.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

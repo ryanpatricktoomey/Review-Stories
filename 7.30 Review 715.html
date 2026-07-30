@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Last Empty Chair</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🍽️</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Last Empty Chair</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">blacked out</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">정신을 잃었다 / 기억이 끊겼다</td></tr>
+                <tr><td class="p-4"><b class="text-white">brings out the best of me</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">내 안의 가장 좋은 모습을 끌어낸다</td></tr>
+                <tr><td class="p-4"><b class="text-white">working overtime</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">야근하는 / 쉴 새 없이 작동하는</td></tr>
+                <tr><td class="p-4"><b class="text-white">being recognized</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">인정받는 것</td></tr>
+                <tr><td class="p-4"><b class="text-white">so into it</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그것에 푹 빠진</td></tr>
+                <tr><td class="p-4"><b class="text-white">mentor</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">멘토 / 조언하고 이끌어 주는 사람</td></tr>
+                <tr><td class="p-4"><b class="text-white">risk adverse</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">위험을 꺼리는</td></tr>
+                <tr><td class="p-4"><b class="text-white">risk tolerant</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">위험을 감수할 수 있는</td></tr>
+                <tr><td class="p-4"><b class="text-white">free refills</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">무료 리필</td></tr>
+                <tr><td class="p-4"><b class="text-white">all you can eat</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">무제한으로 먹을 수 있는</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-400 space-y-2">
+                <h3 class="font-bold text-white text-lg">blacked out</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">의식을 잃었다는 뜻도 있지만, 긴장이나 충격 때문에 순간적으로 아무 생각도 나지 않았다는 의미로도 쓸 수 있어요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-400 space-y-2">
+                <h3 class="font-bold text-white text-lg">brings out the best of me</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">보통 brings out the best in me라고 하며, 누군가가 자신의 장점이나 좋은 모습을 끌어낸다는 뜻입니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-400 space-y-2">
+                <h3 class="font-bold text-white text-lg">working overtime</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">실제 야근뿐 아니라 머리나 감정이 지나치게 활발하게 움직일 때도 사용해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-400 space-y-2">
+                <h3 class="font-bold text-white text-lg">being recognized</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">얼굴을 알아보는 것뿐 아니라 능력이나 노력을 인정받는다는 의미도 있습니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-400 space-y-2">
+                <h3 class="font-bold text-white text-lg">so into it</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">무언가에 큰 관심이 생겨 완전히 빠져 있다는 구어체 표현이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-400 space-y-2">
+                <h3 class="font-bold text-white text-lg">risk adverse</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">표준 표현은 risk-averse입니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-400 space-y-2">
+                <h3 class="font-bold text-white text-lg">risk tolerant</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">불확실성이나 실패 가능성을 어느 정도 받아들일 수 있다는 뜻이에요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">I first noticed her at a weekend cooking workshop.</p>
+                <p class="mb-6">She stood at the front wearing a blue apron and explaining how to make fresh pasta. Everyone else seemed focused on the dough. I was focused on her.</p>
+                <p class="mb-6">I had signed up because my <b class="highlight quiz-target" data-ans="mentor" data-kor="멘토">mentor</b> at work told me I needed a hobby that did not involve a screen. He probably meant hiking or photography. Instead, I chose a class with an <b class="highlight quiz-target" data-ans="all-you-can-eat" data-kor="무제한으로 먹을 수 있는">all-you-can-eat</b> dinner afterward.</p>
+                <p class="mb-6">During the lesson, she became completely <b class="highlight quiz-target" data-ans="so into it" data-kor="그것에 푹 빠진">so into it</b> that flour ended up in her hair. She laughed, brushed it away, and continued teaching. Something about her energy <b class="highlight quiz-target" data-ans="brought out the best in me" data-kor="내 안의 가장 좋은 모습을 끌어냈다">brought out the best in me</b>. I asked questions, helped the man beside me fix his dough, and even volunteered to demonstrate a technique.</p>
+                <p class="mb-6">Normally, I was <b class="highlight quiz-target" data-ans="risk-averse" data-kor="위험을 꺼리는">risk-averse</b>. I disliked <b class="highlight quiz-target" data-ans="being recognized" data-kor="주목받는 것 / 인정받는 것">being recognized</b> in a crowd, especially when I might make a mistake. Around her, however, I felt almost <b class="highlight quiz-target" data-ans="risk-tolerant" data-kor="위험을 감수할 수 있는">risk-tolerant</b>.</p>
+                <p class="mb-6">Almost.</p>
+                <p class="mb-6">After the class, everyone carried their plates into the dining room. There were <b class="highlight quiz-target" data-ans="free refills" data-kor="무료 리필">free refills</b> of lemonade, and the students gathered around several long tables.</p>
+                <p class="mb-6">She sat at the end of one table.</p>
+                <p class="mb-6">The chair across from her was empty.</p>
+                <p class="mb-6">My brain started <b class="highlight quiz-target" data-ans="working overtime" data-kor="쉴 새 없이 작동하는">working overtime</b>.</p>
+                <p class="mb-6">Sit there.</p>
+                <p class="mb-6">No, it will look intentional.</p>
+                <p class="mb-6">It is intentional.</p>
+                <p class="mb-6">That is the problem.</p>
+                <p class="mb-6">I picked up my plate and took three steps toward her. Then she looked directly at me.</p>
+                <p class="mb-6">My mind <b class="highlight quiz-target" data-ans="blacked out" data-kor="정신을 잃었다 / 기억이 끊겼다">blacked out</b>.</p>
+                <p class="mb-6">I turned sharply and sat beside an elderly couple instead.</p>
+                <p class="mb-6">“Young man,” the woman beside me said, “you were clearly going to sit over there.”</p>
+                <p class="mb-6">“I changed my mind.”</p>
+                <p class="mb-6">“No, you lost your nerve.”</p>
+                <p class="mb-6">Her husband nodded. “We saw the whole thing.”</p>
+                <p class="mb-6">Before I could defend myself, the instructor stood and began collecting empty dishes. The chair across from her would soon disappear with the rest of the table.</p>
+                <p class="mb-6">The elderly woman took my plate.</p>
+                <p class="mb-6">“What are you doing?”</p>
+                <p class="mb-6">“Helping.”</p>
+                <p class="mb-6">She carried it to the empty chair and placed it directly across from the instructor.</p>
+                <p class="mb-6">“There,” she said loudly. “Your seat is ready.”</p>
+                <p class="mb-6">Everyone nearby looked at me.</p>
+                <p class="mb-6">I had two choices: leave the building or walk over.</p>
+                <p class="mb-6">I sat down.</p>
+                <p class="mb-6">The instructor smiled. “Your grandmother seems determined.”</p>
+                <p class="mb-6">“I have never met that woman before.”</p>
+                <p class="mb-6">She laughed so hard that she nearly dropped her glass.</p>
+                <p class="mb-6">The conversation began there. It was awkward, brief, and far less frightening than the one I had imagined.</p>
+                <p class="mb-6">Before I left, she wrote her number on the corner of my recipe sheet.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">나는 주말 요리 수업에서 그녀를 처음 보았다.</p>
+                <p class="mb-6">그녀는 파란 앞치마를 입고 앞에 서서 생면 파스타 만드는 법을 설명하고 있었다. 다른 사람들은 모두 반죽에 집중하는 것 같았다. 나는 그녀에게 집중하고 있었다.</p>
+                <p class="mb-6">나는 직장 <b class="highlight">멘토</b>가 화면을 보지 않고 할 수 있는 취미가 필요하다고 말해서 그 수업에 등록했다. 아마 하이킹이나 사진 촬영 같은 것을 말했을 것이다. 하지만 나는 수업이 끝난 뒤 <b class="highlight">무제한으로</b> 저녁을 먹을 수 있는 강좌를 선택했다.</p>
+                <p class="mb-6">수업 중 그녀는 완전히 <b class="highlight">몰입한</b> 나머지 머리카락에 밀가루가 묻었다. 그녀는 웃으며 밀가루를 털어 내고 계속 가르쳤다. 그녀의 에너지는 <b class="highlight">내 안의 가장 좋은 모습을 끌어냈다</b>. 나는 질문도 하고, 옆에 있던 남자의 반죽을 고쳐 주었으며, 심지어 기술 시범을 보이겠다고 자원하기도 했다.</p>
+                <p class="mb-6">평소의 나는 <b class="highlight">위험을 꺼리는</b> 사람이었다. 특히 실수할 가능성이 있을 때 사람들 앞에서 <b class="highlight">주목받는 것을</b> 싫어했다. 하지만 그녀 곁에서는 <b class="highlight">위험을 어느 정도 감수할 수 있는</b> 사람처럼 느껴졌다.</p>
+                <p class="mb-6">거의 그랬다.</p>
+                <p class="mb-6">수업이 끝난 뒤 모두 접시를 들고 식당으로 이동했다. 레모네이드는 <b class="highlight">무료 리필</b>이었고, 학생들은 긴 테이블 여러 개에 나누어 앉았다.</p>
+                <p class="mb-6">그녀는 한 테이블 끝에 앉았다.</p>
+                <p class="mb-6">그녀의 맞은편 의자는 비어 있었다.</p>
+                <p class="mb-6">내 머릿속이 <b class="highlight">쉴 새 없이 돌아가기</b> 시작했다.</p>
+                <p class="mb-6">저기에 앉아.</p>
+                <p class="mb-6">아니야, 일부러 앉는 것처럼 보일 거야.</p>
+                <p class="mb-6">일부러 앉으려는 거잖아.</p>
+                <p class="mb-6">그게 문제야.</p>
+                <p class="mb-6">나는 접시를 들고 그녀 쪽으로 세 걸음 갔다. 그때 그녀가 나를 똑바로 바라보았다.</p>
+                <p class="mb-6">머릿속이 완전히 <b class="highlight">하얘졌다</b>.</p>
+                <p class="mb-6">나는 갑자기 방향을 틀어 노부부 옆에 앉았다.</p>
+                <p class="mb-6">“젊은이.” 옆자리의 여자가 말했다. “분명 저쪽에 앉으려고 했잖아요.”</p>
+                <p class="mb-6">“마음이 바뀌었습니다.”</p>
+                <p class="mb-6">“아니요. 겁먹은 거죠.”</p>
+                <p class="mb-6">그녀의 남편이 고개를 끄덕였다.</p>
+                <p class="mb-6">“우리가 다 봤어요.”</p>
+                <p class="mb-6">내가 변명하기도 전에 강사가 일어나 빈 접시를 치우기 시작했다. 곧 그녀 맞은편의 빈 의자도 테이블과 함께 정리될 터였다.</p>
+                <p class="mb-6">노부인이 내 접시를 가져갔다.</p>
+                <p class="mb-6">“뭐 하시는 거예요?”</p>
+                <p class="mb-6">“도와주는 거예요.”</p>
+                <p class="mb-6">그녀는 내 접시를 빈 의자로 가져가 강사 맞은편에 놓았다.</p>
+                <p class="mb-6">“자.” 그녀가 큰 소리로 말했다. “자리가 준비됐어요.”</p>
+                <p class="mb-6">근처의 모든 사람이 나를 바라보았다.</p>
+                <p class="mb-6">선택지는 두 가지였다. 건물을 나가거나 그쪽으로 걸어가는 것이었다.</p>
+                <p class="mb-6">나는 자리에 앉았다.</p>
+                <p class="mb-6">강사가 미소를 지었다.</p>
+                <p class="mb-6">“할머니께서 굉장히 적극적이시네요.”</p>
+                <p class="mb-6">“처음 보는 분입니다.”</p>
+                <p class="mb-6">그녀는 잔을 떨어뜨릴 뻔할 정도로 크게 웃었다.</p>
+                <p class="mb-6">대화는 그렇게 시작되었다. 어색하고 짧았지만, 내가 상상했던 것보다 훨씬 덜 무서웠다.</p>
+                <p class="mb-6">내가 떠나기 전, 그녀는 내 레시피 종이 한쪽에 전화번호를 적어 주었다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "730715.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

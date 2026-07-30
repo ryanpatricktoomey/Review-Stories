@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | Before She Left the Reception</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🏨</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">Before She Left the Reception</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">all for nothing</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">모두 헛수고인 / 아무 소용이 없는</td></tr>
+                <tr><td class="p-4"><b class="text-white">didn't go as planned</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">계획대로 되지 않았다</td></tr>
+                <tr><td class="p-4"><b class="text-white">threw a wrench in your plans</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">계획에 차질을 빚게 했다</td></tr>
+                <tr><td class="p-4"><b class="text-white">my rock</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">나를 든든하게 지지해 주는 사람</td></tr>
+                <tr><td class="p-4"><b class="text-white">outsiders</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">외부인들 / 그 집단에 속하지 않은 사람들</td></tr>
+                <tr><td class="p-4"><b class="text-white">act like they are better than you</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">자기들이 너보다 잘난 것처럼 행동하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">business trip</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">출장</td></tr>
+                <tr><td class="p-4"><b class="text-white">once every 3 months</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">3개월에 한 번</td></tr>
+                <tr><td class="p-4"><b class="text-white">unpredictable</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">예측할 수 없는</td></tr>
+                <tr><td class="p-4"><b class="text-white">innit?</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그렇지? / 맞지?</td></tr>
+                <tr><td class="p-4"><b class="text-white">isn't it?</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그렇지 않니? / 맞지?</td></tr>
+                <tr><td class="p-4"><b class="text-white">y'all</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">너희 모두 / 여러분</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-400 space-y-2">
+                <h3 class="font-bold text-white text-lg">all for nothing</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">시간과 노력을 들였지만 결국 아무 결과도 얻지 못했을 때 사용해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-400 space-y-2">
+                <h3 class="font-bold text-white text-lg">throw a wrench in someone’s plans</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">예상하지 못한 일이 생겨 계획에 차질을 주거나 망친다는 뜻입니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-400 space-y-2">
+                <h3 class="font-bold text-white text-lg">my rock</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">힘든 순간에도 흔들리지 않고 자신을 지지해 주는 든든한 사람을 뜻해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-400 space-y-2">
+                <h3 class="font-bold text-white text-lg">outsiders</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">특정 집단이나 공동체에 속하지 않은 사람들을 가리킵니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-400 space-y-2">
+                <h3 class="font-bold text-white text-lg">act like they are better than you</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">상대를 낮게 보면서 자신이 더 우월한 것처럼 행동한다는 뜻이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-400 space-y-2">
+                <h3 class="font-bold text-white text-lg">innit?</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">일부 영국 영어 방언에서 쓰이는 매우 비격식적인 표현입니다. 화자의 지역, 배경, 말투가 자연스럽게 뒷받침되지 않으면 억지스럽게 들릴 수 있어요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-400 space-y-2">
+                <h3 class="font-bold text-white text-lg">isn’t it?</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">앞 문장의 주어와 동사에 맞춰 사용하는 표준 부가 의문문입니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-400 space-y-2">
+                <h3 class="font-bold text-white text-lg">y’all</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">you all의 줄임말로, 미국 영어에서 여러 사람을 부를 때 사용해요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">I first noticed her during a conference in Chicago.</p>
+                <p class="mb-6">I was there on a <b class="highlight quiz-target" data-ans="business trip" data-kor="출장">business trip</b>, which my company sent me on about <b class="highlight quiz-target" data-ans="once every 3 months" data-kor="3개월에 한 번">once every 3 months</b>. I usually attended the sessions, answered emails in my hotel room, and skipped the evening receptions.</p>
+                <p class="mb-6">Those events always made me uncomfortable. Everyone stood in confident little groups, laughing as if they had known one another for years. People like me stayed near the walls, looking like obvious <b class="highlight quiz-target" data-ans="outsiders" data-kor="외부인들">outsiders</b>.</p>
+                <p class="mb-6">My older sister had always been <b class="highlight quiz-target" data-ans="my rock" data-kor="나를 든든하게 지지해 주는 사람">my rock</b>. Before I left home, she told me to stop using work trips as an excuse to hide.</p>
+                <p class="mb-6">“Life is <b class="highlight quiz-target" data-ans="unpredictable" data-kor="예측할 수 없는">unpredictable</b>,” she said. “Talk to somebody while you have the chance.”</p>
+                <p class="mb-6">At the reception, I saw a woman standing near the window. She had asked the best question during the afternoon panel, and I had spent the rest of the session trying to think of a natural way to introduce myself.</p>
+                <p class="mb-6">My plan was simple. I would get a drink, walk over, and ask what she had thought of the speakers.</p>
+                <p class="mb-6">Then three senior executives surrounded her.</p>
+                <p class="mb-6">That <b class="highlight quiz-target" data-ans="threw a wrench in my plans" data-kor="내 계획에 차질을 빚게 했다">threw a wrench in my plans</b>.</p>
+                <p class="mb-6">They barely gave her a chance to speak. One man kept interrupting her, while another looked around the room for someone more important. I disliked people who <b class="highlight quiz-target" data-ans="acted like they were better than everyone else" data-kor="자신들이 다른 사람들보다 잘난 것처럼 행동하는">acted like they were better than everyone else</b> just because they had impressive job titles.</p>
+                <p class="mb-6">I waited beside the bar, rehearsing my opening line until it sounded ridiculous.</p>
+                <p class="mb-6">Then the American host stepped onto the small stage.</p>
+                <p class="mb-6">“Before <b class="highlight quiz-target" data-ans="y'all" data-kor="여러분">y'all</b> leave, remember that tomorrow’s first session starts at eight!”</p>
+                <p class="mb-6">People began putting on their coats.</p>
+                <p class="mb-6">The woman near the window checked her phone and picked up her bag. All my waiting was about to be <b class="highlight quiz-target" data-ans="all for nothing" data-kor="모두 헛수고가 되다">all for nothing</b>.</p>
+                <p class="mb-6">I crossed the room before I could stop myself.</p>
+                <p class="mb-6">“Excuse me,” I said. “I liked your question during the panel.”</p>
+                <p class="mb-6">She smiled. “The speakers didn’t.”</p>
+                <p class="mb-6">“No. The discussion definitely <b class="highlight quiz-target" data-ans="didn't go as planned" data-kor="계획대로 진행되지는 않았다">didn't go as planned</b> after that.”</p>
+                <p class="mb-6">“I thought they might actually answer me.”</p>
+                <p class="mb-6">“That was optimistic.”</p>
+                <p class="mb-6">She laughed, and some of the tension left my body.</p>
+                <p class="mb-6">“This reception is awkward, <b class="highlight quiz-target" data-ans="isn't it?" data-kor="그렇지 않니?">isn't it?</b>” she said.</p>
+                <p class="mb-6">“Yes. I’ve been pretending to study that painting for twenty minutes.”</p>
+                <p class="mb-6">“I noticed.”</p>
+                <p class="mb-6">I looked back at the painting. It was three gray squares on a white background.</p>
+                <p class="mb-6">“I was trying to find a natural reason to come over.”</p>
+                <p class="mb-6">“Did you find one?”</p>
+                <p class="mb-6">“No. So I came over without one.”</p>
+                <p class="mb-6">She put her phone back in her bag.</p>
+                <p class="mb-6">“There’s a coffee shop in the lobby,” she said. “We could leave this awkward reception together.”</p>
+                <p class="mb-6">This time, I did not need twenty minutes to answer.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">나는 시카고에서 열린 콘퍼런스에서 그녀를 처음 보았다.</p>
+                <p class="mb-6">나는 <b class="highlight">출장</b>으로 그곳에 와 있었다. 회사에서는 약 <b class="highlight">3개월에 한 번씩</b> 나를 출장 보냈다. 평소에는 세션에 참석하고 호텔 방에서 이메일에 답한 뒤, 저녁 리셉션에는 가지 않았다.</p>
+                <p class="mb-6">그런 행사는 언제나 나를 불편하게 했다. 모두가 자신감 넘치는 작은 무리를 이루고, 마치 몇 년 동안 서로 알고 지낸 사람들처럼 웃고 있었다. 나 같은 사람들은 벽 근처에 머물며 누가 봐도 <b class="highlight">외부인처럼</b> 보였다.</p>
+                <p class="mb-6">누나는 언제나 <b class="highlight">나를 든든하게 지지해 주는 사람</b>이었다. 내가 집을 떠나기 전, 누나는 출장을 숨어 지내는 핑계로 삼지 말라고 했다.</p>
+                <p class="mb-6">“인생은 <b class="highlight">예측할 수 없어</b>.” 누나가 말했다. “기회가 있을 때 누군가에게 말을 걸어.”</p>
+                <p class="mb-6">리셉션에서 나는 창가에 서 있는 한 여자를 보았다. 그녀는 오후 패널 토론에서 가장 좋은 질문을 했고, 나는 세션이 끝날 때까지 자연스럽게 자기소개할 방법을 생각했다.</p>
+                <p class="mb-6">계획은 간단했다. 음료를 하나 들고 그녀에게 다가가 발표자들에 관해 어떻게 생각했는지 물어보는 것이었다.</p>
+                <p class="mb-6">그런데 고위 임원 세 명이 그녀를 둘러쌌다.</p>
+                <p class="mb-6">그 일로 <b class="highlight">내 계획에 차질이 생겼다</b>.</p>
+                <p class="mb-6">그들은 그녀에게 말할 기회를 거의 주지 않았다. 한 남자는 계속 그녀의 말을 끊었고, 다른 남자는 더 중요한 사람을 찾는 듯 방 안을 둘러보았다. 나는 직함이 대단하다는 이유로 <b class="highlight">자신들이 다른 사람들보다 잘난 것처럼 행동하는</b> 사람들을 싫어했다.</p>
+                <p class="mb-6">나는 바 옆에서 기다리며 첫마디를 계속 연습했다. 너무 오래 반복한 나머지 결국 우스운 말처럼 들렸다.</p>
+                <p class="mb-6">그때 미국인 진행자가 작은 무대 위로 올라갔다.</p>
+                <p class="mb-6">“<b class="highlight">여러분</b>, 가시기 전에 내일 첫 세션은 8시에 시작한다는 것을 기억해 주세요!”</p>
+                <p class="mb-6">사람들이 코트를 입기 시작했다.</p>
+                <p class="mb-6">창가에 있던 여자는 휴대전화를 확인한 뒤 가방을 집어 들었다. 그동안 기다린 일이 <b class="highlight">모두 헛수고가 되기</b> 직전이었다.</p>
+                <p class="mb-6">나는 스스로를 멈추기 전에 방을 가로질러 갔다.</p>
+                <p class="mb-6">“실례합니다.” 내가 말했다. “패널 토론에서 하신 질문이 좋았어요.”</p>
+                <p class="mb-6">그녀가 미소를 지었다.</p>
+                <p class="mb-6">“발표자들은 싫어한 것 같던데요.”</p>
+                <p class="mb-6">“네. 그 질문 이후로 토론이 확실히 <b class="highlight">계획대로 진행되지는 않았죠</b>.”</p>
+                <p class="mb-6">“저는 그 사람들이 실제로 대답할 수도 있다고 생각했어요.”</p>
+                <p class="mb-6">“낙관적이셨네요.”</p>
+                <p class="mb-6">그녀가 웃었고, 내 몸의 긴장도 조금 풀렸다.</p>
+                <p class="mb-6">“이 리셉션은 어색하네요, <b class="highlight">그렇죠?</b>” 그녀가 말했다.</p>
+                <p class="mb-6">“네. 저는 20분 동안 저 그림을 연구하는 척했어요.”</p>
+                <p class="mb-6">“봤어요.”</p>
+                <p class="mb-6">나는 뒤에 있는 그림을 돌아봤다. 흰 바탕 위에 회색 사각형 세 개가 그려져 있었다.</p>
+                <p class="mb-6">“자연스럽게 다가올 이유를 찾으려고 했어요.”</p>
+                <p class="mb-6">“찾았어요?”</p>
+                <p class="mb-6">“아니요. 그래서 이유 없이 그냥 왔어요.”</p>
+                <p class="mb-6">그녀는 휴대전화를 가방에 다시 넣었다.</p>
+                <p class="mb-6">“로비에 커피숍이 있어요.” 그녀가 말했다. “이 어색한 리셉션에서 같이 나갈 수도 있겠네요.”</p>
+                <p class="mb-6">이번에는 대답하는 데 20분이 필요하지 않았다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "730830.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

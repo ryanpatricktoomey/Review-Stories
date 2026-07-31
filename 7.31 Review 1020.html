@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Ten-Year Plan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🌃</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Ten-Year Plan</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">have a long view</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">장기적인 관점으로 보다 / 먼 미래까지 내다보다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border border-teal-500/20 space-y-2">
+                <h3 class="text-teal-400 font-bold">have a long view</h3>
+                <p class="text-sm text-slate-300">당장의 결과보다 몇 년 뒤의 영향이나 목표를 중요하게 생각한다는 뜻입니다. 실제 대화에서는 take the long view라는 형태도 매우 자주 사용됩니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">When Julia entered the rooftop restaurant, she almost did not recognize Hannah.</p>
+                <p class="mb-6">Ten years earlier, Hannah had worn secondhand clothes, carried a damaged laptop, and talked constantly about building a technology company. Now she was sitting beside the window in a dark suit, with a bottle of expensive wine already open.</p>
+                <p class="mb-6">“You look successful,” Julia said as they hugged.</p>
+                <p class="mb-6">Hannah smiled. “I’ve done all right.”</p>
+                <p class="mb-6">They had been close friends at university, but after graduation, Julia moved to a small coastal town while Hannah stayed in the city. They had promised to meet ten years later and compare their old dreams with their real lives.</p>
+                <p class="mb-6">Julia placed a folded sheet of paper on the table. “I found our predictions.”</p>
+                <p class="mb-6">Hannah laughed nervously. “Do we really have to read them?”</p>
+                <p class="mb-6">Julia opened the paper. At twenty-two, Hannah had predicted that she would own a company, employ hundreds of people, and live in a penthouse. Julia had planned to become a famous novelist.</p>
+                <p class="mb-6">“Well,” Julia said, “you were almost completely right.”</p>
+                <p class="mb-6">Hannah looked out the window. “Almost.”</p>
+                <p class="mb-6">Julia explained that she had never finished her novel. She now managed a small bookstore and organized reading programs for local children.</p>
+                <p class="mb-6">“I used to think I had failed,” Julia said. “But the shop is doing well, and I like my life. I’ve learned to <b class="highlight quiz-target" data-ans="take a longer view" data-kor="장기적인 관점으로 보는">take a longer view</b>. Not every dream has to happen immediately.”</p>
+                <p class="mb-6">Hannah slowly put down her glass.</p>
+                <p class="mb-6">“What?” Julia asked.</p>
+                <p class="mb-6">“The company is collapsing.”</p>
+                <p class="mb-6">Julia stared at her.</p>
+                <p class="mb-6">Hannah admitted that she had lost several major clients. The office was closing, most of her employees had already left, and the restaurant bill was going on her last working credit card.</p>
+                <p class="mb-6">“But your interviews said the company was expanding.”</p>
+                <p class="mb-6">“I gave those interviews six months ago.”</p>
+                <p class="mb-6">“Why didn’t you tell me?”</p>
+                <p class="mb-6">Hannah looked embarrassed. “Because you were supposed to be a famous writer. I wanted at least one of us to have the life we planned.”</p>
+                <p class="mb-6">Julia picked up the old prediction sheet.</p>
+                <p class="mb-6">“You built a company from nothing,” she said. “Even if it ends, those ten years still happened.”</p>
+                <p class="mb-6">“That sounds like something people say when they are trying to be kind.”</p>
+                <p class="mb-6">“No. It’s <b class="highlight quiz-target" data-ans="the long view" data-kor="장기적인 관점이야">the long view</b>.”</p>
+                <p class="mb-6">Hannah was silent for a moment.</p>
+                <p class="mb-6">Then she took the prediction sheet, turned it over, and wrote a new sentence on the back.</p>
+                <p class="mb-6">“What did you write?” Julia asked.</p>
+                <p class="mb-6">Hannah passed it to her.</p>
+                <p class="mb-6">In ten years, we will meet without pretending.</p>
+                <p class="mb-6">Julia raised her glass. “That sounds achievable.”</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>줄리아는 옥상 레스토랑에 들어갔을 때 한나를 거의 알아보지 못했다.</p>
+                <p>10년 전, 한나는 중고 옷을 입고 고장 난 노트북을 들고 다니며 기술 회사를 세우겠다는 이야기를 끊임없이 했다. 지금 그녀는 어두운색 정장을 입고 창가에 앉아 있었고, 비싼 와인 한 병도 이미 열어 둔 상태였다.</p>
+                <p>“성공한 사람처럼 보이네.” 두 사람이 포옹하며 줄리아가 말했다.</p>
+                <p>한나가 미소를 지었다. “나쁘지 않게 지냈어.”</p>
+                <p>두 사람은 대학 시절 아주 가까운 친구였지만, 졸업 후 줄리아는 작은 해안 마을로 이사했고 한나는 도시에 남았다. 그들은 10년 뒤 다시 만나 과거의 꿈과 실제 삶을 비교하기로 약속했었다.</p>
+                <p>줄리아는 접힌 종이 한 장을 테이블 위에 놓았다. “우리 예측을 찾았어.”</p>
+                <p>한나는 긴장한 듯 웃었다. “정말 읽어야 해?”</p>
+                <p>줄리아가 종이를 펼쳤다. 스물두 살의 한나는 자신이 회사를 소유하고, 수백 명을 고용하며, 펜트하우스에 살 것이라고 예상했다. 줄리아는 유명한 소설가가 될 계획이었다.</p>
+                <p>“음.” 줄리아가 말했다. “너는 거의 전부 맞혔네.”</p>
+                <p>한나는 창밖을 바라보았다. “거의.”</p>
+                <p>줄리아는 자신이 소설을 끝내지 못했다고 설명했다. 지금은 작은 서점을 운영하며 지역 아이들을 위한 독서 프로그램을 기획하고 있었다.</p>
+                <p>“예전에는 내가 실패했다고 생각했어.” 줄리아가 말했다. “하지만 서점은 잘 운영되고 있고, 나는 내 삶이 좋아. 이제는 더 <b class="highlight">장기적인 관점으로 보는</b> 법을 배웠어. 모든 꿈이 당장 이루어질 필요는 없잖아.”</p>
+                <p>한나는 천천히 잔을 내려놓았다.</p>
+                <p>“왜 그래?” 줄리아가 물었다.</p>
+                <p>“회사가 무너지고 있어.”</p>
+                <p>줄리아는 그녀를 바라보았다.</p>
+                <p>한나는 주요 고객 여러 곳을 잃었다고 털어놓았다. 사무실은 문을 닫을 예정이었고, 직원 대부분은 이미 떠났으며, 레스토랑 계산도 마지막으로 사용할 수 있는 회사 신용카드로 결제할 생각이었다.</p>
+                <p>“하지만 인터뷰에서는 회사가 확장 중이라고 했잖아.”</p>
+                <p>“그 인터뷰는 6개월 전에 했어.”</p>
+                <p>“왜 나한테 말하지 않았어?”</p>
+                <p>한나는 부끄러운 표정을 지었다. “너는 유명한 작가가 되어 있을 줄 알았어. 적어도 우리 둘 중 한 명은 계획했던 삶을 살고 있기를 바랐어.”</p>
+                <p>줄리아는 오래된 예측 종이를 집어 들었다.</p>
+                <p>“넌 아무것도 없는 상태에서 회사를 만들었어.” 그녀가 말했다. “회사가 끝나더라도 그 10년까지 사라지는 건 아니야.”</p>
+                <p>“그건 사람들이 친절하게 말하려고 할 때 하는 말처럼 들려.”</p>
+                <p>“아니야. 그게 <b class="highlight">장기적인 관점이야</b>.”</p>
+                <p>한나는 잠시 말이 없었다.</p>
+                <p>그러고는 예측 종이를 가져가 뒤집은 다음, 뒷면에 새로운 문장을 적었다.</p>
+                <p>“뭐라고 썼어?” 줄리아가 물었다.</p>
+                <p>한나는 종이를 건넸다.</p>
+                <p>10년 뒤, 우리는 꾸미지 않고 만날 것이다.</p>
+                <p>줄리아가 잔을 들었다. “그건 이룰 수 있겠네.”</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "7311020.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+      <title>Review Note | I Rescue Memories from Old Videotapes</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+      <style>
+          :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+          body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+          .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+          .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+          input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+          input:focus::placeholder { opacity: 0 !important; }
+          .mystery-cell { transition: color 0.3s; }
+          .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+          .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+          .highlight { color: var(--teal); font-weight: 700; }
+          .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+          audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+      </style>
+</head>
+<body class="p-4 md:p-12">
+      <div class="max-w-4xl mx-auto space-y-8">
+
+          <header class="text-center space-y-4">
+              <div class="flex items-center justify-center gap-4">
+                  <span class="text-5xl">📼</span>
+                  <h1 class="text-3xl md:text-4xl font-extrabold text-white">I Rescue Memories from Old Videotapes</h1>
+              </div>
+              <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+          </header>
+
+          <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+              <div class="flex items-center justify-between px-2">
+                  <div class="flex items-center gap-3">
+                      <span class="text-xl">🎧</span>
+                      <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                  </div>
+                  <div class="flex gap-2">
+                      <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          <span class="text-lg">↺</span> 5s
+                      </button>
+                      <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          5s <span class="text-lg">↻</span>
+                      </button>
+                  </div>
+              </div>
+              <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+          </div>
+
+          <div class="flex justify-center">
+              <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+          </div>
+
+          <section class="glass rounded-3xl overflow-hidden shadow-xl">
+              <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                  <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+              </div>
+              <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                  <tr><td class="p-4"><b class="text-white">go easy on you</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">너를 너그럽게 봐주다 / 살살 대하다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">VHS</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">VHS 비디오테이프 형식</td></tr>
+                  <tr><td class="p-4"><b class="text-white">VCR</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">비디오카세트 녹화·재생기</td></tr>
+                  <tr><td class="p-4"><b class="text-white">regular employee</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">일반 직원 / 정규 직원</td></tr>
+              </tbody></table>
+          </section>
+
+          <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="glass p-5 rounded-2xl space-y-2 border-l-4 border-teal-500">
+                  <h3 class="font-bold text-teal-400 text-lg">go easy on you</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">상대방을 심하게 비판하거나 처벌하지 않고 너그럽게 대해 준다는 뜻입니다. 상황에 따라 “살살하다”라는 의미도 됩니다.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl space-y-2 border-l-4 border-teal-500">
+                  <h3 class="font-bold text-teal-400 text-lg">VHS</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">과거에 가정용 영상을 녹화하고 재생하는 데 널리 사용된 자기테이프 방식입니다. 테이프 자체나 그 형식을 가리킵니다.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl space-y-2 border-l-4 border-teal-500">
+                  <h3 class="font-bold text-teal-400 text-lg">VCR</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">Video Cassette Recorder의 줄임말로, VHS 같은 비디오테이프를 재생하거나 녹화하는 기계입니다.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl space-y-2 border-l-4 border-teal-500">
+                  <h3 class="font-bold text-teal-400 text-lg">regular employee</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">특별한 직책이나 고용 형태가 아닌 일반 직원을 뜻할 수 있습니다. 한국어의 “정규직”을 정확히 표현하려면 보통 permanent employee 또는 full-time employee가 더 명확합니다.</p>
+              </div>
+          </section>
+
+          <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+              <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                  <p class="mb-6">I am an audiovisual preservation technician. In plain English, I rescue recordings trapped inside old videotapes.</p>
+                  <p class="mb-6">Most of my clients bring me boxes from their parents’ houses. The labels usually say things like “Christmas 1989,” “Jenny’s First Birthday,” or simply “DO NOT ERASE.” Inside each box, I may find several formats, but <b class="highlight quiz-target" data-ans="VHS" data-kor="VHS">VHS</b> is the one most people recognize.</p>
+                  <p class="mb-6">My job is not as simple as putting a tape into a machine and pressing play.</p>
+                  <p class="mb-6">Before I touch a cassette, I inspect its shell, tape, and storage condition. Magnetic tapes can be damaged by heat, moisture, dirt, mold, and chemical deterioration. Archives store them in cool, controlled environments because proper temperature and humidity can slow that damage.</p>
+                  <p class="mb-6">Then I choose the correct <b class="highlight quiz-target" data-ans="VCR" data-kor="VCR">VCR</b>. That can be surprisingly difficult. Old video formats require old playback equipment, and those machines are disappearing. Format obsolescence is one of the main threats to videotape preservation: a recording may survive physically but become useless if no working machine can play it.</p>
+                  <p class="mb-6">I am not a <b class="highlight quiz-target" data-ans="regular employee" data-kor="일반 직원">regular employee</b> at an electronics repair shop. I need to understand archival handling, playback equipment, signal problems, and digital files. I also spend a lot of time cleaning machines. Even a small amount of debris between the tape and the playback head can interfere with the picture.</p>
+                  <p class="mb-6">One afternoon, a client handed me a damaged cassette.</p>
+                  <p class="mb-6">“It contains the only video of my mother,” she said. “Can you save it?”</p>
+                  <p class="mb-6">“I’ll do everything I safely can,” I told her.</p>
+                  <p class="mb-6">When I opened the shell, part of the tape was wrinkled and twisted. I carefully moved it into a replacement cassette and tested it in a machine I use for difficult recordings.</p>
+                  <p class="mb-6">The first image appeared for less than a second, then vanished.</p>
+                  <p class="mb-6">“Please <b class="highlight quiz-target" data-ans="go easy on" data-kor="살살해 줘">go easy on</b> me,” I whispered to the machine.</p>
+                  <p class="mb-6">I adjusted the tracking and tried a different deck. This time, a woman appeared on the screen, laughing as she carried a birthday cake into a kitchen.</p>
+                  <p class="mb-6">The client covered her mouth.</p>
+                  <p class="mb-6">Most of my work involves watching ordinary moments: children opening presents, grandparents waving at cameras, and families eating dinner. The recordings were never meant for museums, but to the people who bring them to me, they are priceless.</p>
+                  <p class="mb-6">At the end of the day, my job is not really about obsolete machines.</p>
+                  <p class="mb-6">It is about giving someone one more chance to hear a familiar voice.</p>
+              </div>
+              <hr class="border-white/10">
+              <div class="text-slate-400 italic leading-relaxed space-y-6">
+                  <p class="mb-6">저는 시청각 자료 보존 기술자입니다. 쉽게 말하면 오래된 비디오테이프 안에 갇혀 있는 영상을 구하는 일을 합니다.</p>
+                  <p class="mb-6">고객 대부분은 부모님의 집에서 발견한 상자를 가져옵니다. 테이프에는 보통 “1989년 크리스마스”, “제니의 첫 번째 생일”, 또는 단순히 “절대 지우지 말 것” 같은 글이 적혀 있습니다. 상자 안에는 여러 형식의 테이프가 들어 있을 수 있지만, 사람들이 가장 잘 알아보는 것은 <b class="highlight">VHS</b>입니다.</p>
+                  <p class="mb-6">제 일은 단순히 테이프를 기계에 넣고 재생 버튼을 누르는 것이 아닙니다.</p>
+                  <p class="mb-6">카세트를 만지기 전에 외부 케이스와 테이프, 보관 상태를 확인합니다. 자기테이프는 열, 습기, 먼지, 곰팡이, 화학적 열화로 손상될 수 있습니다. 기록 보관소에서 테이프를 서늘하고 통제된 환경에 보관하는 이유는 적절한 온도와 슡도가 손상을 늦출 수 있기 때문입니다.</p>
+                  <p class="mb-6">그다음에는 알맞은 <b class="highlight">VCR</b>을 선택합니다. 이것은 생각보다 어려울 수 있습니다. 오래된 영상 형식을 재생하려면 오래된 장비가 필요한데, 그런 기계가 점점 사라지고 있기 때문입니다. 형식과 장비의 노후화는 비디오테이프 보존의 가장 큰 문제 중 하나입니다. 녹화물 자체가 남아 있더라도 재생할 수 있는 기계가 없다면 영상을 볼 수 없습니다.</p>
+                  <p class="mb-6">저는 전자제품 수리점의 <b class="highlight">일반 직원</b>이 아닙니다. 기록물 취급법, 재생 장비, 영상 신호 문제, 디지털 파일을 모두 이해해야 합니다. 기계를 청소하는 데에도 많은 시간을 씁니다. 테이프와 재생 헤드 사이에 아주 작은 먼지만 들어가도 화면에 문제가 생길 수 있습니다.</p>
+                  <p class="mb-6">어느 날 오후, 한 고객이 손상된 카세트를 건넸습니다.</p>
+                  <p class="mb-6">“어머니의 모습이 담긴 유일한 영상이에요. 살릴 수 있을까요?”</p>
+                  <p class="mb-6">“안전하게 할 수 있는 방법은 모두 시도해 보겠습니다.” 제가 대답했습니다.</p>
+                  <p class="mb-6">케이스를 열어 보니 테이프 일부가 구겨지고 뒤틀려 있었습니다. 저는 조심스럽게 테이프를 새 카세트 케이스로 옮긴 뒤, 상태가 좋지 않은 영상을 재생할 때 사용하는 기계로 시험했습니다.</p>
+                  <p class="mb-6">화면이 1초도 되지 않는 동안 나타났다가 사라졌습니다.</p>
+                  <p class="mb-6">“제발 나한테 좀 <b class="highlight">살살해</b> 줘.” 저는 기계에 속삭였습니다.</p>
+                  <p class="mb-6">트래킹을 조절하고 다른 재생기를 사용했습니다. 이번에는 한 여성이 생일 케이크를 들고 부엌으로 들어오며 웃는 모습이 화면에 나타났습니다.</p>
+                  <p class="mb-6">고객은 손으로 입을 가렸습니다.</p>
+                  <p class="mb-6">제 업무의 대부분은 평범한 순간을 지켜보는 것입니다. 선물을 여는 아이들, 카메라를 향해 손을 흔드는 조부모님, 함께 저녁을 먹는 가족들을 봅니다. 이 영상들은 박물관을 위해 촬영된 것이 아니지만, 그것을 가져오는 사람들에게는 무엇과도 바꿀 수 없는 소중한 기록입니다.</p>
+                  <p class="mb-6">결국 제 일은 오래된 기계에 관한 것이 아닙니다.</p>
+                  <p class="mb-6">누군가에게 익숙한 목소리를 한 번 더 들을 기회를 주는 일입니다.</p>
+              </div>
+          </section>
+
+      </div>
+      <script>
+          function skipAudio(seconds) {
+              const player = document.getElementById('player');
+              if (player.src) {
+                  player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+              }
+          }
+
+          function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+          let _quizOriginals = new Map();
+          function toggleQuiz() {
+              const btn = document.getElementById('quizBtn');
+              const isQuiz = btn.innerText.includes("Quiz");
+              const targets = document.querySelectorAll('.quiz-target');
+              const cells = document.querySelectorAll('.mystery-cell');
+              if (isQuiz) {
+                  btn.innerText = "Study Mode 📖";
+                  cells.forEach(c => c.classList.add('quiz-hidden'));
+                  targets.forEach(t => {
+                      const ans = t.dataset.ans; const kor = t.dataset.kor;
+                      _quizOriginals.set(t, t.innerHTML);
+                      t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                  });
+              } else {
+                  btn.innerText = "Quiz Mode 👻";
+                  cells.forEach(c => c.classList.remove('quiz-hidden'));
+                  targets.forEach(t => {
+                      if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                  });
+                  _quizOriginals.clear();
+              }
+          }
+
+          function checkQuiz(i, a) {
+              if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                  i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                  confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                  checkAllSolved();
+              } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+          }
+
+          function checkAllSolved() {
+              const inputs = document.querySelectorAll('.quiz-input');
+              if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                  var duration = 3 * 1000; var end = Date.now() + duration;
+                  (function frame() {
+                      confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                      confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                      if (Date.now() < end) requestAnimationFrame(frame);
+                  }());
+              }
+          }
+
+          document.getElementById('player').src = "83830.m4a";
+      </script>
+      <script src="wordbank-utils.js"></script>
+      <script src="chat.js"></script>
+  </body>
+  </html>

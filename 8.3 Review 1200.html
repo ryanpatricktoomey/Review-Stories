@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+      <title>Review Note | I Find Places That Pretend to Be Somewhere Else</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+      <style>
+          :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+          body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+          .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+          .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+          input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+          input:focus::placeholder { opacity: 0 !important; }
+          .mystery-cell { transition: color 0.3s; }
+          .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+          .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+          .highlight { color: var(--teal); font-weight: 700; }
+          .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+          audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+      </style>
+</head>
+<body class="p-4 md:p-12">
+      <div class="max-w-4xl mx-auto space-y-8">
+
+          <header class="text-center space-y-4">
+              <div class="flex items-center justify-center gap-4">
+                  <span class="text-5xl">🎬</span>
+                  <h1 class="text-3xl md:text-4xl font-extrabold text-white">I Find Places That Pretend to Be Somewhere Else</h1>
+              </div>
+              <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+          </header>
+
+          <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+              <div class="flex items-center justify-between px-2">
+                  <div class="flex items-center gap-3">
+                      <span class="text-xl">🎧</span>
+                      <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                  </div>
+                  <div class="flex gap-2">
+                      <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          <span class="text-lg">↺</span> 5s
+                      </button>
+                      <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          5s <span class="text-lg">↻</span>
+                      </button>
+                  </div>
+              </div>
+              <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+          </div>
+
+          <div class="flex justify-center">
+              <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+          </div>
+
+          <section class="glass rounded-3xl overflow-hidden shadow-xl">
+              <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                  <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+              </div>
+              <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                  <tr><td class="p-4"><b class="text-white">find inspiration</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">영감을 얻다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">all the time</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">항상 / 아주 자주</td></tr>
+                  <tr><td class="p-4"><b class="text-white">renter</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">세입자 / 임차인</td></tr>
+                  <tr><td class="p-4"><b class="text-white">wear many hats</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">여러 역할을 맡다 / 다양한 일을 도맡다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">pay commission</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">수수료를 지급하다</td></tr>
+              </tbody></table>
+          </section>
+
+          <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="glass p-5 rounded-2xl space-y-2 border-l-4 border-teal-500">
+                  <h3 class="font-bold text-teal-400 text-lg">find inspiration</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">새로운 아이디어나 해결책을 발견한다는 뜻입니다. 예술뿐 아니라 실무적인 문제를 해결할 때도 사용할 수 있습니다.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl space-y-2 border-l-4 border-teal-500">
+                  <h3 class="font-bold text-teal-400 text-lg">all the time</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">문자 그대로 매 순간이라는 뜻보다는 어떤 일이 매우 자주 반복된다는 의미로 흔히 사용됩니다.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl space-y-2 border-l-4 border-teal-500">
+                  <h3 class="font-bold text-teal-400 text-lg">renter</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">집이나 건물의 소유자가 아니라 돈을 내고 사용하는 사람입니다. 정식 임대 계약의 당사자는 tenant라고도 합니다.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl space-y-2 border-l-4 border-teal-500">
+                  <h3 class="font-bold text-teal-400 text-lg">wear many hats</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">한 사람이 서로 다른 여러 역할과 책임을 동시에 맡는다는 관용 표현입니다.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl space-y-2 border-l-4 border-teal-500">
+                  <h3 class="font-bold text-teal-400 text-lg">pay commission</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">거래를 연결하거나 계약을 성사시킨 대가로 일정 비율의 수수료를 지급한다는 뜻입니다.</p>
+              </div>
+          </section>
+
+          <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+              <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                  <p class="mb-6">I work as a film location scout. In plain English, I search for real places that can become imaginary ones.</p>
+                  <p class="mb-6">A director might ask me to find a lonely farmhouse, a government office from the 1970s, or a tunnel where two characters can secretly meet. Sometimes the script describes a place that does not exist, so I drive around trying to find something close enough.</p>
+                  <p class="mb-6">I <b class="highlight quiz-target" data-ans="find inspiration" data-kor="영감을 얻다">find inspiration</b> in strange places: empty factories, underground parking garages, old hotels, and houses that have not been renovated in forty years. I photograph each location from several angles and record practical details such as access, noise, parking, electricity, and nearby bathrooms.</p>
+                  <p class="mb-6">People suggest beautiful buildings to me <b class="highlight quiz-target" data-ans="all the time" data-kor="아주 자주">all the time</b>, but beauty is only one part of the job. A perfect-looking street may be beside an airport. A dramatic mansion may have no space for trucks. A quiet house may become unusable when a neighbor starts construction.</p>
+                  <p class="mb-6">Location professionals must research and secure suitable places, arrange access and permits, negotiate with owners, consider safety, and help return properties to their original condition after filming.</p>
+                  <p class="mb-6">One afternoon, I found exactly what the director wanted: a narrow apartment with faded wallpaper and a view of a railway bridge.</p>
+                  <p class="mb-6">A man opened the door.</p>
+                  <p class="mb-6">“Are you the owner?” I asked.</p>
+                  <p class="mb-6">“No, I’m the <b class="highlight quiz-target" data-ans="renter" data-kor="세입자">renter</b>.”</p>
+                  <p class="mb-6">That created a problem. Permission to film inside a private home normally has to come from the property owner, and apartments may involve several relevant parties.</p>
+                  <p class="mb-6">The renter called his landlord while I measured the hallway. Ten minutes later, he covered the phone and asked, “Will the production <b class="highlight quiz-target" data-ans="pay commission" data-kor="수수료를 지급하다">pay me a commission</b> for finding the apartment?”</p>
+                  <p class="mb-6">“Not exactly,” I said. “We negotiate a location fee with whoever has the authority to approve filming.”</p>
+                  <p class="mb-6">The landlord eventually agreed, but finding the apartment was only the beginning.</p>
+                  <p class="mb-6">On the filming day, I had to explain parking restrictions to the crew, answer questions from neighbors, protect the floors, organize access to the building, and make sure no equipment blocked the fire exit.</p>
+                  <p class="mb-6">Location workers <b class="highlight quiz-target" data-ans="wear many hats" data-kor="여러 역할을 맡다">wear many hats</b>. We are researchers before filming, negotiators during preparation, and problem-solvers once the cameras arrive. Film London notes that location managers may negotiate with owners, obtain public-space permissions, manage safety requirements, and coordinate with authorities such as councils and police.</p>
+                  <p class="mb-6">At midnight, the director finished the final shot.</p>
+                  <p class="mb-6">The apartment had appeared on screen for less than two minutes.</p>
+                  <p class="mb-6">I had worked on it for three weeks.</p>
+                  <p class="mb-6">That is normal in my job. Audiences see a room. I see contracts, cables, parking plans, nervous neighbors, and a landlord who called me seventeen times.</p>
+              </div>
+              <hr class="border-white/10">
+              <div class="text-slate-400 italic leading-relaxed space-y-6">
+                  <p class="mb-6">저는 영화 촬영지 스카우트로 일합니다. 쉽게 말하자면, 현실에 존재하는 장소 중에서 상상 속의 공간으로 사용할 만한 곳을 찾습니다.</p>
+                  <p class="mb-6">감독은 외딴 농가나 1970년대 분위기의 관공서, 또는 두 인물이 몰래 만날 수 있는 터널을 찾아 달라고 할 수 있습니다. 대본에 묘사된 장소가 현실에는 존재하지 않는 경우도 있어서, 저는 최대한 비슷한 곳을 찾기 위해 차를 타고 돌아다닙니다.</p>
+                  <p class="mb-6">저는 비어 있는 공장, 지하 주차장, 오래된 호텔, 40년 동안 수리하지 않은 집 같은 이상한 장소에서 <b class="highlight">영감을 얻습니다</b>. 각 장소를 여러 각도에서 촬영하고, 출입 방법, 소음, 주차 공간, 전기, 가까운 화장실 같은 실질적인 정보도 기록합니다.</p>
+                  <p class="mb-6">사람들은 저에게 아름다운 건물을 <b class="highlight">아주 자주</b> 추천하지만, 아름다움은 업무의 일부일 뿐입니다. 완벽해 보이는 거리가 공항 바로 옆에 있을 수도 있습니다. 멋진 저택에 촬영용 트럭을 세울 공간이 없을 수도 있습니다. 조용한 집도 이웃이 공사를 시작하면 사용할 수 없게 됩니다.</p>
+                  <p class="mb-6">촬영지 담당자는 적절한 장소를 조사하고 확보하며, 출입 허가와 각종 촬영 허가를 준비해야 합니다. 또한 소유주와 협상하고, 안전 문제를 검토하며, 촬영이 끝난 뒤 장소를 원래 상태로 돌려놓는 일에도 관여합니다.</p>
+                  <p class="mb-6">어느 날 오후, 저는 감독이 원하던 장소를 정확히 발견했습니다. 빛바랜 벽지가 있고 창문 너머로 철교가 보이는 좁은 아파트였습니다.</p>
+                  <p class="mb-6">한 남자가 문을 열었습니다.</p>
+                  <p class="mb-6">“집주인이신가요?” 제가 물었습니다.</p>
+                  <p class="mb-6">“아니요. 저는 <b class="highlight">세입자예요</b>.”</p>
+                  <p class="mb-6">문제가 생겼습니다. 개인 주택 내부에서 촬영하려면 일반적으로 부동산 소유주의 허가가 필요하며, 아파트에서는 여러 관계자의 동의가 필요할 수도 있습니다.</p>
+                  <p class="mb-6">세입자는 집주인에게 전화했고, 저는 그동안 복도의 크기를 측정했습니다. 10분쯤 지나자 그는 전화기를 가리고 제게 물었습니다.</p>
+                  <p class="mb-6">“제가 이 아파트를 소개했으니 제작사에서 저에게 <b class="highlight">수수료를 지급하나요</b>?”</p>
+                  <p class="mb-6">“그런 방식은 아닙니다.” 제가 대답했습니다. “촬영을 승인할 권한이 있는 사람과 장소 사용료를 협상합니다.”</p>
+                  <p class="mb-6">집주인은 결국 촬영에 동의했지만, 아파트를 찾은 것은 시작에 불과했습니다.</p>
+                  <p class="mb-6">촬영 당일, 저는 제작진에게 주차 제한을 설명하고 이웃 주민들의 질문에 답해야 했습니다. 바닥을 보호하고, 건물 출입을 관리하며, 장비가 비상구를 막지 않는지도 확인해야 했습니다.</p>
+                  <p class="mb-6">촬영지 담당자들은 <b class="highlight">여러 역할을 맡습니다</b>. 촬영 전에는 조사원이고, 준비 과정에서는 협상가이며, 카메라가 도착한 뒤에는 문제 해결사가 됩니다. 촬영지 관리자는 소유주와 협상하고, 공공장소 촬영 허가를 받고, 안전 조건을 관리하며, 지방정부나 경찰 같은 기관과 협력하기도 합니다.</p>
+                  <p class="mb-6">자정이 되어 감독이 마지막 장면의 촬영을 끝냈습니다.</p>
+                  <p class="mb-6">그 아파트는 화면에 2분도 나오지 않았습니다.</p>
+                  <p class="mb-6">저는 그 장소를 위해 3주 동안 일했습니다.</p>
+                  <p class="mb-6">제 직업에서는 평범한 일입니다. 관객들은 방 하나를 봅니다. 저는 계약서, 케이블, 주차 계획, 불안해하는 이웃들, 그리고 열일곱 번이나 전화한 집주인을 봅니다.</p>
+              </div>
+          </section>
+
+      </div>
+      <script>
+          function skipAudio(seconds) {
+              const player = document.getElementById('player');
+              if (player.src) {
+                  player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+              }
+          }
+
+          function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+          let _quizOriginals = new Map();
+          function toggleQuiz() {
+              const btn = document.getElementById('quizBtn');
+              const isQuiz = btn.innerText.includes("Quiz");
+              const targets = document.querySelectorAll('.quiz-target');
+              const cells = document.querySelectorAll('.mystery-cell');
+              if (isQuiz) {
+                  btn.innerText = "Study Mode 📖";
+                  cells.forEach(c => c.classList.add('quiz-hidden'));
+                  targets.forEach(t => {
+                      const ans = t.dataset.ans; const kor = t.dataset.kor;
+                      _quizOriginals.set(t, t.innerHTML);
+                      t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                  });
+              } else {
+                  btn.innerText = "Quiz Mode 👻";
+                  cells.forEach(c => c.classList.remove('quiz-hidden'));
+                  targets.forEach(t => {
+                      if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                  });
+                  _quizOriginals.clear();
+              }
+          }
+
+          function checkQuiz(i, a) {
+              if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                  i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                  confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                  checkAllSolved();
+              } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+          }
+
+          function checkAllSolved() {
+              const inputs = document.querySelectorAll('.quiz-input');
+              if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                  var duration = 3 * 1000; var end = Date.now() + duration;
+                  (function frame() {
+                      confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                      confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                      if (Date.now() < end) requestAnimationFrame(frame);
+                  }());
+              }
+          }
+
+          document.getElementById('player').src = "831200.m4a";
+      </script>
+      <script src="wordbank-utils.js"></script>
+      <script src="chat.js"></script>
+  </body>
+  </html>

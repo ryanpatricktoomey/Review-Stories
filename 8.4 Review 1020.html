@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Last Nail</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">💅</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Last Nail</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">cut out</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">완전히 끊다 / 없애다</td></tr>
+                <tr><td class="p-4"><b class="text-white">doomscroll</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">부정적인 뉴스를 계속 보다</td></tr>
+                <tr><td class="p-4"><b class="text-white">biting my nails</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">손톱을 물어뜯는 것</td></tr>
+                <tr><td class="p-4"><b class="text-white">lose my belly fat</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">뱃살을 빼다</td></tr>
+                <tr><td class="p-4"><b class="text-white">traitor</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">배신자</td></tr>
+                <tr><td class="p-4"><b class="text-white">go down a rabbit hole</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">한 주제에 빠져 끝없이 파고들다</td></tr>
+                <tr><td class="p-4"><b class="text-white">fortune telling</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">점을 보는 것 / 운세 보기</td></tr>
+                <tr><td class="p-4"><b class="text-white">carbs</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">탄수화물</td></tr>
+                <tr><td class="p-4"><b class="text-white">right after</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">바로 뒤에 / 직후에</td></tr>
+                <tr><td class="p-4"><b class="text-white">hip</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">엉덩이 옆부분 / 고관절</td></tr>
+                <tr><td class="p-4"><b class="text-white">cross your legs</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">다리를 꼬다</td></tr>
+                <tr><td class="p-4"><b class="text-white">show off</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">자랑하다 / 뽐내다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold text-lg mb-1">cut out</h3>
+                <p class="text-slate-300 text-sm">습관이나 음식 등을 단순히 줄이는 것이 아니라 완전히 끊는다는 뜻으로 자주 써요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold text-lg mb-1">doomscroll</h3>
+                <p class="text-slate-300 text-sm">불안하거나 부정적인 뉴스를 멈추지 못하고 계속 보는 행동이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold text-lg mb-1">go down a rabbit hole</h3>
+                <p class="text-slate-300 text-sm">한 가지 정보나 관심사에서 시작해 관련 내용을 끝없이 찾아보며 깊이 빠지는 것을 뜻해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold text-lg mb-1">traitor</h3>
+                <p class="text-slate-300 text-sm">원래는 사람이나 집단을 배신한 사람을 뜻하지만, 일상에서는 말을 듣지 않는 신체 부위나 물건을 장난스럽게 부를 때도 있어요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold text-lg mb-1">show off</h3>
+                <p class="text-slate-300 text-sm">다른 사람에게 자신의 능력, 외모, 소유물 등을 일부러 과시한다는 뉘앙스가 있어요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">My worst habit is <b class="highlight quiz-target" data-ans="biting my nails" data-kor="손톱을 물어뜯는 것">biting my nails</b>.</p>
+                <p class="mb-6">I do it when I am nervous, bored, or thinking too hard. I also do it when I <b class="highlight quiz-target" data-ans="doomscroll" data-kor="부정적인 뉴스를 계속 보다">doomscroll</b>, which means I can destroy three fingernails while reading one depressing article.</p>
+                <p class="mb-6">I have tried to <b class="highlight quiz-target" data-ans="cut out" data-kor="완전히 끊다">cut out</b> the habit many times. I bought bitter nail polish, wore gloves at home, and even put small bandages on every finger. The bandages made ordinary tasks difficult, but at least my nails were safe.</p>
+                <p class="mb-6">Then I started researching better solutions online.</p>
+                <p class="mb-6">This was a mistake.</p>
+                <p class="mb-6">I quickly <b class="highlight quiz-target" data-ans="went down a rabbit hole" data-kor="끝없이 파고들었다">went down a rabbit hole</b>. One video said nail biting came from anxiety. Another said it was caused by perfectionism. A woman offering online <b class="highlight quiz-target" data-ans="fortune telling" data-kor="점">fortune telling</b> claimed that people born in my month had “restless hand energy.”</p>
+                <p class="mb-6">I watched all of them while biting my thumbnail.</p>
+                <p class="mb-6">My sister suggested exercise.</p>
+                <p class="mb-6">“You need something healthier to do when you feel stressed,” she said. “You could also <b class="highlight quiz-target" data-ans="lose your belly fat" data-kor="뱃살을 빼다">lose your belly fat</b>.”</p>
+                <p class="mb-6">“Thank you for adding a second problem,” I said.</p>
+                <p class="mb-6">The next morning, I joined a fitness class. I told myself that exercise would calm my mind and keep my hands busy.</p>
+                <p class="mb-6">The instructor told us to place our hands on our <b class="highlight quiz-target" data-ans="hips" data-kor="엉덩이 옆부분">hips</b>. Then she asked us to sit down, <b class="highlight quiz-target" data-ans="cross our legs" data-kor="다리를 꼬다">cross our legs</b>, and stretch forward.</p>
+                <p class="mb-6">My <b class="highlight quiz-target" data-ans="hip" data-kor="고관절">hip</b> made a loud clicking sound.</p>
+                <p class="mb-6">“Are you okay?” the woman beside me asked.</p>
+                <p class="mb-6">“My body is a <b class="highlight quiz-target" data-ans="traitor" data-kor="배신자">traitor</b>,” I whispered.</p>
+                <p class="mb-6">After class, I noticed that I had not touched my nails for a whole hour. I felt so proud that I wanted to <b class="highlight quiz-target" data-ans="show off" data-kor="자랑하다">show off</b> my progress. I sent my sister a photo of my hands.</p>
+                <p class="mb-6">She replied, “They look exactly the same.”</p>
+                <p class="mb-6">“They are emotionally healthier,” I wrote.</p>
+                <p class="mb-6">For the next week, I exercised every evening. I also stopped eating <b class="highlight quiz-target" data-ans="carbs" data-kor="탄수화물">carbs</b> after dinner because a fitness video told me to. I was not sure what bread had to do with my fingernails, but I was willing to try anything.</p>
+                <p class="mb-6">By Sunday, my nails had finally started to grow. I painted them bright red and admired them all day.</p>
+                <p class="mb-6">That night, I sat on the sofa and opened my phone. A news alert appeared <b class="highlight quiz-target" data-ans="right after" data-kor="바로 뒤에">right after</b> I finished checking my messages.</p>
+                <p class="mb-6">I read the headline.</p>
+                <p class="mb-6">Then I felt my hand slowly rise toward my mouth.</p>
+                <p class="mb-6">I stared at my perfect red thumbnail.</p>
+                <p class="mb-6">“Just the corner,” I thought.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>제 가장 나쁜 습관은 <b class="highlight">손톱을 물어뜯는 것</b>입니다.</p>
+                <p>저는 긴장하거나, 지루하거나, 너무 깊이 생각할 때 손톱을 물어뜯습니다. <b class="highlight">부정적인 뉴스를 계속 볼</b> 때도 그러는데, 우울한 기사 하나를 읽는 동안 손톱 세 개를 망칠 수도 있습니다.</p>
+                <p>저는 이 습관을 <b class="highlight">완전히 끊으려고</b> 여러 번 시도했습니다. 쓴맛이 나는 매니큐어를 사고, 집에서 장갑을 끼고, 손가락마다 작은 밴드까지 붙였습니다. 밴드 때문에 일상적인 일을 하기는 불편했지만, 적어도 손톱은 안전했습니다.</p>
+                <p>그러다 인터넷에서 더 좋은 방법을 찾아보기 시작했습니다.</p>
+                <p>그건 실수였습니다.</p>
+                <p>저는 금세 관련 정보를 <b class="highlight">끝없이 파고들었습니다</b>. 어떤 영상은 손톱을 물어뜯는 습관이 불안 때문에 생긴다고 했고, 다른 영상은 완벽주의 때문이라고 했습니다. 온라인 <b class="highlight">점</b>을 봐주는 한 여성은 제가 태어난 달의 사람들에게 “불안정한 손의 기운”이 있다고 주장했습니다.</p>
+                <p>저는 그 영상들을 전부 보면서 엄지손톱을 물어뜯었습니다.</p>
+                <p>언니는 운동을 해보라고 제안했습니다.</p>
+                <p>“스트레스를 받을 때 할 수 있는 더 건강한 행동이 필요해.” 언니가 말했습니다. “<b class="highlight">뱃살도 뺄 수 있고</b>.”</p>
+                <p>“문제를 하나 더 추가해줘서 고마워.” 제가 말했습니다.</p>
+                <p>다음 날 아침, 저는 운동 수업에 등록했습니다. 운동을 하면 마음이 차분해지고 손도 바쁘게 움직일 거라고 생각했습니다.</p>
+                <p>강사는 우리에게 양손을 <b class="highlight">엉덩이 옆에</b> 올리라고 했습니다. 그러고 나서 앉아서 <b class="highlight">다리를 꼬고</b> 몸을 앞으로 숙이라고 했습니다.</p>
+                <p>제 <b class="highlight">고관절</b>에서 크게 딱 소리가 났습니다.</p>
+                <p>“괜찮으세요?” 옆에 있던 여성이 물었습니다.</p>
+                <p>“제 몸이 <b class="highlight">배신자</b>예요.” 제가 작은 목소리로 말했습니다.</p>
+                <p>수업이 끝난 뒤, 저는 한 시간 동안 손톱에 전혀 손을 대지 않았다는 것을 깨달았습니다. 너무 뿌듯해서 발전한 모습을 <b class="highlight">자랑하고</b> 싶었습니다. 저는 언니에게 제 손 사진을 보냈습니다.</p>
+                <p>언니는 “전혀 달라 보이지 않는데”라고 답했습니다.</p>
+                <p>“정서적으로는 더 건강해졌어.” 제가 썼습니다.</p>
+                <p>그 후 일주일 동안 저는 매일 저녁 운동했습니다. 운동 영상에서 그렇게 하라고 했기 때문에 저녁 식사 후에는 <b class="highlight">탄수화물</b>도 먹지 않았습니다. 빵이 손톱과 무슨 관계가 있는지는 몰랐지만, 무엇이든 시도할 준비가 되어 있었습니다.</p>
+                <p>일요일이 되자 손톱이 드디어 자라기 시작했습니다. 저는 손톱에 밝은 빨간색 매니큐어를 바르고 하루 종일 바라보았습니다.</p>
+                <p>그날 밤, 소파에 앉아 휴대폰을 열었습니다. 메시지를 확인한 <b class="highlight">직후</b> 뉴스 알림 하나가 나타났습니다.</p>
+                <p>저는 제목을 읽었습니다.</p>
+                <p>그러자 제 손이 천천히 입 쪽으로 올라가는 것이 느껴졌습니다.</p>
+                <p>저는 완벽한 빨간 엄지손톱을 바라보았습니다.</p>
+                <p>“모서리만 조금.”</p>
+                <p>저는 그렇게 생각했습니다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "841020.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

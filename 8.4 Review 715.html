@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | Five More Minutes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">📱</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">Five More Minutes</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">daily journal</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">매일 쓰는 일기</td></tr>
+                <tr><td class="p-4"><b class="text-white">throat</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">목 / 목구멍</td></tr>
+                <tr><td class="p-4"><b class="text-white">farmer's tan</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">반팔 자국대로 탄 피부</td></tr>
+                <tr><td class="p-4"><b class="text-white">doomscrolling</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">부정적인 뉴스를 끝없이 계속 보는 행동</td></tr>
+                <tr><td class="p-4"><b class="text-white">warm up</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">몸을 풀다 / 준비 운동을 하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">nursing home</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">요양원</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold text-lg mb-1">farmer's tan</h3>
+                <p class="text-slate-300 text-sm">반팔이나 민소매 옷 때문에 팔의 일부만 타서 뚜렷한 경계가 생긴 상태를 말해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold text-lg mb-1">doomscrolling</h3>
+                <p class="text-slate-300 text-sm">휴대폰으로 불안하거나 부정적인 뉴스와 게시물을 멈추지 못하고 계속 보는 행동이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold text-lg mb-1">warm up</h3>
+                <p class="text-slate-300 text-sm">운동 전에 몸을 푼다는 뜻 외에도, 활동을 본격적으로 시작하기 전에 준비한다는 의미로 쓸 수 있어요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold text-lg mb-1">nursing home</h3>
+                <p class="text-slate-300 text-sm">일상생활에 도움이나 의료 관리가 필요한 노인들이 생활하는 요양 시설을 뜻해요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">My bad habit begins with five harmless words: “I’ll check for five minutes.”</p>
+                <p class="mb-6">Every night, I get into bed, open a news app, and start <b class="highlight quiz-target" data-ans="doomscrolling" data-kor="부정적인 뉴스를 계속 보는 행동">doomscrolling</b>. I read about storms, crime, rising prices, strange diseases, and arguments between people I have never met. Then I switch to social media to relax, which somehow makes everything worse.</p>
+                <p class="mb-6">I have tried everything.</p>
+                <p class="mb-6">I deleted the apps. I blocked the websites. I even bought a small <b class="highlight quiz-target" data-ans="daily journal" data-kor="매일 쓰는 일기">daily journal</b> and promised to write in it instead of using my phone before bed. That plan lasted three nights. On the fourth night, I wrote, “Today was fine,” then picked up my phone to check whether the world was ending.</p>
+                <p class="mb-6">The habit began affecting my mornings. My eyes hurt, my <b class="highlight quiz-target" data-ans="throat" data-kor="목">throat</b> felt dry, and I was too tired to exercise. I kept telling myself I would go for a run, but even putting on my shoes felt exhausting.</p>
+                <p class="mb-6">Then my grandmother called from her <b class="highlight quiz-target" data-ans="nursing home" data-kor="요양원">nursing home</b>.</p>
+                <p class="mb-6">“You sound terrible,” she said.<br>“I’m just tired.”<br>“You’re always tired.”</p>
+                <p class="mb-6">She was right. I had promised to visit her that Saturday, and I almost canceled because I had stayed awake until three in the morning reading an argument about whether people should wash new towels before using them.</p>
+                <p class="mb-6">But I went.</p>
+                <p class="mb-6">My grandmother was waiting outside in a huge sun hat. She looked at my arms and laughed.<br>“You have a <b class="highlight quiz-target" data-ans="farmer’s tan" data-kor="반팔 자국대로 탄 피부">farmer’s tan</b>.”<br>“I know.”<br>“That means you occasionally leave your apartment. Good news.”</p>
+                <p class="mb-6">She made me walk around the garden with her. Before we started, she slowly lifted both arms and said, “We should <b class="highlight quiz-target" data-ans="warm up" data-kor="몸을 풀다">warm up</b>.”<br>“For walking?”<br>“At my age, standing up is exercise.”</p>
+                <p class="mb-6">We walked for twenty minutes. She talked about the flowers, the nurses, and a man named Walter who kept stealing everyone’s newspapers. Not once did she mention a disaster happening somewhere else.</p>
+                <p class="mb-6">That evening, I left my phone in the kitchen. I wrote three full pages in my journal. Then I turned off the light.</p>
+                <p class="mb-6">For the first time in months, I fell asleep before midnight.</p>
+                <p class="mb-6">The next morning, I felt clear and calm. I made coffee, opened the curtains, and congratulated myself. I had finally done it.</p>
+                <p class="mb-6">Then I noticed my phone on the counter.</p>
+                <p class="mb-6">There were eleven news notifications.</p>
+                <p class="mb-6">I picked it up, meaning only to clear them.</p>
+                <p class="mb-6">“Five minutes,” I told myself.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>제 나쁜 습관은 해롭지 않아 보이는 다섯 단어로 시작됩니다.<br>“5분만 확인해야지.”</p>
+                <p>저는 매일 밤 침대에 들어가 뉴스 앱을 열고 <b class="highlight">부정적인 뉴스를 끝없이 보기</b> 시작합니다. 폭풍, 범죄, 물가 상승, 이상한 질병, 그리고 한 번도 만난 적 없는 사람들 사이의 논쟁을 읽습니다. 그러다 긴장을 풀려고 소셜 미디어로 넘어가는데, 어째서인지 상황은 더 나빠집니다.</p>
+                <p>저는 온갖 방법을 시도했습니다.</p>
+                <p>앱을 삭제했고, 웹사이트를 차단했습니다. 작은 <b class="highlight">일기장</b>까지 사서 잠들기 전에 휴대폰을 보는 대신 매일 일기를 쓰겠다고 다짐했습니다. 그 계획은 사흘 동안 유지되었습니다. 나흘째 밤, 저는 “오늘은 괜찮았다”라고 쓴 뒤 세상이 멸망하고 있는지 확인하려고 휴대폰을 집어 들었습니다.</p>
+                <p>그 습관은 제 아침에도 영향을 주기 시작했습니다. 눈이 아팠고, <b class="highlight">목</b>은 말라 있었으며, 너무 피곤해서 운동할 수 없었습니다. 달리러 나가겠다고 계속 말했지만, 운동화를 신는 것조차 힘들게 느껴졌습니다.</p>
+                <p>그러던 중 <b class="highlight">요양원</b>에 계신 할머니에게 전화가 왔습니다.</p>
+                <p>“목소리가 엉망이구나.” 할머니가 말씀하셨습니다.<br>“그냥 피곤해서 그래요.”<br>“넌 항상 피곤하잖니.”</p>
+                <p>할머니 말씀이 맞았습니다. 저는 그 토요일에 찾아뵙겠다고 약속했지만, 새 수건을 사용하기 전에 빨아야 하는지를 두고 사람들이 벌이는 논쟁을 새벽 3시까지 읽는 바람에 약속을 취소할 뻔했습니다.</p>
+                <p>하지만 저는 갔습니다.</p>
+                <p>할머니는 커다란 햇빛 가리개 모자를 쓰고 밖에서 기다리고 계셨습니다. 할머니는 제 팔을 보더니 웃으셨습니다.<br>“<b class="highlight">반팔 자국대로 탔구나</b>.”<br>“알아요.”<br>“그건 네가 가끔 집 밖에 나간다는 뜻이네. 좋은 소식이구나.”</p>
+                <p>할머니는 저를 데리고 정원을 걸으셨습니다. 출발하기 전에 양팔을 천천히 들어 올리며 말씀하셨습니다.<br>“<b class="highlight">몸을 풀어야지</b>.”<br>“걷기 전에요?”<br>“내 나이에는 일어서는 것도 운동이야.”</p>
+                <p>우리는 20분 동안 걸었습니다. 할머니는 꽃과 간호사들, 그리고 다른 사람들의 신문을 계속 훔쳐 가는 월터라는 남자에 관해 이야기하셨습니다. 멀리서 벌어지는 재난 이야기는 한 번도 하지 않으셨습니다.</p>
+                <p>그날 저녁, 저는 휴대폰을 부엌에 두었습니다. 일기장에 세 페이지를 가득 쓴 뒤 불을 껐습니다.</p>
+                <p>몇 달 만에 처음으로 자정 전에 잠이 들었습니다.</p>
+                <p>다음 날 아침, 머리가 맑고 마음이 편안했습니다. 커피를 만들고 커튼을 연 뒤 스스로를 칭찬했습니다. 드디어 해낸 것이었습니다.</p>
+                <p>그때 조리대 위의 휴대폰이 눈에 들어왔습니다.</p>
+                <p>뉴스 알림이 열한 개 와 있었습니다.</p>
+                <p>저는 알림만 지우려는 생각으로 휴대폰을 집어 들었습니다.</p>
+                <p>“5분만.”<br>저는 스스로에게 그렇게 말했습니다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "84715.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

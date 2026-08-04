@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | One Last Thing</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🛏️</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">One Last Thing</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">get into bed</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">침대에 들어가다</td></tr>
+                <tr><td class="p-4"><b class="text-white">go lie down</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">가서 눕다</td></tr>
+                <tr><td class="p-4"><b class="text-white">go to bed</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">잠자리에 들다</td></tr>
+                <tr><td class="p-4"><b class="text-white">multitask</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">여러 가지 일을 동시에 하다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold text-lg mb-1">get into bed</h3>
+                <p class="text-slate-300 text-sm">침대 안으로 들어가 이불을 덮는 동작에 초점이 있어요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold text-lg mb-1">go lie down</h3>
+                <p class="text-slate-300 text-sm">잠을 자는다는 뜻이라기보다, 쉬기 위해 가서 눕는다는 뜻이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold text-lg mb-1">go to bed</h3>
+                <p class="text-slate-300 text-sm">잠을 자기 위해 잠자리에 드는 전체 행동을 나타내요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold text-lg mb-1">multitask</h3>
+                <p class="text-slate-300 text-sm">여러 일을 동시에 처리한다는 뜻이지만, 실제로는 집중력이 자주 흐트러지는 상황에도 많이 써요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">My bad habit is refusing to stop doing things at night.</p>
+                <p class="mb-6">I am always tired, but the moment I decide to <b class="highlight quiz-target" data-ans="go to bed" data-kor="잠자리에 들다">go to bed</b>, I suddenly remember ten small tasks. I need to answer one message, wash one cup, check tomorrow’s weather, and move one file into the correct folder.</p>
+                <p class="mb-6">None of these things is urgent. At midnight, they feel extremely important.</p>
+                <p class="mb-6">My sister says I do this because I am addicted to feeling productive.</p>
+                <p class="mb-6">“You should just <b class="highlight quiz-target" data-ans="go lie down" data-kor="가서 눕다">go lie down</b>,” she told me one evening.</p>
+                <p class="mb-6">“I will,” I said. “I’m just finishing a few things.”</p>
+                <p class="mb-6">“You said that forty minutes ago.”</p>
+                <p class="mb-6">“I’m being efficient.”</p>
+                <p class="mb-6">“You’re standing in the kitchen, brushing your teeth, checking email, and watering a plant.”</p>
+                <p class="mb-6">“I can <b class="highlight quiz-target" data-ans="multitask" data-kor="여러 일을 동시에 하다">multitask</b>.”</p>
+                <p class="mb-6">“You are watering the toaster.”</p>
+                <p class="mb-6">I looked down. She was right.</p>
+                <p class="mb-6">I had already tried several solutions. I set a bedtime alarm, but I treated it like a suggestion. I wrote a nighttime checklist, but the checklist became another task to complete. I even left my phone in the living room, then spent twenty minutes looking for an old alarm clock.</p>
+                <p class="mb-6">My worst nights happened before busy mornings. The more I needed sleep, the more determined I became to prepare perfectly.</p>
+                <p class="mb-6">One Thursday, I had an early presentation at work. I promised myself I would be asleep by ten thirty.</p>
+                <p class="mb-6">At ten fifteen, I changed into pajamas.</p>
+                <p class="mb-6">At ten twenty, I washed my face.</p>
+                <p class="mb-6">At ten twenty-five, I turned off the lights.</p>
+                <p class="mb-6">Then I remembered that my laptop battery was low.</p>
+                <p class="mb-6">I plugged it in. While I was there, I checked the presentation. One slide looked slightly uneven, so I fixed it. Then I noticed a spelling mistake. Then I decided the title font looked weak.</p>
+                <p class="mb-6">At eleven forty, my sister walked past my room.</p>
+                <p class="mb-6">“What are you doing?”</p>
+                <p class="mb-6">“Preventing tomorrow’s problems.”</p>
+                <p class="mb-6">“You are creating tomorrow’s problem.”</p>
+                <p class="mb-6">That sentence stayed with me.</p>
+                <p class="mb-6">The next night, I tried a simpler rule: after ten thirty, unfinished tasks had to remain unfinished.</p>
+                <p class="mb-6">I brushed my teeth, ignored the dishes, and <b class="highlight quiz-target" data-ans="got into bed" data-kor="침대에 들어갔다">got into bed</b>.</p>
+                <p class="mb-6">For twenty full minutes, I did nothing.</p>
+                <p class="mb-6">It felt uncomfortable. Then it felt peaceful.</p>
+                <p class="mb-6">The following morning, I woke up before my alarm. I felt calm, rested, and strangely proud. Perhaps I had finally changed.</p>
+                <p class="mb-6">That evening, I followed the same routine. At ten thirty, I climbed under the blanket and turned off the lamp.</p>
+                <p class="mb-6">Then I remembered the laundry in the washing machine.</p>
+                <p class="mb-6">Wet clothes could not stay there all night.</p>
+                <p class="mb-6">I sat up.</p>
+                <p class="mb-6">“It will only take a minute,” I whispered.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>제 나쁜 습관은 밤에 하던 일을 멈추지 못하는 것입니다.</p>
+                <p>저는 항상 피곤하지만, <b class="highlight">잠자리에 들기로</b> 마음먹는 순간 갑자기 작은 할 일 열 가지가 떠오릅니다. 메시지 하나에 답장하고, 컵 하나를 씻고, 내일 날씨를 확인하고, 파일 하나를 올바른 폴더로 옮겨야 합니다.</p>
+                <p>그중 급한 일은 하나도 없습니다. 하지만 자정이 되면 전부 매우 중요한 일처럼 느껴집니다.</p>
+                <p>언니는 제가 생산적인 사람이라는 기분에 중독되어 있어서 그런다고 말합니다.</p>
+                <p>“그냥 <b class="highlight">가서 좀 누워</b>.” 어느 날 저녁 언니가 말했습니다.</p>
+                <p>“그럴 거야. 몇 가지만 끝내고.”</p>
+                <p>“40분 전에도 그렇게 말했어.”</p>
+                <p>“효율적으로 하고 있는 거야.”</p>
+                <p>“지금 부엌에 서서 양치하고, 이메일을 확인하고, 화분에 물을 주고 있잖아.”</p>
+                <p>“<b class="highlight">여러 가지 일을 동시에 할 수 있어</b>.”</p>
+                <p>“너 지금 토스터기에 물 주고 있어.”</p>
+                <p>아래를 내려다보니 언니 말이 맞았습니다.</p>
+                <p>저는 이미 여러 가지 방법을 시도했습니다. 취침 알람을 설정했지만, 저는 그것을 그저 제안처럼 받아들였습니다. 밤에 할 일을 적은 체크리스트를 만들었지만, 체크리스트 자체가 끝내야 할 새로운 일이 되었습니다. 휴대폰을 거실에 두기도 했지만, 결국 오래된 알람시계를 찾느라 20분을 썼습니다.</p>
+                <p>특히 바쁜 아침을 앞둔 날 밤이 가장 심했습니다. 잠이 더 필요할수록 모든 것을 완벽히 준비하려는 마음도 더 강해졌습니다.</p>
+                <p>어느 목요일에는 회사에서 이른 발표가 있었습니다. 저는 밤 10시 30분까지 반드시 잠들겠다고 다짐했습니다.</p>
+                <p>10시 15분에 잠옷으로 갈아입었습니다.</p>
+                <p>10시 20분에 세수를 했습니다.</p>
+                <p>10시 25분에 불을 껐습니다.</p>
+                <p>그때 노트북 배터리가 부족하다는 것이 떠올랐습니다.</p>
+                <p>노트북을 충전기에 연결했습니다. 그곳에 간 김에 발표 자료를 확인했습니다. 슬라이드 하나가 약간 비뚤어져 보여서 수정했습니다. 그러다 철자 오류를 발견했습니다. 그다음에는 제목의 글꼴이 약해 보인다고 생각했습니다.</p>
+                <p>11시 40분, 언니가 제 방 앞을 지나갔습니다.</p>
+                <p>“뭐 하고 있어?”</p>
+                <p>“내일 생길 문제를 막고 있어.”</p>
+                <p>“네가 지금 내일의 문제를 만들고 있잖아.”</p>
+                <p>그 말이 계속 머릿속에 남았습니다.</p>
+                <p>다음 날 밤, 저는 더 단순한 규칙을 시도했습니다. 10시 30분 이후에는 끝내지 못한 일을 그대로 남겨두는 것이었습니다.</p>
+                <p>양치하고, 설거지를 무시한 채 <b class="highlight">침대에 들어갔습니다</b>.</p>
+                <p>20분 동안 아무것도 하지 않았습니다.</p>
+                <p>처음에는 불편했습니다. 그러다 평화롭게 느껴졌습니다.</p>
+                <p>다음 날 아침, 알람이 울리기 전에 눈을 떴습니다. 마음이 차분했고, 몸은 개운했으며, 이상할 정도로 뿌듯했습니다. 어쩌면 드디어 습관을 바꾼 것 같았습니다.</p>
+                <p>그날 저녁에도 같은 루틴을 따랐습니다. 10시 30분에 이불 속으로 들어가 스탠드를 껐습니다.</p>
+                <p>그때 세탁기 안의 빨래가 떠올랐습니다.</p>
+                <p>젖은 옷을 밤새 그대로 둘 수는 없었습니다.</p>
+                <p>저는 몸을 일으켰습니다.</p>
+                <p>“1분밖에 안 걸릴 거야.”</p>
+                <p>저는 작게 중얼거렸습니다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "841200.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

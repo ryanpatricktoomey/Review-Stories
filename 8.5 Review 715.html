@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | My Phone Battery Has Ruined Going Outside</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🔋</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">My Phone Battery Has Ruined Going Outside</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">power bank</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">보조 배터리</td></tr>
+                <tr><td class="p-4"><b class="text-white">home remedy</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">민간요법 / 집에서 하는 간단한 치료법</td></tr>
+                <tr><td class="p-4"><b class="text-white">necessary evil</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">필요악</td></tr>
+                <tr><td class="p-4"><b class="text-white">a good problem to have</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">행복한 고민 / 오히려 좋은 문제</td></tr>
+                <tr><td class="p-4"><b class="text-white">I'm the only one</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">나만 그런 것 같다</td></tr>
+                <tr><td class="p-4"><b class="text-white">stop tempting me</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그만 유혹해</td></tr>
+                <tr><td class="p-4"><b class="text-white">sabotage my diet</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">내 다이어트를 망치다</td></tr>
+                <tr><td class="p-4"><b class="text-white">every single second</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">매 순간 / 단 1초도 빠짐없이</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border border-teal-500/20 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">home remedy</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">병원이나 약국에 가지 않고 집에서 쉽게 시도하는 전통적이거나 간단한 치료법을 말해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-teal-500/20 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">necessary evil</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">좋아하지는 않지만 어떤 목적을 위해 어쩔 수 없이 받아들여야 하는 것을 뜻해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-teal-500/20 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">a good problem to have</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">문제처럼 보이지만 사실은 좋은 상황에서 생긴 행복한 고민이라는 뜻이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-teal-500/20 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">stop tempting me</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">상대가 먹고 싶거나 사고 싶은 것을 계속 보여 주며 유혹할 때 자연스럽게 쓸 수 있어요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-teal-500/20 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">sabotage my diet</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">다이어트를 고의로 망친다는 뜻처럼 들리지만, 보통 맛있는 음식 때문에 계획을 지키기 어려운 상황을 과장해서 말해요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">I need to complain about my phone battery because apparently <b class="highlight quiz-target" data-ans="I’m the only one" data-kor="나만 그런 것 같다">I’m the only one</b> who leaves home with 72 percent and immediately starts preparing for a national emergency.</p>
+                <p class="mb-6">Seventy-two percent should be enough. Logically, I know that. But the moment I step outside, the battery drops to 68 percent, and suddenly I’m doing calculations. Can I use maps? Can I listen to music? Am I allowed to open Instagram, or should I save power in case I need to contact emergency services six hours from now?</p>
+                <p class="mb-6">So yes, I carry a <b class="highlight quiz-target" data-ans="power bank" data-kor="보조 배터리">power bank</b>. Actually, I carry two. One is small and convenient, and the other is so heavy that it could be used as gym equipment. I hate carrying them, but they are a <b class="highlight quiz-target" data-ans="necessary evil" data-kor="필요악">necessary evil</b> because my phone apparently consumes energy <b class="highlight quiz-target" data-ans="every single second" data-kor="매 순간 / 단 1초도 빠짐없이">every single second</b>, even when I’m not touching it.</p>
+                <p class="mb-6">People tell me, “Just stop checking the battery.”</p>
+                <p class="mb-6">Thank you. Brilliant advice. That’s like telling someone with a headache to stop noticing their head. Maybe I should try a <b class="highlight quiz-target" data-ans="home remedy" data-kor="민간요법 / 집에서 하는 간단한 치료법">home remedy</b>. Should I rub garlic on the charging port? Should I place the phone near a window and let it absorb sunlight?</p>
+                <p class="mb-6">The worst part is that cafés have outlets, but they are always next to the table with the cake display. So now I have to sit there, charging my phone while staring at six different desserts.</p>
+                <p class="mb-6">And the cakes need to <b class="highlight quiz-target" data-ans="stop tempting me" data-kor="그만 유혹해">stop tempting me</b>.</p>
+                <p class="mb-6">I’m trying to eat better, but how am I supposed to protect my health when a slice of chocolate cake is sitting three feet away under perfect lighting? That cake is actively trying to <b class="highlight quiz-target" data-ans="sabotage my diet" data-kor="내 다이어트를 망치다">sabotage my diet</b>. I can feel it.</p>
+                <p class="mb-6">Then my friend says, “Having too many good desserts to choose from is <b class="highlight quiz-target" data-ans="a good problem to have" data-kor="행복한 고민 / 오히려 좋은 문제">a good problem to have</b>.”</p>
+                <p class="mb-6">No, it isn’t. It is two problems. My phone is dying, and now I have to decide whether cheesecake is worth destroying an entire week of self-control.</p>
+                <p class="mb-6">Of course, I buy the cake. Then I take twelve photos of it, which uses more battery. My phone drops to 31 percent, so I connect the giant power bank, which barely fits on the table.</p>
+                <p class="mb-6">Now I’m carrying two batteries, eating cake I didn’t plan to order, and using my phone to search for nearby gyms.</p>
+                <p class="mb-6">All I wanted was enough battery to get home. Somehow, I’ve gained dessert and back pain.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">휴대폰 배터리에 대해 불평 좀 해야겠어요. 집에서 배터리가 72퍼센트인 상태로 나와 놓고도 곧바로 국가 비상사태에 대비하기 시작하는 사람은 <b class="highlight">저밖에 없는 것 같거든요</b>.</p>
+                <p class="mb-6">72퍼센트면 충분해야 하죠. 논리적으로는 저도 알아요. 하지만 집 밖으로 나오는 순간 배터리가 68퍼센트로 떨어지면, 저는 갑자기 계산을 시작해요. 지도를 사용해도 될까? 음악을 들어도 될까? 인스타그램을 열어도 되는 걸까, 아니면 여섯 시간 뒤 긴급 구조 기관에 연락해야 할 경우를 대비해서 배터리를 아껴야 할까?</p>
+                <p class="mb-6">그래서 맞아요. 저는 <b class="highlight">보조 배터리</b>를 들고 다녀요. 사실 두 개를 가지고 다녀요. 하나는 작고 편리하지만, 다른 하나는 운동 기구로 사용할 수 있을 만큼 무거워요. 들고 다니기 싫지만, 그건 <b class="highlight">필요악</b>이에요. 제가 손도 대지 않고 있는데 휴대폰이 <b class="highlight">매 순간</b> 에너지를 먹어 치우는 것 같거든요.</p>
+                <p class="mb-6">사람들은 저에게 “그냥 배터리를 그만 확인해”라고 말해요.</p>
+                <p class="mb-6">고마워요. 정말 훌륭한 조언이네요. 그건 두통이 있는 사람에게 머리가 있다는 사실을 그만 의식하라고 말하는 것과 같아요. 어쩌면 <b class="highlight">민간요법</b>을 써 봐야 할지도 모르겠어요. 충전 단자에 마늘을 문질러야 하나요? 휴대폰을 창가에 두고 햇빛을 흡수하게 해야 하나요?</p>
+                <p class="mb-6">가장 끔찍한 점은 카페에 콘센트가 있기는 하지만 항상 케이크 진열대 옆 테이블에 있다는 거예요. 그래서 휴대폰을 충전하면서 여섯 종류의 디저트를 바라보고 앉아 있어야 해요.</p>
+                <p class="mb-6">그리고 그 케이크들은 저를 <b class="highlight">그만 유혹해야 해요</b>.</p>
+                <p class="mb-6">저는 더 건강하게 먹으려고 노력하고 있어요. 그런데 완벽한 조명을 받은 초콜릿 케이크 한 조각이 1미터도 안 되는 거리에 있는데 어떻게 건강을 지키겠어요? 그 케이크는 적극적으로 <b class="highlight">제 다이어트를 망치려고 하고 있어요</b>. 느껴진다고요.</p>
+                <p class="mb-6">그러면 친구는 “맛있는 디저트가 너무 많아서 고민하는 건 <b class="highlight">행복한 고민이지</b>”라고 말해요.</p>
+                <p class="mb-6">아니요. 그렇지 않아요. 그건 두 가지 문제예요. 휴대폰은 꺼져 가고 있고, 저는 치즈케이크가 일주일 동안 지켜 온 자제력을 무너뜨릴 가치가 있는지 결정해야 해요.</p>
+                <p class="mb-6">물론 저는 케이크를 사요. 그리고 사진을 열두 장 찍어서 배터리를 더 사용하죠. 휴대폰 배터리는 31퍼센트로 떨어지고, 저는 테이블에도 제대로 올라가지 않는 거대한 보조 배터리를 연결해요.</p>
+                <p class="mb-6">이제 저는 배터리 두 개를 들고 있고, 주문할 계획도 없던 케이크를 먹고 있으며, 휴대폰으로 근처 헬스장을 검색하고 있어요.</p>
+                <p class="mb-6">제가 원한 건 집에 갈 때까지 버틸 만큼의 배터리뿐이었어요. 그런데 이상하게 디저트와 허리 통증을 얻게 됐네요.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "85715.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | I Paid to Injure Myself in a Luxury Fitness Studio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🧘</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">I Paid to Injure Myself in a Luxury Fitness Studio</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">test class</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">체험 수업 / 시험 수업</td></tr>
+                <tr><td class="p-4"><b class="text-white">brat</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">버릇없는 아이 / 철없는 사람</td></tr>
+                <tr><td class="p-4"><b class="text-white">spoiled brat</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">응석받이 / 버릇없는 사람</td></tr>
+                <tr><td class="p-4"><b class="text-white">word of mouth</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">입소문</td></tr>
+                <tr><td class="p-4"><b class="text-white">stain</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">얼룩</td></tr>
+                <tr><td class="p-4"><b class="text-white">strain</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">근육이나 힘줄의 무리 / 좌상</td></tr>
+                <tr><td class="p-4"><b class="text-white">sprain</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">인대가 삔 상태 / 염좌</td></tr>
+                <tr><td class="p-4"><b class="text-white">rolled my ankle</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">발목을 접질렀다</td></tr>
+                <tr><td class="p-4"><b class="text-white">twisted my ankle</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">발목을 삐었다</td></tr>
+                <tr><td class="p-4"><b class="text-white">walking stick</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">지팡이</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border border-teal-500/20 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">test class</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">수업을 미리 경험해 본다는 뜻이라면 영어에서는 보통 trial class가 더 자연스러워요. Test class는 시험을 위한 수업이나 프로그램 테스트용 수업처럼 들릴 수 있습니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-teal-500/20 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">brat / spoiled brat</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">Brat은 버릇없거나 제멋대로인 아이를 뜻해요. 성인에게 쓰면 철없이 굴거나 응석을 부리는 사람이라는 강한 비판이 됩니다. Spoiled brat은 원하는 것을 늘 받아서 버릇이 나빠진 사람이라는 뜻이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-teal-500/20 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">word of mouth</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">광고가 아니라 사람들이 직접 다른 사람에게 추천하면서 퍼지는 ‘입소문’을 뜻합니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-teal-500/20 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">strain / sprain</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">Strain은 주로 근육이나 힘줄에 무리가 간 것이고, sprain은 관절 주변의 인대가 늘어나거나 손상된 상태예요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-teal-500/20 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">rolled my ankle / twisted my ankle</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">둘 다 일상적으로 발목을 접질렀다는 뜻으로 쓰여요. Rolled my ankle은 발이 옆으로 꺾인 움직임을 더 생생하게 보여 줍니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">I need to complain about boutique fitness classes because yesterday I paid thirty dollars to suffer in a room that smelled like eucalyptus.</p>
+                <p class="mb-6">I only signed up for a trial class because everyone kept recommending this place through <b class="highlight quiz-target" data-ans="word of mouth" data-kor="입소문">word of mouth</b>. My coworkers said it was “life-changing.” They said the instructor was encouraging, the studio was beautiful, and the workout would leave me feeling refreshed.</p>
+                <p class="mb-6">Refreshed? I left carrying one shoe and asking whether anyone had a <b class="highlight quiz-target" data-ans="walking stick" data-kor="지팡이">walking stick</b>.</p>
+                <p class="mb-6">The problems began when the instructor saw my ordinary water bottle. Everyone else had matching metal bottles in soft, calming colors. Mine was a free plastic bottle from a company event, and it had a coffee <b class="highlight quiz-target" data-ans="stain" data-kor="얼룩">stain</b> on the side.</p>
+                <p class="mb-6">The instructor looked at it as if I had brought a bucket of engine oil into the studio.</p>
+                <p class="mb-6">Then she told us to “listen to our bodies.” Apparently, my body was screaming, “Go home,” but that message was not accepted.</p>
+                <p class="mb-6">Ten minutes into the class, I felt a painful <b class="highlight quiz-target" data-ans="strain" data-kor="근육이나 힘줄의 무리 / 좌상">strain</b> in my leg. I raised my hand and said, “I think I need a break.”</p>
+                <p class="mb-6">The instructor smiled and said, “Sometimes the mind gives up before the body.”</p>
+                <p class="mb-6">No. My body had prepared an official resignation letter.</p>
+                <p class="mb-6">Then we had to balance on one leg while holding a weight above our heads. I lost my balance, <b class="highlight quiz-target" data-ans="rolled my ankle" data-kor="발목을 접질렀다">rolled my ankle</b>, and fell directly onto a decorative plant.</p>
+                <p class="mb-6">Everyone stopped moving.</p>
+                <p class="mb-6">The instructor asked, “Did you <b class="highlight quiz-target" data-ans="twist your ankle" data-kor="발목을 삐었다">twist your ankle</b>?”</p>
+                <p class="mb-6">Yes, Chloe. That was the loud cracking sound you heard during the relaxing flute music.</p>
+                <p class="mb-6">I asked if it might be a <b class="highlight quiz-target" data-ans="sprain" data-kor="인대가 삔 상태 / 염좌">sprain</b>, and she told me not to “focus on negative labels.” A sprain is not a negative label. It is a medical condition.</p>
+                <p class="mb-6">The worst part is that I became a complete <b class="highlight quiz-target" data-ans="brat" data-kor="버릇없는 아이 / 철없는 사람">brat</b> about it. I sat on the floor, demanded ice, complained about the music, and asked why a fitness studio had six kinds of herbal tea but no basic first-aid kit.</p>
+                <p class="mb-6">Maybe I sounded like a <b class="highlight quiz-target" data-ans="spoiled brat" data-kor="응석받이 / 버릇없는 사람">spoiled brat</b>, but I had just paid thirty dollars to fall into a plant.</p>
+                <p class="mb-6">At the front desk, they asked whether I wanted to purchase a ten-class package.</p>
+                <p class="mb-6">Absolutely. Please charge me three hundred dollars so I can damage the rest of my joints in a peaceful, eucalyptus-scented environment.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">고급 소규모 운동 수업에 대해 불평 좀 해야겠어요. 어제 저는 유칼립투스 향이 나는 방에서 고통받기 위해 30달러를 냈거든요.</p>
+                <p class="mb-6">사람들이 계속 <b class="highlight">입소문</b>으로 이곳을 추천해서 저는 단지 체험 수업 하나를 신청했을 뿐이에요. 직장 동료들은 인생이 바뀔 정도라고 했어요. 강사는 격려를 잘하고, 스튜디오는 아름다우며, 운동이 끝나면 상쾌한 기분이 들 거라고 했죠.</p>
+                <p class="mb-6">상쾌하다고요? 저는 신발 한 짝을 손에 들고 누군가에게 <b class="highlight">지팡이</b>가 있는지 물으면서 나왔어요.</p>
+                <p class="mb-6">문제는 강사가 제 평범한 물병을 본 순간부터 시작됐어요. 다른 사람들은 모두 차분하고 부드러운 색상의 금속 물병을 가지고 있었어요. 제 것은 회사 행사에서 무료로 받은 플라스틱 물병이었고, 옆면에는 커피 <b class="highlight">얼룩</b>이 있었어요.</p>
+                <p class="mb-6">강사는 제가 스튜디오에 엔진오일 한 통을 들고 온 것처럼 쳐다봤어요.</p>
+                <p class="mb-6">그러고는 우리에게 “몸의 소리에 귀를 기울이라”고 했어요. 제 몸은 분명히 “집에 가”라고 비명을 지르고 있었지만, 그 메시지는 받아들여지지 않았습니다.</p>
+                <p class="mb-6">수업을 시작한 지 10분 만에 다리 근육에 심한 <b class="highlight">무리</b>가 느껴졌어요. 저는 손을 들고 말했어요.</p>
+                <p class="mb-6">“좀 쉬어야 할 것 같아요.”</p>
+                <p class="mb-6">강사는 웃으며 말했어요.</p>
+                <p class="mb-6">“가끔은 몸보다 마음이 먼저 포기하죠.”</p>
+                <p class="mb-6">아니요. 제 몸은 이미 공식 사직서를 준비하고 있었어요.</p>
+                <p class="mb-6">그다음에는 한쪽 다리로 균형을 잡으면서 머리 위로 아령을 들어야 했어요. 저는 균형을 잃고 <b class="highlight">발목을 접질렀고</b>, 장식용 화분 위로 그대로 넘어졌어요.</p>
+                <p class="mb-6">모두가 움직임을 멈췄어요.</p>
+                <p class="mb-6">강사는 “<b class="highlight">발목을 삐었나요?</b>”라고 물었어요.</p>
+                <p class="mb-6">네, 클로이. 편안한 플루트 음악 도중에 들렸던 그 큰 뚝 소리가 바로 그거였어요.</p>
+                <p class="mb-6">제가 혹시 발목 <b class="highlight">염좌</b>가 아닐지 물었더니, 강사는 “부정적인 명칭에 집중하지 말라”고 했어요. 염좌는 부정적인 명칭이 아니에요. 의학적 상태라고요.</p>
+                <p class="mb-6">가장 끔찍한 점은 제가 그 일 때문에 완전히 <b class="highlight">철없는 사람</b>처럼 굴었다는 거예요. 바닥에 앉아서 얼음을 달라고 요구하고, 음악에 대해 불평하고, 왜 이 운동 스튜디오에는 허브차가 여섯 종류나 있으면서 기본적인 구급상자 하나 없는지 따졌어요.</p>
+                <p class="mb-6">제가 <b class="highlight">응석받이</b>처럼 들렸을 수도 있어요. 하지만 저는 방금 30달러를 내고 화분 위로 넘어졌다고요.</p>
+                <p class="mb-6">안내 데스크에서는 10회 수업권을 구매하겠냐고 물었어요.</p>
+                <p class="mb-6">물론이죠. 평화로운 유칼립투스 향 속에서 나머지 관절들까지 다칠 수 있도록 제발 300달러를 결제해 주세요.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "85830.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | Across the Street</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🔭</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">Across the Street</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">stubborn</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">고집 센, 완고한</td></tr>
+                <tr><td class="p-4"><b class="text-white">autonomy</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">자율성, 스스로 결정할 권리</td></tr>
+                <tr><td class="p-4"><b class="text-white">helicopter mom</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">자녀의 일에 지나치게 간섭하는 엄마</td></tr>
+                <tr><td class="p-4"><b class="text-white">binoculars</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">쌍안경</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border border-white/5">
+                <p class="text-slate-300 text-sm leading-relaxed"><b class="text-teal-400">autonomy</b>: 다른 사람의 간섭 없이 스스로 선택하고 결정할 수 있는 권리나 자유를 뜻해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5">
+                <p class="text-slate-300 text-sm leading-relaxed"><b class="text-teal-400">helicopter mom</b>: 자녀 주변을 ‘헬리콥터처럼 맴돌며’ 지나치게 확인하고 간섭하는 엄마를 뜻하는 비격식 표현이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 md:col-span-2">
+                <p class="text-slate-300 text-sm leading-relaxed"><b class="text-teal-400">binoculars</b>: 멀리 있는 것을 두 눈으로 확대해서 보는 ‘쌍안경’이에요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Jenna liked almost everything about Mark.</p>
+                <p class="mb-6">They had been talking for nearly two hours in a small Italian restaurant, and the conversation felt unusually easy. They both liked hiking, hated reality TV, and believed adults needed plenty of <b class="highlight quiz-target" data-ans="autonomy" data-kor="자율성, 스스로 결정할 권리">autonomy</b> in relationships.</p>
+                <p class="mb-6">“My mother still calls me every morning,” Jenna said. “She worries about everything.”</p>
+                <p class="mb-6">Mark laughed. “A real <b class="highlight quiz-target" data-ans="helicopter mom" data-kor="자녀의 일에 지나치게 간섭하는 엄마">helicopter mom</b>?”</p>
+                <p class="mb-6">“Exactly. She still asks if I got home safely.”</p>
+                <p class="mb-6">“That must drive you crazy.”</p>
+                <p class="mb-6">“It does. I’m pretty <b class="highlight quiz-target" data-ans="stubborn" data-kor="고집 센, 완고한">stubborn</b> about making my own decisions.”</p>
+                <p class="mb-6">Mark smiled. “I like that about you.”</p>
+                <p class="mb-6">Jenna smiled back, but something about the sentence bothered her.</p>
+                <p class="mb-6">“How do you know that about me?”</p>
+                <p class="mb-6">“You just said it.”</p>
+                <p class="mb-6">“No, I said I like making my own decisions.”</p>
+                <p class="mb-6">Mark shrugged. “Same thing.”</p>
+                <p class="mb-6">The conversation moved on.</p>
+                <p class="mb-6">After dinner, Jenna suggested walking to a nearby café. Mark agreed immediately.</p>
+                <p class="mb-6">As they crossed the street, he pointed to an apartment building.</p>
+                <p class="mb-6">“You have a good view from your balcony.”</p>
+                <p class="mb-6">Jenna stopped.</p>
+                <p class="mb-6">“What?”</p>
+                <p class="mb-6">Mark looked confused. “Your balcony. You can see the park from there, right?”</p>
+                <p class="mb-6">Jenna stared at him.</p>
+                <p class="mb-6">She had never told him where she lived.</p>
+                <p class="mb-6">“I think you’re confusing me with someone else,” she said.</p>
+                <p class="mb-6">“No. You posted a photo.”</p>
+                <p class="mb-6">“I never post photos from my apartment.”</p>
+                <p class="mb-6">Mark looked away.</p>
+                <p class="mb-6">Jenna felt a cold pressure in her stomach.</p>
+                <p class="mb-6">Then she remembered something from the week before.</p>
+                <p class="mb-6">She had been watering plants on her balcony when she noticed a man standing in the park across the street. He was holding <b class="highlight quiz-target" data-ans="binoculars" data-kor="쌍안경">binoculars</b>.</p>
+                <p class="mb-6">At the time, she had assumed he was watching birds.</p>
+                <p class="mb-6">Now she looked at Mark’s jacket.</p>
+                <p class="mb-6">Same color.</p>
+                <p class="mb-6">Same shape.</p>
+                <p class="mb-6">She forced herself to laugh.</p>
+                <p class="mb-6">“Actually, I need to call my mom.”</p>
+                <p class="mb-6">“Now?”</p>
+                <p class="mb-6">“She’ll keep calling if I don’t.”</p>
+                <p class="mb-6">Mark frowned. “You just said she annoys you.”</p>
+                <p class="mb-6">“She does.”</p>
+                <p class="mb-6">Jenna took out her phone and called her mother.</p>
+                <p class="mb-6">“Hi, Mom,” she said brightly. “I’m at Romano’s. Can you come pick me up?”</p>
+                <p class="mb-6">There was a pause.</p>
+                <p class="mb-6">Her mother immediately understood something was wrong.</p>
+                <p class="mb-6">“I’m coming.”</p>
+                <p class="mb-6">Mark’s expression hardened.</p>
+                <p class="mb-6">“You don’t need her permission to go home.”</p>
+                <p class="mb-6">“I know.”</p>
+                <p class="mb-6">Jenna walked back toward the restaurant, where several people were standing outside.</p>
+                <p class="mb-6">Mark followed for a few steps, then stopped.</p>
+                <p class="mb-6">Jenna stayed beside the restaurant manager until her mother arrived.</p>
+                <p class="mb-6">When the car pulled up, Jenna got inside.</p>
+                <p class="mb-6">Her mother looked at her carefully.</p>
+                <p class="mb-6">“Do you want me to ask questions?”</p>
+                <p class="mb-6">“Not yet.”</p>
+                <p class="mb-6">Her mother nodded and started driving.</p>
+                <p class="mb-6">For once, Jenna was very happy to have a helicopter mom.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>제나는 마크의 거의 모든 점이 마음에 들었다.</p>
+                <p>두 사람은 작은 이탈리안 레스토랑에서 거의 두 시간 동안 이야기를 나누고 있었고, 대화는 이상할 정도로 편안하게 흘러갔다. 둘 다 하이킹을 좋아했고, 리얼리티 TV를 싫어했으며, 연애 관계에서도 성인에게는 충분한 <b class="highlight">자율성</b>이 필요하다고 생각했다.</p>
+                <p>“우리 엄마는 아직도 매일 아침 전화해요.” 제나가 말했다. “모든 걸 걱정하거든요.”</p>
+                <p>마크가 웃었다.</p>
+                <p>“완전 <b class="highlight">헬리콥터 맘</b>이네요?”</p>
+                <p>“맞아요. 아직도 제가 집에 무사히 도착했는지 물어봐요.”</p>
+                <p>“진짜 답답하겠네요.”</p>
+                <p>“그래요. 전 제 결정은 제가 해야 한다는 점에 꽤 <b class="highlight">고집이 센</b> 편이에요.”</p>
+                <p>마크가 미소 지었다.</p>
+                <p>“그런 점이 마음에 들어요.”</p>
+                <p>제나도 미소를 지었지만, 그 말이 조금 이상하게 느껴졌다.</p>
+                <p>“그걸 어떻게 알아요?”</p>
+                <p>“방금 말했잖아요.”</p>
+                <p>“아니요. 전 제 결정을 직접 하는 걸 좋아한다고 했어요.”</p>
+                <p>마크가 어깨를 으쓱했다.</p>
+                <p>“똑같은 말이죠.”</p>
+                <p>대화는 다른 주제로 넘어갔다.</p>
+                <p>저녁 식사를 마친 후, 제나는 근처 카페까지 걸어가자고 제안했다. 마크는 바로 좋다고 했다.</p>
+                <p>길을 건너던 중, 마크가 한 아파트 건물을 가리켰다.</p>
+                <p>“발코니에서 전망이 좋겠어요.”</p>
+                <p>제나가 멈춰 섰다.</p>
+                <p>“뭐라고요?”</p>
+                <p>마크가 혼란스러운 표정을 지었다.</p>
+                <p>“발코니요. 거기서 공원이 보이죠?”</p>
+                <p>제나는 그를 빤히 바라봤다.</p>
+                <p>그녀는 자신이 어디에 사는지 말한 적이 없었다.</p>
+                <p>“다른 사람이랑 착각한 것 같은데요.” 그녀가 말했다.</p>
+                <p>“아니에요. 사진 올렸잖아요.”</p>
+                <p>“전 집에서 찍은 사진은 절대 안 올려요.”</p>
+                <p>마크가 시선을 돌렸다.</p>
+                <p>제나의 속이 싸늘해졌다.</p>
+                <p>그때 지난주 일이 떠올랐다.</p>
+                <p>발코니에서 화분에 물을 주다가 길 건너 공원에 서 있는 한 남자를 본 적이 있었다. 그는 <b class="highlight">쌍안경</b>을 들고 있었다.</p>
+                <p>당시에는 새를 보고 있다고 생각했다.</p>
+                <p>이제 제나는 마크의 재킷을 바라봤다.</p>
+                <p>같은 색이었다.</p>
+                <p>같은 모양이었다.</p>
+                <p>제나는 억지로 웃었다.</p>
+                <p>“아, 엄마한테 전화해야겠어요.”</p>
+                <p>“지금요?”</p>
+                <p>“전화 안 하면 계속 걸 거예요.”</p>
+                <p>마크가 인상을 썼다.</p>
+                <p>“엄마가 귀찮다고 방금 말했잖아요.”</p>
+                <p>“맞아요.”</p>
+                <p>제나는 휴대폰을 꺼내 엄마에게 전화했다.</p>
+                <p>“엄마, 나 로마노에 있어. 데리러 올 수 있어?”</p>
+                <p>잠깐의 침묵이 흘렀다.</p>
+                <p>엄마는 즉시 뭔가 잘못됐다는 것을 알아챘다.</p>
+                <p>“갈게.”</p>
+                <p>마크의 표정이 굳어졌다.</p>
+                <p>“집에 가는 데 엄마 허락은 필요 없잖아요.”</p>
+                <p>“알아요.”</p>
+                <p>제나는 사람들이 여럿 서 있는 레스토랑 쪽으로 다시 걸어갔다.</p>
+                <p>마크는 몇 걸음 따라오다가 멈췄다.</p>
+                <p>제나는 엄마가 도착할 때까지 레스토랑 매니저 옆에 머물렀다.</p>
+                <p>차가 도착하자 제나는 올라탔다.</p>
+                <p>엄마가 조심스럽게 그녀를 바라봤다.</p>
+                <p>“질문해도 돼?”</p>
+                <p>“아직은 안 돼.”</p>
+                <p>엄마는 고개를 끄덕이고 차를 출발시켰다.</p>
+                <p>그 순간만큼은 제나도 헬리콥터 맘이 있어서 정말 다행이라고 생각했다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "87715.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

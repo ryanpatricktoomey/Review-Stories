@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Perfect Date</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🚪</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Perfect Date</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">comfort food</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">먹으면 마음이 편안해지는 음식, 위로가 되는 음식</td></tr>
+                <tr><td class="p-4"><b class="text-white">ruined</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">망가진, 망쳐진</td></tr>
+                <tr><td class="p-4"><b class="text-white">cicadas</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">매미들</td></tr>
+                <tr><td class="p-4"><b class="text-white">just drawn to it</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그냥 그것에 끌리는</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border border-white/5">
+                <p class="text-slate-300 text-sm leading-relaxed"><b class="text-teal-400">comfort food</b>: 스트레스를 받거나 기분이 안 좋을 때 먹으면 마음이 편해지는 익숙한 음식을 말해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5">
+                <p class="text-slate-300 text-sm leading-relaxed"><b class="text-teal-400">cicadas</b>: 여름에 큰 소리로 우는 ‘매미’예요. 영어권에서는 여름 분위기를 떠올리게 하는 단어로도 자주 쓰여요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 md:col-span-2">
+                <p class="text-slate-300 text-sm leading-relaxed"><b class="text-teal-400">just drawn to it</b>: 이유를 정확히 설명하기 어렵지만 자연스럽게 어떤 것에 끌린다는 뜻이에요. be drawn to + 사람/사물 형태가 매우 자연스럽습니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Sophie had expected the date to last an hour.</p>
+                <p class="mb-6">Three hours later, she still hadn't looked at the time.</p>
+                <p class="mb-6">Evan was easy to talk to. When she mentioned that she hated loud bars, he said he preferred quiet cafés. When she said she loved old bookstores, his face lit up.</p>
+                <p class="mb-6">Then the waiter brought the dessert menu.</p>
+                <p class="mb-6">“I’m getting the apple pie,” Sophie said.</p>
+                <p class="mb-6">Evan smiled. “Let me guess. Warm apple pie with vanilla ice cream?”</p>
+                <p class="mb-6">She laughed. “That’s my ultimate <b class="highlight quiz-target" data-ans="comfort food" data-kor="먹으면 마음이 편안해지는 음식, 위로가 되는 음식">comfort food</b>.”</p>
+                <p class="mb-6">“I knew it.”</p>
+                <p class="mb-6">Sophie paused. “How?”</p>
+                <p class="mb-6">“You seem like an apple-pie person.”</p>
+                <p class="mb-6">It was a strange explanation, but she laughed it off.</p>
+                <p class="mb-6">Outside, the summer evening was warm. <b class="highlight quiz-target" data-ans="Cicadas" data-kor="매미들">Cicadas</b> were making so much noise in the trees that they had to speak louder.</p>
+                <p class="mb-6">“I love that sound,” Sophie said.</p>
+                <p class="mb-6">Evan looked surprised. “Really? Most people hate it.”</p>
+                <p class="mb-6">“My grandmother’s house had a huge garden. That sound reminds me of summers there.”</p>
+                <p class="mb-6">“I know,” he said.</p>
+                <p class="mb-6">Sophie stopped walking.</p>
+                <p class="mb-6">Evan quickly added, “I mean, I understand. My grandparents lived in the country too.”</p>
+                <p class="mb-6">They continued toward the train station.</p>
+                <p class="mb-6">A few minutes later, Evan pointed across the street. “You still go to that little bakery on Tuesdays?”</p>
+                <p class="mb-6">Sophie stared at him.</p>
+                <p class="mb-6">“What bakery?”</p>
+                <p class="mb-6">His smile disappeared for half a second.</p>
+                <p class="mb-6">“The one near your office.”</p>
+                <p class="mb-6">“I never told you where I work.”</p>
+                <p class="mb-6">Silence.</p>
+                <p class="mb-6">Then Evan laughed. “You must have. Maybe earlier.”</p>
+                <p class="mb-6">“No.”</p>
+                <p class="mb-6">Sophie suddenly remembered something. Two months earlier, someone had left flowers outside her apartment. Then her bicycle seat had been moved. She had assumed neighborhood kids had <b class="highlight quiz-target" data-ans="ruined" data-kor="망가진, 망쳐진">ruined</b> it as a joke.</p>
+                <p class="mb-6">Her stomach tightened.</p>
+                <p class="mb-6">Evan stepped closer. “Sophie, don’t make this weird.”</p>
+                <p class="mb-6">“How do you know about the bakery?”</p>
+                <p class="mb-6">“I’ve seen you there.”</p>
+                <p class="mb-6">“Before tonight?”</p>
+                <p class="mb-6">He didn't answer.</p>
+                <p class="mb-6">She forced herself to smile. The station entrance was only fifty meters away, but the street was almost empty.</p>
+                <p class="mb-6">“Okay,” she said calmly. “I need to use the restroom.”</p>
+                <p class="mb-6">“There’s one at the station.”</p>
+                <p class="mb-6">“I know.”</p>
+                <p class="mb-6">He followed her.</p>
+                <p class="mb-6">Inside the station, Sophie walked directly toward a convenience store where two employees were standing behind the counter.</p>
+                <p class="mb-6">Evan stopped.</p>
+                <p class="mb-6">Sophie turned around. “You should go.”</p>
+                <p class="mb-6">His expression changed. “I only wanted to know you better. I was <b class="highlight quiz-target" data-ans="just drawn to" data-kor="그냥 그것에 끌리는">just drawn to</b> you.”</p>
+                <p class="mb-6">“That isn’t knowing me.”</p>
+                <p class="mb-6">She stepped behind the counter and quietly asked the employee to call security.</p>
+                <p class="mb-6">Evan looked at the cameras above them.</p>
+                <p class="mb-6">Then he turned and walked away.</p>
+                <p class="mb-6">Sophie stayed inside until security arrived.</p>
+                <p class="mb-6">For most of the evening, she had thought she had met someone who understood her perfectly.</p>
+                <p class="mb-6">Now she understood why.</p>
+                <p class="mb-6">He hadn't been guessing.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>소피는 그 데이트가 한 시간 정도면 끝날 거라고 생각했다.</p>
+                <p>세 시간이 지난 뒤에도 그녀는 아직 시간을 확인하지 않고 있었다.</p>
+                <p>에반은 대화하기 편한 사람이었다. 소피가 시끄러운 술집을 싫어한다고 하자 그는 조용한 카페를 더 좋아한다고 했다. 그녀가 오래된 서점을 좋아한다고 하자 그의 얼굴이 밝아졌다.</p>
+                <p>그때 웨이터가 디저트 메뉴를 가져왔다.</p>
+                <p>“난 애플파이 먹을래요.” 소피가 말했다.</p>
+                <p>에반이 미소를 지었다.</p>
+                <p>“맞혀볼게요. 따뜻한 애플파이에 바닐라 아이스크림?”</p>
+                <p>소피는 웃었다.</p>
+                <p>“그게 제가 제일 좋아하는 <b class="highlight">위로 음식</b>이에요.”</p>
+                <p>“그럴 줄 알았어요.”</p>
+                <p>소피가 잠시 멈칫했다.</p>
+                <p>“어떻게요?”</p>
+                <p>“왠지 애플파이를 좋아할 것 같은 사람이잖아요.”</p>
+                <p>조금 이상한 설명이었지만, 소피는 웃어넘겼다.</p>
+                <p>밖은 따뜻한 여름 저녁이었다. 나무에서는 <b class="highlight">매미들</b>이 너무 크게 울고 있어서 둘은 평소보다 크게 말해야 했다.</p>
+                <p>“전 저 소리 좋아해요.” 소피가 말했다.</p>
+                <p>에반은 놀란 표정을 지었다.</p>
+                <p>“정말요? 대부분 싫어하던데.”</p>
+                <p>“할머니 집에 큰 정원이 있었거든요. 저 소리를 들으면 거기서 보낸 여름이 생각나요.”</p>
+                <p>“알아요.” 에반이 말했다.</p>
+                <p>소피는 걸음을 멈췄다.</p>
+                <p>에반이 재빨리 말을 덧붙였다.</p>
+                <p>“아니, 무슨 말인지 안다고요. 제 조부모님도 시골에 사셨어요.”</p>
+                <p>둘은 다시 기차역을 향해 걸었다.</p>
+                <p>몇 분 후 에반이 길 건너편을 가리켰다.</p>
+                <p>“화요일마다 아직도 저 작은 빵집에 가요?”</p>
+                <p>소피가 그를 바라봤다.</p>
+                <p>“무슨 빵집이요?”</p>
+                <p>그의 미소가 아주 잠깐 사라졌다.</p>
+                <p>“회사 근처에 있는 곳이요.”</p>
+                <p>“내가 어디서 일하는지 말한 적 없는데요.”</p>
+                <p>침묵이 흘렀다.</p>
+                <p>에반이 웃었다.</p>
+                <p>“말했을 거예요. 아까 얘기했나 보죠.”</p>
+                <p>“아니요.”</p>
+                <p>소피는 갑자기 두 달 전의 일이 떠올랐다. 누군가 그녀의 아파트 앞에 꽃을 놓고 간 적이 있었다. 그리고 자전거 안장이 움직여 있기도 했다. 그녀는 동네 아이들이 장난으로 자전거를 <b class="highlight">망가뜨린</b> 거라고 생각했다.</p>
+                <p>속이 서늘해졌다.</p>
+                <p>에반이 한 걸음 가까이 다가왔다.</p>
+                <p>“소피, 이상하게 만들지 말아요.”</p>
+                <p>“그 빵집을 어떻게 알아요?”</p>
+                <p>“당신을 거기서 본 적이 있어요.”</p>
+                <p>“오늘 만나기 전부터요?”</p>
+                <p>그는 대답하지 않았다.</p>
+                <p>소피는 억지로 미소를 지었다. 역 입구는 불과 50미터 정도 떨어져 있었지만, 거리에는 사람이 거의 없었다.</p>
+                <p>“알겠어요.” 그녀가 침착하게 말했다. “화장실 좀 다녀올게요.”</p>
+                <p>“역에 있어요.”</p>
+                <p>“알아요.”</p>
+                <p>에반은 그녀를 따라왔다.</p>
+                <p>역 안으로 들어간 소피는 직원 두 명이 카운터 뒤에 서 있는 편의점으로 곧장 걸어갔다.</p>
+                <p>에반이 멈췄다.</p>
+                <p>소피가 돌아섰다.</p>
+                <p>“이제 가세요.”</p>
+                <p>그의 표정이 달라졌다.</p>
+                <p>“난 그냥 당신을 더 알고 싶었어요. 그냥 당신에게 <b class="highlight">끌렸을</b> 뿐이에요.”</p>
+                <p>“그건 나를 아는 게 아니에요.”</p>
+                <p>소피는 카운터 뒤쪽으로 들어가 직원에게 조용히 보안요원을 불러 달라고 부탁했다.</p>
+                <p>에반은 천장에 있는 카메라들을 바라봤다.</p>
+                <p>그리고 몸을 돌려 걸어갔다.</p>
+                <p>소피는 보안요원이 도착할 때까지 편의점 안에 머물렀다.</p>
+                <p>그날 저녁 대부분의 시간 동안 그녀는 자신을 완벽하게 이해해 주는 사람을 만났다고 생각했다.</p>
+                <p>이제야 그 이유를 알았다.</p>
+                <p>그는 그녀의 취향을 맞히고 있었던 것이 아니었다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "87630.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

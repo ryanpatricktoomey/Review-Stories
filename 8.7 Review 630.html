@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Hobby That Took Over Her Calendar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🩰</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Hobby That Took Over Her Calendar</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">drought</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">가뭄</td></tr>
+                <tr><td class="p-4"><b class="text-white">twisted his ankle</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">발목을 삐었다</td></tr>
+                <tr><td class="p-4"><b class="text-white">devastated</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">큰 충격을 받은, 몹시 낙담한</td></tr>
+                <tr><td class="p-4"><b class="text-white">calf muscles</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">종아리 근육</td></tr>
+                <tr><td class="p-4"><b class="text-white">take up</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">(취미·활동을) 새로 시작하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">acts up again</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">또 말썽을 부리다, 다시 상태가 안 좋아지다</td></tr>
+                <tr><td class="p-4"><b class="text-white">inevitable</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">피할 수 없는, 불가피한</td></tr>
+                <tr><td class="p-4"><b class="text-white">it's never too late to learn</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">배우기에 너무 늦은 때란 없다</td></tr>
+                <tr><td class="p-4"><b class="text-white">you can't teach an old dog new tricks</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">나이 든 사람은 새로운 것을 배우기 어렵다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border border-white/5">
+                <p class="text-slate-300 text-sm leading-relaxed"><b class="text-teal-400">take up</b>은 여기서 “집어 들다”가 아니라 새로운 취미나 활동을 시작한다는 뜻입니다. take up dancing, take up painting처럼 자주 씁니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5">
+                <p class="text-slate-300 text-sm leading-relaxed"><b class="text-teal-400">acts up again</b>은 사람뿐 아니라 몸의 특정 부위나 기계 등이 “또 말썽을 부리다 / 다시 문제가 생기다”라는 뜻으로도 자연스럽게 쓰입니다. 예: My knee is acting up again.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5">
+                <p class="text-slate-300 text-sm leading-relaxed"><b class="text-teal-400">devastated</b>는 단순히 sad보다 훨씬 강해서, 어떤 일 때문에 큰 충격을 받거나 몹시 낙담했을 때 씁니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5">
+                <p class="text-slate-300 text-sm leading-relaxed"><b class="text-teal-400">it's never too late to learn</b>은 나이에 상관없이 새로운 것을 배울 수 있다는 격려의 표현입니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 md:col-span-2">
+                <p class="text-slate-300 text-sm leading-relaxed"><b class="text-teal-400">you can't teach an old dog new tricks</b>는 오래된 영어 속담입니다. 나이가 들면 새로운 방식이나 기술을 배우기 어렵다는 뜻이지만, 사람에게 직접 말하면 무례하게 들릴 수도 있습니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">For years, Mina worried about her mother, Mrs. Park. After retirement, her mother spent most of her days watching television and doing housework.</p>
+                <p class="mb-6">“You need something fun to do,” Mina told her one Saturday.</p>
+                <p class="mb-6">“I’m seventy-one.”</p>
+                <p class="mb-6">“So? <b class="highlight quiz-target" data-ans="It’s never too late to learn" data-kor="배우기에 너무 늦은 때란 없다">It’s never too late to learn</b>.”</p>
+                <p class="mb-6">Her mother laughed. “Some people say <b class="highlight quiz-target" data-ans="you can’t teach an old dog new tricks" data-kor="나이 든 사람은 새로운 것을 배우기 어렵다">you can’t teach an old dog new tricks</b>.”</p>
+                <p class="mb-6">Mina refused to accept that. After several weeks of suggestions, she finally persuaded her mother to <b class="highlight quiz-target" data-ans="take up" data-kor="(취미·활동을) 새로 시작하다">take up</b> ballet at a community center.</p>
+                <p class="mb-6">At first, Mina was delighted.</p>
+                <p class="mb-6">Then the phone calls began.</p>
+                <p class="mb-6">“Mina, can you drive me to ballet on Tuesday?”</p>
+                <p class="mb-6">“Sure.”</p>
+                <p class="mb-6">“And Thursday?”</p>
+                <p class="mb-6">“Okay.”</p>
+                <p class="mb-6">“And Saturday morning? We have extra practice.”</p>
+                <p class="mb-6">Mina looked at her calendar. “Saturday too?”</p>
+                <p class="mb-6">Within a month, ballet had become Mrs. Park’s main activity—and Mina’s second job.</p>
+                <p class="mb-6">Her mother needed rides to classes, help ordering dance clothes online, and someone to film her practice. She also wanted Mina to attend every small performance.</p>
+                <p class="mb-6">One evening, Mina was still at the office when her mother called.</p>
+                <p class="mb-6">“Can you pick me up?”</p>
+                <p class="mb-6">“I thought Mrs. Lee was driving you.”</p>
+                <p class="mb-6">“She <b class="highlight quiz-target" data-ans="twisted her ankle" data-kor="발목을 삐었다">twisted her ankle</b> during class.”</p>
+                <p class="mb-6">“Is she okay?”</p>
+                <p class="mb-6">“She’ll be fine. But she was <b class="highlight quiz-target" data-ans="devastated" data-kor="큰 충격을 받은, 몹시 낙담한">devastated</b> because we have a performance next week.”</p>
+                <p class="mb-6">Mina closed her eyes. “Mom, I have a meeting in twenty minutes.”</p>
+                <p class="mb-6">“Oh. Then after your meeting?”</p>
+                <p class="mb-6">When Mina finally arrived at the studio, her mother was stretching beside the door.</p>
+                <p class="mb-6">“My <b class="highlight quiz-target" data-ans="calf muscles" data-kor="종아리 근육">calf muscles</b> are getting much stronger,” Mrs. Park said proudly.</p>
+                <p class="mb-6">“That’s great, Mom.”</p>
+                <p class="mb-6">“Also, I need you tomorrow morning.”</p>
+                <p class="mb-6">Mina stared at her. “Why?”</p>
+                <p class="mb-6">“I have to buy new ballet shoes.”</p>
+                <p class="mb-6">“Tomorrow is my only free morning!”</p>
+                <p class="mb-6">Her mother looked surprised. “But you’re the one who wanted me to get a hobby.”</p>
+                <p class="mb-6">Mina had no answer.</p>
+                <p class="mb-6">Two weeks later, Mrs. Park complained that her knee was <b class="highlight quiz-target" data-ans="acting up again" data-kor="또 말썽을 부리다, 다시 상태가 안 좋아지다">acting up again</b>. Mina secretly hoped this might mean a short break.</p>
+                <p class="mb-6">Instead, her mother said, “I found a swimming class. It’ll be good exercise while my knee recovers.”</p>
+                <p class="mb-6">Mina slowly put down her coffee.</p>
+                <p class="mb-6">“A swimming class?”</p>
+                <p class="mb-6">“Yes. It starts at seven tomorrow morning.”</p>
+                <p class="mb-6">Mina realized that the next question was <b class="highlight quiz-target" data-ans="inevitable" data-kor="피할 수 없는, 불가피한">inevitable</b>.</p>
+                <p class="mb-6">Her mother smiled.</p>
+                <p class="mb-6">“Can you drive me?”</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>미나는 수년 동안 어머니 박 여사를 걱정했다. 은퇴한 뒤 어머니는 대부분의 시간을 TV를 보거나 집안일을 하며 보냈다.</p>
+                <p>“엄마, 재미있는 거 하나 해야 해.” 어느 토요일 미나가 말했다.</p>
+                <p>“나 일흔하나야.”</p>
+                <p>“그래서? <b class="highlight">배우기에 너무 늦은 때란 없어</b>.”</p>
+                <p>어머니가 웃었다. “<b class="highlight">나이 든 사람은 새로운 걸 배우기 어렵다</b>는 말도 있잖아.”</p>
+                <p>미나는 그 말을 받아들이지 않았다. 몇 주 동안 여러 가지를 권한 끝에 마침내 어머니가 동네 문화센터에서 발레를 <b class="highlight">새로 시작하도록</b> 설득했다.</p>
+                <p>처음에는 미나도 무척 기뻤다.</p>
+                <p>그러다가 전화가 오기 시작했다.</p>
+                <p>“미나야, 화요일에 발레 데려다줄 수 있어?”</p>
+                <p>“응.”</p>
+                <p>“목요일도?”</p>
+                <p>“알았어.”</p>
+                <p>“토요일 아침도? 추가 연습이 있어.”</p>
+                <p>미나는 자신의 일정을 보았다.</p>
+                <p>“토요일도?”</p>
+                <p>한 달도 지나지 않아 발레는 박 여사의 가장 중요한 활동이 되었고, 미나에게는 두 번째 직장이 되어 버렸다.</p>
+                <p>어머니는 수업에 갈 때마다 차가 필요했고, 인터넷으로 발레복을 주문할 때도 도움이 필요했으며, 연습 영상을 찍어줄 사람도 필요했다. 작은 공연이 있을 때마다 미나가 보러 오길 바랐다.</p>
+                <p>어느 날 저녁, 미나가 아직 회사에 있을 때 어머니에게 전화가 왔다.</p>
+                <p>“나 데리러 올 수 있어?”</p>
+                <p>“이 여사님이 데려다주시기로 한 거 아니었어?”</p>
+                <p>“수업 중에 <b class="highlight">발목을 삐었어</b>.”</p>
+                <p>“괜찮으시대?”</p>
+                <p>“괜찮을 거야. 그런데 다음 주에 공연이 있어서 <b class="highlight">엄청 낙담하셨어</b>.”</p>
+                <p>미나는 눈을 감았다.</p>
+                <p>“엄마, 나 20분 후에 회의가 있어.”</p>
+                <p>“아. 그럼 회의 끝나고는?”</p>
+                <p>미나가 마침내 연습실에 도착했을 때, 어머니는 문 옆에서 스트레칭을 하고 있었다.</p>
+                <p>“내 <b class="highlight">종아리 근육</b>이 정말 많이 강해졌어.” 박 여사가 자랑스럽게 말했다.</p>
+                <p>“잘됐네, 엄마.”</p>
+                <p>“그리고 내일 아침에도 네가 필요해.”</p>
+                <p>미나는 어머니를 바라보았다.</p>
+                <p>“왜?”</p>
+                <p>“새 발레화를 사야 해.”</p>
+                <p>“내일 아침은 이번 주에 내가 유일하게 쉬는 시간이야!”</p>
+                <p>어머니는 놀란 표정을 지었다.</p>
+                <p>“하지만 나한테 취미를 가지라고 한 사람이 너잖아.”</p>
+                <p>미나는 아무 말도 할 수 없었다.</p>
+                <p>2주 뒤, 박 여사는 무릎이 <b class="highlight">또 말썽</b>이라고 했다. 미나는 속으로 잠깐이라도 쉴 수 있겠다고 생각했다.</p>
+                <p>하지만 어머니가 말했다.</p>
+                <p>“수영 수업을 찾았어. 무릎이 회복되는 동안 운동하기 좋을 것 같아.”</p>
+                <p>미나는 천천히 커피잔을 내려놓았다.</p>
+                <p>“수영 수업?”</p>
+                <p>“응. 내일 아침 7시에 시작해.”</p>
+                <p>미나는 그다음 질문이 <b class="highlight">피할 수 없다</b>는 것을 깨달았다.</p>
+                <p>어머니가 웃었다.</p>
+                <p>“나 데려다줄 수 있어?”</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player && player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

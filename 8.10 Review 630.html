@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | When People Made Jewelry Out of Human Hair</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">💇</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">When People Made Jewelry Out of Human Hair</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">cheap thrill</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">값싸고 순간적인 재미 / 싸구려 쾌감</td></tr>
+                <tr><td class="p-4"><b class="text-white">water droplet</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">물방울</td></tr>
+                <tr><td class="p-4"><b class="text-white">striking</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">눈에 확 띄는 / 인상적인</td></tr>
+                <tr><td class="p-4"><b class="text-white">part your bangs</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">앞머리를 가르다</td></tr>
+                <tr><td class="p-4"><b class="text-white">it suits you</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">너한테 잘 어울려</td></tr>
+                <tr><td class="p-4"><b class="text-white">those glasses look great on you</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그 안경 너한테 정말 잘 어울려</td></tr>
+                <tr><td class="p-4"><b class="text-white">you look great in those glasses</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">너 그 안경 쓰니까 정말 멋져 보여</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border border-white/5">
+                <h3 class="text-amber-400 font-bold mb-1">cheap thrill</h3>
+                <p class="text-slate-300 text-sm">큰 의미나 가치보다는 잠깐의 자극이나 재미를 주는 것을 말합니다. 꼭 가격이 실제로 싸다는 뜻은 아닙니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5">
+                <h3 class="text-amber-400 font-bold mb-1">striking</h3>
+                <p class="text-slate-300 text-sm">여기서는 “때리는”이라는 뜻이 아니라, 외모나 디자인 등이 아주 눈에 띄고 인상적이라는 뜻입니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5">
+                <h3 class="text-amber-400 font-bold mb-1">part your bangs</h3>
+                <p class="text-slate-300 text-sm">앞머리를 한쪽이나 양쪽으로 갈라서 스타일링한다는 뜻입니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5">
+                <h3 class="text-amber-400 font-bold mb-1">suit someone</h3>
+                <p class="text-slate-300 text-sm">옷, 헤어스타일, 색깔 등이 그 사람의 외모나 분위기와 잘 맞을 때 씁니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">In the nineteenth century, one of the most fashionable materials for jewelry wasn't gold, silver, or diamonds. It was human hair.</p>
+                <p class="mb-6">Hair jewelry had existed earlier, but during the Victorian era it became remarkably popular. A person might save hair from a husband, wife, child, close friend, or relative and turn it into a bracelet, ring, brooch, necklace, or even a decorative wreath for the home. Some women collected loose strands from their hairbrushes specifically for this purpose.</p>
+                <p class="mb-6">To modern eyes, the results can be <b class="highlight quiz-target" data-ans="striking" data-kor="눈에 확 띄는 / 인상적인">striking</b>. Hair could be braided into extremely detailed patterns or shaped into tiny flowers and leaves. Some pieces were so carefully made that, at first glance, you might not even realize what the material was.</p>
+                <p class="mb-6">Hair had a special emotional meaning. Unlike a photograph, it was literally part of a person, and it could survive for decades. Lovers and friends exchanged locks of hair as signs of affection. When someone died, their hair could become a physical reminder of them. Mourning jewelry containing hair became especially fashionable during the nineteenth century.</p>
+                <p class="mb-6">But it wasn't only about death. Hairwork became a popular home craft. By the 1860s, women could find instructions in magazines and buy tools and patterns for making their own pieces. Professional “hair artists” also offered their services.</p>
+                <p class="mb-6">That created an unusual problem: trust. If you mailed a lock of your dead husband's hair to a business, how could you know the hair in the finished bracelet was actually his? Some customers worried that companies were simply using prepared hair from strangers. Homemade hairwork avoided that problem.</p>
+                <p class="mb-6">Victorian attitudes toward appearance also helped the trend. Long, carefully maintained hair was highly valued, and hairstyles could be elaborate. How you styled or <b class="highlight quiz-target" data-ans="parted your bangs" data-kor="앞머리를 갈랐는지">parted your bangs</b> could change your whole appearance, much as glasses can today. One style might receive an approving “<b class="highlight quiz-target" data-ans="It suits you" data-kor="너한테 잘 어울려">It suits you</b>,” while a particularly fashionable accessory might inspire something like “<b class="highlight quiz-target" data-ans="Those glasses look great on you" data-kor="그 안경 너한테 정말 잘 어울려">Those glasses look great on you</b>” or “<b class="highlight quiz-target" data-ans="You look great in those glasses" data-kor="너 그 안경 쓰니까 정말 멋져 보여">You look great in those glasses</b>.”</p>
+                <p class="mb-6">Eventually, however, hair art lost its fashionable status. By the end of the nineteenth century, many people were beginning to see it as old-fashioned or even morbid.</p>
+                <p class="mb-6">What had once been a treasured object of love became something later generations might find slightly creepy. It certainly wasn't just a <b class="highlight quiz-target" data-ans="cheap thrill" data-kor="값싸고 순간적인 재미 / 싸구려 쾌감">cheap thrill</b>, though. These objects could carry enormous emotional value.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>19세기에는 가장 유행했던 장신구 재료 중 하나가 금이나 은, 다이아몬드가 아니었습니다. 바로 사람의 머리카락이었습니다.</p>
+                <p>머리카락으로 만든 장신구는 그전에도 존재했지만, 빅토리아 시대에 들어서면서 놀라울 정도로 유행했습니다. 사람들은 남편, 아내, 자녀, 가까운 친구나 친척의 머리카락을 보관했다가 팔찌, 반지, 브로치, 목걸이, 심지어 집에 장식하는 화환으로 만들기도 했습니다. 일부 여성들은 이런 물건을 만들기 위해 빗에 빠진 자신의 머리카락을 따로 모으기도 했습니다.</p>
+                <p>현대인의 눈으로 보면 그 결과물은 상당히 <b class="highlight">인상적입니다</b>. 머리카락을 매우 정교한 무늬로 땋거나 작은 꽃과 잎 모양으로 만들기도 했습니다. 어떤 작품은 너무 섬세하게 만들어져서 처음 봤을 때는 그 재료가 머리카락이라는 사실조차 알아차리기 어렵습니다.</p>
+                <p>머리카락에는 특별한 감정적 의미가 있었습니다. 사진과 달리 머리카락은 말 그대로 그 사람의 신체 일부였으며 수십 년 동안 남아 있을 수 있었습니다. 연인과 친구들은 애정의 표시로 머리카락을 주고받았습니다. 누군가 세상을 떠나면 그 사람의 머리카락은 그를 기억할 수 있는 물리적인 유품이 되었습니다. 특히 19세기에는 머리카락이 들어간 애도용 장신구가 크게 유행했습니다.</p>
+                <p>하지만 죽음과 관련된 것만은 아니었습니다. 머리카락 공예 자체가 인기 있는 가정 취미가 되었습니다. 1860년대에는 여성들이 잡지에서 제작 방법을 찾아볼 수 있었고, 직접 만들기 위한 도구와 도안도 살 수 있었습니다. 전문적으로 머리카락 장신구를 제작하는 사람들도 있었습니다.</p>
+                <p>그러면서 특이한 문제가 생겼습니다. 바로 신뢰였습니다. 죽은 남편의 머리카락을 업체에 우편으로 보냈다면, 완성된 팔찌에 들어간 머리카락이 정말 남편의 것인지 어떻게 알 수 있었을까요? 일부 고객들은 업체가 모르는 사람의 머리카락으로 미리 만들어 놓은 제품을 보내는 것은 아닌지 걱정했습니다. 집에서 직접 만들면 그런 문제는 피할 수 있었습니다.</p>
+                <p>당시 사람들이 외모를 중요하게 생각했던 것도 이 유행에 영향을 주었습니다. 길고 잘 관리된 머리카락은 높은 가치를 지녔고, 헤어스타일도 상당히 정교할 수 있었습니다. 오늘날 안경이 인상을 바꿀 수 있는 것처럼 <b class="highlight">앞머리를 어떻게 가르느냐에</b> 따라 전체적인 인상이 달라질 수 있었습니다. 어떤 스타일을 보고 “<b class="highlight">너한테 잘 어울려</b>”라고 할 수도 있었고, 특히 멋진 액세서리를 보고 “<b class="highlight">그 안경 너한테 정말 잘 어울려</b>” 또는 “<b class="highlight">너 그 안경 쓰니까 정말 멋져 보여</b>” 같은 말을 할 수도 있겠죠.</p>
+                <p>하지만 결국 머리카락 공예도 유행에서 멀어졌습니다. 19세기 말이 되자 많은 사람들은 그것을 구식이라고 생각하기 시작했고, 심지어는 죽음을 지나치게 연상시키는 섬뜩한 물건이라고 여기기도 했습니다.</p>
+                <p>한때 사랑하는 사람을 기억하기 위한 소중한 물건이었던 것이 후대 사람들에게는 조금 기괴하게 느껴지게 된 것입니다. 그렇다고 이것이 단순히 <b class="highlight">값싸고 순간적인 재미를</b> 위한 유행이었던 것은 아닙니다. 이런 물건들은 매우 큰 감정적 가치를 가질 수 있었습니다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "810630.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | Story: Get Off the Mountain</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">⛈️</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">Story: Get Off the Mountain</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">on a leash</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">목줄을 한 / 목줄에 매여</td></tr>
+                <tr><td class="p-4"><b class="text-white">pickpocket</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">소매치기</td></tr>
+                <tr><td class="p-4"><b class="text-white">landslide</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">산사태</td></tr>
+                <tr><td class="p-4"><b class="text-white">flood</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">홍수 / 침수</td></tr>
+                <tr><td class="p-4"><b class="text-white">coyote</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">코요테</td></tr>
+                <tr><td class="p-4"><b class="text-white">Jose</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">호세</td></tr>
+                <tr><td class="p-4"><b class="text-white">Francois</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">프랑수아</td></tr>
+                <tr><td class="p-4"><b class="text-white">drug addicts</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">마약 중독자들</td></tr>
+                <tr><td class="p-4"><b class="text-white">that's a relief</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그거 다행이다 / 안심이네</td></tr>
+                <tr><td class="p-4"><b class="text-white">I'm glad to hear that</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그 말을 들으니 다행이네요 / 잘됐네요</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">on a leash</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">개 같은 동물이 목줄에 연결되어 있는 상태를 말해요. Keep your dog on a leash처럼 자주 사용합니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">pickpocket</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">사람의 주머니나 가방에서 몰래 물건을 훔치는 “소매치기”를 뜻해요. 사람 자체를 가리킬 수도 있어요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">landslide</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">많은 양의 흙과 바위가 경사면 아래로 갑자기 무너져 내리는 “산사태”예요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">flood</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">명사로는 “홍수, 침수”, 동사로는 어떤 장소가 물에 잠기는 것을 뜻해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">coyote</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">북미에 사는 야생 갯과 동물이에요. 개와 비슷해 보여도 야생동물이므로 가까이 접근하면 위험할 수 있어요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">drug addicts</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">마약에 중독된 사람들을 뜻해요. 사람을 직접 규정하는 표현이라 상황에 따라 people with drug addiction 같은 표현이 더 중립적일 수 있어요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">that's a relief</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">걱정하던 일이 괜찮아졌다는 말을 듣고 “아, 다행이다”라고 반응할 때 아주 자연스러운 표현이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">I'm glad to hear that</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">상대방에게 좋은 소식을 들었을 때 “그 말을 들으니 다행이네요”라는 뜻으로 자연스럽게 쓸 수 있어요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6"><b class="highlight quiz-target" data-ans="Jose" data-kor="호세">Jose</b> and <b class="highlight quiz-target" data-ans="Francois" data-kor="프랑수아">Francois</b> were driving home after a weekend camping trip in the mountains. Jose’s dog, Bruno, was asleep in the back seat.</p>
+                <p class="mb-6">It had been raining since morning.</p>
+                <p class="mb-6">“We should’ve left earlier,” Francois said.</p>
+                <p class="mb-6">“We’re fine,” Jose replied.</p>
+                <p class="mb-6">A few seconds later, Jose’s phone made a loud emergency-alert sound.</p>
+                <p class="mb-6">Francois looked at the screen.</p>
+                <p class="mb-6">“Flash-<b class="highlight quiz-target" data-ans="flood" data-kor="홍수">flood</b> warning.”</p>
+                <p class="mb-6">Jose looked through the windshield at the heavy rain.</p>
+                <p class="mb-6">“Okay. Maybe we’re not fine.”</p>
+                <p class="mb-6">A few kilometers later, they saw a family standing beside a broken-down car. A woman was waving for help.</p>
+                <p class="mb-6">Jose pulled over.</p>
+                <p class="mb-6">Their engine had died, and nobody had phone service. Jose offered to take them down the mountain.</p>
+                <p class="mb-6">While they were moving bags into his car, Bruno jumped out.</p>
+                <p class="mb-6">“Bruno!”</p>
+                <p class="mb-6">Jose caught him quickly and put him <b class="highlight quiz-target" data-ans="on a leash" data-kor="목줄에 매여">on a leash</b>.</p>
+                <p class="mb-6">Then Bruno stopped pulling.</p>
+                <p class="mb-6">He stared into the trees.</p>
+                <p class="mb-6">A <b class="highlight quiz-target" data-ans="coyote" data-kor="코요테">coyote</b> was standing there, watching them.</p>
+                <p class="mb-6">“Get him back in the car,” Francois said.</p>
+                <p class="mb-6">Jose didn’t argue.</p>
+                <p class="mb-6">With everyone squeezed inside, they continued downhill.</p>
+                <p class="mb-6">The rain got heavier.</p>
+                <p class="mb-6">Then they came around a bend and stopped.</p>
+                <p class="mb-6">The road ahead had disappeared under mud, rocks, and broken branches.</p>
+                <p class="mb-6">“A <b class="highlight quiz-target" data-ans="landslide" data-kor="산사태">landslide</b>,” Francois said.</p>
+                <p class="mb-6">Jose checked the mirror.</p>
+                <p class="mb-6">Water was starting to move across the road behind them too.</p>
+                <p class="mb-6">“We can’t keep going, and we can’t go back.”</p>
+                <p class="mb-6">Francois pointed to a narrow road climbing uphill.</p>
+                <p class="mb-6">“What about that?”</p>
+                <p class="mb-6">Jose turned onto it.</p>
+                <p class="mb-6">The road was steep and badly maintained, but after about ten minutes they reached an old ranger station on higher ground.</p>
+                <p class="mb-6">They parked and got everyone inside.</p>
+                <p class="mb-6">Five minutes later, a deep rumbling sound came from below.</p>
+                <p class="mb-6">Jose and Francois stepped outside.</p>
+                <p class="mb-6">Part of the road they had been driving on was gone.</p>
+                <p class="mb-6">Mud and brown water were pouring across it.</p>
+                <p class="mb-6">Francois stared at the slope.</p>
+                <p class="mb-6">“We were just down there.”</p>
+                <p class="mb-6">Jose nodded.</p>
+                <p class="mb-6">For the first time, he didn’t have anything to say.</p>
+                <p class="mb-6">They stayed at the station until emergency crews reached them.</p>
+                <p class="mb-6">One of the rescuers came inside.</p>
+                <p class="mb-6">“The road’s closed in both directions,” he said, “but we’ve checked the vehicles that were reported in this area. Everyone is accounted for.”</p>
+                <p class="mb-6">Jose exhaled.</p>
+                <p class="mb-6">“<b class="highlight quiz-target" data-ans="That's a relief" data-kor="그거 다행이다">That's a relief</b>.”</p>
+                <p class="mb-6">The rescuer continued. “You’ll need to stay here until the weather improves, but you’re safe where you are.”</p>
+                <p class="mb-6">“<b class="highlight quiz-target" data-ans="I'm glad to hear that" data-kor="그 말을 들으니 다행이네요">I'm glad to hear that</b>,” Francois said.</p>
+                <p class="mb-6">Later, after the family had settled down and Bruno was sleeping under a table, Francois looked at Jose.</p>
+                <p class="mb-6">“Do you remember what you said before the warning?”</p>
+                <p class="mb-6">Jose frowned.</p>
+                <p class="mb-6">“What?”</p>
+                <p class="mb-6">“‘We’re fine.’”</p>
+                <p class="mb-6">Jose looked at the rain outside.</p>
+                <p class="mb-6">“Yeah.”</p>
+                <p class="mb-6">Francois smiled.</p>
+                <p class="mb-6">“Next time you say that, I’m turning the car around.”</p>
+                <p class="mb-6">Jose laughed.</p>
+                <p class="mb-6">“Fair enough.”</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6"><b class="highlight">호세</b>와 <b class="highlight">프랑수아</b>는 산에서 주말 캠핑을 마치고 집으로 운전해 돌아가고 있었다. 호세의 개 브루노는 뒷좌석에서 자고 있었다.</p>
+                <p class="mb-6">아침부터 계속 비가 내리고 있었다.</p>
+                <p class="mb-6">“우리 좀 더 일찍 출발했어야 했어.” 프랑수아가 말했다.</p>
+                <p class="mb-6">“괜찮아.” 호세가 대답했다.</p>
+                <p class="mb-6">몇 초 뒤 호세의 휴대전화에서 큰 긴급재난 알림음이 울렸다.</p>
+                <p class="mb-6">프랑수아가 화면을 봤다.</p>
+                <p class="mb-6">“돌발 <b class="highlight">홍수</b> 경보래.”</p>
+                <p class="mb-6">호세는 앞유리 너머로 쏟아지는 비를 바라봤다.</p>
+                <p class="mb-6">“좋아. 어쩌면 안 괜찮을 수도 있겠네.”</p>
+                <p class="mb-6">몇 킬로미터 더 가자 고장 난 차 옆에 서 있는 가족이 보였다. 한 여성이 도움을 요청하며 손을 흔들고 있었다.</p>
+                <p class="mb-6">호세는 차를 세웠다.</p>
+                <p class="mb-6">그 가족의 차는 엔진이 멈췄고 아무도 휴대전화 신호를 잡을 수 없었다. 호세는 그들을 산 아래까지 태워 주겠다고 했다.</p>
+                <p class="mb-6">짐을 호세의 차로 옮기는 동안 브루노가 밖으로 뛰어내렸다.</p>
+                <p class="mb-6">“브루노!”</p>
+                <p class="mb-6">호세는 재빨리 개를 붙잡아 <b class="highlight">목줄을 채웠다</b>.</p>
+                <p class="mb-6">그런데 브루노가 갑자기 당기기를 멈췄다.</p>
+                <p class="mb-6">숲 쪽을 바라보고 있었다.</p>
+                <p class="mb-6"><b class="highlight">코요테</b> 한 마리가 그곳에 서서 그들을 보고 있었다.</p>
+                <p class="mb-6">“개 다시 차에 태워.” 프랑수아가 말했다.</p>
+                <p class="mb-6">호세는 반박하지 않았다.</p>
+                <p class="mb-6">모두 차 안에 비좁게 앉은 채 다시 산 아래로 내려가기 시작했다.</p>
+                <p class="mb-6">비는 점점 더 거세졌다.</p>
+                <p class="mb-6">그러다 커브를 돌자 그들은 차를 멈췄다.</p>
+                <p class="mb-6">앞쪽 도로가 진흙과 바위, 부러진 나뭇가지에 완전히 묻혀 있었다.</p>
+                <p class="mb-6">“<b class="highlight">산사태</b>야.” 프랑수아가 말했다.</p>
+                <p class="mb-6">호세가 뒤를 확인했다.</p>
+                <p class="mb-6">뒤쪽 도로에도 물이 흐르기 시작하고 있었다.</p>
+                <p class="mb-6">“계속 내려갈 수도 없고, 돌아갈 수도 없어.”</p>
+                <p class="mb-6">프랑수아가 위쪽으로 이어지는 좁은 길을 가리켰다.</p>
+                <p class="mb-6">“저쪽은?”</p>
+                <p class="mb-6">호세는 그 길로 차를 돌렸다.</p>
+                <p class="mb-6">길은 가파르고 상태도 좋지 않았지만 약 10분 뒤 그들은 더 높은 곳에 있는 오래된 산림 관리소에 도착했다.</p>
+                <p class="mb-6">그들은 차를 세우고 모두 건물 안으로 들어갔다.</p>
+                <p class="mb-6">5분쯤 뒤 아래쪽에서 깊고 무거운 굉음이 들렸다.</p>
+                <p class="mb-6">호세와 프랑수아가 밖으로 나갔다.</p>
+                <p class="mb-6">조금 전까지 그들이 달리고 있던 도로 일부가 사라져 있었다.</p>
+                <p class="mb-6">진흙과 갈색 물이 도로 위를 거세게 흘러가고 있었다.</p>
+                <p class="mb-6">프랑수아가 산비탈을 바라봤다.</p>
+                <p class="mb-6">“우리 방금 저 아래 있었잖아.”</p>
+                <p class="mb-6">호세는 고개를 끄덕였다.</p>
+                <p class="mb-6">이번에는 아무 말도 나오지 않았다.</p>
+                <p class="mb-6">그들은 구조대가 도착할 때까지 관리소에서 기다렸다.</p>
+                <p class="mb-6">구조대원 한 명이 안으로 들어왔다.</p>
+                <p class="mb-6">“양쪽 도로 모두 폐쇄됐습니다. 하지만 이 지역에서 신고된 차량들은 모두 확인했고, 사람들도 전부 무사한 것으로 확인됐어요.”</p>
+                <p class="mb-6">호세가 길게 숨을 내쉬었다.</p>
+                <p class="mb-6">“<b class="highlight">그거 정말 다행이네요</b>.”</p>
+                <p class="mb-6">구조대원이 말을 이었다.</p>
+                <p class="mb-6">“날씨가 좋아질 때까지는 여기 계셔야 하지만, 지금 있는 곳은 안전합니다.”</p>
+                <p class="mb-6">“<b class="highlight">그 말을 들으니 다행이네요</b>.” 프랑수아가 말했다.</p>
+                <p class="mb-6">나중에 가족도 진정하고 브루노도 테이블 아래에서 잠들었을 때, 프랑수아가 호세를 바라봤다.</p>
+                <p class="mb-6">“경보 뜨기 전에 네가 뭐라고 했는지 기억나?”</p>
+                <p class="mb-6">호세가 눈살을 찌푸렸다.</p>
+                <p class="mb-6">“뭐?”</p>
+                <p class="mb-6">“‘괜찮아.’”</p>
+                <p class="mb-6">호세가 창밖의 비를 바라봤다.</p>
+                <p class="mb-6">“응.”</p>
+                <p class="mb-6">프랑수아가 웃었다.</p>
+                <p class="mb-6">“다음에 네가 그 말 하면 난 바로 차 돌릴 거야.”</p>
+                <p class="mb-6">호세가 웃었다.</p>
+                <p class="mb-6">“그래. 그건 인정.”</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "8111200.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | Story: The Water Deer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🚗</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">Story: The Water Deer</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">it took years off my life</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">너무 놀라서 수명이 몇 년은 줄어든 것 같았다</td></tr>
+                <tr><td class="p-4"><b class="text-white">by the skin of your teeth</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">정말 간신히 / 아슬아슬하게</td></tr>
+                <tr><td class="p-4"><b class="text-white">lane</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">차선</td></tr>
+                <tr><td class="p-4"><b class="text-white">honk my horn</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">경적을 울리다</td></tr>
+                <tr><td class="p-4"><b class="text-white">road rage</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">운전 중 분노 / 보복 운전</td></tr>
+                <tr><td class="p-4"><b class="text-white">vampire deer</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">고라니 (water deer라고도 함)</td></tr>
+                <tr><td class="p-4"><b class="text-white">dodge</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">피하다 / 재빨리 비키다</td></tr>
+                <tr><td class="p-4"><b class="text-white">rest stop</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">고속도로 휴게소</td></tr>
+                <tr><td class="p-4"><b class="text-white">nerves of steel</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">강철 같은 담력 / 대단한 침착함</td></tr>
+                <tr><td class="p-4"><b class="text-white">dashcam</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">차량용 블랙박스</td></tr>
+                <tr><td class="p-4"><b class="text-white">hit and run</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">뺑소니 사고</td></tr>
+                <tr><td class="p-4"><b class="text-white">roundabout</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">회전교차로 / 로터리</td></tr>
+                <tr><td class="p-4"><b class="text-white">turn signals</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">방향지시등</td></tr>
+                <tr><td class="p-4"><b class="text-white">hazard lights</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">비상등</td></tr>
+                <tr><td class="p-4"><b class="text-white">blinkers</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">깜빡이 / 방향지시등</td></tr>
+                <tr><td class="p-4"><b class="text-white">consultation</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">상담</td></tr>
+                <tr><td class="p-4"><b class="text-white">head on collision</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">정면충돌</td></tr>
+                <tr><td class="p-4"><b class="text-white">t-boned</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">차량 옆면을 들이받힌</td></tr>
+                <tr><td class="p-4"><b class="text-white">my car was totaled</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">내 차가 완전히 망가졌다 / 전손 처리됐다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">it took years off my life</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">너무 놀라거나 스트레스를 받아 “수명이 몇 년은 줄어든 것 같다”고 과장해서 말하는 표현이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">by the skin of your teeth</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">정말 아주 작은 차이로 위험이나 실패를 피했다는 뜻의 관용 표현이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">road rage</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">운전 중 화가 나서 공격적으로 운전하거나 다른 운전자와 심하게 충돌하는 행동을 말해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">vampire deer</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">긴 송곳니처럼 보이는 이빨 때문에 고라니를 영어로 재미있게 부르는 별명이에요. 고라니는 water deer라고도 합니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">nerves of steel</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">위험하거나 긴장되는 상황에서도 침착함을 잃지 않는 강한 담력을 뜻해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">hit and run</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">사고를 낸 뒤 현장을 떠나는 뺑소니 사고를 뜻해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">t-boned</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">다른 차가 차량의 옆면을 거의 직각으로 들이받는 사고를 뜻해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">my car was totaled</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">차가 너무 심하게 파손되어 수리하는 것보다 전손 처리하는 것이 낫다고 판단되는 상황이에요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Eric was driving home after a medical <b class="highlight quiz-target" data-ans="consultation" data-kor="상담">consultation</b> in another city when his friend Maya pointed at a sign for a <b class="highlight quiz-target" data-ans="rest stop" data-kor="고속도로 휴게소">rest stop</b>.</p>
+                <p class="mb-6">“Coffee?”</p>
+                <p class="mb-6">Eric shook his head. “We’re only an hour from home.”</p>
+                <p class="mb-6">“You said that an hour ago.”</p>
+                <p class="mb-6">“I just want to get back before dark.”</p>
+                <p class="mb-6">A few minutes later, Eric was driving in the right <b class="highlight quiz-target" data-ans="lane" data-kor="차선">lane</b> when a black SUV suddenly cut in front of him.</p>
+                <p class="mb-6">No warning. No <b class="highlight quiz-target" data-ans="turn signals" data-kor="방향지시등">turn signals</b>.</p>
+                <p class="mb-6">Eric slammed on the brakes.</p>
+                <p class="mb-6">Maya grabbed the door handle. “What was that?”</p>
+                <p class="mb-6">Eric started to <b class="highlight quiz-target" data-ans="honk my horn" data-kor="경적을 울리다">honk his horn</b>, then stopped himself.</p>
+                <p class="mb-6">“No. I’m not getting into a <b class="highlight quiz-target" data-ans="road rage" data-kor="보복 운전">road rage</b> fight.”</p>
+                <p class="mb-6">The SUV slowed down anyway, almost as if the driver wanted a reaction.</p>
+                <p class="mb-6">Eric stayed back.</p>
+                <p class="mb-6">Eventually, they reached the edge of a small town. Ahead was a large <b class="highlight quiz-target" data-ans="roundabout" data-kor="회전교차로">roundabout</b> surrounded by trees.</p>
+                <p class="mb-6">That was when Maya suddenly shouted.</p>
+                <p class="mb-6">“Deer!”</p>
+                <p class="mb-6">A small brown animal ran out of the bushes.</p>
+                <p class="mb-6">Eric saw the long teeth sticking down from its mouth.</p>
+                <p class="mb-6">“A water deer?”</p>
+                <p class="mb-6">Maya stared at it. “That’s one of those <b class="highlight quiz-target" data-ans="vampire deer" data-kor="고라니">vampire deer</b>!”</p>
+                <p class="mb-6">The animal ran straight into the road.</p>
+                <p class="mb-6">Eric had almost no time to <b class="highlight quiz-target" data-ans="dodge" data-kor="피하다">dodge</b> it.</p>
+                <p class="mb-6">He turned left.</p>
+                <p class="mb-6">The deer escaped, but now Eric’s car was partly in the wrong <b class="highlight quiz-target" data-ans="lane" data-kor="차선">lane</b>.</p>
+                <p class="mb-6">Another car was coming directly toward them.</p>
+                <p class="mb-6">“Eric!”</p>
+                <p class="mb-6">He saw the headlights.</p>
+                <p class="mb-6">For one terrible second, a <b class="highlight quiz-target" data-ans="head on collision" data-kor="정면충돌">head on collision</b> seemed certain.</p>
+                <p class="mb-6">Eric jerked the wheel back.</p>
+                <p class="mb-6">The other car missed them <b class="highlight quiz-target" data-ans="by the skin of their teeth" data-kor="정말 간신히">by the skin of their teeth</b>.</p>
+                <p class="mb-6">But Eric had no time to recover.</p>
+                <p class="mb-6">A delivery van entered the <b class="highlight quiz-target" data-ans="roundabout" data-kor="회전교차로">roundabout</b> from the side.</p>
+                <p class="mb-6">Its driver either didn’t see Eric or didn’t expect him to be there.</p>
+                <p class="mb-6">The van <b class="highlight quiz-target" data-ans="t-boned" data-kor="차량 옆면을 들이받았다">t-boned</b> the passenger side.</p>
+                <p class="mb-6">The impact spun Eric’s car halfway around.</p>
+                <p class="mb-6">Then everything stopped.</p>
+                <p class="mb-6">Maya opened her eyes.</p>
+                <p class="mb-6">“Are you okay?”</p>
+                <p class="mb-6">“I think so.”</p>
+                <p class="mb-6">Eric’s hands were shaking, but he turned on the <b class="highlight quiz-target" data-ans="hazard lights" data-kor="비상등">hazard lights</b>.</p>
+                <p class="mb-6">The van driver got out immediately and called emergency services.</p>
+                <p class="mb-6">The black SUV, however, continued through the <b class="highlight quiz-target" data-ans="roundabout" data-kor="회전교차로">roundabout</b> and disappeared.</p>
+                <p class="mb-6">Maya stared after it.</p>
+                <p class="mb-6">“If that guy caused all this and just left, is that a <b class="highlight quiz-target" data-ans="hit and run" data-kor="뺑소니 사고">hit and run</b>?”</p>
+                <p class="mb-6">“He didn’t actually hit us,” Eric said.</p>
+                <p class="mb-6">A witness came over.</p>
+                <p class="mb-6">“I saw the whole thing. Do you have a <b class="highlight quiz-target" data-ans="dashcam" data-kor="차량용 블랙박스">dashcam</b>?”</p>
+                <p class="mb-6">Eric nodded.</p>
+                <p class="mb-6">“Good,” the man said. “That SUV was driving like an idiot.”</p>
+                <p class="mb-6">A police officer arrived and began asking questions. He wanted to know whether the van had used its <b class="highlight quiz-target" data-ans="blinkers" data-kor="깜빡이">blinkers</b> before entering the <b class="highlight quiz-target" data-ans="roundabout" data-kor="회전교차로">roundabout</b>.</p>
+                <p class="mb-6">Eric couldn’t remember.</p>
+                <p class="mb-6">The officer looked at the tire marks on the road, then at Eric.</p>
+                <p class="mb-6">“You kept control pretty well. You’ve got <b class="highlight quiz-target" data-ans="nerves of steel" data-kor="강철 같은 담력">nerves of steel</b>.”</p>
+                <p class="mb-6">Eric looked down at his shaking hands.</p>
+                <p class="mb-6">“I really don’t.”</p>
+                <p class="mb-6">An hour later, the tow-truck driver examined the damage.</p>
+                <p class="mb-6">He shook his head.</p>
+                <p class="mb-6">“Sorry. This thing’s probably done.”</p>
+                <p class="mb-6">Eric stared at the crushed passenger side.</p>
+                <p class="mb-6">“So <b class="highlight quiz-target" data-ans="my car was totaled" data-kor="내 차가 완전히 망가졌다">my car was totaled</b> because I tried not to kill a water deer?”</p>
+                <p class="mb-6">Maya nodded.</p>
+                <p class="mb-6">“A <b class="highlight quiz-target" data-ans="vampire deer" data-kor="고라니">vampire deer</b>.”</p>
+                <p class="mb-6">Eric looked at her.</p>
+                <p class="mb-6">“Please don’t make this worse.”</p>
+                <p class="mb-6">She pointed toward the trees.</p>
+                <p class="mb-6">“At least the deer is fine.”</p>
+                <p class="mb-6">Eric took a long breath.</p>
+                <p class="mb-6">“That whole thing <b class="highlight quiz-target" data-ans="took years off my life" data-kor="수명이 몇 년은 줄어든 것 같다">took years off my life</b>.”</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">에릭은 다른 도시에서 의료 <b class="highlight">상담</b>을 받고 친구 마야와 함께 차를 타고 집으로 돌아가는 중이었다. 그때 마야가 고속도로 <b class="highlight">휴게소</b> 표지판을 가리켰다.</p>
+                <p class="mb-6">“커피?”</p>
+                <p class="mb-6">에릭은 고개를 저었다.</p>
+                <p class="mb-6">“집까지 한 시간밖에 안 남았어.”</p>
+                <p class="mb-6">“한 시간 전에도 그렇게 말했잖아.”</p>
+                <p class="mb-6">“그냥 어두워지기 전에 집에 가고 싶어.”</p>
+                <p class="mb-6">몇 분 뒤, 에릭이 오른쪽 <b class="highlight">차선</b>으로 달리고 있을 때 검은색 SUV 한 대가 갑자기 그의 앞으로 끼어들었다.</p>
+                <p class="mb-6">아무런 경고도 없었다. <b class="highlight">방향지시등</b>도 켜지 않았다.</p>
+                <p class="mb-6">에릭은 급브레이크를 밟았다.</p>
+                <p class="mb-6">마야가 문 손잡이를 꽉 잡았다.</p>
+                <p class="mb-6">“방금 뭐였어?”</p>
+                <p class="mb-6">에릭은 <b class="highlight">경적을 울리려</b>다가 멈췄다.</p>
+                <p class="mb-6">“됐어. 운전하다가 <b class="highlight">싸우고</b> 싶지 않아.”</p>
+                <p class="mb-6">그런데도 SUV는 일부러 반응을 유도하는 것처럼 속도를 늦췄다.</p>
+                <p class="mb-6">에릭은 거리를 유지했다.</p>
+                <p class="mb-6">얼마 후 그들은 작은 마을 입구에 도착했다. 앞에는 나무로 둘러싸인 큰 <b class="highlight">회전교차로</b>가 있었다.</p>
+                <p class="mb-6">바로 그때 마야가 갑자기 소리쳤다.</p>
+                <p class="mb-6">“사슴!”</p>
+                <p class="mb-6">작은 갈색 동물이 덤불에서 뛰어나왔다.</p>
+                <p class="mb-6">에릭은 입 아래로 길게 내려온 이빨을 보았다.</p>
+                <p class="mb-6">“고라니인가?”</p>
+                <p class="mb-6">마야가 그 동물을 바라봤다.</p>
+                <p class="mb-6">“저게 그 <b class="highlight">뱀파이어 사슴</b>이잖아!”</p>
+                <p class="mb-6">고라니가 그대로 도로로 뛰어들었다.</p>
+                <p class="mb-6">에릭에게는 그것을 <b class="highlight">피할</b> 시간이 거의 없었다.</p>
+                <p class="mb-6">그는 왼쪽으로 급히 방향을 틀었다.</p>
+                <p class="mb-6">고라니는 피했지만, 이제 에릭의 차 일부가 반대편 <b class="highlight">차선</b>으로 넘어가 있었다.</p>
+                <p class="mb-6">맞은편에서 다른 차가 곧장 달려오고 있었다.</p>
+                <p class="mb-6">“에릭!”</p>
+                <p class="mb-6">그는 헤드라이트를 봤다.</p>
+                <p class="mb-6">끔찍한 순간, <b class="highlight">정면충돌</b>을 피할 수 없을 것처럼 보였다.</p>
+                <p class="mb-6">에릭은 운전대를 다시 반대쪽으로 확 꺾었다.</p>
+                <p class="mb-6">맞은편 차는 <b class="highlight">정말 간발의 차이로</b> 그들을 비껴갔다.</p>
+                <p class="mb-6">하지만 에릭에게는 자세를 바로잡을 시간이 없었다.</p>
+                <p class="mb-6">그때 배달 밴 한 대가 옆쪽에서 <b class="highlight">회전교차로</b>로 진입했다.</p>
+                <p class="mb-6">밴 운전자는 에릭을 보지 못했거나, 그곳에 차가 있을 거라고 예상하지 못한 것 같았다.</p>
+                <p class="mb-6">밴은 에릭의 차 <b class="highlight">조수석 쪽을 그대로 들이받았다</b>.</p>
+                <p class="mb-6">충격으로 에릭의 차는 반 바퀴 정도 돌아갔다.</p>
+                <p class="mb-6">그리고 모든 것이 멈췄다.</p>
+                <p class="mb-6">마야가 눈을 떴다.</p>
+                <p class="mb-6">“괜찮아?”</p>
+                <p class="mb-6">“그런 것 같아.”</p>
+                <p class="mb-6">에릭의 손은 떨리고 있었지만 그는 <b class="highlight">비상등</b>을 켰다.</p>
+                <p class="mb-6">밴 운전자는 즉시 차에서 내려 긴급 구조대에 전화했다.</p>
+                <p class="mb-6">하지만 검은 SUV는 그대로 <b class="highlight">회전교차로</b>를 지나 사라졌다.</p>
+                <p class="mb-6">마야가 그 차가 사라진 방향을 바라봤다.</p>
+                <p class="mb-6">“저 사람이 이 모든 상황을 만들고 그냥 가 버린 거면 <b class="highlight">뺑소니</b> 아니야?”</p>
+                <p class="mb-6">“실제로 우리 차를 들이받은 건 아니잖아.” 에릭이 말했다.</p>
+                <p class="mb-6">목격자 한 명이 다가왔다.</p>
+                <p class="mb-6">“전부 봤어요. <b class="highlight">차량용 블랙박스</b> 있죠?”</p>
+                <p class="mb-6">에릭은 고개를 끄덕였다.</p>
+                <p class="mb-6">“다행이네요. 저 SUV 진짜 위험하게 운전했어요.”</p>
+                <p class="mb-6">경찰관이 도착해 질문하기 시작했다. 그는 밴이 <b class="highlight">회전교차로</b>에 진입하기 전에 <b class="highlight">깜빡이</b>를 켰는지 물었다.</p>
+                <p class="mb-6">에릭은 기억하지 못했다.</p>
+                <p class="mb-6">경찰관은 도로의 타이어 자국을 보고 에릭을 바라봤다.</p>
+                <p class="mb-6">“그래도 차를 정말 잘 통제하셨네요. <b class="highlight">담력이 대단하십니다</b>.”</p>
+                <p class="mb-6">에릭은 떨리는 자신의 손을 내려다봤다.</p>
+                <p class="mb-6">“전혀 아닌 것 같은데요.”</p>
+                <p class="mb-6">한 시간 뒤, 견인차 기사가 차량의 손상 상태를 확인했다.</p>
+                <p class="mb-6">그는 고개를 저었다.</p>
+                <p class="mb-6">“죄송하지만 이 차는 아마 끝난 것 같습니다.”</p>
+                <p class="mb-6">에릭은 찌그러진 조수석 쪽을 바라봤다.</p>
+                <p class="mb-6">“그러니까 고라니 한 마리를 안 죽이려고 피하다가 <b class="highlight">내 차가 완전히 망가진</b> 거야?”</p>
+                <p class="mb-6">마야가 고개를 끄덕였다.</p>
+                <p class="mb-6">“<b class="highlight">뱀파이어 사슴</b>.”</p>
+                <p class="mb-6">에릭이 그녀를 바라봤다.</p>
+                <p class="mb-6">“제발 상황을 더 이상하게 만들지 마.”</p>
+                <p class="mb-6">마야가 숲 쪽을 가리켰다.</p>
+                <p class="mb-6">“그래도 고라니는 멀쩡하잖아.”</p>
+                <p class="mb-6">에릭은 길게 숨을 내쉬었다.</p>
+                <p class="mb-6">“방금 일 때문에 <b class="highlight">수명이 몇 년은 줄어든 것 같아</b>.”</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "811715.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

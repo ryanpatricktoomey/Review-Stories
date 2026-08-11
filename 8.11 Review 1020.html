@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | Story: The Wrong Exit</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🚙</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">Story: The Wrong Exit</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">scared the life out of me</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">정말 깜짝 놀라게 했다 / 간이 떨어지는 줄 알았다</td></tr>
+                <tr><td class="p-4"><b class="text-white">couldn't face my father</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">아버지를 차마 볼 수 없었다 / 아버지를 대할 자신이 없었다</td></tr>
+                <tr><td class="p-4"><b class="text-white">did he buy it?</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그 사람이 그 말을 믿었어? / 그 핑계를 받아들였어?</td></tr>
+                <tr><td class="p-4"><b class="text-white">innocent</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">아무 잘못이 없는 / 순진한</td></tr>
+                <tr><td class="p-4"><b class="text-white">naive</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">순진해서 쉽게 믿는 / 세상 물정을 잘 모르는</td></tr>
+                <tr><td class="p-4"><b class="text-white">put out the candle</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">촛불을 끄다</td></tr>
+                <tr><td class="p-4"><b class="text-white">sparks</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">불꽃 / 불똥</td></tr>
+                <tr><td class="p-4"><b class="text-white">it was a relief</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">안심이 됐다 / 다행이었다</td></tr>
+                <tr><td class="p-4"><b class="text-white">i was so relieved</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">정말 안도했다</td></tr>
+                <tr><td class="p-4"><b class="text-white">wig</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">가발</td></tr>
+                <tr><td class="p-4"><b class="text-white">molars</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">어금니</td></tr>
+                <tr><td class="p-4"><b class="text-white">canine teeth</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">송곳니</td></tr>
+                <tr><td class="p-4"><b class="text-white">K-9</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">경찰견 / 경찰견 부대</td></tr>
+                <tr><td class="p-4"><b class="text-white">incisors</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">앞니</td></tr>
+                <tr><td class="p-4"><b class="text-white">wisdom teeth</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">사랑니</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">scared the life out of me</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">너무 심하게 놀라서 “간이 떨어지는 줄 알았다”라고 할 때 쓰는 강한 표현이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">couldn't face my father</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">여기서 face는 단순히 얼굴을 본다는 뜻이 아니라, 죄책감이나 창피함 때문에 상대방을 대하기 어렵다는 뜻이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">did he buy it?</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">여기서 buy는 “사다”가 아니라 어떤 이야기, 설명, 핑계를 “믿다”라는 뜻이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">innocent</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">“아무 잘못이 없는”이라는 뜻도 있고, 사람의 성격이 순수하고 순진하다는 뜻도 있어요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">naive</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">경험이나 현실적인 판단이 부족해서 무언가를 너무 쉽게 믿는다는 뉘앙스가 있어요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">K-9</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">경찰견 또는 경찰견과 담당 경찰관으로 이루어진 팀을 뜻해요. canine과 발음이 비슷해서 만들어진 표현입니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Ben was driving home with his sister Emma after visiting their parents. They had been on the road for three hours, and both were tired.</p>
+                <p class="mb-6">Emma touched the side of her face.</p>
+                <p class="mb-6">“My <b class="highlight quiz-target" data-ans="wisdom teeth" data-kor="사랑니">wisdom teeth</b> are killing me.”</p>
+                <p class="mb-6">“You should get them removed.”</p>
+                <p class="mb-6">“I know. Dad spent twenty minutes explaining that to me.”</p>
+                <p class="mb-6">Ben laughed. Their father was a dentist, so family dinners often turned into conversations about <b class="highlight quiz-target" data-ans="molars" data-kor="어금니">molars</b>, <b class="highlight quiz-target" data-ans="incisors" data-kor="앞니">incisors</b>, and <b class="highlight quiz-target" data-ans="canine teeth" data-kor="송곳니">canine teeth</b> whether anyone wanted them to or not.</p>
+                <p class="mb-6">Emma looked at the navigation screen.</p>
+                <p class="mb-6">“Take the next exit.”</p>
+                <p class="mb-6">“You sure?”</p>
+                <p class="mb-6">“Yep.”</p>
+                <p class="mb-6">Ben followed her directions.</p>
+                <p class="mb-6">Ten minutes later, the highway had disappeared behind them. They were on a narrow country road with no streetlights.</p>
+                <p class="mb-6">Ben looked at her.</p>
+                <p class="mb-6">“Where are we?”</p>
+                <p class="mb-6">Emma checked her phone.</p>
+                <p class="mb-6">“Oh.”</p>
+                <p class="mb-6">“What does ‘oh’ mean?”</p>
+                <p class="mb-6">“I might have sent us the wrong way.”</p>
+                <p class="mb-6">Ben sighed and kept driving.</p>
+                <p class="mb-6">Then a car appeared behind them.</p>
+                <p class="mb-6">It stayed extremely close.</p>
+                <p class="mb-6">Ben slowed down to let it pass.</p>
+                <p class="mb-6">It didn’t.</p>
+                <p class="mb-6">Instead, the driver flashed his headlights.</p>
+                <p class="mb-6">“What does he want?” Emma asked.</p>
+                <p class="mb-6">“I have no idea.”</p>
+                <p class="mb-6">The road curved sharply through the trees.</p>
+                <p class="mb-6">Suddenly, a deer jumped into Ben’s headlights.</p>
+                <p class="mb-6">Emma screamed.</p>
+                <p class="mb-6">Ben swerved.</p>
+                <p class="mb-6">The car behind them blasted its horn.</p>
+                <p class="mb-6">“That <b class="highlight quiz-target" data-ans="scared the life out of me" data-kor="간이 떨어지는 줄 알았다">scared the life out of me</b>!”</p>
+                <p class="mb-6">Ben corrected the steering, but his right wheels dropped off the pavement.</p>
+                <p class="mb-6">The car slid toward a ditch.</p>
+                <p class="mb-6">“Ben!”</p>
+                <p class="mb-6">He turned the wheel carefully and managed to get back onto the road.</p>
+                <p class="mb-6">Then they heard a metallic scraping sound underneath the car.</p>
+                <p class="mb-6">A few <b class="highlight quiz-target" data-ans="sparks" data-kor="불꽃">sparks</b> appeared in the mirror.</p>
+                <p class="mb-6">“Pull over,” Emma said.</p>
+                <p class="mb-6">“There’s nowhere to pull over.”</p>
+                <p class="mb-6">The car behind them suddenly passed, stopped fifty meters ahead, and turned on its hazard lights.</p>
+                <p class="mb-6">A man got out and waved at them.</p>
+                <p class="mb-6">Ben stopped.</p>
+                <p class="mb-6">The man ran over.</p>
+                <p class="mb-6">“Something’s hanging under your car. I was flashing my lights because I was trying to warn you.”</p>
+                <p class="mb-6">Emma looked at Ben.</p>
+                <p class="mb-6">“We thought you were some crazy guy following us.”</p>
+                <p class="mb-6">The man laughed.</p>
+                <p class="mb-6">“No. Your exhaust is almost touching the road.”</p>
+                <p class="mb-6">A few minutes later, a police vehicle arrived. A <b class="highlight quiz-target" data-ans="K-9" data-kor="경찰견">K-9</b> barked from the back seat as the officer got out.</p>
+                <p class="mb-6">Emma jumped.</p>
+                <p class="mb-6">“Okay, that dog almost got me too.”</p>
+                <p class="mb-6">The officer checked underneath the car and told them not to drive any farther.</p>
+                <p class="mb-6">Ben called their father.</p>
+                <p class="mb-6">“What are you going to tell him?” Emma whispered.</p>
+                <p class="mb-6">“The truth.”</p>
+                <p class="mb-6">“About me giving you the wrong directions?”</p>
+                <p class="mb-6">Ben smiled.</p>
+                <p class="mb-6">“No. I’ll tell him the navigation messed up.”</p>
+                <p class="mb-6">Emma looked hopeful.</p>
+                <p class="mb-6">“<b class="highlight quiz-target" data-ans="Did he buy it?" data-kor="그 말이 믿어지셨대?">Did he buy it?</b>”</p>
+                <p class="mb-6">Ben listened to their father for a moment.</p>
+                <p class="mb-6">“No.”</p>
+                <p class="mb-6">Emma covered her face.</p>
+                <p class="mb-6">“I <b class="highlight quiz-target" data-ans="couldn't face my father" data-kor="아버지를 차마 못 보겠다">couldn't face Dad</b> right now.”</p>
+                <p class="mb-6">A tow truck arrived twenty minutes later. The driver said the damage was minor.</p>
+                <p class="mb-6">Ben finally relaxed.</p>
+                <p class="mb-6">“That <b class="highlight quiz-target" data-ans="was a relief" data-kor="다행이었다">was a relief</b>.”</p>
+                <p class="mb-6">Emma nodded.</p>
+                <p class="mb-6">“<b class="highlight quiz-target" data-ans="I was so relieved" data-kor="정말 안도했어">I was so relieved</b> when he said we hadn’t destroyed the car.”</p>
+                <p class="mb-6">Ben looked at her.</p>
+                <p class="mb-6">“Next time, I’m doing the navigation.”</p>
+                <p class="mb-6">“Fair.”</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">벤은 부모님을 방문한 뒤 여동생 엠마와 함께 집으로 운전해 돌아가고 있었다. 두 사람은 이미 세 시간째 길 위에 있었고 둘 다 피곤했다.</p>
+                <p class="mb-6">엠마가 얼굴 옆쪽을 만졌다.</p>
+                <p class="mb-6">“<b class="highlight">사랑니</b>가 너무 아파.”</p>
+                <p class="mb-6">“빼야겠다.”</p>
+                <p class="mb-6">“알아. 아빠가 그것 때문에 20분 동안 설명했어.”</p>
+                <p class="mb-6">벤이 웃었다. 아버지가 치과의사였기 때문에 가족끼리 식사를 하다 보면 원하든 원하지 않든 <b class="highlight">어금니</b>, <b class="highlight">앞니</b>, <b class="highlight">송곳니</b> 이야기가 나올 때가 많았다.</p>
+                <p class="mb-6">엠마가 내비게이션 화면을 봤다.</p>
+                <p class="mb-6">“다음 출구로 나가.”</p>
+                <p class="mb-6">“확실해?”</p>
+                <p class="mb-6">“응.”</p>
+                <p class="mb-6">벤은 그녀의 말대로 갔다.</p>
+                <p class="mb-6">10분 뒤 고속도로는 완전히 사라지고 없었다. 그들은 가로등 하나 없는 좁은 시골길을 달리고 있었다.</p>
+                <p class="mb-6">벤이 엠마를 바라봤다.</p>
+                <p class="mb-6">“우리 어디야?”</p>
+                <p class="mb-6">엠마가 휴대전화를 확인했다.</p>
+                <p class="mb-6">“아.”</p>
+                <p class="mb-6">“‘아’가 무슨 뜻인데?”</p>
+                <p class="mb-6">“내가 길을 잘못 알려 준 것 같아.”</p>
+                <p class="mb-6">벤은 한숨을 쉬고 계속 운전했다.</p>
+                <p class="mb-6">그때 뒤에서 차 한 대가 나타났다.</p>
+                <p class="mb-6">그 차는 벤의 차에 아주 가까이 붙어서 따라왔다.</p>
+                <p class="mb-6">벤은 추월하게 해 주려고 속도를 줄였다.</p>
+                <p class="mb-6">하지만 그 차는 추월하지 않았다.</p>
+                <p class="mb-6">대신 헤드라이트를 깜빡였다.</p>
+                <p class="mb-6">“저 사람 뭐 원하는 거야?” 엠마가 물었다.</p>
+                <p class="mb-6">“나도 모르겠어.”</p>
+                <p class="mb-6">길은 숲 사이로 급격하게 휘어졌다.</p>
+                <p class="mb-6">그 순간 사슴 한 마리가 벤의 헤드라이트 앞으로 뛰어들었다.</p>
+                <p class="mb-6">엠마가 비명을 질렀다.</p>
+                <p class="mb-6">벤은 급히 방향을 틀었다.</p>
+                <p class="mb-6">뒤에 있던 차가 크게 경적을 울렸다.</p>
+                <p class="mb-6">“진짜 <b class="highlight">간 떨어지는 줄 알았잖아</b>!”</p>
+                <p class="mb-6">벤은 다시 방향을 잡았지만 오른쪽 바퀴가 포장도로 밖으로 빠졌다.</p>
+                <p class="mb-6">차가 도랑 쪽으로 미끄러졌다.</p>
+                <p class="mb-6">“벤!”</p>
+                <p class="mb-6">벤은 조심스럽게 운전대를 돌려 다시 도로 위로 올라오는 데 성공했다.</p>
+                <p class="mb-6">그때 차 밑에서 금속이 긁히는 소리가 들렸다.</p>
+                <p class="mb-6">거울을 보니 <b class="highlight">불꽃</b> 몇 개가 튀고 있었다.</p>
+                <p class="mb-6">“차 세워.” 엠마가 말했다.</p>
+                <p class="mb-6">“세울 데가 없어.”</p>
+                <p class="mb-6">뒤따라오던 차가 갑자기 그들을 추월하더니 50미터 정도 앞에서 멈춰 비상등을 켰다.</p>
+                <p class="mb-6">한 남자가 내려서 그들을 향해 손을 흔들었다.</p>
+                <p class="mb-6">벤은 차를 세웠다.</p>
+                <p class="mb-6">남자가 달려왔다.</p>
+                <p class="mb-6">“차 밑에 뭔가 매달려 있어요. 아까부터 알려 주려고 헤드라이트를 깜빡였어요.”</p>
+                <p class="mb-6">엠마가 벤을 바라봤다.</p>
+                <p class="mb-6">“우린 아저씨가 이상한 사람인 줄 알았어요.”</p>
+                <p class="mb-6">남자가 웃었다.</p>
+                <p class="mb-6">“아니에요. 배기관이 거의 도로에 닿고 있어요.”</p>
+                <p class="mb-6">몇 분 뒤 경찰차 한 대가 도착했다. 경찰관이 차에서 내릴 때 뒷좌석에 있던 <b class="highlight">경찰견</b>이 짖었다.</p>
+                <p class="mb-6">엠마가 깜짝 놀랐다.</p>
+                <p class="mb-6">“좋아, 저 개 때문에도 심장 멎을 뻔했어.”</p>
+                <p class="mb-6">경찰관은 차 밑을 확인한 뒤 더 이상 운전하면 안 된다고 말했다.</p>
+                <p class="mb-6">벤은 아버지에게 전화했다.</p>
+                <p class="mb-6">“뭐라고 말할 거야?” 엠마가 작은 목소리로 물었다.</p>
+                <p class="mb-6">“사실대로.”</p>
+                <p class="mb-6">“내가 길을 잘못 알려 줬다는 것도?”</p>
+                <p class="mb-6">벤이 웃었다.</p>
+                <p class="mb-6">“아니. 내비게이션이 잘못됐다고 할게.”</p>
+                <p class="mb-6">엠마의 표정이 밝아졌다.</p>
+                <p class="mb-6">“<b class="highlight">아빠가 믿었어?</b>”</p>
+                <p class="mb-6">벤은 잠시 아버지의 말을 들었다.</p>
+                <p class="mb-6">“아니.”</p>
+                <p class="mb-6">엠마는 두 손으로 얼굴을 가렸다.</p>
+                <p class="mb-6">“지금은 <b class="highlight">아빠를 차마 못 보겠다</b>.”</p>
+                <p class="mb-6">20분 뒤 견인차가 도착했다. 기사는 차량 손상이 심하지 않다고 말했다.</p>
+                <p class="mb-6">벤은 그제야 긴장을 풀었다.</p>
+                <p class="mb-6">“<b class="highlight">정말 다행이다</b>.”</p>
+                <p class="mb-6">엠마가 고개를 끄덕였다.</p>
+                <p class="mb-6">“차가 완전히 망가진 건 아니라고 했을 때 <b class="highlight">나도 정말 안도했어</b>.”</p>
+                <p class="mb-6">벤이 그녀를 바라봤다.</p>
+                <p class="mb-6">“다음부터 내비게이션은 내가 할게.”</p>
+                <p class="mb-6">“인정.”</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "8111020.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

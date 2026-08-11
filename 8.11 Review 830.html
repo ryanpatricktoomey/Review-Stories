@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | Story: Where’s the Dog?</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🚙</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">Story: Where’s the Dog?</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">unfair to me</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">나한테 불공평한 / 부당한</td></tr>
+                <tr><td class="p-4"><b class="text-white">missing</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">없어진 / 실종된 / 빠진</td></tr>
+                <tr><td class="p-4"><b class="text-white">let my guard down</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">경계를 늦추다 / 방심하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">give you goosebumps</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">소름 돋게 하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">guilt trip</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">죄책감을 느끼게 하다 / 죄책감으로 압박하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">incident</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">사건 / 사고</td></tr>
+                <tr><td class="p-4"><b class="text-white">flasher</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">① 바바리맨 / 공공장소에서 신체를 노출하는 사람 ② 점멸등 / 깜빡이는 불빛</td></tr>
+                <tr><td class="p-4"><b class="text-white">ridiculous situation</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">말도 안 되는 상황 / 황당한 상황</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">let my guard down</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">긴장을 풀고 방심한다는 뜻이에요. 원래 경계를 늦춘다는 이미지에서 나온 표현입니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">give you goosebumps</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">무섭거나 감동적이거나 강렬한 느낌 때문에 소름이 돋게 한다는 뜻이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">guilt trip</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">상대방이 죄책감을 느끼게 해서 어떤 행동을 하도록 압박하는 것을 말해요. guilt-trip someone처럼 동사로도 사용할 수 있어요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">flasher</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">문맥에 따라 뜻이 크게 달라져요. 사람을 가리키면 공공장소에서 갑자기 자신의 성기나 신체를 노출하는 사람이라는 뜻으로, 한국어의 “바바리맨”과 비슷해요. 사물이나 자동차 문맥에서는 깜빡이는 불빛이나 점멸 장치를 가리킬 수도 있어요. 자동차에서는 보통 turn signal, blinker, hazard lights 같은 표현이 더 명확합니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">ridiculous situation</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">단순히 웃긴 상황이라기보다 너무 황당하거나 말이 안 돼서 어이가 없는 상황을 말할 때 자연스럽게 사용할 수 있어요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Nina had been driving for almost five hours when her younger brother Leo pointed at a sign for a roadside diner.</p>
+                <p class="mb-6">“Can we please stop?”</p>
+                <p class="mb-6">“We stopped forty minutes ago.”</p>
+                <p class="mb-6">“That was for gas.”</p>
+                <p class="mb-6">Nina sighed. “Fine. Ten minutes.”</p>
+                <p class="mb-6">They were driving across the state with Leo’s dog, Baxter, in the back seat. Nina had not wanted to bring him, but Leo had given her a long <b class="highlight quiz-target" data-ans="guilt trip" data-kor="죄책감을 느끼게 하다">guilt trip</b> about leaving him with a neighbor.</p>
+                <p class="mb-6">“He’ll think we abandoned him.”</p>
+                <p class="mb-6">“He’s a dog.”</p>
+                <p class="mb-6">“He has feelings.”</p>
+                <p class="mb-6">Now Nina was tired, hungry, and starting to think the entire trip was <b class="highlight quiz-target" data-ans="unfair to me" data-kor="나한테 부당한">unfair to her</b>.</p>
+                <p class="mb-6">At the diner, Leo took Baxter outside while Nina bought coffee. A few minutes later they were back on the highway.</p>
+                <p class="mb-6">For the first time all day, nobody was talking.</p>
+                <p class="mb-6">Nina relaxed.</p>
+                <p class="mb-6">She finally <b class="highlight quiz-target" data-ans="let her guard down" data-kor="방심하다">let her guard down</b>.</p>
+                <p class="mb-6">Then Leo turned around.</p>
+                <p class="mb-6">“Where’s Baxter?”</p>
+                <p class="mb-6">Nina laughed.</p>
+                <p class="mb-6">Leo didn’t.</p>
+                <p class="mb-6">She looked in the rearview mirror.</p>
+                <p class="mb-6">The back seat was empty.</p>
+                <p class="mb-6">“Tell me you’re joking.”</p>
+                <p class="mb-6">“He’s <b class="highlight quiz-target" data-ans="missing" data-kor="없어진">missing</b>.”</p>
+                <p class="mb-6">Nina immediately pulled onto the shoulder and turned on the emergency <b class="highlight quiz-target" data-ans="flasher" data-kor="점멸등">flasher</b>.</p>
+                <p class="mb-6">“When did you last see him?”</p>
+                <p class="mb-6">“At the diner.”</p>
+                <p class="mb-6">Nina stared at him.</p>
+                <p class="mb-6">“You left the dog at the diner?”</p>
+                <p class="mb-6">“I thought you put him in the car!”</p>
+                <p class="mb-6">They turned around at the next exit and drove back.</p>
+                <p class="mb-6">Halfway there, traffic suddenly slowed.</p>
+                <p class="mb-6">A police car was parked sideways across one lane.</p>
+                <p class="mb-6">Nina’s stomach dropped.</p>
+                <p class="mb-6">“What if something happened to him?”</p>
+                <p class="mb-6">“Don’t say that.”</p>
+                <p class="mb-6">Ahead, several drivers were standing outside their cars.</p>
+                <p class="mb-6">Then Nina saw something moving between them.</p>
+                <p class="mb-6">Baxter.</p>
+                <p class="mb-6">He was running directly toward the highway.</p>
+                <p class="mb-6">“No, no, no.”</p>
+                <p class="mb-6">Nina stopped the car and jumped out.</p>
+                <p class="mb-6">A truck was approaching fast in the nearest lane.</p>
+                <p class="mb-6">Leo screamed Baxter’s name.</p>
+                <p class="mb-6">The dog froze.</p>
+                <p class="mb-6">The sound of the truck’s horn was enough to <b class="highlight quiz-target" data-ans="give you goosebumps" data-kor="소름 돋게 하다">give you goosebumps</b>.</p>
+                <p class="mb-6">Nina ran into the road, grabbed Baxter by his harness, and pulled him backward just as the truck rushed past.</p>
+                <p class="mb-6">For a second, she couldn’t move.</p>
+                <p class="mb-6">A police officer ran toward them.</p>
+                <p class="mb-6">“Are you okay?”</p>
+                <p class="mb-6">Nina nodded, still holding Baxter.</p>
+                <p class="mb-6">The officer looked at the dog.</p>
+                <p class="mb-6">“So this little guy caused the whole <b class="highlight quiz-target" data-ans="incident" data-kor="사건">incident</b>?”</p>
+                <p class="mb-6">Apparently, Baxter had wandered from the diner parking lot and followed the road for nearly a kilometer. Drivers had been stopping to avoid him.</p>
+                <p class="mb-6">Leo hugged Baxter.</p>
+                <p class="mb-6">Nina sat down on the shoulder.</p>
+                <p class="mb-6">“This is the most <b class="highlight quiz-target" data-ans="ridiculous situation" data-kor="황당한 상황">ridiculous situation</b> I’ve ever been in.”</p>
+                <p class="mb-6">Leo looked guilty.</p>
+                <p class="mb-6">“Are you mad?”</p>
+                <p class="mb-6">Nina stared at him.</p>
+                <p class="mb-6">“I almost got hit by a truck because you forgot your dog.”</p>
+                <p class="mb-6">“So… yes?”</p>
+                <p class="mb-6">Nina closed her eyes.</p>
+                <p class="mb-6">“Yes, Leo. Very yes.”</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">니나는 거의 다섯 시간째 운전 중이었고, 그때 남동생 레오가 길가 식당 표지판을 가리켰다.</p>
+                <p class="mb-6">“우리 제발 좀 쉬면 안 돼?”</p>
+                <p class="mb-6">“40분 전에 쉬었잖아.”</p>
+                <p class="mb-6">“그건 주유하려고 멈춘 거였잖아.”</p>
+                <p class="mb-6">니나는 한숨을 쉬었다.</p>
+                <p class="mb-6">“알았어. 10분만.”</p>
+                <p class="mb-6">그들은 레오의 개 백스터를 뒷좌석에 태우고 주를 가로질러 이동 중이었다. 니나는 원래 개를 데려오고 싶지 않았지만, 레오는 이웃에게 맡기면 백스터가 얼마나 슬퍼할지 이야기하며 계속 니나에게 <b class="highlight">죄책감을 느끼게 했다</b>.</p>
+                <p class="mb-6">“우리가 자기를 버렸다고 생각할 거야.”</p>
+                <p class="mb-6">“개잖아.”</p>
+                <p class="mb-6">“개도 감정이 있어.”</p>
+                <p class="mb-6">이제 니나는 피곤하고 배도 고팠고, 이 여행 전체가 자신에게 <b class="highlight">너무 부당하다</b>는 생각까지 들기 시작했다.</p>
+                <p class="mb-6">식당에 도착하자 레오는 백스터를 데리고 밖으로 나갔고, 니나는 커피를 샀다. 몇 분 뒤 그들은 다시 고속도로를 달리고 있었다.</p>
+                <p class="mb-6">그날 처음으로 차 안에서 아무도 말을 하지 않았다.</p>
+                <p class="mb-6">니나는 긴장을 풀었다.</p>
+                <p class="mb-6">드디어 <b class="highlight">방심한</b> 것이다.</p>
+                <p class="mb-6">그때 레오가 뒤를 돌아봤다.</p>
+                <p class="mb-6">“백스터 어디 있어?”</p>
+                <p class="mb-6">니나는 웃었다.</p>
+                <p class="mb-6">하지만 레오는 웃지 않았다.</p>
+                <p class="mb-6">니나는 룸미러를 봤다.</p>
+                <p class="mb-6">뒷좌석은 비어 있었다.</p>
+                <p class="mb-6">“농담이라고 해.”</p>
+                <p class="mb-6">“<b class="highlight">없어</b>.”</p>
+                <p class="mb-6">니나는 즉시 갓길에 차를 세우고 비상 <b class="highlight">점멸등</b>을 켰다.</p>
+                <p class="mb-6">“마지막으로 본 게 언제야?”</p>
+                <p class="mb-6">“식당.”</p>
+                <p class="mb-6">니나는 레오를 쳐다봤다.</p>
+                <p class="mb-6">“너 개를 식당에 두고 온 거야?”</p>
+                <p class="mb-6">“누나가 차에 태운 줄 알았지!”</p>
+                <p class="mb-6">그들은 다음 출구에서 차를 돌려 식당으로 향했다.</p>
+                <p class="mb-6">절반쯤 돌아갔을 때 갑자기 차량들이 속도를 줄이기 시작했다.</p>
+                <p class="mb-6">경찰차 한 대가 한 차선을 가로막고 있었다.</p>
+                <p class="mb-6">니나는 가슴이 철렁 내려앉았다.</p>
+                <p class="mb-6">“혹시 백스터한테 무슨 일 생긴 거 아니야?”</p>
+                <p class="mb-6">“그런 말 하지 마.”</p>
+                <p class="mb-6">앞쪽에서는 여러 운전자들이 차 밖에 나와 서 있었다.</p>
+                <p class="mb-6">그때 니나는 그들 사이에서 움직이는 무언가를 발견했다.</p>
+                <p class="mb-6">백스터였다.</p>
+                <p class="mb-6">개는 곧장 고속도로 쪽으로 뛰어가고 있었다.</p>
+                <p class="mb-6">“안 돼, 안 돼, 안 돼.”</p>
+                <p class="mb-6">니나는 차를 세우고 밖으로 뛰쳐나왔다.</p>
+                <p class="mb-6">가장 가까운 차선으로 트럭 한 대가 빠르게 다가오고 있었다.</p>
+                <p class="mb-6">레오가 백스터의 이름을 외쳤다.</p>
+                <p class="mb-6">개는 그 자리에 멈췄다.</p>
+                <p class="mb-6">트럭의 경적 소리는 듣기만 해도 <b class="highlight">소름이 돋을 정도</b>였다.</p>
+                <p class="mb-6">니나는 도로로 뛰어들어 백스터의 하네스를 잡고 뒤로 끌어당겼다. 바로 그 순간 트럭이 그들 옆을 빠르게 지나갔다.</p>
+                <p class="mb-6">몇 초 동안 니나는 움직일 수 없었다.</p>
+                <p class="mb-6">경찰관 한 명이 그들에게 달려왔다.</p>
+                <p class="mb-6">“괜찮으세요?”</p>
+                <p class="mb-6">니나는 백스터를 꼭 붙잡은 채 고개를 끄덕였다.</p>
+                <p class="mb-6">경찰관은 개를 바라봤다.</p>
+                <p class="mb-6">“그러니까 이 녀석 때문에 이 모든 <b class="highlight">사건</b>이 벌어진 건가요?”</p>
+                <p class="mb-6">알고 보니 백스터는 식당 주차장을 빠져나와 거의 1킬로미터나 도로를 따라 걸어갔고, 운전자들이 개를 피하려고 계속 차를 세우고 있었던 것이다.</p>
+                <p class="mb-6">레오는 백스터를 꼭 안았다.</p>
+                <p class="mb-6">니나는 갓길에 주저앉았다.</p>
+                <p class="mb-6">“내가 겪어 본 상황 중 제일 <b class="highlight">황당해</b>.”</p>
+                <p class="mb-6">레오는 죄책감이 가득한 얼굴로 말했다.</p>
+                <p class="mb-6">“화났어?”</p>
+                <p class="mb-6">니나는 그를 바라봤다.</p>
+                <p class="mb-6">“네가 개를 깜빡하는 바람에 난 트럭에 치일 뻔했어.”</p>
+                <p class="mb-6">“그러니까… 화났다는 거지?”</p>
+                <p class="mb-6">니나는 눈을 감았다.</p>
+                <p class="mb-6">“그래, 레오. 아주 많이.”</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "811830.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

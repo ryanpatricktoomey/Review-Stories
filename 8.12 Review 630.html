@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Completely Reasonable Guide to Difficult People</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">😈</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Completely Reasonable Guide to Difficult People</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">put up with it</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그냥 참고 견디다</td></tr>
+                <tr><td class="p-4"><b class="text-white">flake</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">약속을 잘 안 지키는 사람 / 믿기 어려운 사람</td></tr>
+                <tr><td class="p-4"><b class="text-white">escalate the situation</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">상황을 악화시키다 / 일을 키우다</td></tr>
+                <tr><td class="p-4"><b class="text-white">warning</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">경고</td></tr>
+                <tr><td class="p-4"><b class="text-white">too laidback</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">너무 느긋한 / 너무 태평한</td></tr>
+                <tr><td class="p-4"><b class="text-white">avoidant</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">회피하는 / 문제를 피하려는</td></tr>
+                <tr><td class="p-4"><b class="text-white">distract</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">집중을 흐트러뜨리다 / 주의를 돌리다</td></tr>
+                <tr><td class="p-4"><b class="text-white">disrupt</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">방해하다 / 흐름을 깨뜨리다</td></tr>
+                <tr><td class="p-4"><b class="text-white">top of the line</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">최고급의 / 최상급의</td></tr>
+                <tr><td class="p-4"><b class="text-white">do a half-assed job</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">일을 대충 해치우다</td></tr>
+                <tr><td class="p-4"><b class="text-white">just called it in</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그냥 성의 없이 대충 했다</td></tr>
+                <tr><td class="p-4"><b class="text-white">didn't put much effort into it</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">별로 노력을 들이지 않았다</td></tr>
+                <tr><td class="p-4"><b class="text-white">slack off</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">게으름 피우다 / 일을 소홀히 하다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">put up with it</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">싫거나 짜증 나는 상황을 바꾸지 못하고 계속 참고 견딘다는 뜻이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">flake</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">원래 flake에는 여러 뜻이 있지만, 사람을 가리킬 때는 약속을 취소하거나 책임감 없이 행동해서 믿기 어려운 사람을 뜻할 수 있어요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">too laidback</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">laid-back 자체는 보통 긍정적인 “느긋한”이라는 뜻이지만, too가 붙으면 “너무 태평해서 문제인”이라는 부정적인 의미가 됩니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">top of the line</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">제품이나 서비스 등이 해당 종류 중 최고 수준이라는 뜻의 관용적인 표현이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">do a half-assed job</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">매우 비격식적인 표현으로, 제대로 노력하지 않고 일을 대충 한다는 뜻이에요. half-assed는 직장이나 공식적인 상황에서는 피하는 것이 좋습니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">called it in</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">여기서는 보통 phoned it in과 비슷한 의미로, 노력이나 관심 없이 최소한만 했다는 뜻으로 이해할 수 있어요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">slack off</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">해야 할 일을 열심히 하지 않고 빈둥거리거나 노력을 줄이는 것을 뜻합니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Difficult people are everywhere. Fortunately, there are professional ways to handle them. Are these methods recommended by HR? No. Will they work? Absolutely.</p>
+                <p class="mb-6">1. The <b class="highlight quiz-target" data-ans="Flake" data-kor="약속을 잘 안 지키는 사람">Flake</b><br>
+                Everyone knows a <b class="highlight quiz-target" data-ans="flake" data-kor="약속을 잘 안 지키는 사람">flake</b>. They cancel dinner ten minutes before you arrive or promise to help and then disappear.<br>
+                Don't <b class="highlight quiz-target" data-ans="put up with it" data-kor="참고 견디다">put up with it</b>. Instead, invite them to everything—but give them the wrong date.<br>
+                “Why didn't you tell me the party was Friday?”<br>
+                “We did. You said you were coming.”<br>
+                “But you told me Saturday!”<br>
+                “Yes. Based on historical data.”<br>
+                This may <b class="highlight quiz-target" data-ans="escalate the situation" data-kor="상황을 악화시키다">escalate the situation</b>, so give them a <b class="highlight quiz-target" data-ans="warning" data-kor="경고">warning</b> first: “From now on, your invitations will reflect your actual attendance habits.”<br>
+                Soon, they may start arriving on time just to defeat your system.</p>
+                <p class="mb-6">2. The Too-Relaxed Coworker<br>
+                Some coworkers aren't lazy. They're simply <b class="highlight quiz-target" data-ans="too laidback" data-kor="너무 태평한">too laidback</b>. Deadlines approach, customers complain, and somehow they're making coffee.<br>
+                If they regularly <b class="highlight quiz-target" data-ans="slack off" data-kor="일을 소홀히 하다">slack off</b>, don't get angry. Make them responsible for something extremely expensive.<br>
+                “This is our <b class="highlight quiz-target" data-ans="top-of-the-line" data-kor="최고급의">top-of-the-line</b> projector,” you explain. “It costs $8,000. You're in charge of it.”<br>
+                Suddenly, the relaxed employee discovers anxiety.<br>
+                If they <b class="highlight quiz-target" data-ans="do a half-assed job" data-kor="일을 대충 해치우다">do a half-assed job</b>, give them something even more expensive. Eventually, they will either become responsible or spend the entire workday protecting office equipment.</p>
+                <p class="mb-6">3. The Avoider<br>
+                An <b class="highlight quiz-target" data-ans="avoidant" data-kor="회피하는">avoidant</b> coworker has an extraordinary ability to disappear whenever there is a problem.<br>
+                Don't chase them. Schedule a meeting called “Nothing Important.”<br>
+                When they arrive, lock the conference-room calendar for an hour and calmly discuss every issue they've been avoiding.<br>
+                “You tricked me!”<br>
+                “I prefer ‘improved attendance.’”<br>
+                Stay calm. There's no need to call them out aggressively.</p>
+                <p class="mb-6">4. The Human Distraction<br>
+                Some people constantly <b class="highlight quiz-target" data-ans="distract" data-kor="집중을 흐트러뜨리다">distract</b> everyone. They tell stories, show people videos, and <b class="highlight quiz-target" data-ans="disrupt" data-kor="방해하다">disrupt</b> meetings with completely unrelated questions.<br>
+                The solution is simple: give them an audience.<br>
+                Stop the meeting.<br>
+                “Kevin has something to say.”<br>
+                Kevin looks confused.<br>
+                “Go ahead, Kevin. Everyone is listening.”<br>
+                Twenty silent coworkers turn toward him.<br>
+                “Uh...I was just saying that my neighbor bought a new grill.”<br>
+                “Please continue.”<br>
+                After three minutes of full, respectful attention, Kevin will probably never interrupt anyone again.</p>
+                <p class="mb-6">5. The Minimum-Effort Expert<br>
+                Finally, there's the coworker who finishes every task suspiciously quickly.<br>
+                You open their report.<br>
+                “This is three sentences.”<br>
+                “Yeah. I <b class="highlight quiz-target" data-ans="didn't put much effort into it" data-kor="별로 노력을 들이지 않았다">didn't put much effort into it</b>.”<br>
+                At least they're honest.<br>
+                Maybe they <b class="highlight quiz-target" data-ans="just called it in" data-kor="그냥 성의 없이 대충 했다">just called it in</b> because nobody checks their work. So start celebrating every completed task with a detailed presentation.<br>
+                “Tomorrow, you'll explain your report to the entire department.”<br>
+                Watch their face.<br>
+                There is no need to raise your voice. Don't be sarcastic. Don't become a hothead.<br>
+                Simply smile and say, “We want everyone to appreciate your work.”<br>
+                Sometimes setting boundaries isn't enough.<br>
+                Sometimes you need an audience.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>다루기 힘든 사람들은 어디에나 있습니다. 다행히도 그들을 상대하는 데는 전문적인 방법들이 있습니다. 인사팀에서 이런 방법들을 추천할까요? 아니요. 효과는 있을까요? 물론이죠.</p>
+                <p>1. <b class="highlight">약속을 밥 먹듯이 어기는 사람</b><br>
+                누구나 <b class="highlight">약속을 잘 안 지키는 사람</b>을 한 명쯤은 압니다. 식당에 도착하기 10분 전에 저녁 약속을 취소하거나, 도와주겠다고 해놓고 사라지는 사람이죠.<br>
+                <b class="highlight">그냥 참고 견디지</b> 마세요. 대신 모든 모임에 초대하되 날짜를 틀리게 알려주세요.<br>
+                “왜 파티가 금요일이라고 말 안 했어?”<br>
+                “말했지. 너도 온다고 했고.”<br>
+                “근데 나한테 토요일이라고 했잖아!”<br>
+                “응. 과거 데이터를 바탕으로 정한 거야.”<br>
+                이 방법은 <b class="highlight">상황을 악화시킬</b> 수도 있으니 먼저 <b class="highlight">경고</b>를 해주세요. “앞으로 네 초대장은 실제 참석 습관을 반영해서 보내줄게.”<br>
+                얼마 지나지 않아 그 사람은 여러분의 시스템을 이기기 위해서라도 제시간에 나타나기 시작할지도 모릅니다.</p>
+                <p>2. 지나치게 느긋한 직장 동료<br>
+                어떤 동료들은 게으른 게 아닙니다. 그저 <b class="highlight">너무 태평할</b> 뿐이죠. 마감일이 다가오고 고객이 불평하는데도, 그 사람은 어딘가에서 커피를 내리고 있습니다.<br>
+                그 사람이 계속 <b class="highlight">일을 소홀히 한다면</b> 화내지 마세요. 대신 엄청나게 비싼 물건을 맡기세요.<br>
+                “이건 우리 회사 <b class="highlight">최고급</b> 프로젝터예요. 8천 달러짜리예요. 당신이 담당하세요.”<br>
+                갑자기 그 느긋했던 직원에게 불안이라는 감정이 생깁니다.<br>
+                그래도 <b class="highlight">일을 대충 한다면</b> 더 비싼 물건을 맡기세요. 결국 책임감 있는 사람이 되거나, 하루 종일 회사 물건을 지키며 보내게 될 겁니다.</p>
+                <p>3. 회피형 인간<br>
+                <b class="highlight">회피하는</b> 동료에게는 문제가 생길 때마다 사라지는 놀라운 능력이 있습니다.<br>
+                쫓아다니지 마세요. 대신 “별로 중요하지 않은 이야기”라는 제목으로 회의를 잡으세요.<br>
+                그 사람이 나타나면 회의실 일정을 한 시간 동안 확보해 놓고, 그동안 피했던 모든 문제를 차분하게 이야기하세요.<br>
+                “저를 속였잖아요!”<br>
+                “저는 ‘출석률을 개선했다’고 표현하고 싶네요.”<br>
+                침착하세요. 공격적으로 그 사람의 행동을 지적할 필요는 없습니다.</p>
+                <p>4. 인간 방해꾼<br>
+                끊임없이 다른 사람의 <b class="highlight">집중을 흐트러뜨리는</b> 사람들이 있습니다. 이야기를 하고, 영상을 보여주고, 회의 중에 전혀 상관없는 질문을 해서 <b class="highlight">흐름을 깨죠</b>.<br>
+                해결책은 간단합니다. 청중을 만들어주세요.<br>
+                회의를 멈추세요.<br>
+                “Kevin이 할 말이 있답니다.”<br>
+                Kevin은 당황합니다.<br>
+                “말씀하세요, Kevin. 모두 듣고 있어요.”<br>
+                스무 명의 동료가 조용히 그를 바라봅니다.<br>
+                “어... 그냥 제 이웃이 새 그릴을 샀다고 말하고 있었어요.”<br>
+                “계속하세요.”<br>
+                3분 동안 모두에게 완전하고 정중한 관심을 받고 나면, Kevin은 아마 다시는 남의 말을 끊고 싶지 않을 겁니다.</p>
+                <p>5. 최소 노력 전문가<br>
+                마지막으로, 모든 업무를 의심스러울 정도로 빨리 끝내는 동료가 있습니다.<br>
+                그 사람이 작성한 보고서를 열어봅니다.<br>
+                “세 문장인데요.”<br>
+                “네. <b class="highlight">별로 노력 안 했어요</b>.”<br>
+                적어도 솔직하기는 하네요.<br>
+                아무도 자신의 일을 확인하지 않으니까 <b class="highlight">그냥 성의 없이 대충 했을지도</b> 모릅니다. 그렇다면 이제부터는 완료된 모든 업무를 상세한 발표를 통해 축하해주세요.<br>
+                “내일 이 보고서를 부서 전체 앞에서 설명하실 거예요.”<br>
+                그 사람의 표정을 지켜보세요.<br>
+                언성을 높일 필요도 없습니다. 비꼬지 마세요. 욱하는 사람이 될 필요도 없습니다.<br>
+                그냥 웃으며 이렇게 말하세요.<br>
+                “모두가 당신의 업무를 제대로 감상했으면 해서요.”<br>
+                가끔은 선을 긋는 것만으로 충분하지 않습니다.<br>
+                가끔은 청중이 필요합니다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "812630.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

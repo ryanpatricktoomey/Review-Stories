@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | Five Highly Professional Ways to Deal with Difficult People</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🧯</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">Five Highly Professional Ways to Deal with Difficult People</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">lost cause</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">가망이 없는 사람 / 희망이 없는 경우</td></tr>
+                <tr><td class="p-4"><b class="text-white">echo chamber</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">자기와 비슷한 의견만 반복해서 듣는 환경</td></tr>
+                <tr><td class="p-4"><b class="text-white">ex-boss</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">전 직장 상사</td></tr>
+                <tr><td class="p-4"><b class="text-white">toxic person</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">해로운 사람 / 주변 사람을 지치게 하는 사람</td></tr>
+                <tr><td class="p-4"><b class="text-white">out of their shells</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">마음을 열고 더 적극적으로 나오는</td></tr>
+                <tr><td class="p-4"><b class="text-white">frustrating</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">답답한 / 짜증 나는</td></tr>
+                <tr><td class="p-4"><b class="text-white">suffocated</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">숨 막히는 듯한 / 억압당하는 느낌이 든</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">lost cause</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">아무리 노력해도 바뀌거나 나아질 가능성이 거의 없다고 생각되는 사람이나 상황을 말해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">echo chamber</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">원래 소리가 메아리치는 공간이라는 뜻이지만, 비유적으로는 자기와 비슷한 의견만 계속 듣고 반대 의견은 거의 접하지 않는 환경을 뜻해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">out of their shells</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">come out of your shell은 수줍거나 조용하던 사람이 마음을 열고 사람들과 더 편하게 어울리기 시작한다는 뜻이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">suffocated</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">실제로 “질식한”이라는 뜻도 있지만, 관계나 환경에 대해 쓰면 상대의 통제나 간섭 때문에 자유가 없고 숨 막히는 느낌을 표현할 수 있어요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Some difficult people can be handled with patience and clear boundaries. Others require more creative solutions. Here are five methods that are completely effective and should probably never appear in an employee handbook.</p>
+                <p class="mb-6">1. The Person Who Is Always Right<br>
+                Some people have created a personal <b class="highlight quiz-target" data-ans="echo chamber" data-kor="자기와 비슷한 의견만 반복해서 듣는 환경">echo chamber</b> where every good idea is mysteriously their idea.<br>
+                Don't argue with them. Agree completely.<br>
+                “You're right, Daniel.”<br>
+                Daniel smiles.<br>
+                “So you'll make all the decisions from now on.”<br>
+                His smile disappears.<br>
+                Whenever something goes wrong, ask, “What should we do?” Never offer advice. After three days of being right professionally, Daniel may discover the benefits of uncertainty.</p>
+                <p class="mb-6">2. The Toxic Coworker<br>
+                A <b class="highlight quiz-target" data-ans="toxic person" data-kor="해로운 사람">toxic person</b> can criticize everyone, gossip constantly, and somehow make lunch emotionally exhausting.<br>
+                Trying to change them may be a <b class="highlight quiz-target" data-ans="lost cause" data-kor="가망이 없는 일">lost cause</b>. Instead, take every negative comment as a serious request for assistance.<br>
+                “This company is terribly organized.”<br>
+                “Thank you for volunteering to reorganize the filing system.”<br>
+                “That isn't what I meant.”<br>
+                “Excellent. I'll tell the manager you have additional ideas.”<br>
+                Eventually, complaining becomes surprisingly dangerous.</p>
+                <p class="mb-6">3. The Controlling Boss<br>
+                My imaginary <b class="highlight quiz-target" data-ans="ex-boss" data-kor="전 직장 상사">ex-boss</b> wants to approve every email, meeting, coffee order, and breathing schedule.<br>
+                Employees feel <b class="highlight quiz-target" data-ans="suffocated" data-kor="숨 막히는">suffocated</b>.<br>
+                The solution? Ask for approval on absolutely everything.<br>
+                “Can I use the bathroom?”<br>
+                “You don't need to ask me that.”<br>
+                “Should I use the one downstairs or upstairs?”<br>
+                After receiving forty-seven questions before lunch, even a control freak may suddenly support independence.</p>
+                <p class="mb-6">4. The Person Who Forces Everyone to Socialize<br>
+                Some enthusiastic coworkers are determined to bring quiet people <b class="highlight quiz-target" data-ans="out of their shells" data-kor="마음을 열고 적극적으로 나오게">out of their shells</b>.<br>
+                “Come on! Tell us something personal!”<br>
+                Don't refuse. Give them exactly what they requested.<br>
+                Start describing your dentist appointment in extraordinary detail.<br>
+                After fifteen minutes, ask, “Would you like to hear about my insurance paperwork?”<br>
+                Your coworker may quickly develop respect for private people.</p>
+                <p class="mb-6">5. The Impossible Complainer<br>
+                Some people find every solution <b class="highlight quiz-target" data-ans="frustrating" data-kor="답답한">frustrating</b>.<br>
+                “The office is too cold.”<br>
+                You raise the temperature.<br>
+                “Now it's too hot.”<br>
+                Lower it.<br>
+                “Why is everyone touching the thermostat?”<br>
+                At this point, don't lose your temper. Stay calm and give clear options.<br>
+                “Would you like cold, hot, or personal responsibility?”<br>
+                They may complain about the question.<br>
+                That's fine.<br>
+                Hand them the thermostat.<br>
+                Sometimes the best way to deal with a difficult person is to give them exactly what they have spent all day demanding.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>어떤 다루기 힘든 사람들은 인내심과 분명한 선 긋기로 대처할 수 있습니다. 하지만 어떤 사람들에게는 조금 더 창의적인 방법이 필요하죠. 여기 완벽하게 효과적이지만 아마 직원 안내서에는 절대 들어가면 안 될 다섯 가지 방법이 있습니다.</p>
+                <p>1. 항상 자기가 맞는 사람<br>
+                어떤 사람들은 좋은 아이디어는 신기하게도 전부 자기 아이디어가 되는 개인적인 <b class="highlight">확증의 공간</b> 속에서 살아갑니다.<br>
+                그 사람과 논쟁하지 마세요. 완전히 동의하세요.<br>
+                “맞아요, Daniel.”<br>
+                Daniel이 웃습니다.<br>
+                “그러니까 앞으로 모든 결정을 Daniel 씨가 하시면 되겠네요.”<br>
+                그의 미소가 사라집니다.<br>
+                무슨 문제가 생길 때마다 “어떻게 해야 할까요?”라고 물어보세요. 절대 조언하지 마세요. 사흘 동안 직업적으로 모든 것에 맞는 사람이 되어보고 나면 Daniel도 확신이 없다는 것의 장점을 발견할지 모릅니다.</p>
+                <p>2. 해로운 직장 동료<br>
+                주변에 <b class="highlight">해로운 사람</b>은 모두를 비판하고, 끊임없이 뒷말을 하면서, 이상하게도 점심 한 끼만 같이 먹어도 사람을 감정적으로 지치게 만들 수 있습니다.<br>
+                그 사람을 바꾸려고 하는 건 <b class="highlight">가망 없는 일</b>일지도 모릅니다. 그러니 대신 모든 부정적인 말을 진지한 도움 요청으로 받아들이세요.<br>
+                “이 회사는 정리가 정말 엉망이에요.”<br>
+                “파일 정리를 새로 맡아주시겠다니 감사합니다.”<br>
+                “그런 뜻이 아니었는데요.”<br>
+                “훌륭합니다. 추가 아이디어도 있으시다고 매니저에게 말씀드릴게요.”<br>
+                얼마 지나지 않아 불평하는 일이 놀라울 정도로 위험해집니다.</p>
+                <p>3. 모든 것을 통제하는 상사<br>
+                가상의 <b class="highlight">전 직장 상사</b>는 모든 이메일, 회의, 커피 주문, 심지어 숨 쉬는 일정까지 승인하고 싶어 합니다.<br>
+                직원들은 <b class="highlight">숨이 막히는</b> 기분을 느낍니다.<br>
+                해결책은 뭘까요? 모든 것에 대해 승인을 요청하세요.<br>
+                “화장실 가도 될까요?”<br>
+                “그런 건 나한테 안 물어봐도 돼요.”<br>
+                “아래층 화장실이요, 위층 화장실이요?”<br>
+                점심시간이 되기도 전에 질문을 47개쯤 받고 나면 통제광도 갑자기 직원들의 독립성을 지지하기 시작할지도 모릅니다.</p>
+                <p>4. 모두를 억지로 사교적으로 만들려는 사람<br>
+                어떤 열정적인 동료들은 조용한 사람들을 반드시 <b class="highlight">마음을 열고 적극적으로 나오게</b> 만들겠다고 결심합니다.<br>
+                “어서요! 개인적인 얘기 하나 해봐요!”<br>
+                거절하지 마세요. 정확히 원하는 것을 주세요.<br>
+                최근에 치과에 갔던 이야기를 놀라울 정도로 자세하게 설명하기 시작하세요.<br>
+                15분 후 이렇게 물으세요.<br>
+                “제 보험 서류 얘기도 듣고 싶으세요?”<br>
+                그 동료는 아주 빠르게 사생활을 중시하는 사람들을 존중하게 될지도 모릅니다.</p>
+                <p>5. 절대 만족하지 않는 불평꾼<br>
+                어떤 사람들에게는 모든 해결책이 <b class="highlight">답답합니다</b>.<br>
+                “사무실이 너무 추워요.”<br>
+                온도를 올립니다.<br>
+                “이제 너무 더워요.”<br>
+                다시 낮춥니다.<br>
+                “왜 다들 온도 조절기를 계속 만지는 거예요?”<br>
+                이쯤 되면 화를 내지 마세요. 침착하게 분명한 선택지를 주세요.<br>
+                “추운 것, 더운 것, 아니면 직접 책임지는 것 중에 어떤 걸 원하세요?”<br>
+                그 사람은 그 질문에 대해서도 불평할지 모릅니다.<br>
+                괜찮습니다.<br>
+                온도 조절기를 건네주세요.<br>
+                가끔 다루기 힘든 사람을 상대하는 최고의 방법은 그 사람이 하루 종일 요구했던 것을 정확히 주는 것입니다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "812715.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

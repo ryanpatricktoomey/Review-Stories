@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | A Gentleman Must Know His Pigeons</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🕊️</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">A Gentleman Must Know His Pigeons</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">think for yourself</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">스스로 생각하다 / 남의 말을 그대로 따르지 않고 판단하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">diligent</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">성실한 / 부지런한</td></tr>
+                <tr><td class="p-4"><b class="text-white">hardworking</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">열심히 일하는 / 근면한</td></tr>
+                <tr><td class="p-4"><b class="text-white">fully-assembled</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">완전히 조립된 / 조립이 완료된</td></tr>
+                <tr><td class="p-4"><b class="text-white">bullshit detector</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">헛소리나 거짓말을 알아채는 감각</td></tr>
+                <tr><td class="p-4"><b class="text-white">critical thinking</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">비판적 사고 / 정보를 따져 보고 판단하는 능력</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold mb-1">think for yourself</h3>
+                <p class="text-slate-300 text-sm">다른 사람의 의견을 무조건 따르지 않고 스스로 판단한다는 뜻이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold mb-1">diligent / hardworking</h3>
+                <p class="text-slate-300 text-sm">둘 다 ‘성실한’이라는 뜻이 있지만, diligent는 일을 꼼꼼하고 꾸준하게 하는 태도에, hardworking은 많은 노력과 에너지를 들여 열심히 일하는 것에 조금 더 초점이 있어요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold mb-1">fully-assembled</h3>
+                <p class="text-slate-300 text-sm">부품 상태가 아니라 모든 부분이 연결되어 완성된 상태를 말해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold mb-1">bullshit detector</h3>
+                <p class="text-slate-300 text-sm">사람들이 하는 과장, 거짓말, 말도 안 되는 주장을 빠르게 알아채는 능력을 재미있고 다소 거칠게 표현한 말이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold mb-1">critical thinking</h3>
+                <p class="text-slate-300 text-sm">정보를 그대로 받아들이지 않고 증거와 논리를 따져 판단하는 능력을 말해요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">It is 1848, and if you intend to succeed in business, I strongly recommend learning how to raise carrier pigeons.</p>
+                <p class="mb-6">Some people laugh when I say that. They won't be laughing when they need information quickly.</p>
+                <p class="mb-6">I trade grain between three towns. Prices can change suddenly, especially after bad weather. A letter sent by coach may take most of the day to reach me. A good pigeon can bring me a message in less than an hour.</p>
+                <p class="mb-6">That can make a big difference.</p>
+                <p class="mb-6">Yesterday morning proved it.</p>
+                <p class="mb-6">I was at my warehouse when one of my birds arrived carrying a tiny message from my brother.</p>
+                <p class="mb-6">DON'T BUY. WESTERN BRIDGE DOWN. GRAIN SHIPMENT DELAYED.</p>
+                <p class="mb-6">An hour later, a merchant named Mr. Bell came to see me.</p>
+                <p class="mb-6">“I have excellent news,” he said. “The western shipment has arrived early. Grain prices will fall by tomorrow. You should sell your stock immediately.”</p>
+                <p class="mb-6">That was strange.</p>
+                <p class="mb-6">I had known Bell for years. He was <b class="highlight quiz-target" data-ans="hardworking" data-kor="열심히 일하는">hardworking</b>, certainly, and always appeared <b class="highlight quiz-target" data-ans="diligent" data-kor="성실한">diligent</b> about his accounts.</p>
+                <p class="mb-6">But I had also developed a fairly good <b class="highlight quiz-target" data-ans="bullshit detector" data-kor="헛소리나 거짓말을 알아채는 감각">bullshit detector</b>.</p>
+                <p class="mb-6">“Arrived early?” I asked.</p>
+                <p class="mb-6">“This morning.”</p>
+                <p class="mb-6">“Over the western bridge?”</p>
+                <p class="mb-6">“Yes.”</p>
+                <p class="mb-6">I tried not to smile.</p>
+                <p class="mb-6">Carrier pigeons don't simply deliver information. They allow you to <b class="highlight quiz-target" data-ans="think for yourself" data-kor="스스로 생각하다">think for yourself</b> when two people are telling you different things.</p>
+                <p class="mb-6">So I asked Bell several more questions. His story changed twice.</p>
+                <p class="mb-6">Finally, he admitted the truth.</p>
+                <p class="mb-6">The bridge had collapsed. He knew grain prices would rise sharply, and he wanted me to sell my stock to him before I heard the news.</p>
+                <p class="mb-6">I showed him my brother's message.</p>
+                <p class="mb-6">Bell stared at it.</p>
+                <p class="mb-6">“Where did you get that?”</p>
+                <p class="mb-6">I pointed toward the roof.</p>
+                <p class="mb-6">He left without buying a single sack.</p>
+                <p class="mb-6">People say the electric telegraph will soon make pigeons unnecessary. Perhaps they're right in the cities. Even still, I would never trust my business entirely to a wire controlled by someone else.</p>
+                <p class="mb-6">Raising pigeons requires patience. You must feed them properly, train them to return home, watch for illness, and choose strong birds. It's especially useful for people who need reliable information from places without telegraph stations.</p>
+                <p class="mb-6">In today's world, information is becoming increasingly important.</p>
+                <p class="mb-6">And going forward, I believe a man who can send his own messages will always have an advantage.</p>
+                <p class="mb-6">After all, wires can break.</p>
+                <p class="mb-6">A well-trained pigeon knows the way home.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">1848년인 지금, 사업에서 성공하고 싶다면 전서구를 기르는 법을 배우라고 강력히 권하고 싶다.</p>
+                <p class="mb-6">내가 이런 말을 하면 비웃는 사람들도 있다. 하지만 급하게 정보가 필요해지면 웃음이 나오지 않을 것이다.</p>
+                <p class="mb-6">나는 세 도시 사이에서 곡물을 거래한다. 곡물 가격은 갑자기 변할 수 있는데, 특히 날씨가 나쁠 때 그렇다. 마차로 편지를 보내면 나에게 도착하기까지 하루 대부분이 걸릴 수도 있다. 하지만 잘 훈련된 비둘기는 한 시간도 안 되어 메시지를 가져올 수 있다.</p>
+                <p class="mb-6">그 차이는 상당히 크다.</p>
+                <p class="mb-6">어제 아침에 그 이유가 분명하게 드러났다.</p>
+                <p class="mb-6">나는 창고에 있었는데, 비둘기 한 마리가 동생이 보낸 작은 쪽지를 달고 돌아왔다.</p>
+                <p class="mb-6">사지 마. 서쪽 다리 붕괴. 곡물 운송 지연.</p>
+                <p class="mb-6">한 시간 뒤, 벨이라는 상인이 나를 찾아왔다.</p>
+                <p class="mb-6">“아주 좋은 소식이 있습니다.” 그가 말했다. “서쪽에서 오는 물량이 일찍 도착했습니다. 내일이면 곡물 가격이 떨어질 겁니다. 가지고 있는 재고를 지금 파시는 게 좋겠습니다.”</p>
+                <p class="mb-6">이상했다.</p>
+                <p class="mb-6">나는 벨을 여러 해 동안 알고 지냈다. 그는 분명 <b class="highlight">열심히 일하는</b> 사람이었고, 장부 관리도 언제나 꼼꼼하고 <b class="highlight">성실하게</b> 하는 것처럼 보였다.</p>
+                <p class="mb-6">하지만 나에게는 <b class="highlight">헛소리나 거짓말을 알아채는 감각</b>도 꽤 잘 발달해 있었다.</p>
+                <p class="mb-6">“일찍 도착했다고요?” 내가 물었다.</p>
+                <p class="mb-6">“오늘 아침에요.”</p>
+                <p class="mb-6">“서쪽 다리를 건너서?”</p>
+                <p class="mb-6">“그렇습니다.”</p>
+                <p class="mb-6">나는 웃지 않으려고 애썼다.</p>
+                <p class="mb-6">전서구는 단순히 정보를 전달해 주는 것만이 아니다. 서로 다른 두 사람이 서로 다른 말을 할 때 <b class="highlight">스스로 생각하고</b> 판단할 수 있게 해 준다.</p>
+                <p class="mb-6">그래서 나는 벨에게 질문을 몇 가지 더 했다. 그의 이야기는 두 번이나 바뀌었다.</p>
+                <p class="mb-6">결국 그는 사실을 인정했다.</p>
+                <p class="mb-6">다리가 무너진 것이 맞았다. 그는 곡물 가격이 크게 오를 것을 알고 있었고, 내가 그 소식을 듣기 전에 내 재고를 사들이려 했던 것이다.</p>
+                <p class="mb-6">나는 동생이 보낸 쪽지를 보여 주었다.</p>
+                <p class="mb-6">벨은 쪽지를 빤히 바라봤다.</p>
+                <p class="mb-6">“그걸 어디서 받았습니까?”</p>
+                <p class="mb-6">나는 지붕 쪽을 가리켰다.</p>
+                <p class="mb-6">그는 곡물 한 자루도 사지 못한 채 떠났다.</p>
+                <p class="mb-6">사람들은 전기 전신이 곧 비둘기를 필요 없게 만들 거라고 말한다. 도시에서는 그 말이 맞을지도 모른다. 그렇다고 해도 나는 다른 누군가가 관리하는 전선에 내 사업 전체를 맡기지는 않을 것이다.</p>
+                <p class="mb-6">비둘기를 기르는 데는 인내심이 필요하다. 제대로 먹이를 주고, 집으로 돌아오도록 훈련하고, 병이 들지 않았는지 살피고, 튼튼한 새를 골라야 한다. 특히 전신국이 없는 곳에서 믿을 만한 정보를 받아야 하는 사람들에게 유용하다.</p>
+                <p class="mb-6">오늘날에는 정보가 점점 더 중요해지고 있다.</p>
+                <p class="mb-6">그리고 앞으로도 자기 힘으로 메시지를 보낼 수 있는 사람은 언제나 유리할 것이라고 나는 믿는다.</p>
+                <p class="mb-6">전선은 끊어질 수 있으니까.</p>
+                <p class="mb-6">잘 훈련된 비둘기는 집으로 돌아오는 길을 안다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "813830.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

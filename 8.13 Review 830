@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | Never Trust a Man with a Bad Wig</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🎩</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">Never Trust a Man with a Bad Wig</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">give a good answer</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">좋은 답을 하다 / 적절하게 대답하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">even still</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그렇다고 해도 / 그럼에도 불구하고</td></tr>
+                <tr><td class="p-4"><b class="text-white">rat on them</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그들을 밀고하다 / 일러바치다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold mb-1">even still</h3>
+                <p class="text-slate-300 text-sm">앞의 사실을 인정하면서도 “그럼에도 여전히”라는 대조를 덧붙일 때 사용해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold mb-1">rat on them</h3>
+                <p class="text-slate-300 text-sm">누군가가 한 잘못이나 비밀을 윗사람에게 일러바치는 것을 뜻하는 구어적인 표현이에요. 배신한다는 부정적인 느낌이 있습니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">It is 1776, and there are many useful skills a young servant can learn.</p>
+                <p class="mb-6">But if you want steady employment in a respectable household, learn how to dress a gentleman's wig.</p>
+                <p class="mb-6">People notice a man's wig before they notice almost anything else. A badly powdered wig can make a wealthy man look careless. A crooked curl can ruin a portrait. Too much powder on the shoulders can make a gentleman look as if he has walked through a flour mill.</p>
+                <p class="mb-6">I have been dressing Mr. Harrington's wigs for six years.</p>
+                <p class="mb-6">It requires patience, a steady hand, and excellent judgment.</p>
+                <p class="mb-6">Last Tuesday proved exactly why.</p>
+                <p class="mb-6">Mr. Harrington was preparing to dine with a government minister. He had spent weeks trying to arrange the meeting, and he believed it might lead to a very profitable contract.</p>
+                <p class="mb-6">Then his nephew sat on the wig.</p>
+                <p class="mb-6">I heard a horrible crunch from the dressing room.</p>
+                <p class="mb-6">When I entered, young Thomas was standing beside the chair looking terrified.</p>
+                <p class="mb-6">“Do not tell my uncle.”</p>
+                <p class="mb-6">I picked up the wig.</p>
+                <p class="mb-6">One side was completely flat.</p>
+                <p class="mb-6">“You sat on it.”</p>
+                <p class="mb-6">“I didn't see it.”</p>
+                <p class="mb-6">There was no time to argue.</p>
+                <p class="mb-6">I had perhaps twenty minutes before Mr. Harrington came upstairs.</p>
+                <p class="mb-6">Thomas offered me money not to <b class="highlight quiz-target" data-ans="rat on him" data-kor="일러바치다">rat on him</b>, but that was the least of my concerns. I heated the curling irons, reshaped the damaged side, added fresh powder, and replaced two broken ribbons.</p>
+                <p class="mb-6">Mr. Harrington entered just as I finished.</p>
+                <p class="mb-6">“Why does it smell burnt in here?”</p>
+                <p class="mb-6">Thomas stared at me.</p>
+                <p class="mb-6">I had to <b class="highlight quiz-target" data-ans="give a good answer" data-kor="적절한 답을 하다">give a good answer</b>.</p>
+                <p class="mb-6">“The iron was slightly too hot, sir.”</p>
+                <p class="mb-6">He frowned.</p>
+                <p class="mb-6">“And the wig?”</p>
+                <p class="mb-6">“Ready, sir.”</p>
+                <p class="mb-6">He put it on and examined himself in the mirror.</p>
+                <p class="mb-6">For a terrible moment, he said nothing.</p>
+                <p class="mb-6">Then he smiled.</p>
+                <p class="mb-6">“Excellent.”</p>
+                <p class="mb-6">The dinner went well. Mr. Harrington returned after midnight with the contract in his pocket.</p>
+                <p class="mb-6">He never discovered what had happened.</p>
+                <p class="mb-6"><b class="highlight quiz-target" data-ans="Even still" data-kor="그렇다고 해도">Even still</b>, I told Thomas never to enter the dressing room without permission.</p>
+                <p class="mb-6">Some young servants believe wig dressing is old-fashioned work. They are wrong. In today's world, appearance matters more than ever, especially among gentlemen with money and influence.</p>
+                <p class="mb-6">A skilled valet can always find employment.</p>
+                <p class="mb-6">And going forward, I expect wigs to become larger, more elaborate, and perhaps even more heavily powdered.</p>
+                <p class="mb-6">So learn the skill properly.</p>
+                <p class="mb-6">I cannot imagine respectable men ever choosing to go outside with nothing on their heads but their own hair.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">1776년인 지금, 젊은 하인이 배울 수 있는 유용한 기술은 많다.</p>
+                <p class="mb-6">하지만 제대로 된 상류층 집안에서 안정적으로 일하고 싶다면 신사의 가발을 손질하는 법을 배워야 한다.</p>
+                <p class="mb-6">사람들은 남자의 거의 모든 것보다 먼저 가발을 본다. 가루를 제대로 뿌리지 않은 가발은 부유한 남자를 단정하지 못해 보이게 만들 수 있다. 컬 하나가 비뚤어지면 초상화를 망칠 수도 있다. 어깨에 가루가 너무 많이 떨어지면 신사가 밀가루 공장 안을 걸어 나온 것처럼 보일 수도 있다.</p>
+                <p class="mb-6">나는 6년 동안 해링턴 씨의 가발을 손질해 왔다.</p>
+                <p class="mb-6">이 일에는 인내심과 안정된 손놀림, 그리고 뛰어난 판단력이 필요하다.</p>
+                <p class="mb-6">지난 화요일에 그 이유가 분명하게 드러났다.</p>
+                <p class="mb-6">해링턴 씨는 정부 장관과 저녁 식사를 할 준비를 하고 있었다. 그는 그 만남을 잡기 위해 몇 주를 노력했고, 그것이 아주 수익성 높은 계약으로 이어질 수 있다고 믿었다.</p>
+                <p class="mb-6">그런데 그의 조카가 가발 위에 앉아 버렸다.</p>
+                <p class="mb-6">나는 탈의실에서 끔찍한 우지직 소리를 들었다.</p>
+                <p class="mb-6">방에 들어가 보니 어린 토머스가 의자 옆에 겁에 질린 채 서 있었다.</p>
+                <p class="mb-6">“삼촌한테 말하지 마세요.”</p>
+                <p class="mb-6">나는 가발을 집어 들었다.</p>
+                <p class="mb-6">한쪽이 완전히 납작해져 있었다.</p>
+                <p class="mb-6">“네가 깔고 앉았구나.”</p>
+                <p class="mb-6">“있는 줄 몰랐어요.”</p>
+                <p class="mb-6">말다툼할 시간이 없었다.</p>
+                <p class="mb-6">해링턴 씨가 위층으로 올라오기까지 20분 정도밖에 남지 않았다.</p>
+                <p class="mb-6">토머스는 자기를 <b class="highlight">일러바치지</b> 말아 달라며 돈까지 주겠다고 했지만, 그건 내 걱정거리 중 가장 작은 문제였다. 나는 고데용 쇠를 데우고, 눌린 쪽을 다시 모양 잡고, 가루를 새로 뿌리고, 끊어진 리본 두 개를 교체했다.</p>
+                <p class="mb-6">내가 막 끝냈을 때 해링턴 씨가 들어왔다.</p>
+                <p class="mb-6">“여기서 왜 탄 냄새가 나지?”</p>
+                <p class="mb-6">토머스가 나를 바라봤다.</p>
+                <p class="mb-6">나는 <b class="highlight">적절한 답을 해야</b> 했다.</p>
+                <p class="mb-6">“쇠가 조금 너무 뜨거웠습니다, 선생님.”</p>
+                <p class="mb-6">그는 얼굴을 찌푸렸다.</p>
+                <p class="mb-6">“가발은?”</p>
+                <p class="mb-6">“준비됐습니다.”</p>
+                <p class="mb-6">그는 가발을 쓰고 거울 속 자신을 살펴봤다.</p>
+                <p class="mb-6">끔찍하게 긴 순간 동안 아무 말도 하지 않았다.</p>
+                <p class="mb-6">그러다 미소를 지었다.</p>
+                <p class="mb-6">“훌륭하군.”</p>
+                <p class="mb-6">저녁 식사는 잘 끝났다. 해링턴 씨는 자정이 지나 계약서를 주머니에 넣은 채 돌아왔다.</p>
+                <p class="mb-6">그날 무슨 일이 있었는지는 끝내 알지 못했다.</p>
+                <p class="mb-6"><b class="highlight">그렇다고 해도</b> 나는 토머스에게 허락 없이 다시는 탈의실에 들어오지 말라고 했다.</p>
+                <p class="mb-6">몇몇 젊은 하인들은 가발 손질이 구식 일이라고 생각한다. 그들은 틀렸다. 오늘날에는 외모가 그 어느 때보다 중요하다. 특히 돈과 영향력이 있는 신사들에게는 더욱 그렇다.</p>
+                <p class="mb-6">숙련된 시종이라면 언제든 일자리를 구할 수 있다.</p>
+                <p class="mb-6">그리고 앞으로 가발은 더욱 커지고, 더 화려해지고, 어쩌면 가루도 훨씬 더 많이 뿌리게 될 것이라고 생각한다.</p>
+                <p class="mb-6">그러니 이 기술을 제대로 배워 두어라.</p>
+                <p class="mb-6">점잖은 신사들이 자기 머리카락만 드러낸 채 밖으로 나가기로 선택하는 세상은 도저히 상상할 수 없다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "813830.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

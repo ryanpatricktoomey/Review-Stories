@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | Never Ignore a Red Lamp</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🚂</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">Never Ignore a Red Lamp</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">misunderstanding</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">오해</td></tr>
+                <tr><td class="p-4"><b class="text-white">get through the day</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">하루를 버티다 / 하루를 무사히 보내다</td></tr>
+                <tr><td class="p-4"><b class="text-white">medic</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">의무병 / 응급 의료요원</td></tr>
+                <tr><td class="p-4"><b class="text-white">go with my gut</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">직감을 따르다</td></tr>
+                <tr><td class="p-4"><b class="text-white">a couple in their forties</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">40대 부부</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold mb-1">get through the day</h3>
+                <p class="text-slate-300 text-sm">힘들거나 피곤한 상황에서 하루를 어떻게든 버틴다는 느낌이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold mb-1">go with my gut</h3>
+                <p class="text-slate-300 text-sm">확실한 증거보다는 자신의 직감이나 본능을 믿고 결정한다는 뜻이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold mb-1">medic</h3>
+                <p class="text-slate-300 text-sm">군대나 응급 상황에서 치료를 담당하는 의료 인력을 가리킬 수 있어요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold mb-1">a couple in their forties</h3>
+                <p class="text-slate-300 text-sm">두 사람 모두 대략 40대인 부부나 연인을 자연스럽게 묘사하는 표현이에요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">It is 1874, and if you ask me, every railwayman should know how to signal a train by hand.</p>
+                <p class="mb-6">The new railways are spreading across the country so quickly that experienced signalmen are more important than ever. Engines are getting faster, stations are getting busier, and one wrong signal can kill a hundred people.</p>
+                <p class="mb-6">My job is simple to explain.</p>
+                <p class="mb-6">Green means proceed.</p>
+                <p class="mb-6">Red means stop.</p>
+                <p class="mb-6">The difficulty is making sure the right train sees the right signal at the right moment.</p>
+                <p class="mb-6">One wet November evening, I was working alone in the signal cabin outside Millbrook Station. The rain was so heavy that I could barely see the tracks.</p>
+                <p class="mb-6">The six-fifteen passenger train had just passed me when the telegraph machine clicked.</p>
+                <p class="mb-6">BRIDGE DAMAGED. STOP ALL EASTBOUND TRAFFIC.</p>
+                <p class="mb-6">I reached for my red lamp.</p>
+                <p class="mb-6">Then the telegraph clicked again.</p>
+                <p class="mb-6">MESSAGE ERROR. LINE SAFE.</p>
+                <p class="mb-6">I stood there staring at it.</p>
+                <p class="mb-6">A <b class="highlight quiz-target" data-ans="misunderstanding" data-kor="오해">misunderstanding</b> over the telegraph was not unusual. Messages were sent by people, and people made mistakes.</p>
+                <p class="mb-6">But something felt wrong.</p>
+                <p class="mb-6">I decided to <b class="highlight quiz-target" data-ans="go with my gut" data-kor="직감을 따르다">go with my gut</b>.</p>
+                <p class="mb-6">I climbed down from the cabin and walked nearly half a mile through the rain with the red lamp.</p>
+                <p class="mb-6">Then I heard the next train approaching.</p>
+                <p class="mb-6">I stood beside the track and swung the lamp as hard as I could.</p>
+                <p class="mb-6">The driver saw me.</p>
+                <p class="mb-6">The brakes screamed.</p>
+                <p class="mb-6">The train stopped perhaps fifty yards away.</p>
+                <p class="mb-6">A conductor jumped down.</p>
+                <p class="mb-6">“Are you mad?”</p>
+                <p class="mb-6">“The bridge may be damaged.”</p>
+                <p class="mb-6">“We received word that it was safe.”</p>
+                <p class="mb-6">“So did I.”</p>
+                <p class="mb-6">Several passengers opened the windows. <b class="highlight quiz-target" data-ans="A couple in their forties" data-kor="40대 부부">A couple in their forties</b> began demanding to know why we had stopped.</p>
+                <p class="mb-6">Then we heard it.</p>
+                <p class="mb-6">A deep cracking sound came from the darkness ahead.</p>
+                <p class="mb-6">Part of the bridge dropped into the river.</p>
+                <p class="mb-6">Nobody complained after that.</p>
+                <p class="mb-6">There was a <b class="highlight quiz-target" data-ans="medic" data-kor="응급 의료요원">medic</b> traveling in the second carriage, and he helped the driver, who had injured his shoulder when the train stopped so suddenly.</p>
+                <p class="mb-6">We spent the rest of the night in the carriages. It was cold, but everyone managed to <b class="highlight quiz-target" data-ans="get through the day" data-kor="하루를 버티다">get through the day</b>—and the night—alive.</p>
+                <p class="mb-6">Knowing railway signals comes in handy because machines can carry information, but they cannot always tell you whether that information is correct.</p>
+                <p class="mb-6">Going forward, I expect trains to become faster still. One day, perhaps they will travel at fifty or even sixty miles an hour.</p>
+                <p class="mb-6">Imagine that.</p>
+                <p class="mb-6">At such speeds, skilled signalmen will surely be needed everywhere.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">1874년인 지금, 내 생각에는 모든 철도 직원이 손으로 열차 신호를 보내는 법을 알아야 한다.</p>
+                <p class="mb-6">새로운 철도가 전국으로 너무 빠르게 퍼지고 있어서 숙련된 신호수의 중요성은 그 어느 때보다 커졌다. 기관차는 더 빨라지고, 역은 더 붐비고 있으며, 신호 하나를 잘못 보내면 백 명이 목숨을 잃을 수도 있다.</p>
+                <p class="mb-6">내 일은 설명하기 쉽다.</p>
+                <p class="mb-6">초록색은 진행.</p>
+                <p class="mb-6">빨간색은 정지.</p>
+                <p class="mb-6">어려운 점은 정확한 순간에 정확한 열차가 정확한 신호를 보게 하는 것이다.</p>
+                <p class="mb-6">11월의 어느 비 오는 저녁, 나는 밀브룩 역 밖의 신호소에서 혼자 근무하고 있었다. 비가 너무 많이 내려 선로가 거의 보이지 않았다.</p>
+                <p class="mb-6">6시 15분 여객 열차가 막 지나간 순간 전신기가 딸깍거렸다.</p>
+                <p class="mb-6">다리 손상. 동쪽행 모든 열차 정지.</p>
+                <p class="mb-6">나는 빨간 신호등에 손을 뻗었다.</p>
+                <p class="mb-6">그러자 전신기가 다시 울렸다.</p>
+                <p class="mb-6">메시지 오류. 선로 안전.</p>
+                <p class="mb-6">나는 그걸 바라보며 가만히 서 있었다.</p>
+                <p class="mb-6">전신상의 <b class="highlight">오해</b>나 착오는 드문 일이 아니었다. 메시지는 사람이 보내는 것이고, 사람은 실수한다.</p>
+                <p class="mb-6">하지만 뭔가 이상했다.</p>
+                <p class="mb-6">나는 <b class="highlight">직감을 따르기로</b> 했다.</p>
+                <p class="mb-6">신호소에서 내려와 빗속을 거의 800미터쯤 걸어가며 빨간 신호등을 들고 갔다.</p>
+                <p class="mb-6">그때 다음 열차가 다가오는 소리가 들렸다.</p>
+                <p class="mb-6">나는 선로 옆에 서서 있는 힘껏 신호등을 흔들었다.</p>
+                <p class="mb-6">기관사가 나를 봤다.</p>
+                <p class="mb-6">브레이크가 날카로운 소리를 냈다.</p>
+                <p class="mb-6">열차는 내 앞 50야드 정도를 남겨 두고 멈췄다.</p>
+                <p class="mb-6">차장이 뛰어내렸다.</p>
+                <p class="mb-6">“미쳤습니까?”</p>
+                <p class="mb-6">“다리가 손상됐을 수도 있습니다.”</p>
+                <p class="mb-6">“안전하다는 연락을 받았는데요.”</p>
+                <p class="mb-6">“저도 받았습니다.”</p>
+                <p class="mb-6">몇몇 승객들이 창문을 열었다. <b class="highlight">40대 부부</b> 한 쌍은 왜 열차를 세웠는지 설명하라고 요구하기 시작했다.</p>
+                <p class="mb-6">그때 소리가 들렸다.</p>
+                <p class="mb-6">앞쪽 어둠 속에서 깊은 균열음이 났다.</p>
+                <p class="mb-6">다리 일부가 강으로 떨어졌다.</p>
+                <p class="mb-6">그 뒤로는 아무도 불평하지 않았다.</p>
+                <p class="mb-6">두 번째 객차에는 <b class="highlight">응급 의료요원</b>이 타고 있었고, 갑자기 열차를 세우다가 어깨를 다친 기관사를 치료해 주었다.</p>
+                <p class="mb-6">우리는 밤새 객차 안에 있었다. 추웠지만 모두가 그 하루와 밤을 어떻게든 무사히 <b class="highlight">버텼다</b>.</p>
+                <p class="mb-6">철도 신호를 아는 능력은 기계가 정보를 전달할 수는 있어도 그 정보가 정확한지까지 항상 알려 주는 것은 아니기 때문에 매우 요긴하다.</p>
+                <p class="mb-6">앞으로 열차는 더욱 빨라질 것이다. 언젠가는 시속 50마일, 어쩌면 60마일까지 달릴지도 모른다.</p>
+                <p class="mb-6">상상해 보라.</p>
+                <p class="mb-6">그런 속도라면 숙련된 신호수는 분명 어디에서나 필요할 것이다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "813715.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

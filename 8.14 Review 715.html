@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | When Radioactive Water Was Good for You</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">☢️</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">When Radioactive Water Was Good for You</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">grain of salt</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">곧이곧대로 믿지 않기 / 어느 정도 의심해서 받아들이기</td></tr>
+                <tr><td class="p-4"><b class="text-white">bad circulation</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">혈액 순환이 잘 안 됨</td></tr>
+                <tr><td class="p-4"><b class="text-white">room temperature</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">실온 / 상온</td></tr>
+                <tr><td class="p-4"><b class="text-white">gargle</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">가글하다 / 목을 헹구다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl space-y-2 border-l-4 border-teal-400">
+                <h3 class="text-teal-400 font-bold text-lg">grain of salt</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">보통 take something with a grain of salt 형태로 써요. 어떤 정보나 주장을 완전히 믿지 말고 어느 정도 의심하면서 받아들이라는 뜻입니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2 border-l-4 border-teal-400">
+                <h3 class="text-teal-400 font-bold text-lg">bad circulation</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">손발이 차갑거나 저리는 등의 증상을 이야기할 때 흔히 쓰는 표현이에요. I have bad circulation처럼 말할 수 있습니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2 border-l-4 border-teal-400">
+                <h3 class="text-teal-400 font-bold text-lg">room temperature</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">단순히 ‘방의 온도’라는 뜻도 있지만 음식이나 음료가 ‘차갑지도 뜨겁지도 않은 상온 상태’라는 뜻으로 자주 사용돼요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2 border-l-4 border-teal-400">
+                <h3 class="text-teal-400 font-bold text-lg">gargle</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">액체를 목 뒤쪽까지 보내 헹군 뒤 뱉는 행동이에요. 단순히 입안을 헹구는 rinse와는 조금 다릅니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Imagine walking into a pharmacy because you feel tired and have <b class="highlight quiz-target" data-ans="bad circulation" data-kor="혈액 순환이 잘 안 됨">bad circulation</b>. The pharmacist hands you a bottle of water and tells you it may boost your energy.</p>
+                <p class="mb-6">There is just one unusual ingredient: radium.</p>
+                <p class="mb-6">In the early 20th century, radioactivity was new, mysterious, and exciting. After scientists discovered radioactive elements, some businesses began putting radioactive materials into consumer products. Radium appeared in cosmetics, health products, and even drinks.</p>
+                <p class="mb-6">One famous product was Radithor, a radioactive drink sold in the United States in the 1920s. It contained radium dissolved in water and was advertised as a health tonic. The company made extraordinary claims about its benefits, suggesting that it could increase energy and improve various health problems.</p>
+                <p class="mb-6">Today, that sounds insane. At the time, however, radioactivity represented modern science. If something contained this amazing new source of energy, perhaps it could give energy to your body too.</p>
+                <p class="mb-6">People didn't <b class="highlight quiz-target" data-ans="gargle" data-kor="가글하다">gargle</b> with Radithor or use it like mouthwash. They actually drank it. Unlike medicine that needed refrigeration, the little bottles could simply sit at <b class="highlight quiz-target" data-ans="room temperature" data-kor="실온 / 상온">room temperature</b>, ready for your next radioactive health boost.</p>
+                <p class="mb-6">One enthusiastic customer was Eben Byers, a wealthy American businessman. He reportedly began drinking Radithor after hurting his arm and became convinced that it worked. He continued consuming large quantities of it.</p>
+                <p class="mb-6">Unfortunately, it really was making a difference—just not the difference he wanted.</p>
+                <p class="mb-6">Radium is dangerous because the body can treat it somewhat like calcium and deposit it in the bones. Continued exposure can cause severe radiation damage. Byers eventually became seriously ill and died in 1932. His case attracted enormous public attention and helped expose the dangers of radioactive health products.</p>
+                <p class="mb-6">The story is a useful reminder to take dramatic health claims with a <b class="highlight quiz-target" data-ans="grain of salt" data-kor="곧이곧대로 믿지 않기">grain of salt</b>. A product can sound scientific without actually being safe or effective. Even personal experience can be misleading: feeling better after starting something doesn't necessarily prove that the treatment caused the improvement.</p>
+                <p class="mb-6">Modern health trends are obviously very different from drinking radium. Still, whenever something is said to boost energy, improve circulation, or produce amazing results, it is worth asking two questions.</p>
+                <p class="mb-6">Does it work?</p>
+                <p class="mb-6">And perhaps more importantly, is it safe?</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">몸이 피곤하고 <b class="highlight">혈액 순환이 잘 안 되는</b> 것 같아서 약국에 들어갔다고 상상해 보세요. 약사는 에너지를 높이는 데 도움이 될 수 있다며 물 한 병을 건냅니다.</p>
+                <p class="mb-6">그런데 특이한 성분이 하나 들어 있습니다. 바로 라듐입니다.</p>
+                <p class="mb-6">20세기 초, 방사능은 새롭고 신비로우며 흥미로운 것이었습니다. 과학자들이 방사성 원소를 발견한 후, 일부 기업들은 소비자 제품에 방사성 물질을 넣기 시작했습니다. 라듐은 화장품, 건강 제품, 심지어 음료에도 등장했습니다.</p>
+                <p class="mb-6">그중 유명한 제품 하나가 1920년대 미국에서 판매된 방사성 음료 ‘라디토르(Radithor)’였습니다. 물에 라듐을 녹인 제품으로, 건강 강장제로 광고되었습니다. 회사는 이 제품의 효능에 대해 엄청난 주장을 펼쳤고, 에너지를 증가시키고 여러 건강 문제를 개선할 수 있다고 홍보했습니다.</p>
+                <p class="mb-6">오늘날에는 미친 이야기처럼 들립니다. 하지만 당시 방사능은 현대 과학을 상징했습니다. 이 놀라운 새로운 에너지원이 제품 안에 들어 있다면, 어쩌면 우리 몸에도 에너지를 줄 수 있지 않을까 생각했던 것이죠.</p>
+                <p class="mb-6">사람들은 라디토르로 <b class="highlight">가글</b>을 하거나 구강청결제처럼 사용한 것이 아닙니다. 실제로 마셨습니다. 냉장 보관이 필요한 약과 달리, 작은 병들을 <b class="highlight">실온</b>에 두었다가 다음번 ‘방사능 건강 보충’을 위해 마실 수 있었습니다.</p>
+                <p class="mb-6">이 제품을 열렬히 애용했던 사람 중 한 명은 미국의 부유한 사업가 에벤 바이어스였습니다. 그는 팔을 다친 후 라디토르를 마시기 시작했고, 효과가 있다고 확신하게 된 것으로 알려져 있습니다. 이후 그는 많은 양을 계속해서 마셨습니다.</p>
+                <p class="mb-6">불행히도 라디토르는 정말로 변화를 일으키고 있었습니다. 단지 그가 원했던 변화가 아니었을 뿐입니다.</p>
+                <p class="mb-6">라듐이 위험한 이유 중 하나는 우리 몸이 라듐을 어느 정도 칼슘처럼 처리하여 뼈에 축적할 수 있기 때문입니다. 지속적으로 노출되면 심각한 방사선 손상을 일으킬 수 있습니다. 결국 바이어스는 심각하게 병들었고 1932년에 사망했습니다. 그의 사례는 대중의 큰 관심을 끌었고 방사성 건강 제품의 위험성을 알리는 데 기여했습니다.</p>
+                <p class="mb-6">이 이야기는 극적인 건강 관련 주장을 <b class="highlight">곧이곧대로 믿지 말아야</b> 한다는 좋은 교훈을 줍니다. 어떤 제품이 과학적으로 들린다고 해서 실제로 안전하거나 효과적인 것은 아닙니다. 개인적인 경험조차 오해를 불러일으킬 수 있습니다. 무언가를 시작한 후 몸이 좋아졌다고 느끼는 것만으로 그 치료법이 실제로 변화를 일으켰다는 사실이 증명되는 것은 아닙니다.</p>
+                <p class="mb-6">현대의 건강 유행은 물론 라듐을 마시는 것과는 전혀 다릅니다. 그래도 어떤 것이 에너지를 높여주고, 혈액 순환을 개선하고, 놀라운 효과를 가져온다고 알려져 있다면 두 가지 질문을 해볼 가치가 있습니다.</p>
+                <p class="mb-6">정말 효과가 있을까요?</p>
+                <p class="mb-6">그리고 어쩌면 더 중요한 질문은, 과연 안전할까요?</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "814715.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | When Losing Blood Was Good for You</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🩸</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">When Losing Blood Was Good for You</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">cold plunge</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">냉수욕 / 찬물에 몸 담그기</td></tr>
+                <tr><td class="p-4"><b class="text-white">flexibility</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">유연성</td></tr>
+                <tr><td class="p-4"><b class="text-white">probiotics</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">프로바이오틱스 / 유산균</td></tr>
+                <tr><td class="p-4"><b class="text-white">tickle in my throat</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">목이 간질간질한 느낌</td></tr>
+                <tr><td class="p-4"><b class="text-white">physical therapy</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">물리치료</td></tr>
+                <tr><td class="p-4"><b class="text-white">rehab</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">재활 / 재활 치료</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl space-y-2 border-l-4 border-teal-400">
+                <h3 class="text-teal-400 font-bold text-lg">cold plunge</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">아주 차가운 물에 몸을 담그는 것을 말해요. 찬물 샤워보다 더 강한 느낌입니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2 border-l-4 border-teal-400">
+                <h3 class="text-teal-400 font-bold text-lg">tickle in my throat</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">목이 살짝 간질거리면서 기침이 나올 것 같은 느낌이에요. 감기 초기 증상을 말할 때 자주 씁니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2 border-l-4 border-teal-400 md:col-span-2">
+                <h3 class="text-teal-400 font-bold text-lg">rehab</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">rehabilitation의 줄임말이에요. 부상 후 재활을 뜻할 수 있고, 문맥에 따라 중독 치료를 뜻하기도 해요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Imagine waking up with a fever and a <b class="highlight quiz-target" data-ans="tickle in your throat" data-kor="목이 간질간질한 느낌">tickle in your throat</b>. Today, you might drink some water, rest, or take medicine. A few hundred years ago, however, your doctor might have suggested something much more alarming: removing some of your blood.</p>
+                <p class="mb-6">For centuries, bloodletting was a common medical treatment. Doctors used it for headaches, fevers, infections, and many other illnesses. The idea came partly from an old theory that the body contained different fluids, called “humors.” Good health depended on keeping these fluids in balance. If you were sick, doctors might decide that you simply had too much blood.</p>
+                <p class="mb-6">The solution was obvious to them: take some out.</p>
+                <p class="mb-6">They believed bloodletting was good for your health and could help with many different problems. A doctor might cut a vein or use leeches to remove blood. If a patient felt sleepy afterward, that could even be seen as a good result.</p>
+                <p class="mb-6">So, did it work?</p>
+                <p class="mb-6">Usually, no. One major side effect was weakness. A person who was already sick could become even weaker after losing blood. Today, if someone is recovering from a serious injury, we might recommend rest, good nutrition, <b class="highlight quiz-target" data-ans="physical therapy" data-kor="물리치료">physical therapy</b>, and eventually <b class="highlight quiz-target" data-ans="rehab" data-kor="재활 치료">rehab</b>. Removing blood would not be part of the recovery plan.</p>
+                <p class="mb-6">Of course, doctors at the time did not have modern blood tests, antibiotics, or our current understanding of bacteria. Nobody was taking <b class="highlight quiz-target" data-ans="probiotics" data-kor="프로바이오틱스">probiotics</b> to support gut health, either. They were making decisions based on the best medical theories available to them.</p>
+                <p class="mb-6">That helps explain why an idea that sounds ridiculous now could survive for so long.</p>
+                <p class="mb-6">It also shows how difficult it can be to judge whether a health practice really works. Today, people debate <b class="highlight quiz-target" data-ans="cold plunges" data-kor="냉수욕">cold plunges</b>, supplements, special diets, and exercises that claim to improve everything from energy levels to <b class="highlight quiz-target" data-ans="flexibility" data-kor="유연성">flexibility</b>. Some may have real benefits. Others may not make much difference.</p>
+                <p class="mb-6">Bloodletting is an extreme reminder that “people have done this for years” does not necessarily mean “this is good for you.”</p>
+                <p class="mb-6">Sometimes, the most important health question is still the simplest one:</p>
+                <p class="mb-6">Does it actually work?</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">열이 나고 <b class="highlight">목이 간질간질한 느낌</b>이 들어 잠에서 깼다고 상상해 보세요. 오늘날이라면 물을 마시거나, 쉬거나, 약을 먹을 수도 있겠죠. 하지만 몇백 년 전이었다면 의사가 훨씬 더 무서운 방법을 제안했을 수도 있습니다. 바로 피를 일부 빼내는 것이었습니다.</p>
+                <p class="mb-6">수세기 동안 사혈은 흔한 의학 치료법이었습니다. 의사들은 두통, 발열, 감염을 비롯한 수많은 질병에 이 방법을 사용했습니다. 이 생각은 부분적으로 우리 몸 안에 ‘체액’이라고 불리는 여러 종류의 액체가 존재한다는 오래된 이론에서 나왔습니다. 건강을 유지하려면 이 체액들이 균형을 이루어야 한다고 믿었죠. 환자가 아프면 의사는 단순히 피가 너무 많다고 판단하기도 했습니다.</p>
+                <p class="mb-6">그들에게 해결책은 명확했습니다. 피를 조금 빼내는 것이었죠.</p>
+                <p class="mb-6">당시 사람들은 사혈이 건강에 좋고 다양한 질병에 도움이 될 수 있다고 믿었습니다. 의사가 혈관을 자르거나 거머리를 이용해 피를 빼기도 했습니다. 환자가 치료 후 졸려 한다면 그것조차 좋은 결과로 받아들여질 수 있었습니다.</p>
+                <p class="mb-6">그렇다면 정말 효과가 있었을까요?</p>
+                <p class="mb-6">대부분의 경우 그렇지 않았습니다. 대표적인 부작용 중 하나는 쇠약함이었습니다. 이미 아픈 사람이 피까지 잃으면 더 약해질 수 있었죠. 오늘날 심각한 부상에서 회복하는 사람에게는 휴식, 좋은 영양 섭취, <b class="highlight">물리치료</b>, 그리고 필요하다면 <b class="highlight">재활 치료</b>를 권할 수 있습니다. 피를 빼는 것은 회복 계획에 포함되지 않겠죠.</p>
+                <p class="mb-6">물론 당시 의사들에게는 현대적인 혈액 검사나 항생제가 없었고, 세균에 대한 현재의 이해도 없었습니다. 장 건강을 위해 <b class="highlight">프로바이오틱스</b>를 먹는 사람도 없었죠. 그들은 당시 이용할 수 있었던 의학 이론을 바탕으로 판단하고 있었습니다.</p>
+                <p class="mb-6">그래서 지금 보면 터무니없어 보이는 생각이 왜 그렇게 오랫동안 살아남을 수 있었는지도 이해할 수 있습니다.</p>
+                <p class="mb-6">이 이야기는 어떤 건강 습관이 정말 효과가 있는지 판단하는 것이 얼마나 어려운지도 보여줍니다. 오늘날에도 사람들은 <b class="highlight">냉수욕</b>, 건강 보조제, 특별한 식단, 그리고 에너지 수준부터 <b class="highlight">유연성</b>까지 모든 것을 개선해 준다고 주장하는 운동법에 대해 논쟁합니다. 어떤 것에는 실제 효과가 있을 수 있고, 어떤 것은 별 차이가 없을 수도 있습니다.</p>
+                <p class="mb-6">사혈은 “사람들이 오랫동안 해 왔다”는 말이 반드시 “몸에 좋다”는 뜻은 아니라는 극단적인 사례입니다.</p>
+                <p class="mb-6">때로는 가장 중요한 건강 질문이 여전히 가장 단순한 질문일지도 모릅니다.</p>
+                <p class="mb-6">정말 효과가 있을까요?</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "814630.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

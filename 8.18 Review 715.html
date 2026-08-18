@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Breakfast Problem</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🍳</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Breakfast Problem</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">sunny side up</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">한쪽 면만 익힌 계란 프라이</td></tr>
+                <tr><td class="p-4"><b class="text-white">runny</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">묽은 / 흐르는</td></tr>
+                <tr><td class="p-4"><b class="text-white">over easy</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">한 번 뒤집어 노른자는 흐르게 익힌</td></tr>
+                <tr><td class="p-4"><b class="text-white">bitter</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">쓴</td></tr>
+                <tr><td class="p-4"><b class="text-white">earthy</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">흙내음 같은 깊은 향이 나는</td></tr>
+                <tr><td class="p-4"><b class="text-white">grassy</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">풀 향이 나는 / 풋풋한 풀 맛이 나는</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="font-bold text-teal-400 text-lg mb-1">sunny side up</h3>
+                <p class="text-sm text-slate-300">계란을 뒤집지 않고 한쪽 면만 익혀 노른자가 위에 그대로 보이는 스타일이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="font-bold text-teal-400 text-lg mb-1">runny</h3>
+                <p class="text-sm text-slate-300">계란 노른자나 소스처럼 완전히 굳지 않고 흐르는 상태를 말해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="font-bold text-teal-400 text-lg mb-1">over easy</h3>
+                <p class="text-sm text-slate-300">계란을 한 번 뒤집어 살짝 더 익히지만 노른자는 여전히 흐르게 두는 방식이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="font-bold text-teal-400 text-lg mb-1">earthy</h3>
+                <p class="text-sm text-slate-300">음식이나 음료에서 흙, 버섯, 뿌리채소처럼 깊고 자연스러운 향이나 맛을 표현할 때 써요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="font-bold text-teal-400 text-lg mb-1">grassy</h3>
+                <p class="text-sm text-slate-300">차, 올리브유, 채소 등에서 갓 자른 풀처럼 풋풋한 향이 느껴질 때 쓰는 표현이에요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">When Jason lost his job, he suddenly became responsible for breakfast, lunch, entertainment, and every other part of his daughter Sophie’s summer vacation.</p>
+                <p class="mb-6">Breakfast seemed like the easiest place to start.</p>
+                <p class="mb-6">It was not.</p>
+                <p class="mb-6">On Monday morning, Jason cracked two eggs into a pan.</p>
+                <p class="mb-6">“How do you want yours?”</p>
+                <p class="mb-6">Sophie climbed onto her chair. “<b class="highlight quiz-target" data-ans="Sunny side up" data-kor="써니사이드업">Sunny side up</b>.”</p>
+                <p class="mb-6">Jason smiled. “Excellent choice.”</p>
+                <p class="mb-6">He put the plate in front of her.</p>
+                <p class="mb-6">Sophie cut into the yolk. Yellow liquid ran across the toast.</p>
+                <p class="mb-6">She looked horrified.</p>
+                <p class="mb-6">“Why is it <b class="highlight quiz-target" data-ans="runny" data-kor="흐물흐물한">runny</b>?”</p>
+                <p class="mb-6">Jason stopped eating.</p>
+                <p class="mb-6">“Because you asked for sunny-side-up eggs.”</p>
+                <p class="mb-6">“I wanted the yellow part hard.”</p>
+                <p class="mb-6">“That is important information.”</p>
+                <p class="mb-6">The next morning, Jason tried again.</p>
+                <p class="mb-6">“I’ll make yours <b class="highlight quiz-target" data-ans="over easy" data-kor="반숙으로">over easy</b>.”</p>
+                <p class="mb-6">“What does that mean?”</p>
+                <p class="mb-6">“I flip it.”</p>
+                <p class="mb-6">Sophie thought about it. “Okay.”</p>
+                <p class="mb-6">When he served it, she cut into the center.</p>
+                <p class="mb-6">The yolk flowed out.</p>
+                <p class="mb-6">She stared at him.</p>
+                <p class="mb-6">Jason stared back.</p>
+                <p class="mb-6">“You said you flip it.”</p>
+                <p class="mb-6">“I did.”</p>
+                <p class="mb-6">“Then why is it still wet?”</p>
+                <p class="mb-6">Jason took a long drink of coffee.</p>
+                <p class="mb-6">Wednesday morning, he decided eggs were too dangerous.</p>
+                <p class="mb-6">He made toast and gave Sophie a cup of the herbal tea her grandmother had left in the cupboard.</p>
+                <p class="mb-6">Sophie took a sip and immediately made a face.</p>
+                <p class="mb-6">“It’s <b class="highlight quiz-target" data-ans="bitter" data-kor="쓴">bitter</b>.”</p>
+                <p class="mb-6">“It’s tea.”</p>
+                <p class="mb-6">“It tastes like plants.”</p>
+                <p class="mb-6">Jason tasted it.</p>
+                <p class="mb-6">She wasn’t wrong. The tea had a strong, <b class="highlight quiz-target" data-ans="earthy" data-kor="흙내음 같은 깊은">earthy</b> flavor.</p>
+                <p class="mb-6">He checked the box.</p>
+                <p class="mb-6">“It says it has roasted roots in it.”</p>
+                <p class="mb-6">“Why are we drinking roots?”</p>
+                <p class="mb-6">“We’re not drinking actual roots.”</p>
+                <p class="mb-6">“It tastes like dirt.”</p>
+                <p class="mb-6">Jason took the cup away.</p>
+                <p class="mb-6">Thursday, he bought an expensive green tea because the woman at the store said it was fresh and high quality.</p>
+                <p class="mb-6">Sophie smelled it.</p>
+                <p class="mb-6">“It smells like grass.”</p>
+                <p class="mb-6">Jason tasted it. The flavor was definitely <b class="highlight quiz-target" data-ans="grassy" data-kor="풋풋한 풀 향이 나는">grassy</b>.</p>
+                <p class="mb-6">He looked at the expensive box, then at Sophie.</p>
+                <p class="mb-6">“We’re having milk tomorrow.”</p>
+                <p class="mb-6">Friday morning, both of them were tired of experimenting.</p>
+                <p class="mb-6">Jason opened the freezer and found a bag of frozen waffles.</p>
+                <p class="mb-6">Sophie looked interested.</p>
+                <p class="mb-6">“Can I have mine really crispy?”</p>
+                <p class="mb-6">Jason turned toward her.</p>
+                <p class="mb-6">“Very crispy?”</p>
+                <p class="mb-6">“Yes.”</p>
+                <p class="mb-6">“With butter?”</p>
+                <p class="mb-6">“Yes.”</p>
+                <p class="mb-6">“No syrup?”</p>
+                <p class="mb-6">Sophie nodded.</p>
+                <p class="mb-6">Jason smiled slowly.</p>
+                <p class="mb-6">“That is exactly how I eat mine.”</p>
+                <p class="mb-6">Ten minutes later, they sat across from each other, eating the same crispy waffles.</p>
+                <p class="mb-6">No complaints. No negotiations. No suspicious looks.</p>
+                <p class="mb-6">Sophie took another bite.</p>
+                <p class="mb-6">“Can we have these tomorrow?”</p>
+                <p class="mb-6">Jason leaned back in his chair.</p>
+                <p class="mb-6">“Absolutely.”</p>
+                <p class="mb-6">For the first time all summer, breakfast felt easy.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">제이슨은 직장을 잃은 뒤 갑자기 딸 소피의 여름방학 동안 아침, 점심, 놀이, 그리고 그 밖의 모든 일을 책임지게 되었다.</p>
+                <p class="mb-6">그는 아침 식사가 가장 쉬운 것부터 시작하는 방법이라고 생각했다.</p>
+                <p class="mb-6">전혀 아니었다.</p>
+                <p class="mb-6">월요일 아침, 제이슨은 팬에 계란 두 개를 깨 넣었다.</p>
+                <p class="mb-6">“넌 어떻게 해줄까?”</p>
+                <p class="mb-6">소피가 의자에 올라앉았다.</p>
+                <p class="mb-6">“<b class="highlight">써니사이드업</b>.”</p>
+                <p class="mb-6">제이슨이 웃었다.</p>
+                <p class="mb-6">“좋은 선택이네.”</p>
+                <p class="mb-6">그는 접시를 소피 앞에 놓았다.</p>
+                <p class="mb-6">소피가 노른자를 잘랐다. 노란 액체가 토스트 위로 흘러나왔다.</p>
+                <p class="mb-6">소피는 충격받은 표정을 지었다.</p>
+                <p class="mb-6">“왜 이렇게 <b class="highlight">흐물흐물해</b>?”</p>
+                <p class="mb-6">제이슨은 먹던 것을 멈췄다.</p>
+                <p class="mb-6">“네가 써니사이드업으로 해달라고 했으니까.”</p>
+                <p class="mb-6">“난 노란 부분은 딱딱한 게 좋은데.”</p>
+                <p class="mb-6">“그건 아주 중요한 정보인데.”</p>
+                <p class="mb-6">다음 날 아침, 제이슨은 다시 시도했다.</p>
+                <p class="mb-6">“오늘은 한 번 뒤집어서 <b class="highlight">반숙으로</b> 해줄게.”</p>
+                <p class="mb-6">“그게 뭔데?”</p>
+                <p class="mb-6">“계란을 뒤집는 거야.”</p>
+                <p class="mb-6">소피는 잠시 생각했다.</p>
+                <p class="mb-6">“알았어.”</p>
+                <p class="mb-6">그가 계란을 내주자 소피는 가운데를 잘랐다.</p>
+                <p class="mb-6">노른자가 흘러나왔다.</p>
+                <p class="mb-6">소피가 제이슨을 쳐다봤다.</p>
+                <p class="mb-6">제이슨도 딸을 쳐다봤다.</p>
+                <p class="mb-6">“뒤집는다고 했잖아.”</p>
+                <p class="mb-6">“뒤집었어.”</p>
+                <p class="mb-6">“그런데 왜 아직도 축축해?”</p>
+                <p class="mb-6">제이슨은 커피를 길게 한 모금 마셨다.</p>
+                <p class="mb-6">수요일 아침, 그는 계란이 너무 위험하다고 판단했다.</p>
+                <p class="mb-6">토스트를 만들고, 할머니가 찬장에 두고 간 허브차를 소피에게 한 잔 따라줬다.</p>
+                <p class="mb-6">소피는 한 모금 마시자마자 얼굴을 찌푸렸다.</p>
+                <p class="mb-6">“<b class="highlight">써</b>.”</p>
+                <p class="mb-6">“차니까 그렇지.”</p>
+                <p class="mb-6">“식물 맛이 나.”</p>
+                <p class="mb-6">제이슨도 마셔봤다.</p>
+                <p class="mb-6">소피 말이 틀리지 않았다. 차에서는 강하고 <b class="highlight">흙내음 같은 깊은</b> 맛이 났다.</p>
+                <p class="mb-6">그는 상자를 확인했다.</p>
+                <p class="mb-6">“구운 뿌리가 들어갔다고 써 있네.”</p>
+                <p class="mb-6">“우리가 왜 뿌리를 마셔?”</p>
+                <p class="mb-6">“진짜 뿌리를 그대로 마시는 건 아니야.”</p>
+                <p class="mb-6">“흙 맛 나는데.”</p>
+                <p class="mb-6">제이슨은 컵을 치웠다.</p>
+                <p class="mb-6">목요일에는 가게 직원이 신선하고 품질이 좋다고 추천한 비싼 녹차를 샀다.</p>
+                <p class="mb-6">소피가 냄새를 맡았다.</p>
+                <p class="mb-6">“풀 냄새 나.”</p>
+                <p class="mb-6">제이슨이 마셔봤다. 확실히 <b class="highlight">풋풋한 풀 향이</b> 났다.</p>
+                <p class="mb-6">그는 비싼 차 상자를 보다가 소피를 바라봤다.</p>
+                <p class="mb-6">“내일은 우유 먹자.”</p>
+                <p class="mb-6">금요일 아침, 둘 다 새로운 시도를 하는 데 지쳐 있었다.</p>
+                <p class="mb-6">제이슨은 냉동고를 열다가 냉동 와플 한 봉지를 발견했다.</p>
+                <p class="mb-6">소피가 관심을 보였다.</p>
+                <p class="mb-6">“내 건 엄청 바삭하게 해줘도 돼?”</p>
+                <p class="mb-6">제이슨이 딸을 바라봤다.</p>
+                <p class="mb-6">“아주 바삭하게?”</p>
+                <p class="mb-6">“응.”</p>
+                <p class="mb-6">“버터도?”</p>
+                <p class="mb-6">“응.”</p>
+                <p class="mb-6">“시럽은 없이?”</p>
+                <p class="mb-6">소피가 고개를 끄덕였다.</p>
+                <p class="mb-6">제이슨은 천천히 웃었다.</p>
+                <p class="mb-6">“아빠도 딱 그렇게 먹는데.”</p>
+                <p class="mb-6">10분 뒤, 둘은 서로 마주 앉아 똑같이 바삭한 와플을 먹고 있었다.</p>
+                <p class="mb-6">불평도 없었다. 협상도 없었다. 의심스러운 눈빛도 없었다.</p>
+                <p class="mb-6">소피가 한 입 더 먹었다.</p>
+                <p class="mb-6">“내일도 이거 먹어도 돼?”</p>
+                <p class="mb-6">제이슨은 의자에 몸을 기대었다.</p>
+                <p class="mb-6">“당연하지.”</p>
+                <p class="mb-6">여름방학이 시작된 뒤 처음으로, 아침 식사가 쉬운 일처럼 느껴졌다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "818715.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

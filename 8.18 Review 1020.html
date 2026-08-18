@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Week of Two Dinners</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🍴</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Week of Two Dinners</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">dementia</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">치매</td></tr>
+                <tr><td class="p-4"><b class="text-white">tannins</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">탄닌 / 떫은맛을 내는 성분</td></tr>
+                <tr><td class="p-4"><b class="text-white">acidic</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">산미가 강한 / 신맛이 강한</td></tr>
+                <tr><td class="p-4"><b class="text-white">it never fails</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">항상 효과가 있어 / 언제나 통한다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="font-bold text-teal-400 text-lg mb-1">dementia</h3>
+                <p class="text-sm text-slate-300">기억력과 사고력 등 인지 기능이 저하되는 여러 질환 및 상태를 포괄적으로 가리키는 말이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="font-bold text-teal-400 text-lg mb-1">tannins</h3>
+                <p class="text-sm text-slate-300">차, 포도 등에 들어 있는 성분으로 입안이 마르는 듯한 떫은 느낌과 관련이 있어요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="font-bold text-teal-400 text-lg mb-1">acidic</h3>
+                <p class="text-sm text-slate-300">음식에서 신맛이나 산미가 강하고 날카롭게 느껴질 때 사용할 수 있어요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="font-bold text-teal-400 text-lg mb-1">it never fails</h3>
+                <p class="text-sm text-slate-300">직역보다 “이 방법은 언제나 통해”, “항상 효과가 있어”라는 의미로 자주 사용해요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">When Paul lost his job in June, he became the full-time cook for his eight-year-old daughter, Emma.</p>
+                <p class="mb-6">By August, he felt like he was running two restaurants.</p>
+                <p class="mb-6">On Monday, he made pasta.</p>
+                <p class="mb-6">Paul liked tomato sauce with a sharp, <b class="highlight quiz-target" data-ans="acidic" data-kor="산미가 강한">acidic</b> taste. Emma wanted hers sweet.</p>
+                <p class="mb-6">“Why are you putting sugar in it?” Paul asked.</p>
+                <p class="mb-6">“Because yours tastes sour.”</p>
+                <p class="mb-6">“It’s supposed to taste like tomatoes.”</p>
+                <p class="mb-6">“Then tomatoes need sugar.”</p>
+                <p class="mb-6">He ended up making two sauces.</p>
+                <p class="mb-6">On Tuesday, he made chicken. Paul wanted his spicy. Emma wanted hers completely plain.</p>
+                <p class="mb-6">Two marinades.</p>
+                <p class="mb-6">Wednesday was salad. Paul liked a strong vinaigrette. Emma wanted ranch dressing.</p>
+                <p class="mb-6">Two dressings.</p>
+                <p class="mb-6">By Thursday, Paul had had enough.</p>
+                <p class="mb-6">“I am making one dinner tonight.”</p>
+                <p class="mb-6">Emma looked worried.</p>
+                <p class="mb-6">“What?”</p>
+                <p class="mb-6">“Rice, grilled vegetables, and fish.”</p>
+                <p class="mb-6">“I don't like grilled vegetables.”</p>
+                <p class="mb-6">“You liked carrots yesterday.”</p>
+                <p class="mb-6">“I like raw carrots.”</p>
+                <p class="mb-6">Paul put his hands on the counter.</p>
+                <p class="mb-6">“Of course you do.”</p>
+                <p class="mb-6">Even their drinks were different. Paul made iced tea, but Emma complained that it made her mouth feel dry.</p>
+                <p class="mb-6">“That’s the <b class="highlight quiz-target" data-ans="tannins" data-kor="탄닌">tannins</b>,” he explained.</p>
+                <p class="mb-6">“I don’t know what that means, but I don't like them.”</p>
+                <p class="mb-6">“Neither do I anymore.”</p>
+                <p class="mb-6">That evening, Paul's mother called.</p>
+                <p class="mb-6">“How are you two doing?”</p>
+                <p class="mb-6">“We haven't agreed on a meal in four days.”</p>
+                <p class="mb-6">“Make pancakes for dinner,” she said. “<b class="highlight quiz-target" data-ans="It never fails" data-kor="언제나 통한다">It never fails</b> with children.”</p>
+                <p class="mb-6">“Emma hates syrup.”</p>
+                <p class="mb-6">“Then don't give her syrup.”</p>
+                <p class="mb-6">“I love syrup.”</p>
+                <p class="mb-6">“So put it on yours.”</p>
+                <p class="mb-6">Paul sighed. “Mom, the whole problem is that I’m making everything two different ways.”</p>
+                <p class="mb-6">His mother laughed. “She’s eight, Paul. Of course she doesn’t eat like you.”</p>
+                <p class="mb-6">Then she became quiet.</p>
+                <p class="mb-6">“Your father has an appointment tomorrow.”</p>
+                <p class="mb-6">“For what?”</p>
+                <p class="mb-6">“They want to do some tests for <b class="highlight quiz-target" data-ans="dementia" data-kor="치매">dementia</b>. His memory has been getting worse.”</p>
+                <p class="mb-6">Paul sat down.</p>
+                <p class="mb-6">“Oh.”</p>
+                <p class="mb-6">After the call, Emma came into the kitchen.</p>
+                <p class="mb-6">“Is Grandpa okay?”</p>
+                <p class="mb-6">“We don’t know yet.”</p>
+                <p class="mb-6">She climbed onto the chair beside him.</p>
+                <p class="mb-6">“Can we make Grandpa's favorite dinner?”</p>
+                <p class="mb-6">Paul looked at her. “Breakfast for dinner?”</p>
+                <p class="mb-6">Emma smiled.</p>
+                <p class="mb-6">They made pancakes together.</p>
+                <p class="mb-6">Paul liked his thin and crispy around the edges. Emma usually wanted hers thick and soft, so he expected the usual argument.</p>
+                <p class="mb-6">But when the first small pancake came out slightly crispy, Emma stole it from his plate.</p>
+                <p class="mb-6">“Hey.”</p>
+                <p class="mb-6">She took a bite.</p>
+                <p class="mb-6">Then another.</p>
+                <p class="mb-6">“This is better.”</p>
+                <p class="mb-6">Paul tried one.</p>
+                <p class="mb-6">“You like them crispy?”</p>
+                <p class="mb-6">Emma nodded.</p>
+                <p class="mb-6">“With butter?”</p>
+                <p class="mb-6">“Yes.”</p>
+                <p class="mb-6">“Strawberries?”</p>
+                <p class="mb-6">“Yes.”</p>
+                <p class="mb-6">Paul stared at her.</p>
+                <p class="mb-6">“No syrup?”</p>
+                <p class="mb-6">“No syrup.”</p>
+                <p class="mb-6">“Okay, we're still different there.”</p>
+                <p class="mb-6">Emma laughed.</p>
+                <p class="mb-6">But for the first time that week, Paul only had to cook one batch.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">폴은 6월에 직장을 잃은 뒤 여덟 살 딸 엠마의 전담 요리사가 되었다.</p>
+                <p class="mb-6">8월이 되자 그는 식당 두 곳을 동시에 운영하는 기분이었다.</p>
+                <p class="mb-6">월요일에는 파스타를 만들었다.</p>
+                <p class="mb-6">폴은 토마토의 날카로운 <b class="highlight">산미가</b> 살아 있는 소스를 좋아했다. 엠마는 달콤한 소스를 원했다.</p>
+                <p class="mb-6">“거기에 왜 설탕을 넣어?”</p>
+                <p class="mb-6">“아빠 건 시잖아.”</p>
+                <p class="mb-6">“토마토 맛이 원래 그런 거야.”</p>
+                <p class="mb-6">“그럼 토마토에는 설탕이 필요해.”</p>
+                <p class="mb-6">결국 소스를 두 가지로 만들었다.</p>
+                <p class="mb-6">화요일에는 닭고기를 만들었다. 폴은 매콤하게 먹고 싶었고 엠마는 아무 양념도 없는 것을 원했다.</p>
+                <p class="mb-6">양념 두 가지.</p>
+                <p class="mb-6">수요일은 샐러드였다. 폴은 맛이 강한 비네그레트를 좋아했고 엠마는 랜치 드레싱을 원했다.</p>
+                <p class="mb-6">드레싱 두 가지.</p>
+                <p class="mb-6">목요일이 되자 폴은 지쳤다.</p>
+                <p class="mb-6">“오늘 저녁은 한 가지만 만들 거야.”</p>
+                <p class="mb-6">엠마가 걱정스러운 표정을 지었다.</p>
+                <p class="mb-6">“뭔데?”</p>
+                <p class="mb-6">“밥, 구운 채소, 생선.”</p>
+                <p class="mb-6">“나 구운 채소 싫어.”</p>
+                <p class="mb-6">“어제 당근 좋아했잖아.”</p>
+                <p class="mb-6">“난 생당근이 좋아.”</p>
+                <p class="mb-6">폴은 두 손을 조리대 위에 올렸다.</p>
+                <p class="mb-6">“당연히 그렇겠지.”</p>
+                <p class="mb-6">마시는 것조차 달랐다. 폴은 아이스티를 만들었지만 엠마는 입안이 마르는 느낌이 싫다고 했다.</p>
+                <p class="mb-6">“<b class="highlight">탄닌</b> 때문이야.”</p>
+                <p class="mb-6">“그게 뭔지는 모르겠는데 싫어.”</p>
+                <p class="mb-6">“이제 아빠도 싫어.”</p>
+                <p class="mb-6">그날 저녁, 폴의 어머니가 전화했다.</p>
+                <p class="mb-6">“둘이 잘 지내?”</p>
+                <p class="mb-6">“나흘 동안 한 끼도 의견이 맞은 적이 없어요.”</p>
+                <p class="mb-6">“저녁으로 팬케이크 만들어. 애들한테는 <b class="highlight">언제나 통해</b>.”</p>
+                <p class="mb-6">“엠마는 시럽 싫어해요.”</p>
+                <p class="mb-6">“그럼 엠마 건 빼.”</p>
+                <p class="mb-6">“전 시럽 좋아하는데요.”</p>
+                <p class="mb-6">“그럼 네 것에만 넣어.”</p>
+                <p class="mb-6">폴이 한숨을 쉬었다.</p>
+                <p class="mb-6">“엄마, 바로 그게 문제예요. 모든 걸 두 가지 방식으로 만들고 있다니까요.”</p>
+                <p class="mb-6">어머니가 웃었다.</p>
+                <p class="mb-6">“여덟 살이잖니, 폴. 당연히 너랑 똑같이 안 먹지.”</p>
+                <p class="mb-6">그러다 어머니의 목소리가 조용해졌다.</p>
+                <p class="mb-6">“네 아버지 내일 병원 예약이 있어.”</p>
+                <p class="mb-6">“왜요?”</p>
+                <p class="mb-6">“<b class="highlight">치매</b> 검사를 좀 해보려고 한대. 기억력이 점점 안 좋아져서.”</p>
+                <p class="mb-6">폴은 자리에 앉았다.</p>
+                <p class="mb-6">“아…”</p>
+                <p class="mb-6">통화를 마치자 엠마가 주방으로 들어왔다.</p>
+                <p class="mb-6">“할아버지 괜찮아?”</p>
+                <p class="mb-6">“아직은 몰라.”</p>
+                <p class="mb-6">엠마가 옆 의자에 올라앉았다.</p>
+                <p class="mb-6">“할아버지가 제일 좋아하는 저녁 만들어줄까?”</p>
+                <p class="mb-6">폴이 딸을 바라봤다.</p>
+                <p class="mb-6">“저녁으로 아침밥?”</p>
+                <p class="mb-6">엠마가 웃었다.</p>
+                <p class="mb-6">둘은 함께 팬케이크를 만들었다.</p>
+                <p class="mb-6">폴은 가장자리가 얇고 바삭한 팬케이크를 좋아했다. 엠마는 보통 두껍고 부드러운 것을 좋아했기 때문에 폴은 평소처럼 의견이 갈릴 거라고 생각했다.</p>
+                <p class="mb-6">그런데 처음 만든 작은 팬케이크가 조금 바삭하게 나오자 엠마가 폴의 접시에서 낚아챘다.</p>
+                <p class="mb-6">“야.”</p>
+                <p class="mb-6">엠마가 한 입 먹었다.</p>
+                <p class="mb-6">그리고 또 한 입.</p>
+                <p class="mb-6">“이게 더 맛있어.”</p>
+                <p class="mb-6">폴도 하나 먹어봤다.</p>
+                <p class="mb-6">“바삭한 게 좋아?”</p>
+                <p class="mb-6">엠마가 고개를 끄덕였다.</p>
+                <p class="mb-6">“버터도?”</p>
+                <p class="mb-6">“응.”</p>
+                <p class="mb-6">“딸기도?”</p>
+                <p class="mb-6">“응.”</p>
+                <p class="mb-6">폴이 딸을 바라봤다.</p>
+                <p class="mb-6">“시럽은?”</p>
+                <p class="mb-6">“싫어.”</p>
+                <p class="mb-6">“좋아, 그건 아직 다르네.”</p>
+                <p class="mb-6">엠마가 웃었다.</p>
+                <p class="mb-6">하지만 그 주 처음으로 폴은 팬케이크를 두 종류로 만들 필요가 없었다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "8181020.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

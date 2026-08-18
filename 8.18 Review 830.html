@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | Nothing on the Same Plate</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🍽️</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">Nothing on the Same Plate</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">too tough</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">너무 질긴 / 너무 딱딱한</td></tr>
+                <tr><td class="p-4"><b class="text-white">peel</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">껍질을 벗기다 / 껍질</td></tr>
+                <tr><td class="p-4"><b class="text-white">dose</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">일정량 / 한 번에 먹거나 사용하는 양</td></tr>
+                <tr><td class="p-4"><b class="text-white">acidic</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">산미가 강한 / 신맛이 강한</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="font-bold text-teal-400 text-lg mb-1">too tough</h3>
+                <p class="text-sm text-slate-300">고기처럼 씹기 어려운 음식에는 “너무 질기다”라는 뜻으로 자연스럽게 쓸 수 있어요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="font-bold text-teal-400 text-lg mb-1">peel</h3>
+                <p class="text-sm text-slate-300">동사로는 과일이나 채소의 “껍질을 벗기다”, 명사로는 “껍질” 자체를 뜻해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="font-bold text-teal-400 text-lg mb-1">dose</h3>
+                <p class="text-sm text-slate-300">보통 약의 ‘복용량’에 많이 쓰지만, 어떤 것을 일정량 넣거나 받는다는 의미로도 쓸 수 있어요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="font-bold text-teal-400 text-lg mb-1">acidic</h3>
+                <p class="text-sm text-slate-300">음식이나 음료의 산미가 강하거나 날카롭게 느껴질 때 사용할 수 있어요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">After losing his job, Tom became the person responsible for feeding his seven-year-old daughter, Lily, all summer.</p>
+                <p class="mb-6">He quickly discovered that they had completely opposite tastes.</p>
+                <p class="mb-6">On Monday, Tom grilled chicken.</p>
+                <p class="mb-6">He liked his browned and firm. Lily chewed one piece for twenty seconds.</p>
+                <p class="mb-6">“It’s <b class="highlight quiz-target" data-ans="too tough" data-kor="너무 질긴">too tough</b>.”</p>
+                <p class="mb-6">“It’s chicken, not chewing gum.”</p>
+                <p class="mb-6">“I want it soft.”</p>
+                <p class="mb-6">The next day, he cooked chicken slowly until it was tender.</p>
+                <p class="mb-6">Lily took one bite.</p>
+                <p class="mb-6">“It’s too wet.”</p>
+                <p class="mb-6">Tom stared at her plate.</p>
+                <p class="mb-6">Tuesday’s potatoes went the same way. Tom loved the crispy skins. Lily refused to touch them until he <b class="highlight quiz-target" data-ans="peeled" data-kor="껍질을 벗겼다">peeled</b> every potato.</p>
+                <p class="mb-6">“You’re removing the best part.”</p>
+                <p class="mb-6">“The skin is the worst part.”</p>
+                <p class="mb-6">“That’s where all the flavor is!”</p>
+                <p class="mb-6">“Exactly.”</p>
+                <p class="mb-6">By Wednesday, Tom had started making separate sections of every meal.</p>
+                <p class="mb-6">His side of the pan had onions. Hers didn't. His sandwich had mustard. Hers had mayonnaise. He wanted sharp cheese; she wanted mild cheese.</p>
+                <p class="mb-6">Even fruit caused problems.</p>
+                <p class="mb-6">Tom liked tart oranges. Lily tried one and immediately reached for water.</p>
+                <p class="mb-6">“That’s way too sour.”</p>
+                <p class="mb-6">“It’s supposed to have some acidity.”</p>
+                <p class="mb-6">“Well, it’s too <b class="highlight quiz-target" data-ans="acidic" data-kor="산미가 강한">acidic</b> for me.”</p>
+                <p class="mb-6">Tom sighed.</p>
+                <p class="mb-6">On Thursday, he made tomato soup.</p>
+                <p class="mb-6">Lily wanted cream in hers.</p>
+                <p class="mb-6">“How much?”</p>
+                <p class="mb-6">“A lot.”</p>
+                <p class="mb-6">Tom added some.</p>
+                <p class="mb-6">“More.”</p>
+                <p class="mb-6">He added another small <b class="highlight quiz-target" data-ans="dose" data-kor="일정량">dose</b>.</p>
+                <p class="mb-6">“More.”</p>
+                <p class="mb-6">“You don’t want tomato soup. You want pink milk.”</p>
+                <p class="mb-6">Lily laughed. “Pink milk sounds good.”</p>
+                <p class="mb-6">By Friday, Tom was exhausted.</p>
+                <p class="mb-6">At lunchtime, he opened the refrigerator and found almost nothing useful.</p>
+                <p class="mb-6">“Grilled cheese?” he asked.</p>
+                <p class="mb-6">“What cheese?”</p>
+                <p class="mb-6">“Cheddar.”</p>
+                <p class="mb-6">“Too strong.”</p>
+                <p class="mb-6">Tom groaned. “Of course.”</p>
+                <p class="mb-6">Then Lily opened a drawer and found a package of mozzarella.</p>
+                <p class="mb-6">“What about this?”</p>
+                <p class="mb-6">Tom looked at it.</p>
+                <p class="mb-6">“Mild.”</p>
+                <p class="mb-6">“I like mild.”</p>
+                <p class="mb-6">“I know. That's usually the problem.”</p>
+                <p class="mb-6">He made two sandwiches with mozzarella and put them in the pan.</p>
+                <p class="mb-6">“Crispy or soft?” he asked.</p>
+                <p class="mb-6">“Crispy.”</p>
+                <p class="mb-6">Tom stopped.</p>
+                <p class="mb-6">“Really?”</p>
+                <p class="mb-6">“Really crispy.”</p>
+                <p class="mb-6">“With butter?”</p>
+                <p class="mb-6">“Yes.”</p>
+                <p class="mb-6">“Tomato soup?”</p>
+                <p class="mb-6">“No.”</p>
+                <p class="mb-6">“Good. Me neither.”</p>
+                <p class="mb-6">They sat down and took their first bites.</p>
+                <p class="mb-6">Crunch.</p>
+                <p class="mb-6">Lily smiled.</p>
+                <p class="mb-6">Tom smiled back.</p>
+                <p class="mb-6">After five days of soft versus firm, skin versus no skin, sour versus sweet, and strong versus mild, they had finally found one meal that needed no negotiation.</p>
+                <p class="mb-6">Lily finished half her sandwich.</p>
+                <p class="mb-6">“Can we have this tomorrow?”</p>
+                <p class="mb-6">Tom nodded.</p>
+                <p class="mb-6">For once, he didn't need to change a thing.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">톰은 직장을 잃은 뒤 여름 내내 일곱 살 딸 릴리의 식사를 책임지는 사람이 되었다.</p>
+                <p class="mb-6">그리고 얼마 지나지 않아 둘의 입맛이 완전히 반대라는 사실을 깨달았다.</p>
+                <p class="mb-6">월요일, 톰은 닭고기를 구웠다.</p>
+                <p class="mb-6">톰은 겉이 노릇하고 단단하게 익은 것을 좋아했다. 릴리는 한 조각을 20초 동안 씹었다.</p>
+                <p class="mb-6">“너무 <b class="highlight">질겨</b>.”</p>
+                <p class="mb-6">“닭고기야. 껌 아니야.”</p>
+                <p class="mb-6">“난 부드러운 게 좋아.”</p>
+                <p class="mb-6">다음 날 톰은 닭고기가 부드러워질 때까지 천천히 익혔다.</p>
+                <p class="mb-6">릴리가 한 입 먹었다.</p>
+                <p class="mb-6">“너무 축축해.”</p>
+                <p class="mb-6">톰은 딸의 접시를 바라봤다.</p>
+                <p class="mb-6">화요일의 감자도 마찬가지였다. 톰은 바삭한 감자 껍질을 좋아했지만, 릴리는 그가 감자 <b class="highlight">껍질을 전부 벗길</b> 때까지 손도 대지 않았다.</p>
+                <p class="mb-6">“제일 맛있는 부분을 버리고 있잖아.”</p>
+                <p class="mb-6">“껍질이 제일 맛없어.”</p>
+                <p class="mb-6">“거기에 맛이 다 있는데!”</p>
+                <p class="mb-6">“그러니까.”</p>
+                <p class="mb-6">수요일이 되자 톰은 모든 음식을 아예 따로 나눠 만들기 시작했다.</p>
+                <p class="mb-6">팬 한쪽의 자기 음식에는 양파를 넣고 딸의 음식에는 넣지 않았다. 자기 샌드위치에는 머스터드를, 딸의 것에는 마요네즈를 넣었다. 톰은 맛이 강한 치즈를 원했고 릴리는 순한 치즈를 원했다.</p>
+                <p class="mb-6">과일조차 문제가 됐다.</p>
+                <p class="mb-6">톰은 새콤한 오렌지를 좋아했다. 릴리는 한 조각을 먹자마자 물을 찾았다.</p>
+                <p class="mb-6">“너무 셔.”</p>
+                <p class="mb-6">“원래 산미가 좀 있는 거야.”</p>
+                <p class="mb-6">“나한테는 <b class="highlight">산미가 너무 강해</b>.”</p>
+                <p class="mb-6">톰은 한숨을 쉬었다.</p>
+                <p class="mb-6">목요일에는 토마토수프를 만들었다.</p>
+                <p class="mb-6">릴리는 자기 것에 크림을 넣어달라고 했다.</p>
+                <p class="mb-6">“얼마나?”</p>
+                <p class="mb-6">“많이.”</p>
+                <p class="mb-6">톰이 조금 넣었다.</p>
+                <p class="mb-6">“더.”</p>
+                <p class="mb-6">조금 더 <b class="highlight">넣었다</b>.</p>
+                <p class="mb-6">“더.”</p>
+                <p class="mb-6">“너 토마토수프 먹고 싶은 게 아니잖아. 분홍색 우유를 원하는 거잖아.”</p>
+                <p class="mb-6">릴리가 웃었다.</p>
+                <p class="mb-6">“분홍색 우유 맛있겠다.”</p>
+                <p class="mb-6">금요일이 되자 톰은 지쳐 있었다.</p>
+                <p class="mb-6">점심시간에 냉장고를 열었지만 쓸 만한 것이 거의 없었다.</p>
+                <p class="mb-6">“그릴드 치즈?”</p>
+                <p class="mb-6">“무슨 치즈?”</p>
+                <p class="mb-6">“체더.”</p>
+                <p class="mb-6">“맛이 너무 강해.”</p>
+                <p class="mb-6">톰은 신음했다.</p>
+                <p class="mb-6">“당연히 그렇겠지.”</p>
+                <p class="mb-6">그때 릴리가 서랍을 열어 모차렐라 한 봉지를 발견했다.</p>
+                <p class="mb-6">“이건?”</p>
+                <p class="mb-6">톰이 바라봤다.</p>
+                <p class="mb-6">“순한 맛인데.”</p>
+                <p class="mb-6">“난 순한 게 좋아.”</p>
+                <p class="mb-6">“알아. 보통 그게 문제니까.”</p>
+                <p class="mb-6">그는 모차렐라로 샌드위치 두 개를 만들어 팬에 올렸다.</p>
+                <p class="mb-6">“바삭하게? 부드럽게?”</p>
+                <p class="mb-6">“바삭하게.”</p>
+                <p class="mb-6">톰이 멈췄다.</p>
+                <p class="mb-6">“진짜?”</p>
+                <p class="mb-6">“엄청 바삭하게.”</p>
+                <p class="mb-6">“버터 넣고?”</p>
+                <p class="mb-6">“응.”</p>
+                <p class="mb-6">“토마토수프도?”</p>
+                <p class="mb-6">“싫어.”</p>
+                <p class="mb-6">“좋아. 아빠도.”</p>
+                <p class="mb-6">둘은 자리에 앉아 첫 입을 먹었다.</p>
+                <p class="mb-6">바삭.</p>
+                <p class="mb-6">릴리가 웃었다.</p>
+                <p class="mb-6">톰도 웃었다.</p>
+                <p class="mb-6">부드러운 것과 단단한 것, 껍질 있는 것과 없는 것, 신 것과 단 것, 강한 맛과 순한 맛을 두고 닷새 동안 부딪힌 끝에 드디어 협상이 필요 없는 한 끼를 찾았다.</p>
+                <p class="mb-6">릴리는 샌드위치 절반을 먹었다.</p>
+                <p class="mb-6">“내일도 이거 먹어도 돼?”</p>
+                <p class="mb-6">톰이 고개를 끄덕였다.</p>
+                <p class="mb-6">이번만큼은 아무것도 바꿀 필요가 없었다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "818830.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

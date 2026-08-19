@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Compliment I Should Have Kept to Myself</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🎤</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Compliment I Should Have Kept to Myself</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">complimented</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">칭찬했다 / 칭찬받았다</td></tr>
+                <tr><td class="p-4"><b class="text-white">being honest</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">솔직하게 말하는 것 / 솔직히 말해서</td></tr>
+                <tr><td class="p-4"><b class="text-white">pretending not to understand</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">이해하지 못한 척하는 것</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                <h3 class="font-bold text-teal-400">being honest</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">문맥에 따라 “솔직하게 말하는 것” 또는 “솔직히 말하자면”이라는 느낌으로 쓸 수 있어요. 예: I was just being honest. = “난 그냥 솔직하게 말한 거였어.”</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                <h3 class="font-bold text-teal-400">pretending not to understand</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">실제로는 이해했지만 일부러 모르는 척하는 것을 뜻해요. 불편한 질문을 피하거나 시간을 벌 때도 쓸 수 있습니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">My first week at a new company, I was desperate to make a good impression.</p>
+                <p class="mb-6">There was a senior manager named Claire who always looked incredibly professional. She wore expensive-looking suits, spoke confidently in meetings, and somehow remembered everyone’s name.</p>
+                <p class="mb-6">One morning, I walked into the elevator and found myself alone with her.</p>
+                <p class="mb-6">This was my chance, I thought.</p>
+                <p class="mb-6">I wanted to say something friendly, so I looked at her jacket and said, “That’s a really nice suit.”</p>
+                <p class="mb-6">She smiled. “Thanks.”</p>
+                <p class="mb-6">That should have been the end of the conversation.</p>
+                <p class="mb-6">Instead, I continued.</p>
+                <p class="mb-6">“It really suits you.”</p>
+                <p class="mb-6">“Thank you.”</p>
+                <p class="mb-6">Then, for reasons I still cannot explain, I added, “It makes you look much younger.”</p>
+                <p class="mb-6">Her smile disappeared.</p>
+                <p class="mb-6">Immediately, I knew I had made a mistake.</p>
+                <p class="mb-6">“Younger than what?” she asked.</p>
+                <p class="mb-6">I panicked.</p>
+                <p class="mb-6">“No, I mean… younger than usual.”</p>
+                <p class="mb-6">That was worse.</p>
+                <p class="mb-6">The elevator suddenly felt very small.</p>
+                <p class="mb-6">Claire stared at me. “How old do you think I am?”</p>
+                <p class="mb-6">There are questions in life that have no correct answer. This was one of them.</p>
+                <p class="mb-6">I should’ve just apologized.</p>
+                <p class="mb-6">Instead, I decided that <b class="highlight quiz-target" data-ans="being honest" data-kor="솔직하게 말하는 것 / 솔직히 말해서">being honest</b> would somehow save me.</p>
+                <p class="mb-6">“Maybe… forty-eight?”</p>
+                <p class="mb-6">She was thirty-six.</p>
+                <p class="mb-6">I learned that approximately three seconds later.</p>
+                <p class="mb-6">“I’m thirty-six,” she said.</p>
+                <p class="mb-6">I could feel my face burning.</p>
+                <p class="mb-6">“Oh! Right. Of course.”</p>
+                <p class="mb-6">“Of course?”</p>
+                <p class="mb-6">“Yes. I mean, I knew that.”</p>
+                <p class="mb-6">Now she looked confused. “Then why did you say forty-eight?”</p>
+                <p class="mb-6">At this point, I started <b class="highlight quiz-target" data-ans="pretending not to understand" data-kor="이해하지 못한 척하는 것">pretending not to understand</b> the question.</p>
+                <p class="mb-6">“Sorry?”</p>
+                <p class="mb-6">“Why did you say forty-eight if you knew I was thirty-six?”</p>
+                <p class="mb-6">I stared at the elevator numbers as if they contained the answer.</p>
+                <p class="mb-6">“What I meant was… your suit is very mature.”</p>
+                <p class="mb-6">“Mature?”</p>
+                <p class="mb-6">I don’t know what possessed me.</p>
+                <p class="mb-6">“Yes. But in a good way.”</p>
+                <p class="mb-6">The doors finally opened.</p>
+                <p class="mb-6">Unfortunately, three of my coworkers were waiting outside.</p>
+                <p class="mb-6">Claire stepped out and said, “Apparently, my suit makes me look forty-eight.”</p>
+                <p class="mb-6">Everyone looked at me.</p>
+                <p class="mb-6">“I <b class="highlight quiz-target" data-ans="complimented" data-kor="칭찬했다 / 칭찬받았다">complimented</b> the suit,” I said weakly.</p>
+                <p class="mb-6">One coworker covered his mouth.</p>
+                <p class="mb-6">Another looked at the floor.</p>
+                <p class="mb-6">Claire walked away.</p>
+                <p class="mb-6">At lunch, the story had already spread.</p>
+                <p class="mb-6">People kept asking me how old they looked.</p>
+                <p class="mb-6">One man in his twenties sat beside me and said, “Be careful. I’m very sensitive about being sixty-two.”</p>
+                <p class="mb-6">I wanted to disappear.</p>
+                <p class="mb-6">Looking back, I still don’t understand why I kept talking. I had at least six chances to stop.</p>
+                <p class="mb-6">I used none of them.</p>
+                <p class="mb-6">And for the next two years, every time Claire wore that suit, someone would ask me if she looked “younger than usual.”</p>
+                <p class="mb-6">My coworkers never let me live it down.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>새 회사에 입사한 첫 주, 나는 좋은 인상을 남기고 싶어서 필사적이었다.</p>
+                <p>Claire라는 상사가 있었는데, 늘 정말 프로페셔널해 보였다. 비싸 보이는 정장을 입고, 회의에서는 자신 있게 말했고, 이상하게도 모든 사람의 이름을 기억했다.</p>
+                <p>어느 날 아침, 엘리베이터에 탔는데 그녀와 단둘이 있게 되었다.</p>
+                <p>나는 생각했다.</p>
+                <p>지금이 기회다.</p>
+                <p>친근하게 한마디 하고 싶어서 그녀의 재킷을 보고 말했다.</p>
+                <p>“정장 정말 멋지네요.”</p>
+                <p>그녀가 웃었다.</p>
+                <p>“고마워요.”</p>
+                <p>대화는 거기서 끝났어야 했다.</p>
+                <p>하지만 나는 계속 말했다.</p>
+                <p>“정말 잘 어울려요.”</p>
+                <p>“고마워요.”</p>
+                <p>그런데 아직도 설명할 수 없는 이유로 나는 한마디를 덧붙였다.</p>
+                <p>“훨씬 젊어 보여요.”</p>
+                <p>그녀의 미소가 사라졌다.</p>
+                <p>그 순간 바로 실수했다는 걸 알았다.</p>
+                <p>“뭐보다 젊어 보인다는 거죠?” 그녀가 물었다.</p>
+                <p>나는 당황했다.</p>
+                <p>“아니, 그러니까… 평소보다 젊어 보여요.”</p>
+                <p>더 나빠졌다.</p>
+                <p>엘리베이터가 갑자기 아주 좁게 느껴졌다.</p>
+                <p>Claire가 나를 바라봤다.</p>
+                <p>“내가 몇 살이라고 생각해요?”</p>
+                <p>인생에는 정답이 없는 질문들이 있다. 이것이 바로 그런 질문이었다.</p>
+                <p>그냥 사과했어야 했다.</p>
+                <p>하지만 나는 이상하게도 <b class="highlight">솔직하게 말하면</b> 상황을 구할 수 있을 거라고 생각했다.</p>
+                <p>“한… 마흔여덟?”</p>
+                <p>그녀는 서른여섯이었다.</p>
+                <p>약 3초 뒤에 그 사실을 알게 됐다.</p>
+                <p>“저 서른여섯인데요.”</p>
+                <p>얼굴이 화끈거렸다.</p>
+                <p>“아! 맞아요. 그렇죠.”</p>
+                <p>“그렇죠?”</p>
+                <p>“네. 그러니까, 저도 알고 있었어요.”</p>
+                <p>이번에는 그녀가 어리둔절해했다.</p>
+                <p>“그럼 내가 서른여섯인 걸 알면서 왜 마흔여덟이라고 했어요?”</p>
+                <p>그쯤 되자 나는 질문을 <b class="highlight">이해하지 못한 척하기</b> 시작했다.</p>
+                <p>“네?”</p>
+                <p>“내가 서른여섯인 걸 알면서 왜 마흔여덟이라고 했냐고요.”</p>
+                <p>나는 마치 엘리베이터 층수 표시판에 정답이라도 적혀 있는 것처럼 그것만 바라봤다.</p>
+                <p>“제 말은… 정장이 굉장히 성숙해 보인다는 뜻이었어요.”</p>
+                <p>“성숙해 보인다고요?”</p>
+                <p>대체 뭐에 홀렸는지 모르겠다.</p>
+                <p>“네. 좋은 의미로요.”</p>
+                <p>마침내 엘리베이터 문이 열렸다.</p>
+                <p>불행하게도 밖에는 동료 세 명이 기다리고 있었다.</p>
+                <p>Claire가 나가면서 말했다.</p>
+                <p>“제 정장이 저를 마흔여덟처럼 보이게 한대요.”</p>
+                <p>모두 나를 쳐다봤다.</p>
+                <p>“저는 정장을 <b class="highlight">칭찬한 거였어요</b>.”</p>
+                <p>내가 힘없이 말했다.</p>
+                <p>한 동료는 입을 가렸다.</p>
+                <p>다른 동료는 바닥을 쳐다봤다.</p>
+                <p>Claire는 그대로 가버렸다.</p>
+                <p>점심시간이 되자 이야기는 이미 퍼져 있었다.</p>
+                <p>사람들이 계속 나에게 자기들이 몇 살로 보이는지 물었다.</p>
+                <p>20대인 남자 한 명이 내 옆에 앉더니 말했다.</p>
+                <p>“조심해서 대답하세요. 저 예순두 살인 거에 되게 예민하거든요.”</p>
+                <p>그냥 사라지고 싶었다.</p>
+                <p>지금 돌이켜보면 내가 왜 계속 말을 했는지 아직도 모르겠다. 멈출 기회가 적어도 여섯 번은 있었다.</p>
+                <p>나는 단 한 번도 멈추지 않았다.</p>
+                <p>그리고 그 후 2년 동안 Claire가 그 정장을 입을 때마다 누군가는 나에게 그녀가 “평소보다 젊어 보이냐”고 물었다.</p>
+                <p>동료들은 그 일을 절대 잊게 해주지 않았다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "819715.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

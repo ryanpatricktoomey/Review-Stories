@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | One Tiny Job</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🧹</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">One Tiny Job</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">monkey business</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">수상한 짓 / 장난질 / 허튼짓</td></tr>
+                <tr><td class="p-4"><b class="text-white">growing up</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">자라면서 / 성장하는 과정에서</td></tr>
+                <tr><td class="p-4"><b class="text-white">vicious cycle</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">악순환</td></tr>
+                <tr><td class="p-4"><b class="text-white">quirky</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">독특하고 조금 엉뚱한</td></tr>
+                <tr><td class="p-4"><b class="text-white">find the will</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">~할 의지나 마음을 끌어내다</td></tr>
+                <tr><td class="p-4"><b class="text-white">quirk</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">특이한 습관 / 독특한 점</td></tr>
+                <tr><td class="p-4"><b class="text-white">pay yourself first</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">수입이 생기면 먼저 저축·투자부터 하다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-bold">monkey business</h3>
+                <p class="text-slate-300 text-sm">장난스럽거나 수상하고 정직하지 않은 행동을 가볍게 표현할 때 써요. 상황에 따라 “장난질”, “수상한 짓”, “허튼짓” 정도가 됩니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-bold">vicious cycle</h3>
+                <p class="text-slate-300 text-sm">한 문제가 다른 문제를 만들고, 그 문제가 다시 처음 문제를 악화시키는 “악순환”이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-bold">quirky / quirk</h3>
+                <p class="text-slate-300 text-sm">quirky는 사람이나 행동이 평범하지 않고 독특한 느낌의 형용사이고, quirk는 그런 사람의 특이한 특징이나 습관을 가리키는 명사예요. 반드시 부정적인 표현은 아닙니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-bold">find the will</h3>
+                <p class="text-slate-300 text-sm">하기 싫거나 힘든 상황에서 무언가를 할 의지를 겨우 끌어내는 느낌이에요. I couldn’t find the will to get up처럼 쓸 수 있습니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-bold">pay yourself first</h3>
+                <p class="text-slate-300 text-sm">돈을 쓰고 남은 것을 저축하는 대신, 수입이 들어왔을 때 저축이나 투자를 먼저 해 두는 재무 원칙이에요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Saturday morning, I woke up with nothing on my schedule.</p>
+                <p class="mb-6">I made coffee and promised myself I would spend the day doing absolutely nothing. Unfortunately, I have a <b class="highlight quiz-target" data-ans="quirk" data-kor="특이한 습관 / 독특한 점">quirk</b>: I find it difficult to relax when something in my apartment is out of place.</p>
+                <p class="mb-6">I noticed a pile of unopened mail on the kitchen table.</p>
+                <p class="mb-6">“One tiny job,” I said. “Then I’m done.”</p>
+                <p class="mb-6">Most of it was boring, but one envelope was from my bank. That reminded me of some advice my father had repeated constantly when I was <b class="highlight quiz-target" data-ans="growing up" data-kor="자라면서 / 성장하는 과정에서">growing up</b>: <b class="highlight quiz-target" data-ans="pay yourself first" data-kor="수입이 생기면 먼저 저축·투자부터 하다">pay yourself first</b>.</p>
+                <p class="mb-6">I opened my banking app to transfer some money into savings.</p>
+                <p class="mb-6">Then I saw my credit card bill.</p>
+                <p class="mb-6">“What is this?”</p>
+                <p class="mb-6">There were four charges from a streaming service.</p>
+                <p class="mb-6">I immediately suspected <b class="highlight quiz-target" data-ans="monkey business" data-kor="수상한 짓 / 장난질 / 허튼짓">monkey business</b>.</p>
+                <p class="mb-6">I called customer service, ready for a fight.</p>
+                <p class="mb-6">After ten minutes, the employee explained that I had accidentally created four accounts using four different email addresses.</p>
+                <p class="mb-6">“Oh.”</p>
+                <p class="mb-6">There was no <b class="highlight quiz-target" data-ans="monkey business" data-kor="수상한 짓 / 장난질 / 허튼짓">monkey business</b>. There was just me.</p>
+                <p class="mb-6">I canceled three accounts. Then I thought I should check my other subscriptions. That led me to my phone bill, which led me to my insurance account, which reminded me that I needed to renew my parking permit.</p>
+                <p class="mb-6">By lunchtime, I had twelve browser tabs open.</p>
+                <p class="mb-6">I was trapped in a <b class="highlight quiz-target" data-ans="vicious cycle" data-kor="악순환">vicious cycle</b>. Every task I finished reminded me of two more tasks.</p>
+                <p class="mb-6">At two o’clock, I finally closed my laptop.</p>
+                <p class="mb-6">Then I noticed the recycling.</p>
+                <p class="mb-6">“No,” I said firmly.</p>
+                <p class="mb-6">I walked past it and sat on the sofa.</p>
+                <p class="mb-6">Five minutes later, I was still staring at the recycling.</p>
+                <p class="mb-6">That was another <b class="highlight quiz-target" data-ans="quirk" data-kor="특이한 습관 / 독특한 점">quirk</b> of mine. Once I noticed a job, I couldn’t stop thinking about it.</p>
+                <p class="mb-6">I tried to <b class="highlight quiz-target" data-ans="find the will" data-kor="~할 의지나 마음을 끌어내다">find the will</b> to ignore it.</p>
+                <p class="mb-6">I failed.</p>
+                <p class="mb-6">I took the recycling downstairs. On my way back, I checked the mailbox. There was another envelope from the bank.</p>
+                <p class="mb-6">I stood in the hallway holding it.</p>
+                <p class="mb-6">Absolutely not.</p>
+                <p class="mb-6">I walked into my apartment, put the envelope on the same table I had cleaned that morning, and turned it facedown.</p>
+                <p class="mb-6">For the rest of the evening, I watched a movie and ordered dinner.</p>
+                <p class="mb-6">The envelope stayed on the table.</p>
+                <p class="mb-6">For once, leaving one job unfinished felt like an accomplishment.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>토요일 아침, 나는 아무 일정도 없는 상태로 눈을 떴다.</p>
+                <p>커피를 만들면서 오늘은 정말 아무것도 하지 않고 보내겠다고 다짐했다. 그런데 나에게는 <b class="highlight">조금 특이한 습관</b>이 하나 있다. 집 안에 뭔가 제자리에 있지 않으면 마음 편히 쉬기가 어렵다는 것이다.</p>
+                <p>부엌 식탁 위에 뜯지 않은 우편물이 쌓여 있는 게 보였다.</p>
+                <p>“딱 이것 하나만.”</p>
+                <p>나는 말했다.</p>
+                <p>“이것만 하고 끝.”</p>
+                <p>대부분 별것 아닌 우편물이었지만, 그중 하나는 은행에서 온 것이었다. 그러자 내가 <b class="highlight">자라면서</b> 아버지에게 수도 없이 들었던 조언이 떠올랐다. <b class="highlight">수입이 생기면 먼저 저축부터 해라</b>.</p>
+                <p>저축 계좌로 돈을 옮기려고 은행 앱을 열었다.</p>
+                <p>그런데 신용카드 명세서가 눈에 들어왔다.</p>
+                <p>“이게 뭐지?”</p>
+                <p>한 스트리밍 서비스에서 결제가 네 번이나 되어 있었다.</p>
+                <p>나는 바로 <b class="highlight">뭔가 수상한 짓</b>이 벌어지고 있다고 의심했다.</p>
+                <p>따질 준비를 단단히 하고 고객센터에 전화했다.</p>
+                <p>10분 뒤, 상담원은 내가 서로 다른 이메일 주소 네 개를 사용해서 실수로 계정을 네 개 만들었다고 설명했다.</p>
+                <p>“아.”</p>
+                <p><b class="highlight">수상한 짓</b>은 없었다. 문제는 그냥 나였다.</p>
+                <p>계정 세 개를 해지했다. 그러다 다른 구독 서비스들도 확인해야겠다는 생각이 들었다. 그러자 휴대폰 요금을 확인하게 되었고, 그다음에는 보험 계정으로 넘어갔다. 그러다 주차 허가증도 갱신해야 한다는 사실이 떠올랐다.</p>
+                <p>점심때가 되었을 때 브라우저 탭이 열두 개나 열려 있었다.</p>
+                <p>나는 <b class="highlight">악순환</b>에 빠져 있었다. 일을 하나 끝낼 때마다 새로운 일 두 개가 떠올랐다.</p>
+                <p>오후 두 시, 드디어 노트북을 닫았다.</p>
+                <p>그때 재활용 쓰레기가 눈에 들어왔다.</p>
+                <p>“안 돼.”</p>
+                <p>나는 단호하게 말했다.</p>
+                <p>그 앞을 지나 소파에 앉았다.</p>
+                <p>5분 뒤에도 나는 여전히 재활용 쓰레기를 쳐다보고 있었다.</p>
+                <p>그것도 나의 <b class="highlight">특이한 습관</b> 중 하나였다. 해야 할 일이 한 번 눈에 들어오면 계속 신경이 쓰였다.</p>
+                <p>나는 그것을 <b class="highlight">무시할 의지</b>를 어떻게든 끌어내려고 했다.</p>
+                <p>실패했다.</p>
+                <p>재활용 쓰레기를 들고 아래층으로 내려갔다. 돌아오는 길에 우편함을 확인했다. 은행에서 온 봉투가 하나 더 있었다.</p>
+                <p>나는 복도에 서서 그 봉투를 들여다봤다.</p>
+                <p>절대 안 돼.</p>
+                <p>집으로 들어가 아침에 깨끗이 치웠던 바로 그 식탁 위에 봉투를 올려놓고, 글자가 보이지 않도록 뒤집어 놓았다.</p>
+                <p>그날 저녁 남은 시간에는 영화를 보고 음식을 배달시켜 먹었다.</p>
+                <p>봉투는 계속 식탁 위에 있었다.</p>
+                <p>해야 할 일 하나를 일부러 끝내지 않은 것이 처음으로 성취처럼 느껴졌다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "8201020.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

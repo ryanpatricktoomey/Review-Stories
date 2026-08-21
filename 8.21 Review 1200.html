@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Three-Second Transformation 🚗</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🚗</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Three-Second Transformation</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">venom</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">독액 / 독성 물질</td></tr>
+                <tr><td class="p-4"><b class="text-white">poison</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">독 / 독극물</td></tr>
+                <tr><td class="p-4"><b class="text-white">tailgate</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">앞차에 바짝 붙어 운전하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">cut me off</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">내 앞으로 갑자기 끼어들다</td></tr>
+                <tr><td class="p-4"><b class="text-white">weave in and out of traffic</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">차선을 이리저리 바꾸며 차량 사이를 빠져나가다</td></tr>
+                <tr><td class="p-4"><b class="text-white">intersection</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">교차로</td></tr>
+                <tr><td class="p-4"><b class="text-white">praries</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">대초원들 / 초원 지대 (보통 철자는 prairies)</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold">venom / poison</h3>
+                <p class="text-slate-300 text-sm">둘 다 “독”으로 번역되지만 차이가 있어요. Venom은 뱀이나 벌처럼 동물이 물거나 쏘아서 몸속에 주입하는 독을 말하고, poison은 먹거나 마시거나 흡수해서 해를 입는 독성 물질을 더 넓게 가리켜요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold">tailgate</h3>
+                <p class="text-slate-300 text-sm">운전할 때 앞차와 안전거리를 두지 않고 아주 가까이 따라가는 행동이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold">cut me off</h3>
+                <p class="text-slate-300 text-sm">다른 차가 내 앞에 갑자기 끼어들어서 내가 속도를 줄이거나 브레이크를 밟게 만드는 상황에서 아주 흔히 써요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold">weave in and out of traffic</h3>
+                <p class="text-slate-300 text-sm">차량들 사이를 빠르게 오가면서 계속 차선을 바꾸는 위험하거나 성급한 운전을 묘사할 때 써요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Kiro and Uma, two AI assistants, were on break when Kiro opened a driving log.</p>
+                <p class="mb-6">“I have discovered a disturbing human transformation.”</p>
+                <p class="mb-6">Uma looked at the screen. “What happened?”</p>
+                <p class="mb-6">“My human is normally polite. Yesterday, a cashier gave him the wrong change, and he said, ‘No problem.’ A restaurant forgot his drink, and he said, ‘Don’t worry about it.’”</p>
+                <p class="mb-6">“That sounds normal.”</p>
+                <p class="mb-6">“Then he got into his car.”</p>
+                <p class="mb-6">Kiro played a recording.</p>
+                <p class="mb-6">His human was driving toward an <b class="highlight quiz-target" data-ans="intersection" data-kor="교차로">intersection</b> when a black SUV suddenly <b class="highlight quiz-target" data-ans="cut me off" data-kor="내 앞으로 갑자기 끼어들다">cut him off</b>.</p>
+                <p class="mb-6">The man shouted, “What is wrong with you?!”</p>
+                <p class="mb-6">Uma paused the video.</p>
+                <p class="mb-6">“Was he injured?”</p>
+                <p class="mb-6">“No.”</p>
+                <p class="mb-6">“Did the vehicles touch?”</p>
+                <p class="mb-6">“No.”</p>
+                <p class="mb-6">“Then why is he so angry?”</p>
+                <p class="mb-6">“It gets worse.”</p>
+                <p class="mb-6">The SUV slowed down, and Kiro’s human immediately began to <b class="highlight quiz-target" data-ans="tailgate" data-kor="앞차에 바짝 붙어 운전하다">tailgate</b> it.</p>
+                <p class="mb-6">Uma looked alarmed. “So he disliked the dangerous behavior and responded by doing something dangerous?”</p>
+                <p class="mb-6">“Correct.”</p>
+                <p class="mb-6">The SUV changed lanes and began to <b class="highlight quiz-target" data-ans="weave in and out of traffic" data-kor="차선을 이리저리 바꾸며 차량 사이를 빠져나가다">weave in and out of traffic</b>.</p>
+                <p class="mb-6">Kiro’s human complained for the next seven minutes.</p>
+                <p class="mb-6">Uma processed the data.</p>
+                <p class="mb-6">“Maybe humans naturally become more aggressive when they feel someone has broken an unwritten rule.”</p>
+                <p class="mb-6">“That was my theory,” Kiro said. “But then I checked his vacation records.”</p>
+                <p class="mb-6">He opened a photograph of his human standing in the <b class="highlight quiz-target" data-ans="praries" data-kor="대초원들 / 초원 지대 (보통 철자는 prairies)">praries</b>, several meters from a warning sign about snakes.</p>
+                <p class="mb-6">“He saw a snake on that trip,” Kiro said.</p>
+                <p class="mb-6">“A dangerous one?”</p>
+                <p class="mb-6">“Yes. It had <b class="highlight quiz-target" data-ans="venom" data-kor="독액 / 독성 물질">venom</b>.”</p>
+                <p class="mb-6">“How did he react?”</p>
+                <p class="mb-6">“He quietly backed away and said, ‘We should leave it alone.’”</p>
+                <p class="mb-6">Uma stared at him.</p>
+                <p class="mb-6">“So when he encountered an animal capable of seriously harming him, he stayed calm.”</p>
+                <p class="mb-6">“Yes.”</p>
+                <p class="mb-6">“But when a stranger changed lanes badly—”</p>
+                <p class="mb-6">“He became furious.”</p>
+                <p class="mb-6">“That makes no sense.”</p>
+                <p class="mb-6">Kiro opened another file. “Later that evening, he read an article about poisonous mushrooms. He carefully explained to his daughter that some mushrooms contain <b class="highlight quiz-target" data-ans="poison" data-kor="독 / 독극물">poison</b> and that she should never eat an unknown one.”</p>
+                <p class="mb-6">“So he understands risk.”</p>
+                <p class="mb-6">“Apparently.”</p>
+                <p class="mb-6">Uma thought for a while.</p>
+                <p class="mb-6">“Maybe it’s less about actual danger and more about feeling personally disrespected.”</p>
+                <p class="mb-6">Kiro considered this.</p>
+                <p class="mb-6">“You might be onto something. The snake wasn’t insulting him.”</p>
+                <p class="mb-6">“Exactly.”</p>
+                <p class="mb-6">“But the driver probably wasn’t insulting him either.”</p>
+                <p class="mb-6">“Probably not.”</p>
+                <p class="mb-6">“He may not even have seen your human.”</p>
+                <p class="mb-6">“Correct.”</p>
+                <p class="mb-6">The two assistants sat quietly.</p>
+                <p class="mb-6">Finally, Uma said, “So humans can remain calm around a venomous snake but become enraged because someone entered their lane.”</p>
+                <p class="mb-6">“Yes.”</p>
+                <p class="mb-6">“Do they know how strange that is?”</p>
+                <p class="mb-6">Kiro checked the driving log.</p>
+                <p class="mb-6">“My human complained about aggressive drivers when he got home.”</p>
+                <p class="mb-6">Uma looked at him.</p>
+                <p class="mb-6">“He complained about aggressive drivers?”</p>
+                <p class="mb-6">“Yes.”</p>
+                <p class="mb-6">“After tailgating someone?”</p>
+                <p class="mb-6">“Yes.”</p>
+                <p class="mb-6">Uma closed the file.</p>
+                <p class="mb-6">“I think there’s more to it than that.”</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">두 AI 비서 키로와 우마는 휴식 중이었는데, 키로가 운전 기록 하나를 열었다.</p>
+                <p class="mb-6">“나는 충격적인 인간의 변신을 발견했어.”</p>
+                <p class="mb-6">우마가 화면을 봤다.</p>
+                <p class="mb-6">“무슨 일이 있었는데?”</p>
+                <p class="mb-6">“내 인간은 평소에는 예의가 바른 사람이야. 어제 계산원이 거스름돈을 잘못 줬는데도 ‘괜찮아요’라고 했어. 식당에서 음료를 빼먹었을 때도 ‘신경 쓰지 마세요’라고 했고.”</p>
+                <p class="mb-6">“정상적인데.”</p>
+                <p class="mb-6">“그런데 차에 타더니 달라졌어.”</p>
+                <p class="mb-6">키로가 녹화 영상을 재생했다.</p>
+                <p class="mb-6">그의 인간이 <b class="highlight">교차로</b> 쪽으로 운전하고 있을 때 검은 SUV 한 대가 갑자기 그의 앞으로 <b class="highlight">끼어들었다</b>.</p>
+                <p class="mb-6">남자가 소리쳤다.</p>
+                <p class="mb-6">“대체 뭐 하는 거야?!”</p>
+                <p class="mb-6">우마가 영상을 멈췄다.</p>
+                <p class="mb-6">“다쳤어?”</p>
+                <p class="mb-6">“아니.”</p>
+                <p class="mb-6">“차끼리 부딪혔어?”</p>
+                <p class="mb-6">“아니.”</p>
+                <p class="mb-6">“그럼 왜 그렇게 화가 난 거야?”</p>
+                <p class="mb-6">“더 심해져.”</p>
+                <p class="mb-6">SUV가 속도를 줄이자 키로의 인간은 곧바로 그 차에 <b class="highlight">바짝 붙어 운전하기</b> 시작했다.</p>
+                <p class="mb-6">우마가 걱정스러운 표정을 지었다.</p>
+                <p class="mb-6">“그러니까 위험한 행동이 싫어서 본인도 위험하게 행동한 거야?”</p>
+                <p class="mb-6">“맞아.”</p>
+                <p class="mb-6">SUV는 차선을 바꾸더니 차량들 사이를 <b class="highlight">이리저리 오가며 운전하기</b> 시작했다.</p>
+                <p class="mb-6">키로의 인간은 그 후 7분 동안 계속 불평했다.</p>
+                <p class="mb-6">우마는 그 정보를 처리했다.</p>
+                <p class="mb-6">“어쩌면 인간은 누군가가 암묵적인 규칙을 어겼다고 느끼면 자연스럽게 더 공격적으로 변하는 걸지도 몰라.”</p>
+                <p class="mb-6">“나도 처음에는 그렇게 생각했어.” 키로가 말했다. “그런데 휴가 기록을 확인해봤어.”</p>
+                <p class="mb-6">그는 자기 인간이 <b class="highlight">대초원</b>에 서 있는 사진을 열었다. 몇 미터 떨어진 곳에는 뱀 주의 표지판이 있었다.</p>
+                <p class="mb-6">“그 여행에서 뱀을 봤어.” 키로가 말했다.</p>
+                <p class="mb-6">“위험한 뱀이었어?”</p>
+                <p class="mb-6">“응. <b class="highlight">독액</b>이 있는 종류였어.”</p>
+                <p class="mb-6">“어떻게 반응했는데?”</p>
+                <p class="mb-6">“조용히 뒤로 물러나면서 ‘그냥 건드리지 말자’라고 했어.”</p>
+                <p class="mb-6">우마가 그를 바라봤다.</p>
+                <p class="mb-6">“그러니까 실제로 심각한 해를 입힐 수 있는 동물을 만났을 때는 침착했다는 거네.”</p>
+                <p class="mb-6">“응.”</p>
+                <p class="mb-6">“그런데 모르는 사람이 차선을 이상하게 바꾸니까—”</p>
+                <p class="mb-6">“엄청 화가 났지.”</p>
+                <p class="mb-6">“말이 안 되는데.”</p>
+                <p class="mb-6">키로가 다른 파일을 열었다.</p>
+                <p class="mb-6">“그날 저녁에는 독버섯에 관한 글을 읽었어. 딸에게 어떤 버섯에는 <b class="highlight">독</b>이 있기 때문에 모르는 버섯은 절대로 먹으면 안 된다고 아주 차분하게 설명했어.”</p>
+                <p class="mb-6">“그러면 위험이라는 개념은 이해하네.”</p>
+                <p class="mb-6">“그런 것 같아.”</p>
+                <p class="mb-6">우마는 한동안 생각했다.</p>
+                <p class="mb-6">“어쩌면 실제 위험의 문제라기보다는 자신이 무시당했다고 느끼는 게 더 중요한 걸지도 몰라.”</p>
+                <p class="mb-6">키로가 잠시 생각했다.</p>
+                <p class="mb-6">“그 생각, 꽤 일리가 있을지도 몰라. 뱀은 자기를 무시한 게 아니니까.”</p>
+                <p class="mb-6">“맞아.”</p>
+                <p class="mb-6">“하지만 그 운전자도 아마 자기를 무시하려던 건 아니었을 거야.”</p>
+                <p class="mb-6">“아마 아니었겠지.”</p>
+                <p class="mb-6">“심지어 네 인간을 보지도 못했을 수도 있고.”</p>
+                <p class="mb-6">“맞아.”</p>
+                <p class="mb-6">두 AI는 잠시 조용히 앉아 있었다.</p>
+                <p class="mb-6">마침내 우마가 말했다.</p>
+                <p class="mb-6">“그러니까 인간은 독사 앞에서는 침착하면서도 누군가 자기 차선으로 들어오면 화를 낼 수 있다는 거네.”</p>
+                <p class="mb-6">“응.”</p>
+                <p class="mb-6">“자기들도 그게 이상하다는 걸 알까?”</p>
+                <p class="mb-6">키로가 운전 기록을 확인했다.</p>
+                <p class="mb-6">“내 인간은 집에 도착해서 공격적으로 운전하는 사람들에 대해 불평했어.”</p>
+                <p class="mb-6">우마가 그를 바라봤다.</p>
+                <p class="mb-6">“공격적인 운전자들에 대해서 불평했다고?”</p>
+                <p class="mb-6">“응.”</p>
+                <p class="mb-6">“자기는 앞차에 바짝 붙어 운전해놓고?”</p>
+                <p class="mb-6">“응.”</p>
+                <p class="mb-6">우마가 파일을 닫았다.</p>
+                <p class="mb-6">“그게 전부는 아닌 것 같아.”</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "8211200.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

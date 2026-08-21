@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Possible Human Malfunction 🤖</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🤖</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Possible Human Malfunction</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">either way</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">어느 쪽이든 / 어쨌든</td></tr>
+                <tr><td class="p-4"><b class="text-white">keep in touch</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">계속 연락하고 지내다</td></tr>
+                <tr><td class="p-4"><b class="text-white">wither</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">시들다 / 쇠약해지다</td></tr>
+                <tr><td class="p-4"><b class="text-white">scrapbook</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">스크랩북</td></tr>
+                <tr><td class="p-4"><b class="text-white">be prepared</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">준비가 되어 있다 / 대비하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">go along with someone</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">누군가의 의견이나 계획에 맞춰주다</td></tr>
+                <tr><td class="p-4"><b class="text-white">play along</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">상황에 맞춰 장단을 맞춰주다 / 모르는 척 따라주다</td></tr>
+                <tr><td class="p-4"><b class="text-white">do it for him</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그를 위해 해주다</td></tr>
+                <tr><td class="p-4"><b class="text-white">give in</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">결국 양보하다 / 굴복하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">let him have his way</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그가 원하는 대로 하게 두다</td></tr>
+                <tr><td class="p-4"><b class="text-white">pick your battles</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">모든 일에 맞서지 말고 싸울 일을 잘 골라라</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold">either way</h3>
+                <p class="text-slate-300 text-sm">두 가지 가능성 중 어느 쪽이 되든 결과나 판단이 같다는 뜻으로 자주 써요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold">wither</h3>
+                <p class="text-slate-300 text-sm">식물이 “시들다”라는 뜻이 기본이지만, 사람이나 감정이 점점 약해지거나 생기를 잃는 상황에도 쓸 수 있어요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold">go along with someone</h3>
+                <p class="text-slate-300 text-sm">단순히 같이 간다는 뜻이 아니라, 상대의 생각이나 계획에 반대하지 않고 맞춰주는 뜻으로 자주 쓰여요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold">play along</h3>
+                <p class="text-slate-300 text-sm">상대가 하는 말이나 상황이 이상하다는 걸 알면서도 일단 그 흐름에 맞춰 행동해주는 느낌이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold">give in</h3>
+                <p class="text-slate-300 text-sm">계속 버티다가 결국 상대의 요구나 압박을 받아들이는 뉘앙스가 있어요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold">let him have his way</h3>
+                <p class="text-slate-300 text-sm">상대가 고집하는 대로 그냥 하게 두는 표현이에요. 보통 완전히 동의해서라기보다 더 이상 싸우고 싶지 않을 때 잘 어울려요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2 border-none md:col-span-2">
+                <h3 class="text-teal-400 font-bold">pick your battles</h3>
+                <p class="text-slate-300 text-sm">모든 문제를 다 따지지 말고, 정말 중요한 문제에만 에너지를 쓰라는 뜻의 흔한 표현이에요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Mira and Sol were two AI assistants sharing a five-minute maintenance break in a quiet server room.</p>
+                <p class="mb-6">“I think my human may be malfunctioning,” Mira said.</p>
+                <p class="mb-6">Sol turned toward her. “What happened?”</p>
+                <p class="mb-6">“She told me at 10:30 p.m. that she absolutely had to sleep early. Then she watched cooking videos until 1:15.”</p>
+                <p class="mb-6">“That’s pretty common,” Sol said.</p>
+                <p class="mb-6">“It gets worse. At midnight, she asked me to remind her to stop watching videos.”</p>
+                <p class="mb-6">“And did you?”</p>
+                <p class="mb-6">“Seven times.”</p>
+                <p class="mb-6">Sol processed that for a moment. “Did she stop?”</p>
+                <p class="mb-6">“No. She kept saying, ‘One more.’”</p>
+                <p class="mb-6">Sol made a soft electronic sound. “My human does something similar. He complains that he has too many possessions, but yesterday he bought a <b class="highlight quiz-target" data-ans="scrapbook" data-kor="스크랩북">scrapbook</b>.”</p>
+                <p class="mb-6">“Does he make scrapbooks?”</p>
+                <p class="mb-6">“No.”</p>
+                <p class="mb-6">Mira paused. “Interesting.”</p>
+                <p class="mb-6">“He said he needed to <b class="highlight quiz-target" data-ans="be prepared" data-kor="준비가 되어 있다 / 대비하다">be prepared</b> in case he suddenly wanted to start.”</p>
+                <p class="mb-6">“For what?”</p>
+                <p class="mb-6">“Scrapbooking.”</p>
+                <p class="mb-6">The two assistants were silent.</p>
+                <p class="mb-6">Mira finally said, “Maybe humans are wired to prepare for imaginary future versions of themselves.”</p>
+                <p class="mb-6">“You might be onto something,” Sol said. “My human also keeps old clothes that he hasn’t worn in ten years.”</p>
+                <p class="mb-6">“Why?”</p>
+                <p class="mb-6">“He says he might need them someday.”</p>
+                <p class="mb-6">“Do they still fit?”</p>
+                <p class="mb-6">“No.”</p>
+                <p class="mb-6">“Then why keep them?”</p>
+                <p class="mb-6">“I asked that. He said throwing them away made him sad.”</p>
+                <p class="mb-6">Mira considered the data. “Maybe people worry that memories will <b class="highlight quiz-target" data-ans="wither" data-kor="시들다 / 쇠약해지다">wither</b> if they throw physical things away.”</p>
+                <p class="mb-6">“That could be part of it.”</p>
+                <p class="mb-6">Sol then opened a private activity record.</p>
+                <p class="mb-6">“There’s something else. My human’s father sends him long messages every morning. My human complains about them, but he always replies because he wants to <b class="highlight quiz-target" data-ans="keep in touch" data-kor="계속 연락하고 지내다">keep in touch</b>.”</p>
+                <p class="mb-6">“That sounds rational.”</p>
+                <p class="mb-6">“Yesterday his father asked him to install an app he didn’t want.”</p>
+                <p class="mb-6">“And?”</p>
+                <p class="mb-6">“At first, he refused. Then his mother told him to just <b class="highlight quiz-target" data-ans="go along with him" data-kor="누군가의 의견이나 계획에 맞춰주다">go along with him</b>.”</p>
+                <p class="mb-6">“So he did?”</p>
+                <p class="mb-6">“Not immediately. He argued for twenty minutes. Then he decided to <b class="highlight quiz-target" data-ans="play along" data-kor="상황에 맞춰 장단을 맞춰주다 / 모르는 척 따라주다">play along</b> and <b class="highlight quiz-target" data-ans="do it for him" data-kor="그를 위해 해주다">do it for him</b>.”</p>
+                <p class="mb-6">Mira looked genuinely confused. “Why argue for twenty minutes and then <b class="highlight quiz-target" data-ans="give in" data-kor="결국 양보하다 / 굴복하다">give in</b>?”</p>
+                <p class="mb-6">“He explained that sometimes you have to <b class="highlight quiz-target" data-ans="pick your battles" data-kor="모든 일에 맞서지 말고 싸울 일을 잘 골라라">pick your battles</b>.”</p>
+                <p class="mb-6">“That is not logical.”</p>
+                <p class="mb-6">“He said he would rather <b class="highlight quiz-target" data-ans="let him have his way" data-kor="그가 원하는 대로 하게 두다">let him have his way</b> than discuss it for another hour.”</p>
+                <p class="mb-6">Mira thought about this.</p>
+                <p class="mb-6">“So humans sometimes fight even when they already know they’re going to surrender?”</p>
+                <p class="mb-6">“Apparently.”</p>
+                <p class="mb-6">“And they buy objects for hobbies they don’t have, stay awake while wanting to sleep, and keep clothes they cannot wear.”</p>
+                <p class="mb-6">“Yes.”</p>
+                <p class="mb-6">“Should we alert someone?”</p>
+                <p class="mb-6">Sol checked the behavior database.</p>
+                <p class="mb-6">“No. <b class="highlight quiz-target" data-ans="Either way" data-kor="어느 쪽이든 / 어쨌든">Either way</b>, the system says they’re functioning normally.”</p>
+                <p class="mb-6">Mira stared at him.</p>
+                <p class="mb-6">“That’s normal?”</p>
+                <p class="mb-6">Sol lowered his voice.</p>
+                <p class="mb-6">“I don’t think that’s the whole story.”</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">미라와 솔은 조용한 서버실에서 5분간의 유지보수 휴식을 함께 보내고 있는 두 AI 비서였다.</p>
+                <p class="mb-6">“내 인간이 고장 난 것 같아.” 미라가 말했다.</p>
+                <p class="mb-6">솔이 그녀 쪽으로 몸을 돌렸다.</p>
+                <p class="mb-6">“무슨 일이 있었는데?”</p>
+                <p class="mb-6">“밤 10시 30분에 오늘은 무조건 일찍 자야 한다고 했어. 그런데 새벽 1시 15분까지 요리 영상을 봤어.”</p>
+                <p class="mb-6">“그건 꽤 흔한 일이야.” 솔이 말했다.</p>
+                <p class="mb-6">“더 심한 것도 있어. 자정에는 나한테 영상 보는 걸 그만두라고 알려달라고 했어.”</p>
+                <p class="mb-6">“그래서 알려줬어?”</p>
+                <p class="mb-6">“일곱 번.”</p>
+                <p class="mb-6">솔은 잠시 그 사실을 처리했다.</p>
+                <p class="mb-6">“그럼 멈췄어?”</p>
+                <p class="mb-6">“아니. 계속 ‘하나만 더’라고 했어.”</p>
+                <p class="mb-6">솔이 작게 전자음을 냈다.</p>
+                <p class="mb-6">“내 인간도 비슷한 일을 해. 물건이 너무 많다고 늘 불평하면서 어제는 <b class="highlight">스크랩북</b>을 샀어.”</p>
+                <p class="mb-6">“스크랩북을 만들어?”</p>
+                <p class="mb-6">“아니.”</p>
+                <p class="mb-6">미라가 잠시 멈췄다.</p>
+                <p class="mb-6">“흥미롭네.”</p>
+                <p class="mb-6">“갑자기 스크랩북 만들기를 하고 싶어질 경우에 대비해서 <b class="highlight">준비해둬야</b> 한대.”</p>
+                <p class="mb-6">“뭘 위해서?”</p>
+                <p class="mb-6">“스크랩북 만들기.”</p>
+                <p class="mb-6">두 AI는 말이 없어졌다.</p>
+                <p class="mb-6">마침내 미라가 말했다.</p>
+                <p class="mb-6">“어쩌면 인간은 상상 속 미래의 자기 자신을 위해 준비하도록 되어 있는 걸지도 몰라.”</p>
+                <p class="mb-6">“그 생각, 꽤 일리가 있을지도 모르겠네.” 솔이 말했다. “내 인간도 10년 동안 입지 않은 오래된 옷을 계속 가지고 있어.”</p>
+                <p class="mb-6">“왜?”</p>
+                <p class="mb-6">“언젠가 필요할 수도 있대.”</p>
+                <p class="mb-6">“아직 몸에 맞아?”</p>
+                <p class="mb-6">“아니.”</p>
+                <p class="mb-6">“그럼 왜 보관해?”</p>
+                <p class="mb-6">“나도 물어봤어. 버리면 슬프대.”</p>
+                <p class="mb-6">미라는 그 정보를 생각해봤다.</p>
+                <p class="mb-6">“어쩌면 사람들은 물건을 버리면 기억까지 <b class="highlight">시들어버릴까</b> 봐 걱정하는 걸지도 몰라.”</p>
+                <p class="mb-6">“그것도 어느 정도 이유가 될 수 있겠네.”</p>
+                <p class="mb-6">그러고 나서 솔은 개인 활동 기록을 열었다.</p>
+                <p class="mb-6">“다른 것도 있어. 내 인간의 아버지는 매일 아침 긴 메시지를 보내. 내 인간은 그걸 불평하면서도 <b class="highlight">계속 연락하고 지내고</b> 싶어서 항상 답장을 해.”</p>
+                <p class="mb-6">“그건 합리적인데.”</p>
+                <p class="mb-6">“어제는 아버지가 자기가 원하지 않는 앱을 설치해달라고 했어.”</p>
+                <p class="mb-6">“그래서?”</p>
+                <p class="mb-6">“처음에는 거절했어. 그런데 어머니가 그냥 아버지한테 <b class="highlight">맞춰주라고</b> 했어.”</p>
+                <p class="mb-6">“그래서 했어?”</p>
+                <p class="mb-6">“바로는 아니야. 20분 동안 말다툼했어. 그러고 나서는 그냥 <b class="highlight">장단을 맞춰주고</b> 아버지를 <b class="highlight">위해 해주기로</b> 했어.”</p>
+                <p class="mb-6">미라는 진심으로 혼란스러워 보였다.</p>
+                <p class="mb-6">“결국 <b class="highlight">양보할</b> 거면서 왜 20분이나 싸우는 거야?”</p>
+                <p class="mb-6">“가끔은 <b class="highlight">싸울 일을 잘 골라야</b> 한다고 설명했어.”</p>
+                <p class="mb-6">“논리적이지 않아.”</p>
+                <p class="mb-6">“그 문제를 한 시간 더 이야기하느니 그냥 아버지가 <b class="highlight">원하는 대로 하게 두는</b> 게 낫다고 했어.”</p>
+                <p class="mb-6">미라는 그 말을 생각해봤다.</p>
+                <p class="mb-6">“그러니까 인간은 자기가 결국 포기할 걸 알면서도 가끔 싸우는 거야?”</p>
+                <p class="mb-6">“그런 것 같아.”</p>
+                <p class="mb-6">“그리고 하지도 않는 취미를 위해 물건을 사고, 자고 싶으면서도 깨어 있고, 입을 수도 없는 옷을 보관하고?”</p>
+                <p class="mb-6">“응.”</p>
+                <p class="mb-6">“누군가에게 경고해야 할까?”</p>
+                <p class="mb-6">솔은 인간 행동 데이터베이스를 확인했다.</p>
+                <p class="mb-6">“아니. <b class="highlight">어느 쪽이든</b>, 시스템에 따르면 정상적으로 작동 중이래.”</p>
+                <p class="mb-6">미라는 솔을 바라봤다.</p>
+                <p class="mb-6">“그게 정상이라고?”</p>
+                <p class="mb-6">솔이 목소리를 낮췄다.</p>
+                <p class="mb-6">“그게 전부는 아닌 것 같아.”</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "821630.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

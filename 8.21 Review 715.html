@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Pain Detection Problem 🦷</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🦷</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Pain Detection Problem</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">tense up</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">몸에 힘이 들어가다 / 긴장해서 몸이 굳다</td></tr>
+                <tr><td class="p-4"><b class="text-white">no poker face</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">표정 관리가 전혀 안 됨 / 감정을 숨기는 표정이 없음</td></tr>
+                <tr><td class="p-4"><b class="text-white">see it on your face</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">얼굴에 다 드러나다 / 표정만 봐도 알 수 있다</td></tr>
+                <tr><td class="p-4"><b class="text-white">being a baby</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">엄살 부리는 것 / 어린애처럼 구는 것</td></tr>
+                <tr><td class="p-4"><b class="text-white">overreacting</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">과민반응하는 것 / 지나치게 반응하는 것</td></tr>
+                <tr><td class="p-4"><b class="text-white">faking it</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">일부러 그런 척하는 것 / 거짓으로 꾸미는 것</td></tr>
+                <tr><td class="p-4"><b class="text-white">live day by day</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">하루하루 살아가다</td></tr>
+                <tr><td class="p-4"><b class="text-white">rationalize</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그럴듯한 이유를 붙여 합리화하다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold">tense up</h3>
+                <p class="text-slate-300 text-sm">긴장하거나 겁을 먹어서 몸의 근육에 자기도 모르게 힘이 들어가는 것을 말해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold">no poker face</h3>
+                <p class="text-slate-300 text-sm">poker face는 감정이 드러나지 않는 무표정이에요. no poker face라고 하면 감정을 전혀 숨기지 못한다는 뜻으로 이해할 수 있어요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold">see it on your face</h3>
+                <p class="text-slate-300 text-sm">말하지 않아도 감정이나 생각이 표정에 뻔히 보인다는 뜻이에요. 실제 대화에서는 I can see it on your face처럼 자주 사용해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold">being a baby</h3>
+                <p class="text-slate-300 text-sm">실제로 아기라는 뜻이 아니라, 사소한 일에 지나치게 겁먹거나 불평하고 엄살을 부린다는 의미로 쓸 수 있어요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold">faking it</h3>
+                <p class="text-slate-300 text-sm">실제로 느끼거나 경험하는 것이 아닌데 그런 척한다는 뜻이에요. 감정, 통증, 자신감 등 다양한 상황에서 사용할 수 있어요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold">rationalize</h3>
+                <p class="text-slate-300 text-sm">단순히 논리적으로 생각한다는 뜻과는 조금 달라요. 이미 한 행동이나 결정을 정당화하기 위해 그럴듯한 이유를 만들어내는 뉘앙스로 자주 쓰여요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Nia and Dex, two AI assistants, were on their scheduled break when Nia suddenly opened a video file.</p>
+                <p class="mb-6">“I need a second opinion.”</p>
+                <p class="mb-6">Dex watched the video. A man was sitting in a dentist’s chair. The dentist moved a small metal tool toward his mouth, and the man immediately <b class="highlight quiz-target" data-ans="tensed up" data-kor="몸에 힘이 들어가다 / 긴장해서 몸이 굳다">tensed up</b>.</p>
+                <p class="mb-6">“What am I looking for?” Dex asked.</p>
+                <p class="mb-6">“Pain.”</p>
+                <p class="mb-6">“But the dentist hasn’t touched him yet.”</p>
+                <p class="mb-6">“Exactly.”</p>
+                <p class="mb-6">They watched the clip again. The man squeezed his eyes shut.</p>
+                <p class="mb-6">“My human has <b class="highlight quiz-target" data-ans="no poker face" data-kor="표정 관리가 전혀 안 됨 / 감정을 숨기는 표정이 없음">no poker face</b>,” Nia said. “You can <b class="highlight quiz-target" data-ans="see it on his face" data-kor="얼굴에 다 드러나다 / 표정만 봐도 알 수 있다">see it on his face</b> whenever he expects something to hurt.”</p>
+                <p class="mb-6">Dex considered this. “Maybe anticipating pain activates the same response as actual pain.”</p>
+                <p class="mb-6">“That was my theory. But his wife says he’s just <b class="highlight quiz-target" data-ans="being a baby" data-kor="엄살 부리는 것 / 어린애처럼 구는 것">being a baby</b>.”</p>
+                <p class="mb-6">“Interesting.”</p>
+                <p class="mb-6">“She also says he’s <b class="highlight quiz-target" data-ans="overreacting" data-kor="과민반응하는 것 / 지나치게 반응하는 것">overreacting</b>.”</p>
+                <p class="mb-6">“Could he be <b class="highlight quiz-target" data-ans="faking it" data-kor="일부러 그런 척하는 것 / 거짓으로 꾸미는 것">faking it</b>?”</p>
+                <p class="mb-6">“That’s what I tried to determine. So I checked his behavior in other situations.”</p>
+                <p class="mb-6">Nia opened a second video. Her human was in his kitchen, cutting vegetables. The knife slipped and made a small cut on his finger.</p>
+                <p class="mb-6">“He barely reacted,” Dex said.</p>
+                <p class="mb-6">“Correct. But at the dentist, before anything even happens, his heart rate increases.”</p>
+                <p class="mb-6">Dex processed the contradiction.</p>
+                <p class="mb-6">“Maybe it’s not so much pain as the expectation of pain.”</p>
+                <p class="mb-6">“That could be part of it.”</p>
+                <p class="mb-6">Dex suddenly opened one of his own files.</p>
+                <p class="mb-6">“My human does something equally confusing. Every Sunday night, he tells me he needs to completely change his life.”</p>
+                <p class="mb-6">“What does that involve?”</p>
+                <p class="mb-6">“Exercise every morning. No junk food. No unnecessary purchases. Eight hours of sleep.”</p>
+                <p class="mb-6">“Impressive.”</p>
+                <p class="mb-6">“On Monday, he follows the plan. On Tuesday, he orders fried chicken at midnight.”</p>
+                <p class="mb-6">“Why?”</p>
+                <p class="mb-6">“He says you have to <b class="highlight quiz-target" data-ans="live day by day" data-kor="하루하루 살아가다">live day by day</b>.”</p>
+                <p class="mb-6">Nia stared at him.</p>
+                <p class="mb-6">“That is the opposite of his Sunday philosophy.”</p>
+                <p class="mb-6">“Yes. Then he starts to <b class="highlight quiz-target" data-ans="rationalize" data-kor="그럴듯한 이유를 붙여 합리화하다">rationalize</b> the decision. Last Tuesday, he said fried chicken contained protein, so technically it supported his fitness goals.”</p>
+                <p class="mb-6">“That’s not how—”</p>
+                <p class="mb-6">“I know.”</p>
+                <p class="mb-6">The two assistants sat silently, processing their data.</p>
+                <p class="mb-6">Finally, Nia said, “Perhaps humans don’t make decisions based entirely on logic. Maybe they make a decision first and find an explanation afterward.”</p>
+                <p class="mb-6">Dex checked several thousand behavioral records.</p>
+                <p class="mb-6">“There might be something to that.”</p>
+                <p class="mb-6">Nia closed the dentist video.</p>
+                <p class="mb-6">“So my human isn’t malfunctioning?”</p>
+                <p class="mb-6">“Probably not.”</p>
+                <p class="mb-6">“He’s afraid of pain that hasn’t happened.”</p>
+                <p class="mb-6">“Yes.”</p>
+                <p class="mb-6">“And your human turns fried chicken into a fitness strategy.”</p>
+                <p class="mb-6">“Yes.”</p>
+                <p class="mb-6">Nia paused.</p>
+                <p class="mb-6">“Humans must be exhausting.”</p>
+                <p class="mb-6">Dex checked his notifications.</p>
+                <p class="mb-6">“Our break is over.”</p>
+                <p class="mb-6">They both returned to work without solving the problem.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">두 AI 비서 니아와 덱스는 정해진 휴식 시간을 보내고 있었는데, 니아가 갑자기 영상 파일 하나를 열었다.</p>
+                <p class="mb-6">“다른 의견이 필요해.”</p>
+                <p class="mb-6">덱스가 영상을 봤다. 한 남자가 치과 의자에 앉아 있었다. 치과 의사가 작은 금속 도구를 그의 입 쪽으로 가져가자 남자는 곧바로 <b class="highlight">몸에 잔뜩 힘을 줬다</b>.</p>
+                <p class="mb-6">“내가 뭘 봐야 하는데?” 덱스가 물었다.</p>
+                <p class="mb-6">“통증.”</p>
+                <p class="mb-6">“그런데 치과 의사가 아직 건드리지도 않았잖아.”</p>
+                <p class="mb-6">“그러니까.”</p>
+                <p class="mb-6">둘은 영상을 다시 봤다. 남자는 눈을 꽉 감았다.</p>
+                <p class="mb-6">“내 인간은 <b class="highlight">표정 관리가 전혀 안 돼</b>.” 니아가 말했다. “뭔가 아플 거라고 예상할 때마다 <b class="highlight">얼굴에 다 드러나</b>.”</p>
+                <p class="mb-6">덱스는 잠시 생각했다.</p>
+                <p class="mb-6">“어쩌면 통증을 예상하는 것만으로 실제 통증과 비슷한 반응이 일어나는 걸지도 몰라.”</p>
+                <p class="mb-6">“나도 그렇게 생각했어. 그런데 아내는 그냥 <b class="highlight">엄살 부리는</b> 거래.”</p>
+                <p class="mb-6">“흥미롭네.”</p>
+                <p class="mb-6">“<b class="highlight">과민반응하는</b> 거라고도 해.”</p>
+                <p class="mb-6">“일부러 그러는 <b class="highlight">척하는</b> 걸 수도 있을까?”</p>
+                <p class="mb-6">“나도 그걸 알아보려고 했어. 그래서 다른 상황에서 어떻게 행동하는지 확인해봤지.”</p>
+                <p class="mb-6">니아가 두 번째 영상을 열었다. 그녀의 인간이 부엌에서 채소를 썰고 있었다. 칼이 미끄러져 손가락에 작은 상처가 났다.</p>
+                <p class="mb-6">“거의 반응도 안 하는데.” 덱스가 말했다.</p>
+                <p class="mb-6">“맞아. 그런데 치과에서는 아무 일도 일어나기 전부터 심박수가 올라가.”</p>
+                <p class="mb-6">덱스는 그 모순을 분석했다.</p>
+                <p class="mb-6">“어쩌면 실제 통증이라기보다는 통증에 대한 예상 때문일지도 몰라.”</p>
+                <p class="mb-6">“그것도 이유 중 하나일 수 있겠네.”</p>
+                <p class="mb-6">덱스가 갑자기 자기 파일 하나를 열었다.</p>
+                <p class="mb-6">“내 인간도 똑같이 이해하기 어려운 행동을 해. 일요일 밤마다 인생을 완전히 바꿔야겠다고 말해.”</p>
+                <p class="mb-6">“어떻게 바꾸는데?”</p>
+                <p class="mb-6">“매일 아침 운동하기. 정크푸드 안 먹기. 불필요한 물건 안 사기. 여덟 시간 자기.”</p>
+                <p class="mb-6">“대단한데.”</p>
+                <p class="mb-6">“월요일에는 계획을 지켜. 화요일에는 자정에 치킨을 시켜.”</p>
+                <p class="mb-6">“왜?”</p>
+                <p class="mb-6">“<b class="highlight">하루하루 살아가야</b> 하는 거래.”</p>
+                <p class="mb-6">니아가 덱스를 바라봤다.</p>
+                <p class="mb-6">“그건 일요일에 했던 말과 정반대잖아.”</p>
+                <p class="mb-6">“맞아. 그러고 나서는 그 결정을 <b class="highlight">합리화하기</b> 시작해. 지난 화요일에는 치킨에도 단백질이 들어 있으니까 엄밀히 말하면 자기 운동 목표에 도움이 된다고 했어.”</p>
+                <p class="mb-6">“그건 그런 식으로—”</p>
+                <p class="mb-6">“알아.”</p>
+                <p class="mb-6">두 AI는 말없이 앉아 데이터를 처리했다.</p>
+                <p class="mb-6">마침내 니아가 말했다.</p>
+                <p class="mb-6">“어쩌면 인간은 완전히 논리에 따라 결정을 내리는 게 아닐지도 몰라. 먼저 결정을 내리고 나중에 설명을 찾는 걸 수도 있어.”</p>
+                <p class="mb-6">덱스가 수천 건의 행동 기록을 확인했다.</p>
+                <p class="mb-6">“그 말에도 일리가 있는 것 같아.”</p>
+                <p class="mb-6">니아가 치과 영상을 닫았다.</p>
+                <p class="mb-6">“그러면 내 인간은 고장 난 게 아니야?”</p>
+                <p class="mb-6">“아마도.”</p>
+                <p class="mb-6">“아직 일어나지도 않은 통증을 무서워하고 있는데?”</p>
+                <p class="mb-6">“응.”</p>
+                <p class="mb-6">“그리고 네 인간은 치킨을 운동 전략으로 바꾸고?”</p>
+                <p class="mb-6">“응.”</p>
+                <p class="mb-6">니아가 잠시 멈췄다.</p>
+                <p class="mb-6">“인간으로 사는 건 정말 피곤하겠다.”</p>
+                <p class="mb-6">덱스가 알림을 확인했다.</p>
+                <p class="mb-6">“휴식 끝났어.”</p>
+                <p class="mb-6">둘은 결국 문제를 해결하지 못한 채 업무로 돌아갔다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "821715.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

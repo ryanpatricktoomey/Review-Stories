@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | Two Coffees</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">☕</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">Two Coffees</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">found out</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">알게 되었다 / 알아냈다</td></tr>
+                <tr><td class="p-4"><b class="text-white">cost of living</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">생활비 / 물가 수준</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                <h3 class="font-bold text-teal-400 text-lg">found out</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">몰랐던 사실이나 정보를 새롭게 알게 되었을 때 써요. 단순히 어떤 사실을 know하고 있는 것과 차이가 있어요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                <h3 class="font-bold text-teal-400 text-lg">cost of living</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">집세, 식비, 교통비 등 특정 지역에서 생활하는 데 드는 전반적인 비용을 뜻해요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Eric <b class="highlight quiz-target" data-ans="found out" data-kor="알게 되었다">found out</b> about Mr. Han's death from a message in the company group chat.</p>
+                <p class="mb-6">He hadn't seen Mr. Han in four years.</p>
+                <p class="mb-6">When Eric first joined the company, Mr. Han had been a senior employee in the accounting department. They weren't close friends. They didn't meet outside work. Eric wasn't even sure Mr. Han had liked him very much.</p>
+                <p class="mb-6">But he remembered the coffee.</p>
+                <p class="mb-6">Eric had moved to Seoul for his first job at twenty-four. His salary was low, and the <b class="highlight quiz-target" data-ans="cost of living" data-kor="생활비">cost of living</b> was much higher than he had expected. After rent and transportation, there was almost nothing left.</p>
+                <p class="mb-6">For three weeks, he ate convenience-store noodles for lunch.</p>
+                <p class="mb-6">One afternoon, Mr. Han walked past his desk.</p>
+                <p class="mb-6">“Did you eat?”</p>
+                <p class="mb-6">“Yeah.”</p>
+                <p class="mb-6">“What?”</p>
+                <p class="mb-6">Eric hesitated. “Noodles.”</p>
+                <p class="mb-6">“You had noodles yesterday.”</p>
+                <p class="mb-6">“I like noodles.”</p>
+                <p class="mb-6">Mr. Han stared at him.</p>
+                <p class="mb-6">The next morning, there were two coffees and two sandwiches on Mr. Han's desk.</p>
+                <p class="mb-6">“I bought the wrong sandwich,” he said. “Take it.”</p>
+                <p class="mb-6">The same thing happened two days later.</p>
+                <p class="mb-6">Then again the next week.</p>
+                <p class="mb-6">Eric eventually understood what was happening, but Mr. Han never mentioned money. A few months later, when Eric received his first bonus, he offered to buy him an expensive dinner.</p>
+                <p class="mb-6">Mr. Han refused.</p>
+                <p class="mb-6">“Save your money.”</p>
+                <p class="mb-6">At the time, Eric had laughed.</p>
+                <p class="mb-6">Now, four years later, he sat at his kitchen table looking at Mr. Han's name on his phone.</p>
+                <p class="mb-6">Their last conversation had been almost three years ago.</p>
+                <p class="mb-6">Happy birthday, sir!</p>
+                <p class="mb-6">Thank you, Eric. How's the new job?</p>
+                <p class="mb-6">Good! Very busy. Let's get coffee sometime.</p>
+                <p class="mb-6">They never did.</p>
+                <p class="mb-6">Eric read the last line several times.</p>
+                <p class="mb-6">Then he opened the company group chat. People were posting funeral information and short messages about Mr. Han.</p>
+                <p class="mb-6">Eric started typing.</p>
+                <p class="mb-6">When I first moved to Seoul, I didn't have enough money for proper lunches. Mr. Han noticed, although I never told him. For months, he kept “accidentally” buying too much food.</p>
+                <p class="mb-6">He stopped.</p>
+                <p class="mb-6">His wife walked into the kitchen.</p>
+                <p class="mb-6">“Are you okay?”</p>
+                <p class="mb-6">Eric nodded, then shook his head.</p>
+                <p class="mb-6">“I kept meaning to buy him coffee.”</p>
+                <p class="mb-6">He looked at the two mugs on the kitchen counter.</p>
+                <p class="mb-6">One was his.</p>
+                <p class="mb-6">The other was already getting cold.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>에릭은 회사 단체 채팅방에 올라온 메시지를 통해 한 과장이 세상을 떠났다는 사실을 <b class="highlight">알게 되었다</b>.</p>
+                <p>그를 마지막으로 본 지 4년이나 지났다.</p>
+                <p>에릭이 처음 회사에 입사했을 때 한 과장은 회계 부서의 선배 직원이었다. 둘은 친한 친구가 아니었다. 회사 밖에서 만난 적도 없었다. 사실 에릭은 한 과장이 자신을 별로 좋아하지 않는다고 생각하기도 했다.</p>
+                <p>하지만 커피는 기억하고 있었다.</p>
+                <p>에릭은 스물네 살에 첫 직장을 위해 서울로 이사했다. 월급은 적었고 <b class="highlight">생활비</b>는 생각보다 훨씬 비쌌다. 월세와 교통비를 내고 나면 남는 돈이 거의 없었다.</p>
+                <p>3주 동안 그는 점심으로 편의점 라면을 먹었다.</p>
+                <p>어느 오후, 한 과장이 그의 책상 앞을 지나갔다.</p>
+                <p>“밥 먹었어?”</p>
+                <p>“네.”</p>
+                <p>“뭐 먹었는데?”</p>
+                <p>에릭이 잠시 망설였다. “라면이요.”</p>
+                <p>“어제도 라면 먹었잖아.”</p>
+                <p>“저 라면 좋아해요.”</p>
+                <p>한 과장은 그를 빤히 바라봤다.</p>
+                <p>다음 날 아침, 한 과장의 책상에는 커피 두 잔과 샌드위치 두 개가 놓여 있었다.</p>
+                <p>“샌드위치를 잘못 샀어. 네가 먹어.”</p>
+                <p>이틀 뒤에도 같은 일이 일어났다.</p>
+                <p>그다음 주에도 그랬다.</p>
+                <p>에릭은 결국 무슨 일인지 알아챘지만, 한 과장은 돈 이야기를 한 번도 꺼내지 않았다. 몇 달 뒤 에릭이 첫 보너스를 받았을 때 비싼 저녁을 대접하겠다고 했다.</p>
+                <p>한 과장은 거절했다.</p>
+                <p>“돈이나 모아.”</p>
+                <p>그때 에릭은 웃었다.</p>
+                <p>그리고 4년이 지난 지금, 그는 부엌 식탁에 앉아 휴대폰 속 한 과장의 이름을 바라보고 있었다.</p>
+                <p>마지막 대화는 거의 3년 전이었다.</p>
+                <p>생일 축하드립니다, 과장님!</p>
+                <p>고맙다, 에릭. 새 직장은 어때?</p>
+                <p>좋아요! 엄청 바빠요. 언제 커피 한잔해요.</p>
+                <p>그들은 결국 만나지 못했다.</p>
+                <p>에릭은 마지막 문장을 몇 번이나 다시 읽었다.</p>
+                <p>그러고는 회사 단체 채팅방을 열었다. 사람들이 장례식 정보와 한 과장에 대한 짧은 글들을 올리고 있었다.</p>
+                <p>에릭도 글을 쓰기 시작했다.</p>
+                <p>제가 처음 서울로 왔을 때는 제대로 점심을 사 먹을 돈도 부족했습니다. 저는 아무 말도 하지 않았는데 한 과장님은 알아채셨습니다. 몇 달 동안 계속 음식을 '실수로' 너무 많이 사 오셨습니다.</p>
+                <p>그는 손을 멈췄다.</p>
+                <p>아내가 부엌으로 들어왔다.</p>
+                <p>“괜찮아?”</p>
+                <p>에릭은 고개를 끄덕였다가 다시 저었다.</p>
+                <p>“계속 커피 한잔 사드려야지 생각했거든.”</p>
+                <p>그는 부엌 조리대 위의 머그잔 두 개를 바라봤다.</p>
+                <p>하나는 그의 것이었다.</p>
+                <p>다른 하나는 이미 식어가고 있었다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "824830.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

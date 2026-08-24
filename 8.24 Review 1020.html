@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Wrong Impression</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🌷</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Wrong Impression</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">that's cool</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그거 멋지다 / 좋네</td></tr>
+                <tr><td class="p-4"><b class="text-white">that's weird</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그거 이상하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">lymph</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">림프 / 림프액</td></tr>
+                <tr><td class="p-4"><b class="text-white">achilles tendon</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">아킬레스건</td></tr>
+                <tr><td class="p-4"><b class="text-white">guess</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">추측하다 / ~인 것 같다</td></tr>
+                <tr><td class="p-4"><b class="text-white">solve</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">해결하다 / 풀다</td></tr>
+                <tr><td class="p-4"><b class="text-white">didn't expect anything in return</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">아무런 대가도 바라지 않았다</td></tr>
+                <tr><td class="p-4"><b class="text-white">vibe</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">느낌 / 분위기</td></tr>
+                <tr><td class="p-4"><b class="text-white">give off a vibe</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">어떤 느낌이나 분위기를 풍기다</td></tr>
+                <tr><td class="p-4"><b class="text-white">refined</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">세련된 / 품위 있는</td></tr>
+                <tr><td class="p-4"><b class="text-white">graceful</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">우아한 / 품위 있는</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                <h3 class="font-bold text-teal-400 text-lg">that's cool</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">실제로 “시원하다”가 아니라 상대의 이야기나 정보를 듣고 “오, 그거 좋다/멋지다”라고 반응할 때 매우 자주 써요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                <h3 class="font-bold text-teal-400 text-lg">that's weird</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">예상과 다르거나 이해하기 어려운 상황에서 “이상하네”라고 자연스럽게 반응하는 표현이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                <h3 class="font-bold text-teal-400 text-lg">guess</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">I guess... 형태로 쓰면 강한 “추측”보다는 “아마 그런가 봐 / 그런 것 같아”처럼 확신을 낮추는 역할을 자주 해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                <h3 class="font-bold text-teal-400 text-lg">give off a vibe</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">사람이 직접 말하지 않아도 외모, 행동, 말투 등에서 특정한 인상이나 분위기가 느껴진다는 뜻이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                <h3 class="font-bold text-teal-400 text-lg">didn't expect anything in return</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">친절이나 도움을 주고도 보답이나 대가를 전혀 바라지 않았다라는 뜻이에요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">When Rachel heard that her former coworker Grace had died, she thought there had been a mistake.</p>
+                <p class="mb-6">“Grace Kim?”</p>
+                <p class="mb-6">“Yes,” David said. “She died on Friday.”</p>
+                <p class="mb-6">“<b class="highlight quiz-target" data-ans="That's weird" data-kor="그거 이상하다">That's weird</b>. I just saw a photo of her hiking last month.”</p>
+                <p class="mb-6">David didn't answer.</p>
+                <p class="mb-6">They sat together in the break room. Grace had left the company three years earlier, and Rachel hadn't kept in touch with her.</p>
+                <p class="mb-6">“I didn't like her when I first met her,” Rachel admitted.</p>
+                <p class="mb-6">David looked surprised.</p>
+                <p class="mb-6">“She <b class="highlight quiz-target" data-ans="gave off" data-kor="풍기다">gave off</b> this… I don't know… <b class="highlight quiz-target" data-ans="vibe" data-kor="느낌">vibe</b>.”</p>
+                <p class="mb-6">“What kind?”</p>
+                <p class="mb-6">“Very <b class="highlight quiz-target" data-ans="refined" data-kor="세련된">refined</b>. Very <b class="highlight quiz-target" data-ans="graceful" data-kor="우아한">graceful</b>. She always dressed perfectly and spoke so calmly. I thought she was judging everybody.”</p>
+                <p class="mb-6">David laughed. “Grace?”</p>
+                <p class="mb-6">“I know. I was completely wrong.”</p>
+                <p class="mb-6">Rachel told him what had changed her mind.</p>
+                <p class="mb-6">Five years earlier, Rachel had torn her <b class="highlight quiz-target" data-ans="Achilles tendon" data-kor="아킬레스건">Achilles tendon</b> while playing badminton. After surgery, she could barely get around her apartment. She was new to the city and didn't have family nearby.</p>
+                <p class="mb-6">Grace began bringing groceries to her apartment.</p>
+                <p class="mb-6">Then she started driving Rachel to medical appointments.</p>
+                <p class="mb-6">One evening, Rachel was looking at a diagram from the hospital.</p>
+                <p class="mb-6">“What is <b class="highlight quiz-target" data-ans="lymph" data-kor="림프">lymph</b>?” she asked.</p>
+                <p class="mb-6">Grace looked at it seriously.</p>
+                <p class="mb-6">“I have absolutely no idea.”</p>
+                <p class="mb-6">“You always look like you know everything.”</p>
+                <p class="mb-6">“I <b class="highlight quiz-target" data-ans="guess" data-kor="~인 것 같다">guess</b> that's my face.”</p>
+                <p class="mb-6">Rachel laughed so hard that her leg started hurting.</p>
+                <p class="mb-6">For six weeks, Grace helped with every small problem Rachel couldn't <b class="highlight quiz-target" data-ans="solve" data-kor="해결하다">solve</b> by herself. She carried laundry downstairs, picked up prescriptions, and even cleaned Rachel's kitchen.</p>
+                <p class="mb-6">“And she <b class="highlight quiz-target" data-ans="didn't expect anything in return" data-kor="아무런 대가도 바라지 않았다">didn't expect anything in return</b>,” Rachel said.</p>
+                <p class="mb-6">“Did you ever thank her?”</p>
+                <p class="mb-6">“Of course.”</p>
+                <p class="mb-6">“No, I mean really thank her.”</p>
+                <p class="mb-6">Rachel stopped.</p>
+                <p class="mb-6">After she recovered, she had taken Grace to lunch. Grace had paid before Rachel could.</p>
+                <p class="mb-6">Rachel remembered protesting.</p>
+                <p class="mb-6">“You're supposed to let me pay!”</p>
+                <p class="mb-6">Grace had smiled. “You can get it next time.”</p>
+                <p class="mb-6">There was no next time.</p>
+                <p class="mb-6">Rachel picked up her phone and opened their old conversation.</p>
+                <p class="mb-6">The last message from Grace was a photo from a garden.</p>
+                <p class="mb-6">Look! The flowers finally opened.</p>
+                <p class="mb-6">Rachel had replied:</p>
+                <p class="mb-6">Oh, <b class="highlight quiz-target" data-ans="that's cool" data-kor="좋네">that's cool</b>!</p>
+                <p class="mb-6">Nothing after that.</p>
+                <p class="mb-6">David quietly got up to leave.</p>
+                <p class="mb-6">Rachel stayed at the table, reading the three words she had sent to a woman who had carried her groceries up three flights of stairs for six weeks.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>레이첼은 예전 직장 동료 그레이스가 세상을 떠났다는 소식을 들었을 때 뭔가 잘못된 줄 알았다.</p>
+                <p>“그레이스 김이요?”</p>
+                <p>“응.” 데이비드가 말했다. “금요일에 세상을 떠났어.”</p>
+                <p>“<b class="highlight">이상하네</b>. 지난달에 등산하는 사진을 봤는데.”</p>
+                <p>데이비드는 대답하지 않았다.</p>
+                <p>두 사람은 휴게실에 함께 앉았다. 그레이스는 3년 전에 회사를 떠났고, 레이첼은 그 후로 그녀와 계속 연락을 주고받지는 않았다.</p>
+                <p>“처음 만났을 때는 그레이스를 별로 안 좋아했어.” 레이첼이 털어놓았다.</p>
+                <p>데이비드가 놀란 표정을 지었다.</p>
+                <p>“뭐랄까… 어떤 <b class="highlight">느낌을 풍겼거든</b>.”</p>
+                <p>“어떤 느낌?”</p>
+                <p>“굉장히 <b class="highlight">세련되고</b> <b class="highlight">우아한</b> 느낌. 항상 옷도 완벽하게 입고 다녔고 말투도 아주 차분했어. 그래서 모든 사람을 속으로 평가하고 있다고 생각했지.”</p>
+                <p>데이비드가 웃었다.</p>
+                <p>“그레이스가?”</p>
+                <p>“알아. 내가 완전히 잘못 봤어.”</p>
+                <p>레이첼은 무엇 때문에 생각이 바뀌었는지 이야기하기 시작했다.</p>
+                <p>5년 전, 레이첼은 배드민턴을 치다가 <b class="highlight">아킬레스건</b>을 다쳤다. 수술 후에는 집 안에서 돌아다니는 것조차 쉽지 않았다. 당시 그녀는 그 도시에 온 지 얼마 되지 않았고, 근처에 가족도 없었다.</p>
+                <p>그레이스는 레이첼의 집으로 장을 봐서 가져오기 시작했다.</p>
+                <p>그러더니 병원 진료를 받을 때마다 차로 데려다주기까지 했다.</p>
+                <p>어느 날 저녁, 레이첼은 병원에서 받은 그림을 들여다보고 있었다.</p>
+                <p>“<b class="highlight">림프</b>가 뭐야?” 그녀가 물었다.</p>
+                <p>그레이스는 그림을 아주 진지하게 바라봤다.</p>
+                <p>“전혀 모르겠는데.”</p>
+                <p>“넌 항상 모든 걸 아는 사람처럼 보여.”</p>
+                <p>“내 얼굴이 원래 <b class="highlight">그런가 봐</b>.”</p>
+                <p>레이첼은 너무 크게 웃어서 다친 다리가 아플 정도였다.</p>
+                <p>6주 동안 그레이스는 레이첼이 혼자 <b class="highlight">해결할</b> 수 없는 작은 일들을 하나하나 도와줬다. 빨래를 아래층까지 옮겨주고, 처방약을 받아다 주고, 심지어 부엌 청소까지 해줬다.</p>
+                <p>“그런데 <b class="highlight">아무런 대가도 바라지 않았어</b>.” 레이첼이 말했다.</p>
+                <p>“고맙다고는 했어?”</p>
+                <p>“당연하지.”</p>
+                <p>“아니, 내 말은… 제대로 고맙다고 했냐고.”</p>
+                <p>레이첼은 말을 멈췄다.</p>
+                <p>몸이 회복된 뒤, 레이첼은 그레이스에게 점심을 사려고 데리고 나간 적이 있었다. 하지만 레이첼이 계산하기도 전에 그레이스가 먼저 돈을 냈다.</p>
+                <p>레이첼은 자신이 항의했던 것을 기억했다.</p>
+                <p>“내가 사게 해줘야지!”</p>
+                <p>그레이스는 웃으며 말했다.</p>
+                <p>“다음번에 네가 사.”</p>
+                <p>하지만 다음번은 없었다.</p>
+                <p>레이첼은 휴대폰을 들고 두 사람이 예전에 나눴던 대화를 열었다.</p>
+                <p>그레이스가 마지막으로 보낸 메시지는 어느 정원에서 찍은 사진이었다.</p>
+                <p>봐! 드디어 꽃이 피었어.</p>
+                <p>레이첼은 이렇게 답했었다.</p>
+                <p>오, <b class="highlight">좋네</b>!</p>
+                <p>그 뒤로는 아무것도 없었다.</p>
+                <p>데이비드는 조용히 자리에서 일어나 나갔다.</p>
+                <p>레이첼은 그대로 테이블에 앉아, 6주 동안 자신의 장바구니를 들고 3층 계단을 오르내렸던 사람에게 자신이 보낸 그 짧은 세 단어를 바라보고 있었다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "8241020.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

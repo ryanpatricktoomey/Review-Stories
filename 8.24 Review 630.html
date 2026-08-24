@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Things We Never Said</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🕯️</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Things We Never Said</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">nocturnal</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">야행성의 / 밤에 활동하는</td></tr>
+                <tr><td class="p-4"><b class="text-white">executive</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">임원 / 경영진</td></tr>
+                <tr><td class="p-4"><b class="text-white">like you mean it</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">진심인 것처럼 / 진심을 담아서</td></tr>
+                <tr><td class="p-4"><b class="text-white">like your trying</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">노력하는 것처럼 (자연스럽게는 “like you’re trying”)</td></tr>
+                <tr><td class="p-4"><b class="text-white">unsettling</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">불안하게 만드는 / 마음을 불편하게 하는</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                <h3 class="font-bold text-teal-400 text-lg">nocturnal</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">원래 동물이 “야행성이다”라고 할 때 많이 쓰지만, 사람에게 농담처럼 “밤에 주로 활동하는 사람”이라는 뜻으로도 쓸 수 있어요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                <h3 class="font-bold text-teal-400 text-lg">like you mean it</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">단순히 행동하는 것이 아니라 “진심을 담아서 해”라는 뜻이에요. 예: Say thank you like you mean it.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                <h3 class="font-bold text-teal-400 text-lg">like your trying</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">채팅에 적힌 형태는 문법적으로는 like you’re trying이 자연스러워요. “적어도 노력하는 것처럼 보이게 / 노력하는 티라도 나게”라는 느낌입니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                <h3 class="font-bold text-teal-400 text-lg">unsettling</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">단순히 무섭다는 뜻보다는, 뭔가 이상해서 마음이 편하지 않고 계속 신경 쓰이게 만드는 느낌이에요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">On Monday morning, everyone in the office received the same email.</p>
+                <p class="mb-6">Daniel Park had died over the weekend.</p>
+                <p class="mb-6">For several seconds, nobody spoke. Daniel had left the company two years earlier, but almost everyone on the team remembered him.</p>
+                <p class="mb-6">Mina stared at the message. “This is really <b class="highlight quiz-target" data-ans="unsettling" data-kor="마음을 불편하게 하는">unsettling</b>,” she said quietly. “I was just thinking about him last week.”</p>
+                <p class="mb-6">Their department <b class="highlight quiz-target" data-ans="executive" data-kor="임원">executive</b>, Mr. Choi, came out of his office and told everyone they could take some time before starting work.</p>
+                <p class="mb-6">That was when the stories began.</p>
+                <p class="mb-6">“I made a huge mistake during my first month here,” Jason said. “Daniel stayed until almost midnight fixing it with me. He never told our manager it was my fault.”</p>
+                <p class="mb-6">Mina nodded. “He did that kind of thing all the time.”</p>
+                <p class="mb-6">“He was basically <b class="highlight quiz-target" data-ans="nocturnal" data-kor="야행성의">nocturnal</b>,” Jason said with a weak smile. “You could message him at eleven at night and somehow he was still awake.”</p>
+                <p class="mb-6">A few people laughed, but the room quickly became quiet.</p>
+                <p class="mb-6">Sora looked down at her coffee. “When my mother was in the hospital, Daniel covered my work for nearly two weeks. I thanked him, obviously. But I never really told him what that did for me.”</p>
+                <p class="mb-6">“What do you mean?” Mina asked.</p>
+                <p class="mb-6">“I was scared I was going to lose my job. He made sure I didn’t have to choose between work and my mom.”</p>
+                <p class="mb-6">Nobody knew what to say.</p>
+                <p class="mb-6">Then Jason remembered something.</p>
+                <p class="mb-6">Whenever someone gave Daniel a lazy “thanks,” he would grin and say, “Come on. Say it <b class="highlight quiz-target" data-ans="like you mean it" data-kor="진심을 담아서">like you mean it</b>.”</p>
+                <p class="mb-6">They all laughed.</p>
+                <p class="mb-6">Then Jason's smile disappeared.</p>
+                <p class="mb-6">“I don't think I ever did.”</p>
+                <p class="mb-6">Mina opened an old message from Daniel. He had helped her prepare for an important presentation after she nearly quit the company.</p>
+                <p class="mb-6">Her final message to him was: Thanks! I owe you one.</p>
+                <p class="mb-6">That was it.</p>
+                <p class="mb-6">She had meant to take him to dinner. She had meant to tell him that his support had changed the direction of her career. There had always been another deadline, another meeting, another week.</p>
+                <p class="mb-6">“I kept thinking I’d tell him someday,” she said.</p>
+                <p class="mb-6">Sora looked at her. “So did I.”</p>
+                <p class="mb-6">That afternoon, the team decided to write letters to Daniel’s family, each sharing one thing he had done for them.</p>
+                <p class="mb-6">Before they started, Jason said, “Maybe we should learn something from this.”</p>
+                <p class="mb-6">Mina nodded.</p>
+                <p class="mb-6">“Yeah. If someone matters to you, don’t just act <b class="highlight quiz-target" data-ans="like you're trying" data-kor="노력하는 것처럼">like you’re trying</b> to be grateful.”</p>
+                <p class="mb-6">She picked up her pen.</p>
+                <p class="mb-6">“Tell them while they’re still here.”</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>월요일 아침, 사무실의 모든 사람이 같은 이메일을 받았다.</p>
+                <p>다니엘 박이 주말 동안 세상을 떠났다는 소식이었다.</p>
+                <p>몇 초 동안 아무도 말을 하지 않았다. 다니엘이 회사를 떠난 것은 이미 2년 전이었지만, 팀의 거의 모든 사람이 그를 기억하고 있었다.</p>
+                <p>미나는 메시지를 바라봤다.</p>
+                <p>“정말 <b class="highlight">마음이 이상하고 불편하네요</b>. 지난주에 다니엘 생각을 했었는데.”</p>
+                <p>부서 <b class="highlight">임원</b>인 최 부장이 사무실에서 나와 사람들에게 바로 일을 시작하지 않아도 되니 잠시 시간을 가지라고 말했다.</p>
+                <p>그때부터 사람들이 하나씩 이야기를 꺼내기 시작했다.</p>
+                <p>“저 여기 입사하고 첫 달에 엄청 큰 실수를 했었어요.” 제이슨이 말했다. “다니엘이 거의 자정까지 남아서 저랑 같이 해결해줬어요. 그리고 매니저한테 제 실수였다는 말도 안 했어요.”</p>
+                <p>미나가 고개를 끄덕였다.</p>
+                <p>“원래 그런 사람이었죠.”</p>
+                <p>“거의 <b class="highlight">야행성</b>이었잖아요.” 제이슨이 힘없이 웃으며 말했다. “밤 11시에 메시지를 보내도 어떻게 된 건지 항상 깨어 있었어요.”</p>
+                <p>몇 사람이 웃었지만, 금세 방 안은 다시 조용해졌다.</p>
+                <p>소라는 커피를 내려다봤다.</p>
+                <p>“우리 엄마가 병원에 계셨을 때 다니엘이 거의 2주 동안 제 일을 대신해줬어요. 물론 그때 고맙다고 하긴 했어요. 그런데 그게 저한테 얼마나 큰 일이었는지는 제대로 말한 적이 없어요.”</p>
+                <p>“무슨 말이에요?” 미나가 물었다.</p>
+                <p>“그때 저는 직장을 잃을까 봐 무서웠어요. 다니엘 덕분에 일과 엄마 사이에서 하나를 선택하지 않아도 됐어요.”</p>
+                <p>아무도 뭐라고 해야 할지 몰랐다.</p>
+                <p>그때 제이슨이 무언가를 떠올렸다.</p>
+                <p>누군가 다니엘에게 대충 “고마워요”라고 하면, 그는 웃으면서 늘 이렇게 말했다.</p>
+                <p>“에이. <b class="highlight">진심을 담아서</b> 말해봐.”</p>
+                <p>모두 웃었다.</p>
+                <p>하지만 곧 제이슨의 미소가 사라졌다.</p>
+                <p>“저는 정작 그렇게 말한 적이 없는 것 같네요.”</p>
+                <p>미나는 다니엘에게서 받은 오래된 메시지를 열어봤다. 회사를 그만둘 뻔했던 시기에, 중요한 발표를 준비하도록 그가 도와준 대화였다.</p>
+                <p>미나가 마지막으로 보낸 메시지는 이것이었다.</p>
+                <p>고마워요! 제가 한 번 신세 갚을게요.</p>
+                <p>그게 전부였다.</p>
+                <p>언젠가 다니엘에게 저녁을 사려고 했다. 그의 도움이 자신의 커리어 방향을 바꿨다고 말하려고 했다. 하지만 항상 다른 마감이 있었고, 다른 회의가 있었고, 다음 주가 있었다.</p>
+                <p>“언젠가는 말해야지 하고 계속 생각했어요.” 미나가 말했다.</p>
+                <p>소라가 그녀를 바라봤다.</p>
+                <p>“저도요.”</p>
+                <p>그날 오후, 팀원들은 다니엘의 가족에게 편지를 쓰기로 했다. 각자 다니엘이 자신을 위해 해줬던 한 가지 일을 적기로 한 것이다.</p>
+                <p>편지를 쓰기 전, 제이슨이 말했다.</p>
+                <p>“이 일에서 뭔가는 배워야 할 것 같아요.”</p>
+                <p>미나가 고개를 끄덕였다.</p>
+                <p>“맞아요. 누군가가 소중하다면, 고마워하려고 <b class="highlight">노력하는 척만 하면</b> 안 되는 것 같아요.”</p>
+                <p>그녀는 펜을 들었다.</p>
+                <p>“그 사람이 아직 곁에 있을 때 말해야죠.”</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "824630.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

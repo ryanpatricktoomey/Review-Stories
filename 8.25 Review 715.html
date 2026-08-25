@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Breakfast Incident</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🪖</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Breakfast Incident</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">swollen</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">부어오른 / 부은</td></tr>
+                <tr><td class="p-4"><b class="text-white">peel</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">껍질을 벗기다 / 껍질</td></tr>
+                <tr><td class="p-4"><b class="text-white">feel nauseous</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">메스꺼움을 느끼다 / 속이 메스껍다</td></tr>
+                <tr><td class="p-4"><b class="text-white">flour</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">밀가루</td></tr>
+                <tr><td class="p-4"><b class="text-white">lactose intolerance</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">유당불내증</td></tr>
+                <tr><td class="p-4"><b class="text-white">intolerant</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">~을 소화하지 못하는 / ~에 과민한</td></tr>
+                <tr><td class="p-4"><b class="text-white">mugwort</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">쑥</td></tr>
+                <tr><td class="p-4"><b class="text-white">a rash</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">발진</td></tr>
+                <tr><td class="p-4"><b class="text-white">itchy</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">가려운</td></tr>
+                <tr><td class="p-4"><b class="text-white">pufferfish</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">복어</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">swollen</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">신체 일부가 평소보다 부어오른 상태를 말해요. My lips were swollen처럼 사용해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">feel nauseous</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">토할 것처럼 속이 메스꺼운 상태를 말해요. nauseous는 단순히 배가 아픈 것보다 ‘구역질이 날 것 같은’ 느낌에 가까워요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">lactose intolerance / intolerant</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">lactose intolerance는 ‘유당불내증’이라는 상태를 뜻하고, 사람을 주어로 말할 때는 I'm lactose intolerant가 아주 자연스러워요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">a rash / itchy</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">rash는 피부에 나타나는 발진이고, itchy는 가려운 느낌을 말해요. I got a rash and it was really itchy처럼 함께 자주 쓰여요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">I don't like talking about the breakfast incident.</p>
+                <p class="mb-6">There were fourteen of us in that mountain guesthouse. We'd gone there for a hiking club trip. We expected fresh air, quiet trails, and a peaceful weekend.</p>
+                <p class="mb-6">At seven in the morning, the owner served us breakfast.</p>
+                <p class="mb-6">There were pancakes made with <b class="highlight quiz-target" data-ans="flour" data-kor="밀가루">flour</b> and <b class="highlight quiz-target" data-ans="mugwort" data-kor="쑥">mugwort</b>, bowls of fruit we had to <b class="highlight quiz-target" data-ans="peel" data-kor="껍질을 벗기다 / 껍질">peel</b> ourselves, and an enormous pot of creamy soup.</p>
+                <p class="mb-6">I asked what was in the soup.</p>
+                <p class="mb-6">“Mostly milk,” she said.</p>
+                <p class="mb-6">Three people immediately put down their spoons.</p>
+                <p class="mb-6">“What's wrong?” I asked.</p>
+                <p class="mb-6">“<b class="highlight quiz-target" data-ans="Lactose intolerance" data-kor="유당불내증">Lactose intolerance</b>,” Minho said. “I'm lactose <b class="highlight quiz-target" data-ans="intolerant" data-kor="~을 소화하지 못하는 / ~에 과민한">intolerant</b>.”</p>
+                <p class="mb-6">He knew better.</p>
+                <p class="mb-6">He ate the soup anyway.</p>
+                <p class="mb-6">We all made mistakes that morning.</p>
+                <p class="mb-6">At 8:10, we started hiking.</p>
+                <p class="mb-6">At 8:47, the first man fell behind.</p>
+                <p class="mb-6">“I <b class="highlight quiz-target" data-ans="feel nauseous" data-kor="메스꺼움을 느끼다 / 속이 메스껍다">feel nauseous</b>,” he said.</p>
+                <p class="mb-6">Nobody understood what was coming.</p>
+                <p class="mb-6">At 9:03, two more people stopped walking. One was holding his stomach. The other had developed <b class="highlight quiz-target" data-ans="a rash" data-kor="발진">a rash</b> across his neck.</p>
+                <p class="mb-6">“Is that normal?” I asked.</p>
+                <p class="mb-6">“No.”</p>
+                <p class="mb-6">“Is it <b class="highlight quiz-target" data-ans="itchy" data-kor="가려운">itchy</b>?”</p>
+                <p class="mb-6">“Extremely.”</p>
+                <p class="mb-6">Then Minho disappeared behind a tree.</p>
+                <p class="mb-6">We heard things.</p>
+                <p class="mb-6">We did not ask questions.</p>
+                <p class="mb-6">By 9:30, the group had completely fallen apart. Half of us had upset stomachs. Two people had thrown up. One woman's face looked <b class="highlight quiz-target" data-ans="swollen" data-kor="부어오른 / 부은">swollen</b>, so we called emergency services immediately.</p>
+                <p class="mb-6">That was when somebody finally asked the question.</p>
+                <p class="mb-6">“What exactly did we eat?”</p>
+                <p class="mb-6">Nobody answered.</p>
+                <p class="mb-6">Then our guide went pale.</p>
+                <p class="mb-6">“The soup.”</p>
+                <p class="mb-6">We looked at him.</p>
+                <p class="mb-6">“What about it?”</p>
+                <p class="mb-6">“I saw the owner making it this morning. There was something else in the pot.”</p>
+                <p class="mb-6">“What?”</p>
+                <p class="mb-6">He swallowed.</p>
+                <p class="mb-6">“<b class="highlight quiz-target" data-ans="Pufferfish" data-kor="복어">Pufferfish</b>.”</p>
+                <p class="mb-6">There was silence.</p>
+                <p class="mb-6">Even Minho came out from behind the tree.</p>
+                <p class="mb-6">“Did you just say <b class="highlight quiz-target" data-ans="pufferfish" data-kor="복어">pufferfish</b>?”</p>
+                <p class="mb-6">We called the guesthouse. The owner answered.</p>
+                <p class="mb-6">“<b class="highlight quiz-target" data-ans="Pufferfish" data-kor="복어">Pufferfish</b>?” she said. “No! I said puff pastry. I served puff pastry.”</p>
+                <p class="mb-6">We looked at our guide.</p>
+                <p class="mb-6">He slowly lowered his phone.</p>
+                <p class="mb-6">So we hadn't eaten <b class="highlight quiz-target" data-ans="pufferfish" data-kor="복어">pufferfish</b>.</p>
+                <p class="mb-6">That was the good news.</p>
+                <p class="mb-6">The bad news was that fourteen people were still trapped halfway up a mountain with vomiting, stomach cramps, diarrhea, and one possible allergic reaction.</p>
+                <p class="mb-6">It took hours to get everyone down safely.</p>
+                <p class="mb-6">The doctors later suspected several different problems. Some people had overeaten. Minho had consumed far too much dairy despite knowing he couldn't handle it. The woman with the <b class="highlight quiz-target" data-ans="swollen" data-kor="부어오른 / 부은">swollen</b> face may have reacted to the <b class="highlight quiz-target" data-ans="mugwort" data-kor="쑥">mugwort</b>. And something else from breakfast apparently hadn't been stored properly.</p>
+                <p class="mb-6">People sometimes ask me whether the hike was beautiful.</p>
+                <p class="mb-6">I don't know.</p>
+                <p class="mb-6">I spent most of it looking for bathrooms that didn't exist.</p>
+                <p class="mb-6">We went up that mountain as fourteen hikers.</p>
+                <p class="mb-6">We came down as survivors.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">나는 그 아침 식사 사건에 대해 이야기하는 것을 좋아하지 않는다.</p>
+                <p class="mb-6">그 산속 게스트하우스에는 우리 열네 명이 있었다. 등산 동호회 여행으로 간 곳이었다. 우리는 맑은 공기와 조용한 산길, 평화로운 주말을 기대했다.</p>
+                <p class="mb-6">아침 7시, 주인이 아침 식사를 차려주었다.</p>
+                <p class="mb-6"><b class="highlight">밀가루</b>와 <b class="highlight">쑥</b>으로 만든 팬케이크, 직접 <b class="highlight">껍질을 벗겨</b> 먹어야 하는 과일, 그리고 크림이 잔뜩 들어간 거대한 수프 냄비가 있었다.</p>
+                <p class="mb-6">나는 수프에 뭐가 들어갔는지 물었다.</p>
+                <p class="mb-6">“거의 우유예요.”</p>
+                <p class="mb-6">그녀가 말했다.</p>
+                <p class="mb-6">세 명이 즉시 숟가락을 내려놓았다.</p>
+                <p class="mb-6">“왜 그래?”</p>
+                <p class="mb-6">내가 물었다.</p>
+                <p class="mb-6">“<b class="highlight">유당불내증</b>.”</p>
+                <p class="mb-6">민호가 말했다.</p>
+                <p class="mb-6">“나 유당을 잘 <b class="highlight">소화 못 해</b>.”</p>
+                <p class="mb-6">그는 그러면 안 된다는 걸 알고 있었다.</p>
+                <p class="mb-6">그런데도 수프를 먹었다.</p>
+                <p class="mb-6">그날 아침 우리 모두가 실수를 했다.</p>
+                <p class="mb-6">8시 10분, 우리는 등산을 시작했다.</p>
+                <p class="mb-6">8시 47분, 첫 번째 사람이 뒤처졌다.</p>
+                <p class="mb-6">“<b class="highlight">속이 메스꺼워요</b>.”</p>
+                <p class="mb-6">그가 말했다.</p>
+                <p class="mb-6">아무도 앞으로 무슨 일이 벌어질지 몰랐다.</p>
+                <p class="mb-6">9시 3분, 두 사람이 더 걸음을 멈췄다. 한 명은 배를 움켜쥐고 있었다. 다른 한 명의 목에는 <b class="highlight">발진</b>이 올라오기 시작했다.</p>
+                <p class="mb-6">“그거 괜찮은 거예요?”</p>
+                <p class="mb-6">내가 물었다.</p>
+                <p class="mb-6">“아니요.”</p>
+                <p class="mb-6">“<b class="highlight">가려워요</b>?”</p>
+                <p class="mb-6">“엄청요.”</p>
+                <p class="mb-6">그러더니 민호가 나무 뒤로 사라졌다.</p>
+                <p class="mb-6">우리는 무언가를 들었다.</p>
+                <p class="mb-6">아무도 질문하지 않았다.</p>
+                <p class="mb-6">9시 30분이 되자 일행은 완전히 무너져 있었다. 절반은 배탈이 났다. 두 명은 토했다. 한 여성의 얼굴은 <b class="highlight">부어</b> 보였고, 우리는 즉시 응급 구조를 요청했다.</p>
+                <p class="mb-6">그때 마침내 누군가가 질문했다.</p>
+                <p class="mb-6">“우리 도대체 뭘 먹은 거야?”</p>
+                <p class="mb-6">아무도 대답하지 않았다.</p>
+                <p class="mb-6">그러자 가이드의 얼굴이 창백해졌다.</p>
+                <p class="mb-6">“수프요.”</p>
+                <p class="mb-6">우리는 그를 바라봤다.</p>
+                <p class="mb-6">“수프가 왜?”</p>
+                <p class="mb-6">“오늘 아침 주인이 만드는 걸 봤어요. 냄비에 다른 것도 들어갔어요.”</p>
+                <p class="mb-6">“뭔데요?”</p>
+                <p class="mb-6">그는 침을 삼켰다.</p>
+                <p class="mb-6">“<b class="highlight">복어</b>요.”</p>
+                <p class="mb-6">침묵이 흘렀다.</p>
+                <p class="mb-6">민호조차 나무 뒤에서 나왔다.</p>
+                <p class="mb-6">“지금 <b class="highlight">복어</b>라고 했어요?”</p>
+                <p class="mb-6">우리는 게스트하우스에 전화했다. 주인이 받았다.</p>
+                <p class="mb-6">“<b class="highlight">복어</b>요? 아니에요! 제가 말한 건 퍼프 페이스트리였어요. 퍼프 페이스트리를 내놨다고요.”</p>
+                <p class="mb-6">우리는 가이드를 바라봤다.</p>
+                <p class="mb-6">그는 천천히 휴대폰을 내렸다.</p>
+                <p class="mb-6">그러니까 우리는 <b class="highlight">복어</b>를 먹지 않았다.</p>
+                <p class="mb-6">그건 좋은 소식이었다.</p>
+                <p class="mb-6">나쁜 소식은 열네 명이 여전히 산 중턱에 갇혀 있었고, 구토와 복통, 설사에 시달리고 있었으며 한 명은 알레르기 반응까지 의심되는 상황이었다는 것이다.</p>
+                <p class="mb-6">모두를 안전하게 산 아래로 데려오는 데 몇 시간이 걸렸다.</p>
+                <p class="mb-6">나중에 의사들은 여러 문제가 동시에 있었던 것 같다고 했다. 몇몇 사람들은 과식했다. 민호는 유제품을 못 먹는다는 걸 알면서도 너무 많이 먹었다. 얼굴이 <b class="highlight">부은</b> 여성은 <b class="highlight">쑥</b>에 반응했을 가능성이 있었다. 그리고 아침 식사 중 다른 무언가는 보관 상태가 좋지 않았던 모양이었다.</p>
+                <p class="mb-6">사람들은 가끔 그 산의 경치가 아름다웠냐고 묻는다.</p>
+                <p class="mb-6">나는 모른다.</p>
+                <p class="mb-6">나는 대부분의 시간을 존재하지도 않는 화장실을 찾으며 보냈다.</p>
+                <p class="mb-6">우리는 열네 명의 등산객으로 그 산에 올라갔다.</p>
+                <p class="mb-6">우리는 생존자가 되어 내려왔다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "825715.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

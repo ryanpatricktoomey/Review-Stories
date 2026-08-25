@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Night of the Family Reunion</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🕯️</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Night of the Family Reunion</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">runs in my family</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">집안 내력이에요 / 가족력으로 있어요</td></tr>
+                <tr><td class="p-4"><b class="text-white">wake up in the middle of the night</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">한밤중에 깨다</td></tr>
+                <tr><td class="p-4"><b class="text-white">coincidence</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">우연 / 우연의 일치</td></tr>
+                <tr><td class="p-4"><b class="text-white">fiber</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">식이섬유</td></tr>
+                <tr><td class="p-4"><b class="text-white">blister</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">물집</td></tr>
+                <tr><td class="p-4"><b class="text-white">acid reflux</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">위산 역류</td></tr>
+                <tr><td class="p-4"><b class="text-white">heartburn</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">속쓰림</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">runs in my family</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">어떤 특징이나 질환 등이 가족 여러 명에게 나타날 때 “집안 내력이다”라는 뜻으로 써요. Heart problems run in my family처럼 표현할 수 있어요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">acid reflux / heartburn</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">acid reflux는 위산이 식도로 역류하는 현상이고, heartburn은 그 때문에 가슴이나 목 부근에서 느껴지는 타는 듯한 불편감인 ‘속쓰림’을 말해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">coincidence</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">서로 관련 없어 보이는 일들이 우연히 동시에 일어났을 때 쓰는 말이에요. *Was it just a coincidence?*처럼 자주 사용해요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">There were thirty-one of us at the reunion that year.</p>
+                <p class="mb-6">By morning, only four could stand.</p>
+                <p class="mb-6">People blame the potato salad. I blame arrogance.</p>
+                <p class="mb-6">Dinner began at six. My uncle had prepared enough food for a small army. There was grilled pork, fried chicken, noodles, three kinds of salad, and a huge pot of bean stew.</p>
+                <p class="mb-6">“Lots of <b class="highlight quiz-target" data-ans="fiber" data-kor="식이섬유">fiber</b>,” my aunt said as she filled my bowl.</p>
+                <p class="mb-6">I should've stopped there.</p>
+                <p class="mb-6">I didn't.</p>
+                <p class="mb-6">You have to understand: digestive problems <b class="highlight quiz-target" data-ans="run in my family" data-kor="집안 내력이에요 / 가족력으로 있어요">run in my family</b>. My father had a sensitive stomach. So did his father. At family gatherings, somebody always complained about indigestion or <b class="highlight quiz-target" data-ans="heartburn" data-kor="속쓰림">heartburn</b>.</p>
+                <p class="mb-6">But this was different.</p>
+                <p class="mb-6">At 10:30, I went to bed with terrible <b class="highlight quiz-target" data-ans="acid reflux" data-kor="위산 역류">acid reflux</b>. Everyone else seemed fine.</p>
+                <p class="mb-6">Then, at 1:17 a.m., I woke up.</p>
+                <p class="mb-6">People sometimes <b class="highlight quiz-target" data-ans="wake up in the middle of the night" data-kor="한밤중에 깨다">wake up in the middle of the night</b> because of a noise.</p>
+                <p class="mb-6">The noise I heard was twenty-seven relatives discovering, almost simultaneously, that something was terribly wrong.</p>
+                <p class="mb-6">Doors opened.</p>
+                <p class="mb-6">Feet hit the floor.</p>
+                <p class="mb-6">Someone shouted, “Bathroom!”</p>
+                <p class="mb-6">Then another voice shouted, “I'm in here!”</p>
+                <p class="mb-6">That's when the battle began.</p>
+                <p class="mb-6">The house had three bathrooms.</p>
+                <p class="mb-6">We had thirty-one people.</p>
+                <p class="mb-6">You do the math.</p>
+                <p class="mb-6">My cousin was the first to throw up. My aunt followed ten minutes later. Then my brother got stomach cramps so bad that he lay down in the hallway.</p>
+                <p class="mb-6">At first, Uncle Ted refused to believe the dinner was responsible.</p>
+                <p class="mb-6">“It's a <b class="highlight quiz-target" data-ans="coincidence" data-kor="우연 / 우연의 일치">coincidence</b>,” he insisted.</p>
+                <p class="mb-6">Then he suddenly stopped talking.</p>
+                <p class="mb-6">His face changed.</p>
+                <p class="mb-6">“Excuse me.”</p>
+                <p class="mb-6">He ran.</p>
+                <p class="mb-6">We never discussed his change of opinion.</p>
+                <p class="mb-6">By 2:00, people were everywhere. Some were on couches. Some were on the floor. My grandmother sat calmly in the kitchen drinking water while chaos unfolded around her.</p>
+                <p class="mb-6">Then my cousin noticed a <b class="highlight quiz-target" data-ans="blister" data-kor="물집">blister</b> on his lip.</p>
+                <p class="mb-6">“Is this from the food?”</p>
+                <p class="mb-6">Nobody knew.</p>
+                <p class="mb-6">That frightened us more than the vomiting.</p>
+                <p class="mb-6">We called for medical help.</p>
+                <p class="mb-6">By sunrise, several relatives had been taken to the hospital for dehydration. The rest of us sat silently in the living room, wrapped in blankets.</p>
+                <p class="mb-6">Later, we learned that the potato salad had probably been left out too long.</p>
+                <p class="mb-6">One bowl.</p>
+                <p class="mb-6">Thirty-one people.</p>
+                <p class="mb-6">Four remained mostly unaffected.</p>
+                <p class="mb-6">My grandmother was one of them.</p>
+                <p class="mb-6">She had refused the potato salad.</p>
+                <p class="mb-6">“Too much mayonnaise,” she told me.</p>
+                <p class="mb-6">For years, I thought she'd been lucky.</p>
+                <p class="mb-6">Now I know better.</p>
+                <p class="mb-6">She saw the danger.</p>
+                <p class="mb-6">We didn't.</p>
+                <p class="mb-6">At family reunions, when Grandma refuses a dish, nobody asks why anymore.</p>
+                <p class="mb-6">We just put our forks down.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">그해 가족 모임에는 서른한 명이 있었다.</p>
+                <p class="mb-6">아침이 되었을 때 제대로 서 있을 수 있는 사람은 네 명뿐이었다.</p>
+                <p class="mb-6">사람들은 감자 샐러드를 탓한다. 나는 우리의 자만심을 탓한다.</p>
+                <p class="mb-6">저녁 식사는 6시에 시작됐다. 삼촌은 작은 군대 하나를 먹이고도 남을 만큼 음식을 준비했다. 돼지고기구이, 치킨, 국수, 세 종류의 샐러드, 그리고 커다란 콩 스튜 냄비까지 있었다.</p>
+                <p class="mb-6">“<b class="highlight">식이섬유</b>가 많아.”</p>
+                <p class="mb-6">이모가 내 그릇을 채워주며 말했다.</p>
+                <p class="mb-6">나는 거기서 그만했어야 했다.</p>
+                <p class="mb-6">하지만 그러지 않았다.</p>
+                <p class="mb-6">한 가지 알아야 할 게 있다. 소화 문제는 우리 <b class="highlight">집안 내력이다</b>. 아버지도 위가 예민했고, 할아버지도 그랬다. 가족이 모이면 항상 누군가는 소화불량이나 <b class="highlight">속쓰림</b>을 호소했다.</p>
+                <p class="mb-6">하지만 그날은 달랐다.</p>
+                <p class="mb-6">10시 30분, 나는 심한 <b class="highlight">위산 역류</b>를 느끼며 잠자리에 들었다. 다른 사람들은 모두 괜찮아 보였다.</p>
+                <p class="mb-6">그러다 새벽 1시 17분, 나는 잠에서 깼다.</p>
+                <p class="mb-6">사람들은 가끔 어떤 소리 때문에 <b class="highlight">한밤중에 깬다</b>.</p>
+                <p class="mb-6">내가 들은 것은 친척 스물일곱 명이 거의 동시에 뭔가 심각하게 잘못됐다는 사실을 깨닫는 소리였다.</p>
+                <p class="mb-6">문들이 열렸다.</p>
+                <p class="mb-6">사람들이 바닥으로 뛰어내렸다.</p>
+                <p class="mb-6">누군가 외쳤다.</p>
+                <p class="mb-6">“화장실!”</p>
+                <p class="mb-6">그러자 다른 목소리가 외쳤다.</p>
+                <p class="mb-6">“나 여기 있어!”</p>
+                <p class="mb-6">그때 전투가 시작됐다.</p>
+                <p class="mb-6">집에는 화장실이 세 개였다.</p>
+                <p class="mb-6">우리는 서른한 명이었다.</p>
+                <p class="mb-6">계산은 알아서 해라.</p>
+                <p class="mb-6">사촌이 가장 먼저 토했다. 10분 후에는 이모가 뒤따랐다. 그러더니 내 동생은 복통이 너무 심해서 복도에 누워버렸다.</p>
+                <p class="mb-6">처음에 테드 삼촌은 저녁 식사가 원인이라는 사실을 인정하지 않았다.</p>
+                <p class="mb-6">“그냥 <b class="highlight">우연</b>이야.”</p>
+                <p class="mb-6">그는 계속 주장했다.</p>
+                <p class="mb-6">그러다 갑자기 말을 멈췄다.</p>
+                <p class="mb-6">표정이 변했다.</p>
+                <p class="mb-6">“실례 좀.”</p>
+                <p class="mb-6">그는 뛰었다.</p>
+                <p class="mb-6">그가 왜 갑자기 생각을 바꿨는지 우리는 이후 한 번도 이야기하지 않았다.</p>
+                <p class="mb-6">새벽 2시가 되자 사람들은 사방에 널브러져 있었다. 누군가는 소파에, 누군가는 바닥에 있었다. 할머니는 주변에서 혼란이 벌어지는 동안 부엌에 차분히 앉아 물을 마셨다.</p>
+                <p class="mb-6">그러다 사촌 한 명이 입술에 <b class="highlight">물집</b>이 생긴 것을 발견했다.</p>
+                <p class="mb-6">“이거 음식 때문에 생긴 거야?”</p>
+                <p class="mb-6">아무도 몰랐다.</p>
+                <p class="mb-6">그 사실이 구토보다 우리를 더 겁먹게 했다.</p>
+                <p class="mb-6">우리는 의료진에게 도움을 요청했다.</p>
+                <p class="mb-6">해가 뜰 무렵, 몇몇 친척들은 탈수 때문에 병원으로 이송된 상태였다. 나머지는 담요를 두르고 거실에 말없이 앉아 있었다.</p>
+                <p class="mb-6">나중에 우리는 감자 샐러드가 너무 오랫동안 실온에 놓여 있었던 것이 원인일 가능성이 높다는 것을 알게 됐다.</p>
+                <p class="mb-6">샐러드 한 그릇.</p>
+                <p class="mb-6">서른한 명.</p>
+                <p class="mb-6">거의 아무렇지 않았던 사람은 네 명뿐이었다.</p>
+                <p class="mb-6">할머니도 그중 한 명이었다.</p>
+                <p class="mb-6">할머니는 감자 샐러드를 먹지 않았다.</p>
+                <p class="mb-6">“마요네즈가 너무 많아.”</p>
+                <p class="mb-6">할머니가 내게 말했다.</p>
+                <p class="mb-6">몇 년 동안 나는 할머니가 운이 좋았다고 생각했다.</p>
+                <p class="mb-6">이제는 안다.</p>
+                <p class="mb-6">할머니는 위험을 봤다.</p>
+                <p class="mb-6">우리는 못 봤다.</p>
+                <p class="mb-6">이제 가족 모임에서 할머니가 어떤 음식을 거절하면 아무도 이유를 묻지 않는다.</p>
+                <p class="mb-6">그냥 모두 포크를 내려놓는다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "8251020.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

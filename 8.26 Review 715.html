@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | BRB</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🍻</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">BRB</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">trends come and go</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">유행은 왔다가 사라진다</td></tr>
+                <tr><td class="p-4"><b class="text-white">payphone</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">공중전화</td></tr>
+                <tr><td class="p-4"><b class="text-white">abbreviation</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">약어, 줄임말</td></tr>
+                <tr><td class="p-4"><b class="text-white">ROFL</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">너무 웃겨서 뒹굴 정도라는 뜻의 인터넷 약어</td></tr>
+                <tr><td class="p-4"><b class="text-white">LMAO</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">엄청 웃긴다는 뜻의 인터넷 약어</td></tr>
+                <tr><td class="p-4"><b class="text-white">AFK</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">잠시 자리를 비움</td></tr>
+                <tr><td class="p-4"><b class="text-white">BRB</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">금방 돌아올게</td></tr>
+                <tr><td class="p-4"><b class="text-white">G2G</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">가봐야 해 / 이제 가야 해</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold mb-1">ROFL</h3>
+                <p class="text-sm text-slate-300">rolling on the floor laughing. 온라인에서 아주 웃긴다는 뜻으로 쓰던 표현이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold mb-1">LMAO</h3>
+                <p class="text-sm text-slate-300">laughing my ass off. “엄청 웃기다”라는 뜻의 매우 캐주얼한 표현이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold mb-1">AFK</h3>
+                <p class="text-sm text-slate-300">away from keyboard. 특히 게임이나 채팅 중 잠시 자리를 비울 때 사용해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold mb-1">BRB</h3>
+                <p class="text-sm text-slate-300">be right back. “금방 돌아올게”라는 뜻이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold mb-1">G2G</h3>
+                <p class="text-sm text-slate-300">got to go. 온라인 대화를 끝낼 때 “이제 가봐야 해”라는 의미로 사용해요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">The team was having dinner after a long day of meetings when Sophie looked up from her phone.</p>
+                <p class="mb-6">“Can I ask you guys something? What does <b class="highlight quiz-target" data-ans="BRB" data-kor="금방 돌아올게">BRB</b> mean?”</p>
+                <p class="mb-6">Michael looked at her.</p>
+                <p class="mb-6">“<b class="highlight quiz-target" data-ans="BRB" data-kor="금방 돌아올게">BRB</b>?”</p>
+                <p class="mb-6">“Yeah. Someone wrote it in a comment.”</p>
+                <p class="mb-6">“Be right back.”</p>
+                <p class="mb-6">“Oh.”</p>
+                <p class="mb-6">Michael waited for some sign that she was joking.</p>
+                <p class="mb-6">None came.</p>
+                <p class="mb-6">“You seriously didn’t know that?”</p>
+                <p class="mb-6">Sophie shrugged. “Why would I?”</p>
+                <p class="mb-6">“It’s one of the most basic internet <b class="highlight quiz-target" data-ans="abbreviation" data-kor="약어, 줄임말">abbreviations</b>.”</p>
+                <p class="mb-6">“Maybe twenty years ago.”</p>
+                <p class="mb-6">That got the attention of two other people at the table.</p>
+                <p class="mb-6">Michael put down his chopsticks.</p>
+                <p class="mb-6">“Twenty years ago?”</p>
+                <p class="mb-6">Sophie smiled. “Okay, what else did people say?”</p>
+                <p class="mb-6">“People?”</p>
+                <p class="mb-6">“You know what I mean.”</p>
+                <p class="mb-6">Michael did know, unfortunately.</p>
+                <p class="mb-6">“<b class="highlight quiz-target" data-ans="G2G" data-kor="가봐야 해 / 이제 가야 해">G2G</b>. Got to go. <b class="highlight quiz-target" data-ans="AFK" data-kor="잠시 자리를 비움">AFK</b>. Away from keyboard.”</p>
+                <p class="mb-6">Sophie laughed. “Away from keyboard?”</p>
+                <p class="mb-6">“Yes.”</p>
+                <p class="mb-6">“So you announced when you physically left your computer?”</p>
+                <p class="mb-6">“That was useful information!”</p>
+                <p class="mb-6">“What else?”</p>
+                <p class="mb-6">Michael thought for a second. “<b class="highlight quiz-target" data-ans="ROFL" data-kor="너무 웃겨서 뒹굴 정도라는 뜻의 인터넷 약어">ROFL</b>.”</p>
+                <p class="mb-6">“What’s that?”</p>
+                <p class="mb-6">“Rolling on the floor laughing.”</p>
+                <p class="mb-6">Sophie stared at him.</p>
+                <p class="mb-6">“No.”</p>
+                <p class="mb-6">“Yes.”</p>
+                <p class="mb-6">“You typed all of that just to mean something was funny?”</p>
+                <p class="mb-6">“It was shorter than typing all of that. That was the point.”</p>
+                <p class="mb-6">“And <b class="highlight quiz-target" data-ans="LMAO" data-kor="엄청 웃긴다는 뜻의 인터넷 약어">LMAO</b>?”</p>
+                <p class="mb-6">Michael looked at her suspiciously. “You know that one?”</p>
+                <p class="mb-6">“Of course.”</p>
+                <p class="mb-6">“Why do you know <b class="highlight quiz-target" data-ans="LMAO" data-kor="엄청 웃긴다는 뜻의 인터넷 약어">LMAO</b> but not <b class="highlight quiz-target" data-ans="BRB" data-kor="금방 돌아올게">BRB</b>?”</p>
+                <p class="mb-6">“I don't know. <b class="highlight quiz-target" data-ans="Trends come and go" data-kor="유행은 왔다가 사라진다">Trends come and go</b>.”</p>
+                <p class="mb-6">Michael wasn't sure he liked hearing his teenage vocabulary described as a trend that had gone.</p>
+                <p class="mb-6">Sophie took a drink.</p>
+                <p class="mb-6">“So what did you do before messaging?”</p>
+                <p class="mb-6">“We still messaged. Just not constantly.”</p>
+                <p class="mb-6">“No, I mean before mobile phones.”</p>
+                <p class="mb-6">Michael thought about high school.</p>
+                <p class="mb-6">“If you were out, you sometimes used a <b class="highlight quiz-target" data-ans="payphone" data-kor="공중전화">payphone</b>.”</p>
+                <p class="mb-6">Sophie laughed.</p>
+                <p class="mb-6">Michael frowned. “Why is that funny?”</p>
+                <p class="mb-6">“I’m imagining calling my friend from a <b class="highlight quiz-target" data-ans="payphone" data-kor="공중전화">payphone</b> and saying, ‘Where are you?’”</p>
+                <p class="mb-6">“We didn’t do that.”</p>
+                <p class="mb-6">“Why not?”</p>
+                <p class="mb-6">“Because they weren’t carrying a phone.”</p>
+                <p class="mb-6">She stopped laughing.</p>
+                <p class="mb-6">“Oh.”</p>
+                <p class="mb-6">“If you agreed to meet at seven, you went there at seven.”</p>
+                <p class="mb-6">“What if they were late?”</p>
+                <p class="mb-6">“You waited.”</p>
+                <p class="mb-6">“For how long?”</p>
+                <p class="mb-6">Michael thought about some terrible evenings from his youth.</p>
+                <p class="mb-6">“Too long.”</p>
+                <p class="mb-6">Sophie shook her head. “I couldn't do it.”</p>
+                <p class="mb-6">“You could. That was normal.”</p>
+                <p class="mb-6">For the first time, she seemed to seriously consider it.</p>
+                <p class="mb-6">Then she smiled. “So basically, people were better at making plans.”</p>
+                <p class="mb-6">Michael nodded.</p>
+                <p class="mb-6">“Exactly.”</p>
+                <p class="mb-6">“And worse at changing them.”</p>
+                <p class="mb-6">He pointed at her.</p>
+                <p class="mb-6">“Also exactly.”</p>
+                <p class="mb-6">His phone buzzed. Their manager had sent a message to the team chat.</p>
+                <p class="mb-6">Heading home. <b class="highlight quiz-target" data-ans="G2G" data-kor="가봐야 해 / 이제 가야 해">G2G</b>.</p>
+                <p class="mb-6">Sophie immediately turned the screen toward Michael.</p>
+                <p class="mb-6">“Your people are still out there.”</p>
+                <p class="mb-6">Michael smiled.</p>
+                <p class="mb-6">“Never doubted it.”</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>팀은 긴 회의 일정을 마치고 함께 저녁을 먹고 있었다. 그때 소피가 휴대폰에서 고개를 들었다.</p>
+                <p>“하나 물어봐도 돼요? <b class="highlight">BRB</b>가 무슨 뜻이에요?”</p>
+                <p>마이클이 그녀를 바라봤다.</p>
+                <p>“<b class="highlight">BRB</b>요?”</p>
+                <p>“네. 누가 댓글에 썼는데.”</p>
+                <p>“Be right back. <b class="highlight">금방 돌아온다는 뜻이에요</b>.”</p>
+                <p>“아.”</p>
+                <p>마이클은 그녀가 농담이었다는 표시를 기다렸다.</p>
+                <p>아무것도 없었다.</p>
+                <p>“진짜 그걸 몰랐어요?”</p>
+                <p>소피가 어깨를 으쓱했다. “제가 왜 알아야 해요?”</p>
+                <p>“가장 기본적인 인터넷 <b class="highlight">약어</b> 중 하나잖아요.”</p>
+                <p>“한 20년 전에는요.”</p>
+                <p>그 말에 테이블에 있던 다른 두 사람도 관심을 보였다.</p>
+                <p>마이클은 젓가락을 내려놓았다.</p>
+                <p>“20년 전?”</p>
+                <p>소피가 웃었다. “좋아요. 그때 또 뭐라고 했는데요?”</p>
+                <p>“그때 사람들이라니요?”</p>
+                <p>“무슨 뜻인지 알잖아요.”</p>
+                <p>안타깝게도 마이클은 정확히 알았다.</p>
+                <p>“<b class="highlight">G2G</b>. Got to go. <b class="highlight">AFK</b>. Away from keyboard.”</p>
+                <p>소피가 웃었다. “Away from keyboard?”</p>
+                <p>“네.”</p>
+                <p>“컴퓨터에서 실제로 자리를 뜬다고 사람들한테 알려줬어요?”</p>
+                <p>“그게 중요한 정보였다고요!”</p>
+                <p>“또 뭐가 있었어요?”</p>
+                <p>마이클은 잠시 생각했다. “<b class="highlight">ROFL</b>.”</p>
+                <p>“그건 뭔데요?”</p>
+                <p>“Rolling on the floor laughing.”</p>
+                <p>소피가 그를 빤히 바라봤다.</p>
+                <p>“설마.”</p>
+                <p>“진짜예요.”</p>
+                <p>“그냥 웃기다는 뜻으로 그걸 다 썼다고요?”</p>
+                <p>“그걸 전부 쓰는 것보다 짧잖아요. 그게 약어의 목적이죠.”</p>
+                <p>“그럼 <b class="highlight">LMAO</b>는요?”</p>
+                <p>마이클이 의심스러운 눈으로 그녀를 봤다. “그건 알아요?”</p>
+                <p>“당연하죠.”</p>
+                <p>“<b class="highlight">LMAO</b>는 알면서 <b class="highlight">BRB</b>는 왜 몰라요?”</p>
+                <p>“저도 모르죠. <b class="highlight">유행은 왔다가 사라지잖아요</b>.”</p>
+                <p>마이클은 자신의 십 대 시절 어휘가 ‘사라진 유행’으로 묘사되는 게 별로 마음에 들지 않았다.</p>
+                <p>소피가 음료를 한 모금 마셨다.</p>
+                <p>“그럼 메시지 하기 전에는 어떻게 했어요?”</p>
+                <p>“그때도 메시지는 했어요. 지금처럼 계속 하지는 않았지만.”</p>
+                <p>“아니, 휴대폰 있기 전이요.”</p>
+                <p>마이클은 고등학교 시절을 떠올렸다.</p>
+                <p>“밖에 있을 때는 가끔 <b class="highlight">공중전화</b>를 썼죠.”</p>
+                <p>소피가 웃었다.</p>
+                <p>마이클이 인상을 찌푸렸다. “그게 왜 웃겨요?”</p>
+                <p>“<b class="highlight">공중전화</b>로 친구한테 ‘어디야?’라고 전화하는 걸 상상했어요.”</p>
+                <p>“그렇게 안 했어요.”</p>
+                <p>“왜요?”</p>
+                <p>“친구도 휴대폰이 없었으니까요.”</p>
+                <p>소피의 웃음이 멈췄다.</p>
+                <p>“아.”</p>
+                <p>“7시에 만나기로 했으면 7시에 거기로 가는 거예요.”</p>
+                <p>“상대방이 늦으면요?”</p>
+                <p>“기다렸죠.”</p>
+                <p>“얼마나요?”</p>
+                <p>마이클은 젊었을 때 겪었던 몇 번의 끔찍한 저녁을 떠올렸다.</p>
+                <p>“너무 오래요.”</p>
+                <p>소피가 고개를 저었다. “전 그렇게 못 할 것 같아요.”</p>
+                <p>“할 수 있었을 거예요. 그게 평범했으니까.”</p>
+                <p>처음으로 소피는 그 말을 진지하게 생각하는 듯했다.</p>
+                <p>그러더니 웃었다.</p>
+                <p>“그러니까 사람들이 약속 잡는 건 더 잘했다는 거네요.”</p>
+                <p>마이클이 고개를 끄덕였다.</p>
+                <p>“바로 그거예요.”</p>
+                <p>“대신 약속 바꾸는 건 더 못했고요.”</p>
+                <p>마이클이 그녀를 가리켰다.</p>
+                <p>“그것도 정확해요.”</p>
+                <p>그때 마이클의 휴대폰이 울렸다. 팀장이 단체 채팅방에 메시지를 보냈다.</p>
+                <p>먼저 들어갑니다. <b class="highlight">G2G</b>.</p>
+                <p>소피는 즉시 화면을 마이클 쪽으로 돌렸다.</p>
+                <p>“아직 같은 시대 사람들이 살아 있네요.”</p>
+                <p>마이클이 웃었다.</p>
+                <p>“한 번도 의심한 적 없어요.”</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "826715.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Monk and the Flying Table</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">⛰️</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Monk and the Flying Table</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">monk</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">승려 / 수도승</td></tr>
+                <tr><td class="p-4"><b class="text-white">unsafe</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">안전하지 않은 / 위험한</td></tr>
+                <tr><td class="p-4"><b class="text-white">threat</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">위협 / 위험 요소</td></tr>
+                <tr><td class="p-4"><b class="text-white">picturesque</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그림처럼 아름다운</td></tr>
+                <tr><td class="p-4"><b class="text-white">I can see it like it was yesterday</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">마치 어제 일처럼 그 장면이 눈앞에 생생해요</td></tr>
+                <tr><td class="p-4"><b class="text-white">I can remember it like it was yesterday</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">마치 어제 일처럼 생생하게 기억나요</td></tr>
+                <tr><td class="p-4"><b class="text-white">vivid</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">생생한 / 선명한</td></tr>
+                <tr><td class="p-4"><b class="text-white">awe</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">경외감 / 압도될 만큼 놀라운 감정</td></tr>
+                <tr><td class="p-4"><b class="text-white">awe-inspiring</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">경외심을 불러일으키는 / 압도적으로 장엄한</td></tr>
+                <tr><td class="p-4"><b class="text-white">filled with awe</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">경외감으로 가득 찬 / 감탄에 압도된</td></tr>
+                <tr><td class="p-4"><b class="text-white">patio table</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">야외 테라스용 테이블</td></tr>
+                <tr><td class="p-4"><b class="text-white">blew away</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">바람에 날아갔다</td></tr>
+                <tr><td class="p-4"><b class="text-white">trembling</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">떨고 있는 / 떨리는</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">picturesque</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">단순히 beautiful보다 ‘사진이나 그림에 나올 것처럼 보기 좋은’ 풍경이나 장소에 자주 써요. 작은 마을, 해안, 오래된 거리 등에 잘 어울립니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">I can see it like it was yesterday</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">오래전 일인데도 특정 장면이 머릿속에 눈에 보이듯 아주 선명하다는 뜻이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">I can remember it like it was yesterday</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">사건 전체나 경험을 ‘마치 어제 일처럼 생생하게 기억한다’는 표현이에요. see it은 특히 머릿속 장면을 강조하는 느낌이 있습니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">awe</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">단순한 감탄보다 훨씬 강해요. 무언가의 크기, 아름다움, 힘 등에 압도되면서 느끼는 놀라움과 경외감입니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">awe-inspiring</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">사람에게 awe를 느끼게 할 만큼 장엄하거나 놀라운 것을 묘사합니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">filled with awe</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">awe-inspiring이 대상의 특징을 말한다면, filled with awe는 그것을 본 사람이 느끼는 상태를 말해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">blew away</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">여기서는 바람이 물건을 ‘날려 버렸다’는 의미로 자연스럽게 쓸 수 있어요. 문맥에 따라 I was blown away는 ‘엄청 감동받았다’라는 전혀 다른 뜻도 됩니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">August 27</p>
+                <p class="mb-6">There is one moment from my trip to Taiwan that I still think about whenever someone asks me about beautiful places.</p>
+                <p class="mb-6">The temple was high in the mountains, surrounded by a <b class="highlight quiz-target" data-ans="picturesque" data-kor="그림처럼 아름다운">picturesque</b> landscape of green peaks and deep valleys. I had seen photos before visiting, but the view from the terrace was genuinely <b class="highlight quiz-target" data-ans="awe-inspiring" data-kor="경외심을 불러일으키는">awe-inspiring</b>.</p>
+                <p class="mb-6">For a while, I just stood there <b class="highlight quiz-target" data-ans="filled with awe" data-kor="경외감으로 가득 찬">filled with awe</b>. The clouds were moving below us, and sunlight kept appearing between the mountains. I remember thinking that no photograph could possibly show the size of the landscape.</p>
+                <p class="mb-6">A <b class="highlight quiz-target" data-ans="monk" data-kor="승려">monk</b> came outside and quietly started clearing cups from a nearby table.</p>
+                <p class="mb-6">Then the wind changed.</p>
+                <p class="mb-6">At first, nobody reacted. A few napkins flew across the terrace. Then a chair moved.</p>
+                <p class="mb-6">The monk looked at it.</p>
+                <p class="mb-6">I looked at him.</p>
+                <p class="mb-6">Another chair slid several feet.</p>
+                <p class="mb-6">Someone behind me said, “Is this <b class="highlight quiz-target" data-ans="unsafe" data-kor="위험한">unsafe</b>?”</p>
+                <p class="mb-6">That was apparently the correct question, because the monk immediately started telling everyone to go inside.</p>
+                <p class="mb-6">The wind became much stronger. At that point, the beautiful view was no longer our biggest concern. Loose furniture had become an actual <b class="highlight quiz-target" data-ans="threat" data-kor="위험 요소">threat</b>.</p>
+                <p class="mb-6">I was walking toward the door when I heard a horrible scraping noise behind me.</p>
+                <p class="mb-6">I turned around.</p>
+                <p class="mb-6">A large <b class="highlight quiz-target" data-ans="patio table" data-kor="야외 테라스용 테이블">patio table</b> was moving across the terrace.</p>
+                <p class="mb-6">For some reason, the monk ran after it.</p>
+                <p class="mb-6">The table reached the edge of the terrace, lifted slightly, and then <b class="highlight quiz-target" data-ans="blew away" data-kor="바람에 날아갔다">blew away</b>.</p>
+                <p class="mb-6">Not tipped over.</p>
+                <p class="mb-6">Not rolled onto its side.</p>
+                <p class="mb-6">It disappeared.</p>
+                <p class="mb-6">There was complete silence.</p>
+                <p class="mb-6">The monk stood at the edge, staring down into the valley.</p>
+                <p class="mb-6">Then he slowly turned toward us.</p>
+                <p class="mb-6">His expression was so calm that I started laughing.</p>
+                <p class="mb-6">I knew I shouldn’t. A table had just vanished down a mountain. But something about his face, the silence, and the absurd difference between the peaceful temple and what had just happened completely destroyed me.</p>
+                <p class="mb-6">My legs were <b class="highlight quiz-target" data-ans="trembling" data-kor="떨고 있는">trembling</b>, partly from the wind and partly because I was trying not to laugh.</p>
+                <p class="mb-6">It happened years ago, but <b class="highlight quiz-target" data-ans="I can see it like it was yesterday" data-kor="마치 어제 일처럼 그 장면이 눈앞에 생생하다">I can see it like it was yesterday</b>: the clouds, the mountains, the monk, and then a table simply leaving the scene.</p>
+                <p class="mb-6">The memory is incredibly <b class="highlight quiz-target" data-ans="vivid" data-kor="생생한">vivid</b>.</p>
+                <p class="mb-6">When I tell people this story, they usually say, “So... a table blew away?”</p>
+                <p class="mb-6">Yes.</p>
+                <p class="mb-6">That is exactly what happened.</p>
+                <p class="mb-6">And somehow that description doesn’t come close.</p>
+                <p class="mb-6">You had to be there.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">8월 27일</p>
+                <p class="mb-6">대만 여행에 대해 누군가 아름다운 장소를 물어볼 때마다 아직도 떠오르는 순간이 하나 있다.</p>
+                <p class="mb-6">그 사원은 산 높은 곳에 있었고, 푸른 봉우리와 깊은 계곡으로 이루어진 <b class="highlight">그림처럼 아름다운</b> 풍경에 둘러싸여 있었다. 가기 전에 사진을 본 적은 있었지만, 테라스에서 직접 바라본 풍경은 정말 <b class="highlight">경외심이 들 만큼 장엄했다</b>.</p>
+                <p class="mb-6">한동안 나는 그저 <b class="highlight">경외감에 압도된 채</b> 서 있었다. 구름은 우리 아래에서 움직이고 있었고, 산 사이로 햇빛이 계속 모습을 드러냈다. 어떤 사진도 이 풍경의 규모를 제대로 보여 줄 수 없겠다는 생각이 들었던 게 기억난다.</p>
+                <p class="mb-6">한 <b class="highlight">승려가</b> 밖으로 나와 근처 테이블에 있던 컵들을 조용히 치우기 시작했다.</p>
+                <p class="mb-6">그때 바람의 방향이 바뀌었다.</p>
+                <p class="mb-6">처음에는 아무도 별로 신경 쓰지 않았다. 냅킨 몇 장이 테라스 위를 날아갔다. 그러더니 의자 하나가 움직였다.</p>
+                <p class="mb-6">승려가 그 의자를 바라봤다.</p>
+                <p class="mb-6">나도 승려를 바라봤다.</p>
+                <p class="mb-6">다른 의자 하나가 몇 미터나 미끄러졌다.</p>
+                <p class="mb-6">내 뒤에 있던 누군가가 말했다.</p>
+                <p class="mb-6">“이거 <b class="highlight">위험한 거</b> 아니에요?”</p>
+                <p class="mb-6">그 질문이 정확했던 모양이다. 승려는 곧바로 모두에게 안으로 들어가라고 하기 시작했다.</p>
+                <p class="mb-6">바람은 훨씬 강해졌다. 그쯤 되자 멋진 풍경은 더 이상 가장 중요한 문제가 아니었다. 고정되지 않은 가구들이 실제 <b class="highlight">위험 요소가</b> 되어 버렸다.</p>
+                <p class="mb-6">나는 문 쪽으로 걸어가고 있었는데, 뒤에서 끔찍하게 긁히는 소리가 들렸다.</p>
+                <p class="mb-6">뒤를 돌아봤다.</p>
+                <p class="mb-6">커다란 <b class="highlight">야외 테라스용 테이블 하나가</b> 테라스를 가로질러 움직이고 있었다.</p>
+                <p class="mb-6">왜 그랬는지는 모르겠지만 승려가 그 테이블을 향해 달려갔다.</p>
+                <p class="mb-6">테이블은 테라스 끝까지 가더니 살짝 떠올랐고, 그대로 <b class="highlight">바람에 날아가 버렸다</b>.</p>
+                <p class="mb-6">쓰러진 것도 아니었다.</p>
+                <p class="mb-6">옆으로 굴러간 것도 아니었다.</p>
+                <p class="mb-6">그냥 사라졌다.</p>
+                <p class="mb-6">완전한 정적이 흘렀다.</p>
+                <p class="mb-6">승려는 테라스 끝에 서서 계곡 아래를 바라봤다.</p>
+                <p class="mb-6">그러고는 천천히 우리 쪽으로 돌아섰다.</p>
+                <p class="mb-6">그 표정이 너무나 침착해서 나는 웃음을 터뜨리고 말았다.</p>
+                <p class="mb-6">웃으면 안 된다는 건 알고 있었다. 테이블 하나가 방금 산 아래로 사라졌으니까. 하지만 그의 표정과 그 정적, 그리고 평화로운 사원과 방금 벌어진 일 사이의 터무니없는 차이가 너무 웃겼다.</p>
+                <p class="mb-6">내 다리는 <b class="highlight">떨리고 있었다</b>. 일부는 바람 때문이었고, 일부는 웃음을 참으려고 해서였다.</p>
+                <p class="mb-6">몇 년 전 일이지만, <b class="highlight">마치 어제 일처럼 그 장면이 눈앞에 생생하다</b>. 구름과 산, 그 승려, 그리고 갑자기 장면에서 퇴장해 버린 테이블까지.</p>
+                <p class="mb-6">그 기억은 놀라울 정도로 <b class="highlight">생생하다</b>.</p>
+                <p class="mb-6">이 이야기를 다른 사람들에게 하면 대개 이렇게 말한다.</p>
+                <p class="mb-6">“그러니까... 테이블이 바람에 날아갔다는 거야?”</p>
+                <p class="mb-6">맞다.</p>
+                <p class="mb-6">정확히 그 일이 일어났다.</p>
+                <p class="mb-6">그런데 이상하게도 그 설명만으로는 실제 느낌에 전혀 미치지 못한다.</p>
+                <p class="mb-6">그 자리에 직접 있었어야 안다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "827830.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

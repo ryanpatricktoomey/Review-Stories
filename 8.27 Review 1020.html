@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Noise Behind the Tent</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🌌</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Noise Behind the Tent</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">imagination ran wild</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">온갖 상상을 했다 / 상상이 걷잡을 수 없이 커졌다</td></tr>
+                <tr><td class="p-4"><b class="text-white">awe</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">경외감 / 압도적인 감탄</td></tr>
+                <tr><td class="p-4"><b class="text-white">awe-inspiring</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">경외심을 불러일으키는 / 압도적으로 장엄한</td></tr>
+                <tr><td class="p-4"><b class="text-white">speechless</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">할 말을 잃은 / 말문이 막힌</td></tr>
+                <tr><td class="p-4"><b class="text-white">incomparable</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">비교할 수 없을 정도로 뛰어난 / 비할 데 없는</td></tr>
+                <tr><td class="p-4"><b class="text-white">galaxy</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">은하</td></tr>
+                <tr><td class="p-4"><b class="text-white">the Milky Way</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">은하수 / 우리 은하</td></tr>
+                <tr><td class="p-4"><b class="text-white">exhirilating</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">짜릿한 / 아주 신나는</td></tr>
+                <tr><td class="p-4"><b class="text-white">goosebumps</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">소름 / 닭살</td></tr>
+                <tr><td class="p-4"><b class="text-white">pitch black</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">칠흑같이 어두운 / 깜깜한</td></tr>
+                <tr><td class="p-4"><b class="text-white">my hair stood up</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">소름이 쫙 돋았다</td></tr>
+                <tr><td class="p-4"><b class="text-white">the hair on the back of my neck stood up</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">목덜미의 털이 곤두섰다 / 오싹해서 소름이 돋았다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">imagination ran wild</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">정보가 부족한 상황에서 머릿속으로 온갖 가능성을 상상하기 시작했다는 뜻이에요. 특히 어둡거나 불안한 상황에서 점점 무서운 상상을 할 때 자연스럽습니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">awe</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">단순한 surprise나 amazement보다 깊은 감정이에요. 자연의 규모나 아름다움처럼 자신을 작게 느끼게 할 정도로 압도적인 것을 접했을 때 느끼는 ‘경외감’에 가깝습니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">speechless</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">실제로 말을 할 수 없다는 뜻보다는 너무 놀라거나 감동해서 순간적으로 ‘할 말을 잃은’ 상태에 자주 씁니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">incomparable</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">다른 것과 제대로 비교할 수 없을 만큼 특별하거나 뛰어나다는 강한 표현이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">the Milky Way</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">우리가 속해 있는 은하인 ‘우리 은하’를 뜻하며, 밤하늘에서 띠처럼 보이는 은하수를 가리킬 때도 사용합니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">exhirilating</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">채팅에 나온 철자 그대로이며, 표준 철자는 exhilarating이에요. 무섭거나 빠르거나 흥분되는 경험이 아주 ‘짜릿하고 신나는’ 느낌을 나타냅니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">pitch black</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">빛이 거의 또는 전혀 없는 ‘칠흑같이 깜깜한’ 상태를 말하는 일상적인 표현이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">my hair stood up / the hair on the back of my neck stood up</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">두려움, 긴장감, 강한 감동 때문에 소름이 돋는 것을 표현해요. 특히 the hair on the back of my neck stood up은 무언가 이상하거나 무섭다는 느낌에 잘 어울립니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">October 14</p>
+                <p class="mb-6">I don’t think I’ll ever forget the night I camped in the desert.</p>
+                <p class="mb-6">I had gone there mainly for the stars. A friend had told me that there was almost no light pollution, so on a clear night you could see <b class="highlight quiz-target" data-ans="the Milky Way" data-kor="은하수">the Milky Way</b> easily. I had seen plenty of photographs of it, but I wanted to see it for myself.</p>
+                <p class="mb-6">By ten o’clock, the campsite was <b class="highlight quiz-target" data-ans="pitch black" data-kor="칠흑같이 어두운">pitch black</b>. I turned off my flashlight, sat outside my tent, and waited for my eyes to adjust.</p>
+                <p class="mb-6">When I finally looked up, I was <b class="highlight quiz-target" data-ans="speechless" data-kor="말문이 막힌">speechless</b>.</p>
+                <p class="mb-6">There were so many stars that the sky barely looked real. I could clearly see a pale band stretching from one side of the sky to the other. Knowing that I was looking into our <b class="highlight quiz-target" data-ans="galaxy" data-kor="은하">galaxy</b> gave me a strange feeling of <b class="highlight quiz-target" data-ans="awe" data-kor="경외감">awe</b>. The whole view was <b class="highlight quiz-target" data-ans="awe-inspiring" data-kor="경외심을 불러일으키는">awe-inspiring</b>, but also strangely peaceful.</p>
+                <p class="mb-6">Then I heard something behind my tent.</p>
+                <p class="mb-6">Crunch.</p>
+                <p class="mb-6">I stopped moving.</p>
+                <p class="mb-6">Crunch. Crunch.</p>
+                <p class="mb-6">My <b class="highlight quiz-target" data-ans="imagination ran wild" data-kor="온갖 상상을 했다">imagination ran wild</b> immediately. I pictured a wild animal slowly approaching me. Then I imagined something much larger. Within thirty seconds, I had somehow convinced myself that I was in serious danger.</p>
+                <p class="mb-6">Another sound came from directly behind me, and <b class="highlight quiz-target" data-ans="the hair on the back of my neck stood up" data-kor="목덜미의 털이 곤두섰다">the hair on the back of my neck stood up</b>.</p>
+                <p class="mb-6">I grabbed my flashlight.</p>
+                <p class="mb-6">The sound stopped.</p>
+                <p class="mb-6">For about a minute, I sat there listening to my own breathing. I had <b class="highlight quiz-target" data-ans="goosebumps" data-kor="소름">goosebumps</b> all over my arms.</p>
+                <p class="mb-6">Then I turned the flashlight on.</p>
+                <p class="mb-6">A tiny desert mouse was sitting beside my food bag.</p>
+                <p class="mb-6">I stared at it.</p>
+                <p class="mb-6">It stared at me.</p>
+                <p class="mb-6">Then it ran away.</p>
+                <p class="mb-6">The relief was so sudden that I started laughing by myself in the dark.</p>
+                <p class="mb-6">I turned the flashlight off and looked up again. Somehow, the sky seemed even bigger after that. The combination of fear, relief, silence, and that enormous sky was <b class="highlight quiz-target" data-ans="incomparable" data-kor="비교할 수 없을 정도로 뛰어난">incomparable</b> to anything I had experienced before.</p>
+                <p class="mb-6">I took several pictures, of course.</p>
+                <p class="mb-6">They’re terrible.</p>
+                <p class="mb-6">In the photos, the sky is mostly black with a few white dots. You can’t see the scale. You can’t feel the silence. And you definitely can’t understand why a mouse made <b class="highlight quiz-target" data-ans="my hair stand up" data-kor="소름이 쫙 돋게 만들다">my hair stand up</b> one minute before I sat staring peacefully at millions of stars.</p>
+                <p class="mb-6">Looking at those pictures now, the whole experience seems almost ordinary.</p>
+                <p class="mb-6">It wasn’t.</p>
+                <p class="mb-6">You had to be there.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">10월 14일</p>
+                <p class="mb-6">사막에서 캠핑했던 그날 밤은 아마 평생 잊지 못할 것 같다.</p>
+                <p class="mb-6">내가 그곳에 간 가장 큰 이유는 별이었다. 친구가 그곳은 빛 공해가 거의 없어서 날씨가 맑은 밤이면 <b class="highlight">은하수를</b> 쉽게 볼 수 있다고 했다. 사진으로는 많이 봤지만 직접 보고 싶었다.</p>
+                <p class="mb-6">밤 10시쯤 되자 캠핑장은 <b class="highlight">칠흑같이 어두워졌다</b>. 나는 손전등을 끄고 텐트 밖에 앉아 눈이 어둠에 적응하기를 기다렸다.</p>
+                <p class="mb-6">마침내 하늘을 올려다봤을 때 나는 <b class="highlight">말문이 막혔다</b>.</p>
+                <p class="mb-6">별이 너무 많아서 하늘이 현실처럼 보이지 않을 정도였다. 하늘 한쪽에서 반대쪽까지 이어지는 희미한 띠가 선명하게 보였다. 내가 <b class="highlight">우리 은하를</b> 바라보고 있다는 사실을 생각하니 묘한 <b class="highlight">경외감이</b> 들었다. 그 풍경 전체가 <b class="highlight">경외심을 불러일으킬 만큼 장엄했지만</b>, 동시에 이상할 정도로 평화로웠다.</p>
+                <p class="mb-6">그때 텐트 뒤에서 무언가 소리가 났다.</p>
+                <p class="mb-6">바스락.</p>
+                <p class="mb-6">나는 움직임을 멈췄다.</p>
+                <p class="mb-6">바스락. 바스락.</p>
+                <p class="mb-6">곧바로 <b class="highlight">온갖 상상이</b> 머릿속을 휘젓기 시작했다. 야생동물이 천천히 나에게 다가오는 모습을 상상했다. 그러다가 훨씬 더 큰 무언가를 상상했다. 30초도 지나지 않아 나는 어떻게 된 일인지 내가 심각한 위험에 처해 있다고 스스로 확신하고 있었다.</p>
+                <p class="mb-6">바로 뒤에서 또 소리가 들렸고, <b class="highlight">목덜미의 털이 곤두섰다</b>.</p>
+                <p class="mb-6">나는 손전등을 움켜쥐었다.</p>
+                <p class="mb-6">소리가 멈췄다.</p>
+                <p class="mb-6">약 1분 동안 나는 가만히 앉아 내 숨소리만 들었다. 팔 전체에 <b class="highlight">소름이</b> 돋아 있었다.</p>
+                <p class="mb-6">그리고 손전등을 켰다.</p>
+                <p class="mb-6">작은 사막쥐 한 마리가 내 음식 가방 옆에 앉아 있었다.</p>
+                <p class="mb-6">나는 쥐를 바라봤다.</p>
+                <p class="mb-6">쥐도 나를 바라봤다.</p>
+                <p class="mb-6">그러더니 도망갔다.</p>
+                <p class="mb-6">갑자기 긴장이 풀리자 나는 어둠 속에서 혼자 웃기 시작했다.</p>
+                <p class="mb-6">다시 손전등을 끄고 하늘을 올려다봤다. 이상하게도 그 일을 겪고 나니 하늘이 훨씬 더 크게 느껴졌다. 두려움과 안도감, 정적, 그리고 그 거대한 밤하늘이 한꺼번에 뒤섞인 경험은 내가 이전에 경험했던 어떤 것과도 <b class="highlight">비교할 수 없었다</b>.</p>
+                <p class="mb-6">물론 사진도 여러 장 찍었다.</p>
+                <p class="mb-6">사진은 엉망이다.</p>
+                <p class="mb-6">사진 속 하늘은 대부분 검은색이고 흰 점 몇 개만 보인다. 그 규모는 느껴지지 않는다. 그 정적도 느낄 수 없다. 그리고 작은 쥐 한 마리 때문에 한순간 온몸에 <b class="highlight">소름이 돋았다가</b>, 바로 다음 순간 수백만 개의 별을 평화롭게 바라보고 있었던 그 느낌은 더더욱 알 수 없다.</p>
+                <p class="mb-6">지금 그 사진들을 보면 모든 경험이 거의 평범해 보인다.</p>
+                <p class="mb-6">전혀 그렇지 않았다.</p>
+                <p class="mb-6">그 자리에 직접 있었어야 안다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "8271020.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

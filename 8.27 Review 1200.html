@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Storm That Wasn't Supposed to Happen</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🌩️</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Storm That Wasn't Supposed to Happen</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">I've ever seen</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">내가 지금까지 본</td></tr>
+                <tr><td class="p-4"><b class="text-white">exhilirating</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">짜릿한 / 아주 신나는</td></tr>
+                <tr><td class="p-4"><b class="text-white">centipede</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">지네</td></tr>
+                <tr><td class="p-4"><b class="text-white">latitude</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">위도</td></tr>
+                <tr><td class="p-4"><b class="text-white">holy</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">신성한 / 성스러운; 감탄사에서 ‘세상에!’ 정도</td></tr>
+                <tr><td class="p-4"><b class="text-white">feel it in every cell of your body</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">온몸의 세포 하나하나로 느끼다 / 온몸으로 강렬하게 느끼다</td></tr>
+                <tr><td class="p-4"><b class="text-white">give you goosebumps</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">소름 돋게 하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">overcast</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">흐린 / 구름이 잔뜩 낀</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">I've ever seen</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">보통 최상급 뒤에 붙여 the biggest I've ever seen처럼 ‘내가 지금까지 본 것 중 가장 ~한’이라는 뜻으로 사용해요. 단독으로 쓰기보다는 앞의 최상급 표현과 연결되는 형태입니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">exhilirating</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">채팅에 나온 철자 그대로이며, 표준 철자는 exhilarating이에요. 흥분되고 에너지가 넘치면서 ‘짜릿한’ 경험을 표현합니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">latitude</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">적도에서 북쪽이나 남쪽으로 얼마나 떨어져 있는지를 나타내는 ‘위도’예요. at this latitude, northern latitudes처럼 씁니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">holy</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">기본적으로 ‘신성한’이라는 뜻이지만 *Holy—!*처럼 감탄사에 들어가면 강한 놀람을 나타냅니다. 뒤에 오는 단어에 따라 거친 표현이 될 수도 있어요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">feel it in every cell of your body</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">소리나 감정, 진동처럼 아주 강렬한 것을 ‘온몸으로 느낀다’고 강조하는 표현이에요. 문자 그대로 세포를 말하는 것은 아닙니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">give you goosebumps</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">추위뿐 아니라 두려움, 감동, 음악 등 강한 감정 때문에 ‘소름이 돋게 하다’라는 뜻으로 자주 사용합니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">July 19</p>
+                <p class="mb-6">I still don’t know how to describe what happened last summer.</p>
+                <p class="mb-6">I was staying at a small guesthouse on a tropical island. It had been <b class="highlight quiz-target" data-ans="overcast" data-kor="흐린">overcast</b> all afternoon, but nobody seemed worried. The owner told me that at that <b class="highlight quiz-target" data-ans="latitude" data-kor="위도">latitude</b>, sudden changes in weather were normal.</p>
+                <p class="mb-6">Around sunset, I went outside to get my shoes.</p>
+                <p class="mb-6">That was when I saw the biggest <b class="highlight quiz-target" data-ans="centipede" data-kor="지네">centipede</b> <b class="highlight quiz-target" data-ans="I’d ever seen" data-kor="내가 지금까지 본">I’d ever seen</b> crawling across the wall.</p>
+                <p class="mb-6">I hate centipedes.</p>
+                <p class="mb-6">I backed away and called the owner.</p>
+                <p class="mb-6">He came outside, looked at it, and shrugged.</p>
+                <p class="mb-6">“That one’s not very big.”</p>
+                <p class="mb-6">I thought he was joking.</p>
+                <p class="mb-6">Then the sky flashed.</p>
+                <p class="mb-6">There was no thunder at first. Just a huge white flash over the ocean.</p>
+                <p class="mb-6">We both turned.</p>
+                <p class="mb-6">A few seconds later, lightning spread across the clouds from one end of the horizon to the other.</p>
+                <p class="mb-6">“<b class="highlight quiz-target" data-ans="Holy" data-kor="세상에">Holy</b>...” I said.</p>
+                <p class="mb-6">Then the thunder hit.</p>
+                <p class="mb-6">I had heard loud thunder before, but this was different. It wasn’t just a sound. The windows shook. The wooden floor vibrated under my feet. It was the kind of sound you could <b class="highlight quiz-target" data-ans="feel in every cell of your body" data-kor="온몸의 세포 하나하나로 느끼다">feel in every cell of your body</b>.</p>
+                <p class="mb-6">The owner laughed at my face.</p>
+                <p class="mb-6">“First tropical storm?”</p>
+                <p class="mb-6">Before I could answer, the rain started.</p>
+                <p class="mb-6">It came down so hard that the ocean disappeared behind a wall of water. Lightning kept flashing over the horizon, and every few seconds the whole landscape appeared for an instant—palm trees bending, waves crashing, clouds moving above the sea.</p>
+                <p class="mb-6">I should have gone inside.</p>
+                <p class="mb-6">Instead, I stood under the roof watching.</p>
+                <p class="mb-6">There was something terrifying about it, but also <b class="highlight quiz-target" data-ans="exhilarating" data-kor="짜릿한">exhilarating</b>. Every flash made me want to step backward and keep watching at the same time.</p>
+                <p class="mb-6">Then I felt something touch my ankle.</p>
+                <p class="mb-6">I screamed.</p>
+                <p class="mb-6">The centipede was back.</p>
+                <p class="mb-6">The guesthouse owner laughed so hard he had to sit down.</p>
+                <p class="mb-6">Later, I tried to record the storm on my phone. The video is almost useless. It shows a dark sky, some rain, and occasional flashes of light. The thunder sounds weak through the tiny speaker.</p>
+                <p class="mb-6">It’s funny. A storm like that should be easy to record.</p>
+                <p class="mb-6">But the part that can <b class="highlight quiz-target" data-ans="give you goosebumps" data-kor="소름 돋게 하다">give you goosebumps</b> isn’t really the lightning. It’s the pause before the thunder arrives, when you know something enormous is coming.</p>
+                <p class="mb-6">And then it hits, and for one second, the whole building seems to move.</p>
+                <p class="mb-6">The video doesn’t have that.</p>
+                <p class="mb-6">You had to be there.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">7월 19일</p>
+                <p class="mb-6">지난여름에 있었던 일을 아직도 어떻게 설명해야 할지 모르겠다.</p>
+                <p class="mb-6">나는 열대 섬의 작은 게스트하우스에 머물고 있었다. 오후 내내 날씨가 <b class="highlight">구름이 잔뜩 끼고 흐렸지만</b>, 아무도 걱정하는 것 같지 않았다. 주인은 이 <b class="highlight">위도에서는</b> 날씨가 갑자기 변하는 것이 흔하다고 말했다.</p>
+                <p class="mb-6">해가 질 무렵, 나는 신발을 가지러 밖으로 나갔다.</p>
+                <p class="mb-6">그때 벽을 기어가고 있는, <b class="highlight">내가 지금까지 본 것 중</b> 가장 큰 <b class="highlight">지네를</b> 발견했다.</p>
+                <p class="mb-6">나는 지네를 정말 싫어한다.</p>
+                <p class="mb-6">뒤로 물러나서 주인을 불렀다.</p>
+                <p class="mb-6">주인은 밖으로 나와 지네를 한번 보더니 어깨를 으쓱했다.</p>
+                <p class="mb-6">“저건 별로 안 큰데요.”</p>
+                <p class="mb-6">농담하는 줄 알았다.</p>
+                <p class="mb-6">그때 하늘이 번쩍였다.</p>
+                <p class="mb-6">처음에는 천둥소리가 들리지 않았다. 바다 위로 거대한 하얀 섬광만 번쩍였다.</p>
+                <p class="mb-6">우리 둘 다 고개를 돌렸다.</p>
+                <p class="mb-6">몇 초 뒤, 번개가 수평선 한쪽 끝에서 다른 쪽 끝까지 구름을 가르며 퍼져 나갔다.</p>
+                <p class="mb-6">“<b class="highlight">세상에</b>...”</p>
+                <p class="mb-6">내가 말했다.</p>
+                <p class="mb-6">그리고 천둥이 쳤다.</p>
+                <p class="mb-6">큰 천둥소리를 들어 본 적은 있었지만 이건 달랐다. 단순히 소리만 큰 게 아니었다. 창문이 흔들렸고, 발밑의 나무 바닥이 진동했다. 정말 <b class="highlight">온몸의 세포 하나하나로 느껴지는</b> 소리였다.</p>
+                <p class="mb-6">주인은 내 표정을 보고 웃었다.</p>
+                <p class="mb-6">“열대 폭풍은 처음이에요?”</p>
+                <p class="mb-6">내가 대답하기도 전에 비가 쏟아지기 시작했다.</p>
+                <p class="mb-6">비가 너무 거세게 내려서 바다가 빗물의 장막 뒤로 사라졌다. 수평선 위에서는 계속 번개가 쳤고, 몇 초에 한 번씩 주변 풍경 전체가 순간적으로 모습을 드러냈다. 야자수는 휘어지고 있었고, 파도는 부서지고 있었으며, 바다 위에서는 구름이 빠르게 움직이고 있었다.</p>
+                <p class="mb-6">나는 안으로 들어갔어야 했다.</p>
+                <p class="mb-6">그런데 지붕 아래 서서 계속 바라봤다.</p>
+                <p class="mb-6">무섭기도 했지만 동시에 <b class="highlight">짜릿했다</b>. 번개가 칠 때마다 뒤로 물러나고 싶으면서도 계속 보고 싶었다.</p>
+                <p class="mb-6">그때 무언가가 내 발목에 닿았다.</p>
+                <p class="mb-6">나는 비명을 질렀다.</p>
+                <p class="mb-6">지네가 돌아온 것이었다.</p>
+                <p class="mb-6">게스트하우스 주인은 너무 웃어서 결국 앉아 버렸다.</p>
+                <p class="mb-6">나중에 휴대폰으로 폭풍을 촬영해 보았다. 하지만 영상은 거의 쓸모가 없다. 어두운 하늘과 비, 가끔 번쩍이는 빛만 보인다. 작은 스피커로 들으니 천둥소리도 약하게 들린다.</p>
+                <p class="mb-6">이상하다. 이런 폭풍이라면 영상으로 담기 쉬울 것 같은데.</p>
+                <p class="mb-6">하지만 정말 <b class="highlight">소름을 돋게 하는 건</b> 번개 자체가 아니다. 천둥이 오기 직전의 그 짧은 정적이다. 엄청난 무언가가 다가오고 있다는 걸 알고 기다리는 순간.</p>
+                <p class="mb-6">그리고 마침내 천둥이 울리면, 단 1초 동안 건물 전체가 움직이는 것처럼 느껴진다.</p>
+                <p class="mb-6">영상에는 그게 담겨 있지 않다.</p>
+                <p class="mb-6">그 자리에 직접 있었어야 안다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "8271200.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

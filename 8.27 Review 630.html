@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Sound in the Canyon</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🏔️</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Sound in the Canyon</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">confidential</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">기밀의 / 비밀로 해야 하는</td></tr>
+                <tr><td class="p-4"><b class="text-white">rifle</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">소총</td></tr>
+                <tr><td class="p-4"><b class="text-white">foggy</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">안개가 낀 / 흐릿한</td></tr>
+                <tr><td class="p-4"><b class="text-white">elevation</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">고도 / 해발 높이</td></tr>
+                <tr><td class="p-4"><b class="text-white">vegetation</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">초목 / 식생</td></tr>
+                <tr><td class="p-4"><b class="text-white">holy</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">신성한 / 성스러운</td></tr>
+                <tr><td class="p-4"><b class="text-white">feel it in every cell of your body</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">온몸의 세포 하나하나로 느끼다 / 온몸으로 강렬하게 느끼다</td></tr>
+                <tr><td class="p-4"><b class="text-white">crevice</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">(바위 등의) 좁고 깊은 틈</td></tr>
+                <tr><td class="p-4"><b class="text-white">turquoise</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">청록색의 / 터키석 빛깔의</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">confidential</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">단순히 ‘비밀스러운’ 것보다, 다른 사람에게 공개하거나 전달하면 안 되는 정보에 자주 써요. 회사 자료나 개인정보 등에 흔히 쓰입니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">elevation</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">산이나 지형 이야기에서는 보통 ‘고도, 해발 높이’를 뜻해요. at a high elevation처럼 자주 사용합니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">vegetation</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">특정 지역에서 자라는 식물들을 전체적으로 가리키는 말이에요. 개별 식물보다는 ‘식생, 초목’이라는 느낌입니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">holy</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">종교적으로 ‘신성한’이라는 뜻이 기본이지만, *Holy—!*처럼 놀람을 나타내는 감탄 표현의 일부로도 쓰입니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">feel it in every cell of your body</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">무언가를 문자 그대로 세포로 느낀다는 뜻보다는, 소리·감정·진동 등을 ‘온몸으로 강렬하게 느끼다’라는 강조 표현이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">crevice</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">특히 바위나 절벽 등에 생긴 좁고 깊은 틈을 말합니다. 일반적인 crack보다 깊고 좁은 틈이라는 느낌이 강해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">turquoise</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">파란색과 초록색 사이의 밝은 청록색이에요. 보석인 ‘터키석’ 자체를 뜻하기도 합니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">August 27</p>
+                <p class="mb-6">I’m writing this down because I know that in a few weeks, I’ll start wondering if it really happened the way I remember it.</p>
+                <p class="mb-6">Yesterday, I went hiking with Daniel in a mountain area that he had refused to tell me much about. He said the location was <b class="highlight quiz-target" data-ans="confidential" data-kor="비밀로 해야 하는">confidential</b> because too many people had started visiting after seeing it online. I thought he was being dramatic.</p>
+                <p class="mb-6">The morning was <b class="highlight quiz-target" data-ans="foggy" data-kor="안개가 낀">foggy</b>, and at our <b class="highlight quiz-target" data-ans="elevation" data-kor="고도">elevation</b>, the clouds were almost level with us. There wasn’t much <b class="highlight quiz-target" data-ans="vegetation" data-kor="초목">vegetation</b> near the top, just low bushes between huge gray rocks.</p>
+                <p class="mb-6">After about two hours, Daniel suddenly stopped.</p>
+                <p class="mb-6">“Did you hear that?”</p>
+                <p class="mb-6">I hadn’t.</p>
+                <p class="mb-6">Then we heard a crack from somewhere across the valley.</p>
+                <p class="mb-6">I immediately thought it was a <b class="highlight quiz-target" data-ans="rifle" data-kor="소총">rifle</b>.</p>
+                <p class="mb-6">Daniel looked at me. “That was not a gun.”</p>
+                <p class="mb-6">Before I could answer, the entire mountain seemed to make a deep, rolling sound.</p>
+                <p class="mb-6">We both froze.</p>
+                <p class="mb-6">A huge section of ice and rock had broken loose on the opposite side of the valley. We were nowhere near it, but watching it fall was terrifying. The sound arrived a second later, so deep that I could <b class="highlight quiz-target" data-ans="feel it in every cell of my body" data-kor="온몸의 세포 하나하나로 느끼다">feel it in every cell of my body</b>.</p>
+                <p class="mb-6">I remember saying, “<b class="highlight quiz-target" data-ans="Holy" data-kor="세상에">Holy</b>—”</p>
+                <p class="mb-6">That was all I managed.</p>
+                <p class="mb-6">Then something ridiculous happened.</p>
+                <p class="mb-6">A marmot shot out of a <b class="highlight quiz-target" data-ans="crevice" data-kor="바위 틈">crevice</b> beside Daniel’s foot. Daniel screamed, grabbed my backpack, and pulled me backward. I fell. He fell on top of me. Somehow, while a section of mountain was collapsing across the valley, we were lying on the ground yelling about a marmot.</p>
+                <p class="mb-6">Once we realized we were safe, we started laughing. We couldn’t stop.</p>
+                <p class="mb-6">I took a video, but I watched it tonight and felt disappointed. The mountain looks small. The sound is just a dull rumble. The lake below us looks vaguely <b class="highlight quiz-target" data-ans="turquoise" data-kor="청록색의">turquoise</b>, but nothing like it did from up there.</p>
+                <p class="mb-6">And our laughter just sounds stupid.</p>
+                <p class="mb-6">The video doesn’t capture the strange combination of fear, relief, noise, color, and terrible timing. It doesn’t show what it felt like when that sound moved through the ground and into my chest.</p>
+                <p class="mb-6">I know this story probably doesn’t sound that funny either.</p>
+                <p class="mb-6">You had to be there.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">8월 27일</p>
+                <p class="mb-6">이걸 적어 두는 이유는 몇 주만 지나도 내가 기억하는 그대로 정말 그런 일이 있었는지 스스로 의심하기 시작할 것 같기 때문이다.</p>
+                <p class="mb-6">어제 나는 다니엘과 함께 산으로 하이킹을 갔다. 다니엘은 그곳에 대해 자세히 알려 주려고 하지 않았다. 온라인에서 그 장소를 본 사람들이 너무 많이 찾아오기 시작해서 위치는 <b class="highlight">비밀로 해야 한다고</b> 했다. 나는 다니엘이 너무 유난을 떠는 거라고 생각했다.</p>
+                <p class="mb-6">아침에는 <b class="highlight">안개가 끼어 있었고</b>, 우리가 있던 <b class="highlight">고도에서는</b> 구름이 거의 우리와 같은 높이에 떠 있었다. 정상 근처에는 <b class="highlight">초목이</b> 별로 없었고, 거대한 회색 바위 사이에 낮은 관목들만 있었다.</p>
+                <p class="mb-6">두 시간쯤 걸었을 때 다니엘이 갑자기 멈췄다.</p>
+                <p class="mb-6">“방금 들었어?”</p>
+                <p class="mb-6">나는 아무것도 듣지 못했다.</p>
+                <p class="mb-6">그때 계곡 건너편 어딘가에서 ‘쾅’ 하는 소리가 들렸다.</p>
+                <p class="mb-6">나는 바로 <b class="highlight">소총</b> 소리라고 생각했다.</p>
+                <p class="mb-6">다니엘이 나를 쳐다봤다.</p>
+                <p class="mb-6">“저거 총소리 아니야.”</p>
+                <p class="mb-6">내가 대답하기도 전에 산 전체에서 낮고 길게 울리는 듯한 소리가 났다.</p>
+                <p class="mb-6">우리 둘 다 그대로 얼어붙었다.</p>
+                <p class="mb-6">계곡 반대편에서 거대한 얼음과 바위 덩어리가 떨어져 나간 것이었다. 우리와는 아주 멀리 떨어져 있었지만, 그것이 무너져 내리는 모습을 보는 것만으로도 무서웠다. 잠시 뒤 소리가 우리에게 도착했는데, 너무나 깊고 강렬해서 <b class="highlight">온몸의 세포 하나하나로 느껴지는 것</b> 같았다.</p>
+                <p class="mb-6">내가 “<b class="highlight">세상에</b>—”라고 말했던 게 기억난다.</p>
+                <p class="mb-6">그게 내가 할 수 있었던 말의 전부였다.</p>
+                <p class="mb-6">그런데 그때 정말 황당한 일이 벌어졌다.</p>
+                <p class="mb-6">다니엘의 발 옆에 있던 <b class="highlight">바위 틈에서</b> 마멋 한 마리가 갑자기 튀어나왔다. 다니엘은 비명을 지르며 내 배낭을 붙잡고 나를 뒤로 잡아당겼다. 나는 넘어졌고, 다니엘은 내 위로 넘어졌다. 계곡 건너편에서는 산의 일부가 무너지고 있는데, 우리는 바닥에 누워 마멋 때문에 소리를 지르고 있었다.</p>
+                <p class="mb-6">우리가 안전하다는 걸 깨닫자 웃음이 터졌다. 멈출 수가 없었다.</p>
+                <p class="mb-6">나는 영상을 찍었지만 오늘 밤 다시 보니 실망스러웠다. 산은 작아 보인다. 그 엄청났던 소리도 영상에서는 그냥 둔탁한 웅웅거림처럼 들린다. 아래쪽 호수는 어렴풋이 <b class="highlight">청록색으로</b> 보이지만, 그곳에서 직접 봤던 모습과는 전혀 다르다.</p>
+                <p class="mb-6">그리고 우리의 웃음소리는 그냥 바보같이 들린다.</p>
+                <p class="mb-6">그 영상에는 공포, 안도감, 소리, 색깔, 그리고 기가 막힌 타이밍이 뒤섞여 있던 그 이상한 느낌이 전혀 담기지 않았다. 그 소리가 땅을 타고 내 가슴속까지 들어오는 것이 어떤 느낌이었는지도 보여 주지 못한다.</p>
+                <p class="mb-6">이 이야기도 지금 이렇게 말로 하니까 별로 웃기게 들리지 않는다는 걸 안다.</p>
+                <p class="mb-6">그 자리에 직접 있었어야 안다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "827630.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

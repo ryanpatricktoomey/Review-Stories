@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | He Was Trying to Help</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🍝</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">He Was Trying to Help</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">humidity</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">습도 / 습기</td></tr>
+                <tr><td class="p-4"><b class="text-white">had no choice</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">선택의 여지가 없었다 / 어쩔 수 없었다</td></tr>
+                <tr><td class="p-4"><b class="text-white">was nothing I could do</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">내가 할 수 있는 게 없었다 / 어쩔 수 없었다</td></tr>
+                <tr><td class="p-4"><b class="text-white">try and understand</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">이해하려고 해 보다</td></tr>
+                <tr><td class="p-4"><b class="text-white">moody</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">기분 변화가 심한 / 까다롭고 예민한</td></tr>
+                <tr><td class="p-4"><b class="text-white">move on</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">잊고 앞으로 나아가다 / 털고 일어서다</td></tr>
+                <tr><td class="p-4"><b class="text-white">puberty</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">사춘기</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">had no choice</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">다른 선택지가 없어서 어쩔 수 없이 그렇게 했다는 뜻이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">was nothing I could do</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">보통 자연스럽게는 There was nothing I could do라고 해요. 상황을 바꿀 방법이 전혀 없었다는 뜻입니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">try and understand</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">try to understand와 비슷하게 이해하려고 해 보다라는 뜻이에요. 대화에서는 try and + 동사도 아주 자연스럽게 쓰여요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">moody</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">단순히 기분이 나쁜 게 아니라, 기분이 자주 바뀌거나 쉽게 예민해지는 사람을 묘사할 때 써요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">move on</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">특히 이별 뒤에는 과거의 관계를 놓고 감정적으로 앞으로 나아가다라는 뜻으로 자주 써요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">puberty</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">어린이에서 성인으로 성장하면서 신체적·감정적 변화가 나타나는 사춘기를 뜻해요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Nina sat across from her two friends, Carla and Owen, pushing a piece of garlic bread around her plate.</p>
+                <p class="mb-6">“He said I was too <b class="highlight quiz-target" data-ans="moody" data-kor="기분 변화가 심한">moody</b>,” she said.</p>
+                <p class="mb-6">Carla frowned. “That’s rough.”</p>
+                <p class="mb-6">“I wasn’t <b class="highlight quiz-target" data-ans="moody" data-kor="기분 변화가 심한">moody</b>. I was upset because he forgot my birthday.”</p>
+                <p class="mb-6">Owen nodded. “You must have been really upset.”</p>
+                <p class="mb-6">“Exactly.”</p>
+                <p class="mb-6">For a moment, Nina looked relieved.</p>
+                <p class="mb-6">Then Owen added, “On the bright side, if he forgot your birthday, you’ll never have to buy him a birthday present again.”</p>
+                <p class="mb-6">Nina stared at him.</p>
+                <p class="mb-6">Carla slowly turned toward Owen. “No.”</p>
+                <p class="mb-6">“What? I’m trying.”</p>
+                <p class="mb-6">Nina took a sip of water. “He also said I should just <b class="highlight quiz-target" data-ans="move on" data-kor="잊고 앞으로 나아가다">move on</b>.”</p>
+                <p class="mb-6">“Ouch,” Carla said.</p>
+                <p class="mb-6">“After two days!”</p>
+                <p class="mb-6">Owen leaned forward. “Well, some people <b class="highlight quiz-target" data-ans="move on" data-kor="잊고 앞으로 나아가다">move on</b> quickly.”</p>
+                <p class="mb-6">“Are you defending him?”</p>
+                <p class="mb-6">“No! I’m trying to put a positive spin on it.”</p>
+                <p class="mb-6">“Please stop spinning.”</p>
+                <p class="mb-6">Owen sat back.</p>
+                <p class="mb-6">Nina continued. “Then he said he <b class="highlight quiz-target" data-ans="had no choice" data-kor="선택의 여지가 없었다">had no choice</b> but to break up with me because we were making each other unhappy.”</p>
+                <p class="mb-6">Carla shook her head. “That’s annoying. He had a choice. He could have talked to you.”</p>
+                <p class="mb-6">“Thank you.”</p>
+                <p class="mb-6">Owen raised one finger.</p>
+                <p class="mb-6">Carla immediately said, “Don’t.”</p>
+                <p class="mb-6">“I was only going to say maybe there <b class="highlight quiz-target" data-ans="was nothing he could do" data-kor="할 수 있는 게 없었다">was nothing he could do</b>.”</p>
+                <p class="mb-6">Nina’s eyes widened.</p>
+                <p class="mb-6">Owen froze. “That came out wrong.”</p>
+                <p class="mb-6">“Very wrong.”</p>
+                <p class="mb-6">The waiter came over and asked whether they wanted to move inside because the outdoor <b class="highlight quiz-target" data-ans="humidity" data-kor="습도">humidity</b> was getting worse.</p>
+                <p class="mb-6">“Yes,” Nina said. “Please.”</p>
+                <p class="mb-6">Once they were inside, she continued.</p>
+                <p class="mb-6">“I even told him, ‘Can you at least <b class="highlight quiz-target" data-ans="try and understand" data-kor="이해하려고 해 보다">try and understand</b> why I’m upset?’ And do you know what he said?”</p>
+                <p class="mb-6">Carla shook her head.</p>
+                <p class="mb-6">“He said, ‘You’ve always been emotional.’”</p>
+                <p class="mb-6">“That sucks,” Carla said.</p>
+                <p class="mb-6">Owen looked thoughtful. “Maybe he meant you’re emotionally expressive.”</p>
+                <p class="mb-6">Nina closed her eyes.</p>
+                <p class="mb-6">Carla whispered, “You are making this worse every single time.”</p>
+                <p class="mb-6">“I know.”</p>
+                <p class="mb-6">Nina sighed. “Then he said I reminded him of himself during <b class="highlight quiz-target" data-ans="puberty" data-kor="사춘기">puberty</b>.”</p>
+                <p class="mb-6">Carla’s mouth fell open.</p>
+                <p class="mb-6">Owen covered his face with both hands.</p>
+                <p class="mb-6">“No bright side?” Nina asked.</p>
+                <p class="mb-6">“I have one,” Owen said through his fingers, “but I’m afraid of you now.”</p>
+                <p class="mb-6">“Good.”</p>
+                <p class="mb-6">There was a short silence.</p>
+                <p class="mb-6">Then Nina’s phone buzzed.</p>
+                <p class="mb-6">She looked at the screen.</p>
+                <p class="mb-6">“He just texted me.”</p>
+                <p class="mb-6">Carla leaned closer. “What did he say?”</p>
+                <p class="mb-6">Nina read it aloud. “‘I hope we can still be friends.’”</p>
+                <p class="mb-6">Owen opened his mouth.</p>
+                <p class="mb-6">Nina pointed at him.</p>
+                <p class="mb-6">“If you say ‘at least,’ I’m leaving.”</p>
+                <p class="mb-6">Owen closed his mouth.</p>
+                <p class="mb-6">Carla smiled. “See? He’s learning.”</p>
+                <p class="mb-6">Nina finally laughed.</p>
+                <p class="mb-6">Owen smiled carefully. “The good thing is—”</p>
+                <p class="mb-6">Both women shouted, “OWEN!”</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">니나는 두 친구 칼라와 오언 맞은편에 앉아 마늘빵 조각을 접시 위에서 이리저리 밀고 있었다.</p>
+                <p class="mb-6">“걔가 내가 너무 <b class="highlight">기분 변화가 심하대</b>.” 니나가 말했다.</p>
+                <p class="mb-6">칼라가 인상을 찌푸렸다. “그거 힘들겠다.”</p>
+                <p class="mb-6">“난 <b class="highlight">기분 변화가 심했던</b> 게 아니야. 걔가 내 생일을 까먹어서 화가 났던 거지.”</p>
+                <p class="mb-6">오언이 고개를 끄덕였다. “진짜 많이 속상했겠다.”</p>
+                <p class="mb-6">“바로 그거야.”</p>
+                <p class="mb-6">잠시 니나의 표정이 편안해졌다.</p>
+                <p class="mb-6">그런데 오언이 덧붙였다. “그래도 좋은 쪽으로 생각하면, 걔가 네 생일을 까먹었으니까 이제 걔 생일 선물 사줄 일도 없잖아.”</p>
+                <p class="mb-6">니나가 그를 빤히 쳐다봤다.</p>
+                <p class="mb-6">칼라는 천천히 오언 쪽으로 고개를 돌렸다. “안 돼.”</p>
+                <p class="mb-6">“왜? 나 노력하고 있잖아.”</p>
+                <p class="mb-6">니나는 물을 한 모금 마셨다. “그리고 걔가 나한테 그냥 <b class="highlight">잊고 앞으로 나아가래</b>.”</p>
+                <p class="mb-6">“아, 그건 아프다.” 칼라가 말했다.</p>
+                <p class="mb-6">“헤어진 지 이틀밖에 안 됐는데!”</p>
+                <p class="mb-6">오언이 몸을 앞으로 숙였다. “뭐, 어떤 사람들은 빨리 <b class="highlight">잊기도 하니까</b>.”</p>
+                <p class="mb-6">“지금 걔 편드는 거야?”</p>
+                <p class="mb-6">“아니! 좋게 포장하려는 거야.”</p>
+                <p class="mb-6">“제발 포장 좀 그만해.”</p>
+                <p class="mb-6">오언은 다시 의자에 기대 앉았다.</p>
+                <p class="mb-6">니나는 말을 이었다. “그러고는 우리가 서로를 불행하게 만들고 있어서 헤어지는 것 말고는 <b class="highlight">선택의 여지가 없었다고</b> 했어.”</p>
+                <p class="mb-6">칼라는 고개를 저었다. “짜증난다. 선택할 수 있었지. 너랑 대화를 할 수도 있었잖아.”</p>
+                <p class="mb-6">“고마워.”</p>
+                <p class="mb-6">오언이 손가락 하나를 들었다.</p>
+                <p class="mb-6">칼라가 바로 말했다. “하지 마.”</p>
+                <p class="mb-6">“그냥 걔 입장에서는 정말 <b class="highlight">할 수 있는 게 없었을지도</b> 모른다고 하려던 건데.”</p>
+                <p class="mb-6">니나의 눈이 커졌다.</p>
+                <p class="mb-6">오언이 굳었다. “말이 잘못 나왔네.”</p>
+                <p class="mb-6">“아주 많이 잘못 나왔어.”</p>
+                <p class="mb-6">웨이터가 와서 바깥의 <b class="highlight">습도</b>가 더 심해지고 있는데 안쪽 자리로 옮기겠냐고 물었다.</p>
+                <p class="mb-6">“네.” 니나가 말했다. “제발요.”</p>
+                <p class="mb-6">안으로 자리를 옮긴 뒤, 니나는 계속 이야기했다.</p>
+                <p class="mb-6">“심지어 내가 걔한테 ‘내가 왜 화났는지 조금이라도 <b class="highlight">이해하려고 해 볼 수</b> 없어?’라고 했거든. 근데 걔가 뭐라고 했는지 알아?”</p>
+                <p class="mb-6">칼라가 고개를 저었다.</p>
+                <p class="mb-6">“‘넌 원래 감정적이었어’라고 했어.”</p>
+                <p class="mb-6">“아, 진짜 최악이다.” 칼라가 말했다.</p>
+                <p class="mb-6">오언은 곰곰이 생각했다. “어쩌면 감정 표현이 풍부하다는 뜻이었을 수도 있잖아.”</p>
+                <p class="mb-6">니나는 눈을 감았다.</p>
+                <p class="mb-6">칼라가 작은 목소리로 말했다. “넌 매번 상황을 더 안 좋게 만들고 있어.”</p>
+                <p class="mb-6">“알아.”</p>
+                <p class="mb-6">니나가 한숨을 쉬었다. “그리고 걔가 내가 자기 <b class="highlight">사춘기</b> 때 모습 같대.”</p>
+                <p class="mb-6">칼라가 입을 벌렸다.</p>
+                <p class="mb-6">오언은 두 손으로 얼굴을 가렸다.</p>
+                <p class="mb-6">“이번엔 좋은 점 없어?” 니나가 물었다.</p>
+                <p class="mb-6">“하나 있긴 한데,” 오언이 손가락 사이로 말했다. “이제 네가 무서워서 말 못 하겠어.”</p>
+                <p class="mb-6">“좋아.”</p>
+                <p class="mb-6">잠깐 침묵이 흘렀다.</p>
+                <p class="mb-6">그때 니나의 휴대폰이 울렸다.</p>
+                <p class="mb-6">그녀가 화면을 확인했다.</p>
+                <p class="mb-6">“걔한테 문자 왔어.”</p>
+                <p class="mb-6">칼라가 몸을 가까이 기울였다. “뭐래?”</p>
+                <p class="mb-6">니나가 읽었다. “‘그래도 친구로 지낼 수 있으면 좋겠어.’”</p>
+                <p class="mb-6">오언이 입을 열었다.</p>
+                <p class="mb-6">니나가 그를 가리켰다.</p>
+                <p class="mb-6">“‘그래도 적어도’라는 말 하면 나 그냥 갈 거야.”</p>
+                <p class="mb-6">오언은 입을 다물었다.</p>
+                <p class="mb-6">칼라가 웃었다. “봐. 얘도 배우고 있잖아.”</p>
+                <p class="mb-6">니나가 마침내 웃음을 터뜨렸다.</p>
+                <p class="mb-6">오언이 조심스럽게 웃었다. “그래도 좋은 점은—”</p>
+                <p class="mb-6">두 여자가 동시에 소리쳤다.</p>
+                <p class="mb-6">“오언!”</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "8281020.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

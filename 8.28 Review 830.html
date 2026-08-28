@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Bright Side Keeps Getting Worse</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🍷</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Bright Side Keeps Getting Worse</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">plateau</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">정체기에 접어들다 / 더 이상 진전이 없는 상태</td></tr>
+                <tr><td class="p-4"><b class="text-white">temptation</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">유혹</td></tr>
+                <tr><td class="p-4"><b class="text-white">expensive tastes</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">비싼 취향 / 돈 많이 드는 취향</td></tr>
+                <tr><td class="p-4"><b class="text-white">5000 won of</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">5,000원어치의</td></tr>
+                <tr><td class="p-4"><b class="text-white">5000 won worth of</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">5,000원어치의</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">plateau</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">원래는 ‘고원’이라는 뜻이지만, 운동·다이어트·실력 향상 등에서 어느 순간부터 발전이 멈추는 정체기를 뜻해요. My weight has plateaued처럼 동사로도 자주 써요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">temptation</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">하고 싶지만 참아야 하는 것에 대한 유혹이에요. 음식, 쇼핑, 연락하고 싶은 마음 등 다양한 상황에서 쓸 수 있어요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">expensive tastes</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">비싼 음식, 옷, 여행, 물건 등을 좋아하는 돈이 많이 드는 취향을 말해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">5000 won of</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">문법적으로 가능한 경우도 있지만, “5,000원어치를 샀다”라고 말할 때는 보통 5,000 won worth of가 더 자연스러워요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Emma sat across from two friends at a small Italian restaurant, staring at a glass of wine she had barely touched.</p>
+                <p class="mb-6">“So,” Jenny said carefully, “how are you doing?”</p>
+                <p class="mb-6">“Terrible. Mark broke up with me because he said our relationship had <b class="highlight quiz-target" data-ans="plateaued" data-kor="정체기에 접어들다">plateaued</b>.”</p>
+                <p class="mb-6">“Oof,” Jenny said. “That’s rough.”</p>
+                <p class="mb-6">Emma nodded. “Three years together, and apparently we were a fitness graph.”</p>
+                <p class="mb-6">Leo leaned forward. “Well, look on the bright side. At least he didn’t say the relationship was getting worse.”</p>
+                <p class="mb-6">Emma looked at him.</p>
+                <p class="mb-6">Jenny whispered, “Too soon.”</p>
+                <p class="mb-6">“Right,” Leo said.</p>
+                <p class="mb-6">Emma sighed. “And now I keep wanting to text him. I deleted his number, but the <b class="highlight quiz-target" data-ans="temptation" data-kor="유혹">temptation</b> is still there.”</p>
+                <p class="mb-6">“I know exactly what you mean,” Jenny said. “That must be really hard.”</p>
+                <p class="mb-6">Leo nodded seriously. “The good thing is, if you deleted his number, you physically can’t text him.”</p>
+                <p class="mb-6">Emma held up her phone. “His number is in my call history.”</p>
+                <p class="mb-6">“Oh.”</p>
+                <p class="mb-6">“And my email.”</p>
+                <p class="mb-6">“Right.”</p>
+                <p class="mb-6">“And I know it by heart.”</p>
+                <p class="mb-6">Leo took a sip of water. “Okay, so technology has failed us.”</p>
+                <p class="mb-6">The waiter arrived and asked if they wanted dessert.</p>
+                <p class="mb-6">Emma shook her head. “No. I’m trying to save money now. Mark and I used to go to expensive restaurants all the time. He had really <b class="highlight quiz-target" data-ans="expensive tastes" data-kor="비싼 취향">expensive tastes</b>.”</p>
+                <p class="mb-6">Leo smiled. “There you go! Silver lining. You’re single, but you’re going to be rich.”</p>
+                <p class="mb-6">“I spent 400,000 won on a hotel for his birthday last month.”</p>
+                <p class="mb-6">Leo’s smile disappeared.</p>
+                <p class="mb-6">Jenny kicked him under the table.</p>
+                <p class="mb-6">Emma continued. “Yesterday I got upset and went to a convenience store. I meant to buy <b class="highlight quiz-target" data-ans="5000 won worth of" data-kor="5,000원어치의">5000 won worth of</b> chocolate, but I spent almost 40,000.”</p>
+                <p class="mb-6">Jenny reached over and squeezed her hand. “I’ve been there.”</p>
+                <p class="mb-6">Leo brightened. “But at least you supported the local economy.”</p>
+                <p class="mb-6">Emma stared at him.</p>
+                <p class="mb-6">Jenny closed her eyes.</p>
+                <p class="mb-6">“What?” Leo said. “I was putting a positive spin on it.”</p>
+                <p class="mb-6">“You’re putting a positive spin on my emotional breakdown.”</p>
+                <p class="mb-6">“Fair point.”</p>
+                <p class="mb-6">Emma finally laughed a little.</p>
+                <p class="mb-6">Leo relaxed. “See? That’s good.”</p>
+                <p class="mb-6">“Don’t.”</p>
+                <p class="mb-6">“Sorry.”</p>
+                <p class="mb-6">Emma picked up her wine.</p>
+                <p class="mb-6">“The worst part is, Mark said we could still be friends.”</p>
+                <p class="mb-6">“Ouch,” Jenny said.</p>
+                <p class="mb-6">Leo opened his mouth.</p>
+                <p class="mb-6">Both women immediately pointed at him.</p>
+                <p class="mb-6">“No.”</p>
+                <p class="mb-6">He closed it.</p>
+                <p class="mb-6">For several seconds, nobody spoke.</p>
+                <p class="mb-6">Then Leo quietly asked, “Can I say one thing?”</p>
+                <p class="mb-6">Emma narrowed her eyes. “What?”</p>
+                <p class="mb-6">“I think paying for dinner is the best way I can support you tonight.”</p>
+                <p class="mb-6">Emma raised her glass.</p>
+                <p class="mb-6">“Finally,” she said. “A bright side I actually like.”</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">엠마는 작은 이탈리안 레스토랑에서 두 친구 맞은편에 앉아 거의 손도 대지 않은 와인잔을 바라보고 있었다.</p>
+                <p class="mb-6">“그래서,” 제니가 조심스럽게 물었다. “좀 어때?”</p>
+                <p class="mb-6">“최악이야. 마크가 우리 관계가 <b class="highlight">정체기에 접어들었다</b>면서 나랑 헤어졌어.”</p>
+                <p class="mb-6">“아이고.” 제니가 말했다. “그거 진짜 힘들겠다.”</p>
+                <p class="mb-6">엠마가 고개를 끄덕였다. “3년이나 만났는데, 우리가 무슨 운동 그래프라도 되는 줄 알았나 봐.”</p>
+                <p class="mb-6">레오가 몸을 앞으로 숙였다. “뭐, 그래도 좋은 쪽으로 생각해 봐. 적어도 관계가 나빠지고 있다고 하진 않았잖아.”</p>
+                <p class="mb-6">엠마가 그를 쳐다봤다.</p>
+                <p class="mb-6">제니가 작게 말했다. “너무 이르다.”</p>
+                <p class="mb-6">“그렇네.” 레오가 말했다.</p>
+                <p class="mb-6">엠마가 한숨을 쉬었다. “그리고 자꾸 걔한테 문자하고 싶어. 번호를 지웠는데도 <b class="highlight">유혹</b>이 계속 생겨.”</p>
+                <p class="mb-6">“무슨 말인지 완전 알아.” 제니가 말했다. “진짜 힘들겠다.”</p>
+                <p class="mb-6">레오가 진지하게 고개를 끄덕였다. “그래도 좋은 점은, 번호를 지웠으니까 물리적으로 문자를 못 보내잖아.”</p>
+                <p class="mb-6">엠마가 휴대폰을 들어 보였다. “통화 기록에 번호 있어.”</p>
+                <p class="mb-6">“아.”</p>
+                <p class="mb-6">“이메일에도 있고.”</p>
+                <p class="mb-6">“그렇지.”</p>
+                <p class="mb-6">“외우고 있기도 해.”</p>
+                <p class="mb-6">레오는 물을 한 모금 마셨다. “좋아, 기술이 우리를 배신했네.”</p>
+                <p class="mb-6">웨이터가 와서 디저트를 주문할 건지 물었다.</p>
+                <p class="mb-6">엠마는 고개를 저었다. “아니요. 이제 돈 좀 아끼려고. 마크랑은 늘 비싼 식당에 갔거든. 걔는 진짜 <b class="highlight">비싼 취향</b>이었어.”</p>
+                <p class="mb-6">레오가 웃었다. “거봐! 좋은 점 찾았다. 지금은 솔로지만 부자가 되겠네.”</p>
+                <p class="mb-6">“지난달 걔 생일에 호텔비로 40만 원 썼어.”</p>
+                <p class="mb-6">레오의 미소가 사라졌다.</p>
+                <p class="mb-6">제니가 테이블 밑에서 그를 찼다.</p>
+                <p class="mb-6">엠마가 계속 말했다. “어제는 너무 속상해서 편의점에 갔어. 원래 초콜릿 <b class="highlight">5,000원어치</b>만 사려고 했는데 거의 4만 원 썼어.”</p>
+                <p class="mb-6">제니가 손을 뻗어 엠마의 손을 잡았다. “나도 그런 적 있어.”</p>
+                <p class="mb-6">레오의 얼굴이 밝아졌다. “그래도 지역 경제에는 도움이 됐네.”</p>
+                <p class="mb-6">엠마가 그를 빤히 쳐다봤다.</p>
+                <p class="mb-6">제니는 눈을 감았다.</p>
+                <p class="mb-6">“왜?” 레오가 말했다. “좋게 포장해 보려고 한 건데.”</p>
+                <p class="mb-6">“내 감정적인 붕괴를 좋게 포장하고 있잖아.”</p>
+                <p class="mb-6">“그건 인정.”</p>
+                <p class="mb-6">엠마가 마침내 조금 웃었다.</p>
+                <p class="mb-6">레오가 안심했다. “봐! 이건 좋은 거잖아.”</p>
+                <p class="mb-6">“하지 마.”</p>
+                <p class="mb-6">“미안.”</p>
+                <p class="mb-6">엠마가 와인잔을 들었다.</p>
+                <p class="mb-6">“제일 싫은 건, 마크가 그래도 친구로 지낼 수 있다고 했다는 거야.”</p>
+                <p class="mb-6">“아, 그건 아프다.” 제니가 말했다.</p>
+                <p class="mb-6">레오가 입을 열었다.</p>
+                <p class="mb-6">두 여자가 동시에 그를 가리켰다.</p>
+                <p class="mb-6">“안 돼.”</p>
+                <p class="mb-6">레오는 입을 다물었다.</p>
+                <p class="mb-6">몇 초 동안 아무도 말하지 않았다.</p>
+                <p class="mb-6">그러다 레오가 조용히 물었다. “한 마디만 해도 돼?”</p>
+                <p class="mb-6">엠마가 눈을 가늘게 떴다. “뭔데?”</p>
+                <p class="mb-6">“오늘 저녁 내가 계산하는 게 너를 가장 잘 위로하는 방법인 것 같아.”</p>
+                <p class="mb-6">엠마가 잔을 들어 올렸다.</p>
+                <p class="mb-6">“드디어,” 그녀가 말했다. “내 마음에 드는 밝은 면을 찾았네.”</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "828830.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

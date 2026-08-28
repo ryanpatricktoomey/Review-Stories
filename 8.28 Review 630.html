@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Worst Possible Silver Lining</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🍝</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Worst Possible Silver Lining</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">lost my voice</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">목소리가 안 나오게 됐다 / 목이 쉬었다</td></tr>
+                <tr><td class="p-4"><b class="text-white">tinnitus</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">이명</td></tr>
+                <tr><td class="p-4"><b class="text-white">fluid</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">액체 / 체액</td></tr>
+                <tr><td class="p-4"><b class="text-white">a gap year</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">갭이어 / 학업·취업 전에 쉬는 기간</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">lost my voice</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">목소리를 문자 그대로 “잃었다”는 뜻이 아니라, 감기나 목을 많이 써서 목소리가 거의 나오지 않는 상태예요. lose her voice, losing his voice처럼 자연스럽게 형태를 바꿀 수 있어요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">tinnitus</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">실제 외부 소리가 없는데도 귀에서 삐-, 윙- 같은 소리가 들리는 이명이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">fluid</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">기본적으로 ‘액체’라는 뜻이지만, 몸과 관련된 문맥에서는 체액을 뜻하기도 해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">a gap year</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">진학이나 취업을 바로 하지 않고 여행, 일, 자기계발 등을 하며 일정 기간 쉬는 것을 말해요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Three days after her boyfriend broke up with her, Sophie agreed to have dinner with her friends, Mia and Ben.</p>
+                <p class="mb-6">“I just don’t understand,” Sophie said. “We were together for four years.”</p>
+                <p class="mb-6">“That sucks,” Mia said. “You must be really upset.”</p>
+                <p class="mb-6">“I am. I cried so much yesterday that I almost <b class="highlight quiz-target" data-ans="lost my voice" data-kor="목소리가 안 나오게 됐다">lost my voice</b>.”</p>
+                <p class="mb-6">Ben leaned forward. “But look on the bright side. Now you can meet someone better.”</p>
+                <p class="mb-6">Sophie stared at him. “I don’t want someone better. I want Eric.”</p>
+                <p class="mb-6">“Right,” Ben said. “Sorry.”</p>
+                <p class="mb-6">Mia kicked him under the table.</p>
+                <p class="mb-6">Sophie took a drink of water. “And we were supposed to travel around Europe together next month.”</p>
+                <p class="mb-6">“Oof,” Mia said. “That’s rough.”</p>
+                <p class="mb-6">Ben nodded. “But the good thing is, traveling alone can be amazing. You could even take <b class="highlight quiz-target" data-ans="a gap year" data-kor="갭이어">a gap year</b>.”</p>
+                <p class="mb-6">“I have a job, Ben.”</p>
+                <p class="mb-6">“Right.”</p>
+                <p class="mb-6">“And I’m thirty-four.”</p>
+                <p class="mb-6">“You can take <b class="highlight quiz-target" data-ans="a gap year" data-kor="갭이어">a gap year</b> at thirty-four.”</p>
+                <p class="mb-6">Mia kicked him harder.</p>
+                <p class="mb-6">Sophie sighed. “Last night I couldn’t even sleep. The apartment was so quiet that I could hear this ringing sound in my ears.”</p>
+                <p class="mb-6">“Maybe <b class="highlight quiz-target" data-ans="tinnitus" data-kor="이명">tinnitus</b>?” Ben suggested.</p>
+                <p class="mb-6">Sophie slowly turned toward him. “Are you diagnosing me now?”</p>
+                <p class="mb-6">“No.”</p>
+                <p class="mb-6">“Because I’m going through a breakup and you just gave me a medical condition.”</p>
+                <p class="mb-6">“I was trying to help.”</p>
+                <p class="mb-6">“Well, stop.”</p>
+                <p class="mb-6">The waiter arrived with their food. Sophie looked down at her pasta but didn’t touch it.</p>
+                <p class="mb-6">“The worst part is that Eric seems completely fine. He posted a photo from a bar last night.”</p>
+                <p class="mb-6">“Ouch,” Mia said. “I’d be angry too.”</p>
+                <p class="mb-6">“He was smiling!”</p>
+                <p class="mb-6">Mia reached across the table and touched Sophie’s hand. “I hate when that happens.”</p>
+                <p class="mb-6">Ben knew he should stay quiet.</p>
+                <p class="mb-6">He lasted eleven seconds.</p>
+                <p class="mb-6">“On the bright side, maybe he’s only pretending to be happy.”</p>
+                <p class="mb-6">Sophie looked up. “So the bright side is that he might secretly be miserable?”</p>
+                <p class="mb-6">Ben considered this. “When you say it like that, it sounds bad.”</p>
+                <p class="mb-6">“Because it is bad.”</p>
+                <p class="mb-6">Sophie finally took a bite of pasta. Her eyes suddenly filled with tears.</p>
+                <p class="mb-6">“Oh no,” Mia said. “Are you okay?”</p>
+                <p class="mb-6">Sophie nodded and pointed at her plate. “It’s just spicy.”</p>
+                <p class="mb-6">Ben pushed a glass toward her. “Drink this. You need <b class="highlight quiz-target" data-ans="fluid" data-kor="체액">fluid</b>.”</p>
+                <p class="mb-6">Mia closed her eyes.</p>
+                <p class="mb-6">Sophie put down her fork. “Ben.”</p>
+                <p class="mb-6">“Yeah?”</p>
+                <p class="mb-6">“For the next ten minutes, could you please stop finding silver linings?”</p>
+                <p class="mb-6">Ben nodded. “Absolutely.”</p>
+                <p class="mb-6">There was a short silence.</p>
+                <p class="mb-6">Then Sophie’s phone buzzed.</p>
+                <p class="mb-6">She looked at the screen.</p>
+                <p class="mb-6">“It’s Eric.”</p>
+                <p class="mb-6">Both friends froze.</p>
+                <p class="mb-6">“He says he made a huge mistake and wants to talk.”</p>
+                <p class="mb-6">Ben opened his mouth.</p>
+                <p class="mb-6">Mia immediately pointed at him. “Don’t.”</p>
+                <p class="mb-6">Ben closed it.</p>
+                <p class="mb-6">Sophie looked at him. “Thank you. That is the most helpful thing you’ve done all night.”</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">남자친구에게 차인 지 사흘째 되던 날, 소피는 친구 미아와 벤을 만나 저녁을 먹기로 했다.</p>
+                <p class="mb-6">“정말 이해가 안 돼.” 소피가 말했다. “우리 4년이나 만났잖아.”</p>
+                <p class="mb-6">“아, 진짜 너무 힘들겠다.” 미아가 말했다. “정말 많이 속상하겠네.”</p>
+                <p class="mb-6">“맞아. 어제는 너무 많이 울어서 거의 <b class="highlight">목소리가 안 나올</b> 정도였어.”</p>
+                <p class="mb-6">벤이 몸을 앞으로 숙였다. “그래도 좋은 쪽으로 생각해 봐. 이제 더 좋은 사람을 만날 수도 있잖아.”</p>
+                <p class="mb-6">소피가 그를 빤히 쳐다봤다. “난 더 좋은 사람 만나고 싶은 게 아니야. 에릭을 원한다고.”</p>
+                <p class="mb-6">“그렇지.” 벤이 말했다. “미안.”</p>
+                <p class="mb-6">미아가 테이블 아래에서 벤의 발을 찼다.</p>
+                <p class="mb-6">소피는 물을 한 모금 마셨다. “그리고 다음 달에 같이 유럽 여행 가기로 했었어.”</p>
+                <p class="mb-6">“아이고.” 미아가 말했다. “그건 정말 힘들겠다.”</p>
+                <p class="mb-6">벤이 고개를 끄덕였다. “그래도 좋은 점은 혼자 여행하는 것도 멋질 수 있다는 거야. 아예 <b class="highlight">갭이어</b>를 가져도 되고.”</p>
+                <p class="mb-6">“나 직장 다녀, 벤.”</p>
+                <p class="mb-6">“그렇지.”</p>
+                <p class="mb-6">“그리고 나 서른넷이야.”</p>
+                <p class="mb-6">“서른넷에도 <b class="highlight">갭이어</b> 가질 수 있지.”</p>
+                <p class="mb-6">미아가 이번에는 더 세게 그의 발을 찼다.</p>
+                <p class="mb-6">소피가 한숨을 쉬었다. “어젯밤에는 잠도 못 잤어. 집이 너무 조용해서 귀에서 삐 소리 같은 것까지 들리더라.”</p>
+                <p class="mb-6">“혹시 <b class="highlight">이명</b> 아닐까?” 벤이 말했다.</p>
+                <p class="mb-6">소피가 천천히 그를 바라봤다. “이제 나 진단까지 해주는 거야?”</p>
+                <p class="mb-6">“아니.”</p>
+                <p class="mb-6">“나 지금 이별 때문에 힘든데, 넌 방금 나한테 병까지 하나 만들어 줬어.”</p>
+                <p class="mb-6">“도와주려고 한 거야.”</p>
+                <p class="mb-6">“그럼 그만해.”</p>
+                <p class="mb-6">웨이터가 음식을 가져왔다. 소피는 파스타를 내려다봤지만 먹지는 않았다.</p>
+                <p class="mb-6">“제일 힘든 건 에릭은 아무렇지도 않아 보인다는 거야. 어젯밤에 술집에서 찍은 사진을 올렸어.”</p>
+                <p class="mb-6">“아, 그건 아프다.” 미아가 말했다. “나라면 나도 화났을 것 같아.”</p>
+                <p class="mb-6">“웃고 있었다고!”</p>
+                <p class="mb-6">미아는 테이블 너머로 손을 뻗어 소피의 손을 잡았다. “그럴 때 진짜 싫어.”</p>
+                <p class="mb-6">벤은 입을 다물고 있어야 한다는 걸 알고 있었다.</p>
+                <p class="mb-6">11초 동안은 성공했다.</p>
+                <p class="mb-6">“그래도 좋은 쪽으로 보면, 걔가 행복한 척만 하는 걸 수도 있잖아.”</p>
+                <p class="mb-6">소피가 고개를 들었다. “그러니까 좋은 점이 걔가 사실은 몰래 불행할 수도 있다는 거야?”</p>
+                <p class="mb-6">벤은 잠시 생각했다. “네가 그렇게 말하니까 좀 안 좋게 들리네.”</p>
+                <p class="mb-6">“원래 안 좋은 말이니까.”</p>
+                <p class="mb-6">소피는 마침내 파스타를 한 입 먹었다. 갑자기 눈에 눈물이 고였다.</p>
+                <p class="mb-6">“어떡해.” 미아가 말했다. “괜찮아?”</p>
+                <p class="mb-6">소피는 고개를 끄덕이며 접시를 가리켰다. “그냥 매워서 그래.”</p>
+                <p class="mb-6">벤이 그녀 쪽으로 물잔을 밀었다. “이거 마셔. <b class="highlight">수분</b>이 필요해.”</p>
+                <p class="mb-6">미아는 눈을 감았다.</p>
+                <p class="mb-6">소피가 포크를 내려놓았다. “벤.”</p>
+                <p class="mb-6">“응?”</p>
+                <p class="mb-6">“앞으로 10분 동안만이라도 제발 좋은 점 찾는 거 그만해 줄래?”</p>
+                <p class="mb-6">벤이 고개를 끄덕였다. “물론이지.”</p>
+                <p class="mb-6">잠시 침묵이 흘렀다.</p>
+                <p class="mb-6">그때 소피의 휴대폰이 울렸다.</p>
+                <p class="mb-6">그녀가 화면을 확인했다.</p>
+                <p class="mb-6">“에릭이야.”</p>
+                <p class="mb-6">두 친구 모두 얼어붙었다.</p>
+                <p class="mb-6">“자기가 큰 실수를 했대. 얘기하고 싶대.”</p>
+                <p class="mb-6">벤이 입을 열었다.</p>
+                <p class="mb-6">미아가 즉시 그를 가리켰다. “하지 마.”</p>
+                <p class="mb-6">벤은 다시 입을 다물었다.</p>
+                <p class="mb-6">소피가 그를 바라봤다. “고마워. 오늘 밤 네가 한 것 중에 그게 제일 도움이 됐어.”</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "828630.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

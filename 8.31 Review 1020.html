@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Apartment They Almost Lost</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🏠</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Apartment They Almost Lost</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">location</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">위치 / 장소</td></tr>
+                <tr><td class="p-4"><b class="text-white">is all I need</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">~만 있으면 돼 / ~면 충분해</td></tr>
+                <tr><td class="p-4"><b class="text-white">caught his eye</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그의 눈에 띄었다</td></tr>
+                <tr><td class="p-4"><b class="text-white">caught his attention</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그의 관심을 끌었다</td></tr>
+                <tr><td class="p-4"><b class="text-white">1 on 1</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">일대일로 / 단둘이</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border border-teal-500/20 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">is all I need</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">필요한 것이 많지 않고, 특정한 한 가지면 충분하다는 뜻이에요. A clean room is all I need처럼 자연스럽게 쓸 수 있어요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-teal-500/20 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">caught his eye</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">무엇인가가 시각적으로 눈에 띄었을 때 자주 써요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-teal-500/20 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">caught his attention</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">꼭 눈으로 본 것이 아니어도, 어떤 것이 관심이나 주의를 끌었을 때 사용할 수 있어요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-teal-500/20 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">1 on 1</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">다른 사람 없이 두 사람이 직접 이야기하거나 만나는 상황을 뜻해요. talk one-on-one처럼도 자주 써요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Eunji and Marcus had spent three months saving for a new apartment.</p>
+                <p class="mb-6">So when Marcus sent her a listing during lunch, Eunji expected something small and practical.</p>
+                <p class="mb-6">Instead, the first thing that <b class="highlight quiz-target" data-ans="caught her eye" data-kor="그녀의 눈에 띄었다">caught her eye</b> was the price.</p>
+                <p class="mb-6">“Three million won more for the deposit?” she asked that evening.</p>
+                <p class="mb-6">Marcus was already defensive. “Look at the <b class="highlight quiz-target" data-ans="location" data-kor="위치 / 장소">location</b>.”</p>
+                <p class="mb-6">“It’s ten minutes closer to your office.”</p>
+                <p class="mb-6">“It’s also near the subway, the park, and the gym.”</p>
+                <p class="mb-6">Eunji scrolled through the photos. “The apartment we saw yesterday was perfectly fine.”</p>
+                <p class="mb-6">“It was dark.”</p>
+                <p class="mb-6">“It had windows.”</p>
+                <p class="mb-6">“They faced a wall.”</p>
+                <p class="mb-6">She put the phone down. “A clean place with enough space <b class="highlight quiz-target" data-ans="is all I need" data-kor="~만 있으면 돼 / ~면 충분해">is all I need</b>.”</p>
+                <p class="mb-6">“That’s all you need,” Marcus said. “I care about where we live.”</p>
+                <p class="mb-6">The sentence landed badly.</p>
+                <p class="mb-6">Eunji stared at him. “You think I don’t?”</p>
+                <p class="mb-6">“That’s not what I meant.”</p>
+                <p class="mb-6">“It sounded like it.”</p>
+                <p class="mb-6">Their conversation quickly turned into an argument about money. Eunji accused Marcus of always wanting to upgrade. Marcus said Eunji chose the cheapest option even when they could afford something better.</p>
+                <p class="mb-6">Then another listing notification appeared on Marcus’s phone.</p>
+                <p class="mb-6">He tried to ignore it, but the rooftop photo <b class="highlight quiz-target" data-ans="caught his attention" data-kor="그의 관심을 끌었다">caught his attention</b>.</p>
+                <p class="mb-6">Eunji noticed.</p>
+                <p class="mb-6">“You’re looking at apartments while we’re fighting about apartments?”</p>
+                <p class="mb-6">“I just got a notification.”</p>
+                <p class="mb-6">“You really can’t help yourself.”</p>
+                <p class="mb-6">Marcus stood up. “And you act like spending money on anything that matters to me is irresponsible.”</p>
+                <p class="mb-6">“That’s because we have a goal!”</p>
+                <p class="mb-6">“So do I. I want to enjoy the place we live in.”</p>
+                <p class="mb-6">They stopped talking.</p>
+                <p class="mb-6">The next morning, Marcus received a message from the real estate agent. Another couple was interested in the cheaper apartment Eunji preferred. If they wanted it, they needed to decide that day.</p>
+                <p class="mb-6">Marcus almost replied immediately.</p>
+                <p class="mb-6">Instead, he called Eunji.</p>
+                <p class="mb-6">“Can we talk <b class="highlight quiz-target" data-ans="1 on 1" data-kor="일대일로 / 단둘이">1 on 1</b> after work? No phones, no listings. Just us.”</p>
+                <p class="mb-6">That evening, they sat in a café.</p>
+                <p class="mb-6">Eunji admitted that the expensive apartment scared her because she had grown up watching her parents struggle with debt. To her, a cheaper home meant safety.</p>
+                <p class="mb-6">Marcus explained that he had spent years living far from work and losing hours every week commuting. To him, paying more for a better location meant getting part of his life back.</p>
+                <p class="mb-6">Neither argument sounded ridiculous anymore.</p>
+                <p class="mb-6">They decided not to take either apartment.</p>
+                <p class="mb-6">A week later, they found one in between: not the cheapest, not Marcus’s dream place, but close enough to work and still within their budget.</p>
+                <p class="mb-6">For the first time, they weren’t choosing between saving and spending.</p>
+                <p class="mb-6">They were choosing together.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>은지와 마커스는 새 아파트를 구하기 위해 세 달 동안 돈을 모아 왔다.</p>
+                <p>그래서 점심시간에 마커스가 매물 하나를 보내왔을 때, 은지는 작고 실용적인 집일 거라고 생각했다.</p>
+                <p>하지만 가장 먼저 그녀의 <b class="highlight">눈에 들어온</b> 것은 가격이었다.</p>
+                <p>“보증금이 300만 원이나 더 비싸다고?” 그날 저녁 은지가 물었다.</p>
+                <p>마커스는 이미 방어적인 태도였다. “<b class="highlight">위치</b>를 봐.”</p>
+                <p>“당신 회사랑 10분 더 가까운 것뿐이잖아.”</p>
+                <p>“지하철도 가깝고, 공원도 있고, 헬스장도 근처야.”</p>
+                <p>은지는 사진을 넘겨봤다. “어제 본 아파트도 충분히 괜찮았어.”</p>
+                <p>“너무 어두웠어.”</p>
+                <p>“창문 있었잖아.”</p>
+                <p>“벽을 마주 보고 있었잖아.”</p>
+                <p>은지는 휴대폰을 내려놓았다. “깨끗하고 공간만 충분하면 <b class="highlight">난 그걸로 충분해</b>.”</p>
+                <p>“그건 네가 그렇다는 거지.” 마커스가 말했다. “나는 우리가 어디에서 사는지도 중요해.”</p>
+                <p>그 말은 좋지 않게 들렸다.</p>
+                <p>은지는 그를 쳐다봤다. “내가 중요하게 생각하지 않는 것 같아?”</p>
+                <p>“그런 뜻이 아니었어.”</p>
+                <p>“그렇게 들렸는데.”</p>
+                <p>대화는 금세 돈 문제를 둘러싼 싸움으로 변했다. 은지는 마커스가 항상 더 좋은 것으로 업그레이드하려 한다고 비난했다. 마커스는 은지가 충분히 여유가 있어도 늘 가장 싼 것만 고른다고 말했다.</p>
+                <p>그때 마커스의 휴대폰에 새로운 아파트 매물 알림이 떴다.</p>
+                <p>그는 무시하려 했지만 옥상 사진이 <b class="highlight">그의 관심을 끌었다</b>.</p>
+                <p>은지가 그것을 알아챘다.</p>
+                <p>“지금 아파트 때문에 싸우고 있는데 아파트를 보고 있는 거야?”</p>
+                <p>“그냥 알림이 온 거야.”</p>
+                <p>“정말 못 말리겠다.”</p>
+                <p>마커스가 자리에서 일어났다. “그리고 넌 내가 중요하게 생각하는 것에 돈을 쓰면 무조건 무책임하다고 생각하잖아.”</p>
+                <p>“우리에게 목표가 있으니까 그렇지!”</p>
+                <p>“나한테도 목표가 있어. 난 우리가 사는 곳을 즐기고 싶어.”</p>
+                <p>두 사람은 더 이상 말을 하지 않았다.</p>
+                <p>다음 날 아침, 마커스는 부동산 중개인에게 메시지를 받았다. 은지가 원했던 더 저렴한 아파트에 다른 커플도 관심을 보이고 있었다. 그 집을 원한다면 그날 안에 결정해야 했다.</p>
+                <p>마커스는 바로 답장을 보낼 뻔했다.</p>
+                <p>하지만 대신 은지에게 전화했다.</p>
+                <p>“퇴근 후에 <b class="highlight">우리 둘이서만</b> 이야기할 수 있을까? 휴대폰도, 매물도 없이. 그냥 우리 둘만.”</p>
+                <p>그날 저녁 두 사람은 카페에 앉았다.</p>
+                <p>은지는 비싼 아파트가 두려운 이유를 털어놓았다. 어릴 때 부모님이 빚 때문에 힘들어하는 모습을 보며 자랐기 때문이었다. 그녀에게 저렴한 집은 곧 안전을 의미했다.</p>
+                <p>마커스는 몇 년 동안 직장에서 먼 곳에 살면서 매주 몇 시간씩 출퇴근에 써야 했다고 설명했다. 그에게 좋은 위치에 돈을 더 쓰는 것은 자신의 삶의 일부를 되찾는 일이었다.</p>
+                <p>이제 어느 쪽의 주장도 터무니없게 들리지 않았다.</p>
+                <p>두 사람은 결국 두 아파트 모두 선택하지 않기로 했다.</p>
+                <p>일주일 뒤, 그들은 그 중간쯤 되는 집을 찾았다. 가장 저렴하지도 않았고 마커스가 꿈꾸던 집도 아니었지만, 직장과 충분히 가까웠고 예산 안에도 들어왔다.</p>
+                <p>처음으로 두 사람은 돈을 아낄지 쓸지를 놓고 선택하는 것이 아니었다.</p>
+                <p>함께 선택하고 있었다.</p>
+            </div>
+        </section>
+
+    </div>
+    <script>
+        function skipAudio(seconds) {
+            const player = document.getElementById('player');
+            if (player.src) {
+                player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+            }
+        }
+
+        function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+        let _quizOriginals = new Map();
+        function toggleQuiz() {
+            const btn = document.getElementById('quizBtn');
+            const isQuiz = btn.innerText.includes("Quiz");
+            const targets = document.querySelectorAll('.quiz-target');
+            const cells = document.querySelectorAll('.mystery-cell');
+            if (isQuiz) {
+                btn.innerText = "Study Mode 📖";
+                cells.forEach(c => c.classList.add('quiz-hidden'));
+                targets.forEach(t => {
+                    const ans = t.dataset.ans; const kor = t.dataset.kor;
+                    _quizOriginals.set(t, t.innerHTML);
+                    t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+                });
+            } else {
+                btn.innerText = "Quiz Mode 👻";
+                cells.forEach(c => c.classList.remove('quiz-hidden'));
+                targets.forEach(t => {
+                    if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+                });
+                _quizOriginals.clear();
+            }
+        }
+
+        function checkQuiz(i, a) {
+            if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+                i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+                confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+                checkAllSolved();
+            } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+        }
+
+        function checkAllSolved() {
+            const inputs = document.querySelectorAll('.quiz-input');
+            if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+                var duration = 3 * 1000; var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+            }
+        }
+
+        document.getElementById('player').src = "8311020.m4a";
+    </script>
+    <script src="wordbank-utils.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>

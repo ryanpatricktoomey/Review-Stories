@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+      <title>Review Note | The Long Way to a Quiet Life</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+      <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+      </style>
+</head>
+<body class="p-4 md:p-12">
+      <div class="max-w-4xl mx-auto space-y-8">
+
+          <header class="text-center space-y-4">
+              <div class="flex items-center justify-center gap-4">
+                  <span class="text-5xl">🎪</span>
+                  <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Long Way to a Quiet Life</h1>
+              </div>
+              <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+          </header>
+
+          <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+              <div class="flex items-center justify-between px-2">
+                  <div class="flex items-center gap-3">
+                      <span class="text-xl">🎧</span>
+                      <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                  </div>
+                  <div class="flex gap-2">
+                      <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          <span class="text-lg">↺</span> 5s
+                      </button>
+                      <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          5s <span class="text-lg">↻</span>
+                      </button>
+                  </div>
+              </div>
+              <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+          </div>
+
+          <div class="flex justify-center">
+              <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+          </div>
+
+          <section class="glass rounded-3xl overflow-hidden shadow-xl">
+              <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                  <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+              </div>
+              <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                  <tr><td class="p-4"><b class="text-white">attractive to me</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">나에게 매력적으로 느껴지는</td></tr>
+                  <tr><td class="p-4"><b class="text-white">self-esteem</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">자존감</td></tr>
+                  <tr><td class="p-4"><b class="text-white">it wasn't for me</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">나와는 맞지 않았다 / 내 길이 아니었다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">I had no choice</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">선택의 여지가 없었다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">conflicted</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">마음이 복잡한 / 갈등하는</td></tr>
+                  <tr><td class="p-4"><b class="text-white">at first</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">처음에는</td></tr>
+                  <tr><td class="p-4"><b class="text-white">thick accent</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">강한 억양 / 알아듣기 힘들 정도로 진한 억양</td></tr>
+                  <tr><td class="p-4"><b class="text-white">worked up the courage</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">용기를 냈다 / 용기를 내기까지 마음을 다잡았다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">eager to</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">~하고 싶어 하는 / ~하기를 열망하는</td></tr>
+                  <tr><td class="p-4"><b class="text-white">sense of achievement</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">성취감</td></tr>
+              </tbody></table>
+          </section>
+
+          <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-400">
+                  <h3 class="text-teal-400 font-bold text-lg mb-2">attractive to me</h3>
+                  <p class="text-slate-300 text-sm">사람의 외모뿐 아니라 직업, 생활 방식, 아이디어 등이 “내게 매력적으로 느껴진다”는 뜻으로도 자연스럽게 쓸 수 있어요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-400">
+                  <h3 class="text-teal-400 font-bold text-lg mb-2">it wasn't for me</h3>
+                  <p class="text-slate-300 text-sm">단순히 싫었다기보다 직접 경험해 보고 “나한테는 안 맞더라”라고 말할 때 아주 자연스러운 표현입니다.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-400">
+                  <h3 class="text-teal-400 font-bold text-lg mb-2">conflicted</h3>
+                  <p class="text-slate-300 text-sm">두 가지 상반된 감정이나 생각 사이에서 마음이 복잡한 상태예요. I felt conflicted about leaving처럼 자주 씁니다.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-400">
+                  <h3 class="text-teal-400 font-bold text-lg mb-2">thick accent</h3>
+                  <p class="text-slate-300 text-sm">억양의 특징이 매우 강하다는 뜻이에요. strong accent도 흔히 사용합니다.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-400">
+                  <h3 class="text-teal-400 font-bold text-lg mb-2">worked up the courage</h3>
+                  <p class="text-slate-300 text-sm">두렵거나 긴장되는 일을 하기 위해 시간을 두고 마침내 용기를 냈다는 느낌입니다. work up the courage to + 동사 형태가 흔해요.</p>
+              </div>
+          </section>
+
+          <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+              <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                  <p class="mb-6">I grew up in a wealthy family in Singapore, and my parents had a very clear idea of what my life should look like. I would study finance, join my father's company, marry someone respectable, and stay close to home.</p>
+                  <p class="mb-6"><b class="highlight quiz-target" data-ans="At first" data-kor="처음에는">At first</b>, I didn't question any of it.</p>
+                  <p class="mb-6">I went to university in London and studied finance. The strange thing was that London changed me much more than university did. I met musicians, photographers, restaurant workers, actors, and people who seemed completely unconcerned with having impressive careers. That freedom was very <b class="highlight quiz-target" data-ans="attractive to me" data-kor="나에게 매력적으로 느껴지는">attractive to me</b>.</p>
+                  <p class="mb-6">After graduation, I joined a bank in Singapore. I lasted eleven months.</p>
+                  <p class="mb-6">The salary was excellent, but <b class="highlight quiz-target" data-ans="it wasn't for me" data-kor="나와는 맞지 않았다">it wasn't for me</b>. My <b class="highlight quiz-target" data-ans="self-esteem" data-kor="자존감">self-esteem</b> actually got worse because I was constantly pretending to be interested in work I hated.</p>
+                  <p class="mb-6">Then my father had a heart attack.</p>
+                  <p class="mb-6">Suddenly, <b class="highlight quiz-target" data-ans="I had no choice" data-kor="선택의 여지가 없었다">I had no choice</b> but to join the family business temporarily. I felt deeply <b class="highlight quiz-target" data-ans="conflicted" data-kor="마음이 복잡한">conflicted</b>. I wanted to help my family, but I was terrified that “temporarily” would become the rest of my life.</p>
+                  <p class="mb-6">It nearly did.</p>
+                  <p class="mb-6">I worked there for three years. Then, during a business trip to Argentina, I met an elderly British woman named Margaret at my hotel. She had a <b class="highlight quiz-target" data-ans="thick accent" data-kor="강한 억양">thick accent</b>, and during our first conversation I understood perhaps half of what she said. What I did understand was that she owned a small horse farm in Wales.</p>
+                  <p class="mb-6">For some reason, I couldn't stop thinking about it.</p>
+                  <p class="mb-6">Six months later, I finally <b class="highlight quiz-target" data-ans="worked up the courage" data-kor="용기를 냈다">worked up the courage</b> to quit my job. I flew to Wales and asked Margaret if she needed help.</p>
+                  <p class="mb-6">She stared at me and said, “Do you know anything about horses?”</p>
+                  <p class="mb-6">“No.”</p>
+                  <p class="mb-6">“Farming?”</p>
+                  <p class="mb-6">“No.”</p>
+                  <p class="mb-6">“Wales?”</p>
+                  <p class="mb-6">“Not really.”</p>
+                  <p class="mb-6">She hired me anyway.</p>
+                  <p class="mb-6">I was <b class="highlight quiz-target" data-ans="eager to" data-kor="~하고 싶어 하는">eager to</b> prove that I hadn't destroyed my career for nothing, so I learned everything I could. I cleaned stables, repaired fences, drove tractors, and eventually learned to train horses.</p>
+                  <p class="mb-6">I stayed for eight years.</p>
+                  <p class="mb-6">Then came the strangest turn. A film crew rented several of our horses, and I helped manage them on set. That led to more film work. For the next six years, I traveled around Europe supplying and handling horses for historical films.</p>
+                  <p class="mb-6">Eventually, I got tired of airports and movie sets. I wanted something small and permanent.</p>
+                  <p class="mb-6">So I moved to Portugal and bought an abandoned farmhouse. I spent two years restoring it myself. Finishing the roof gave me a greater <b class="highlight quiz-target" data-ans="sense of achievement" data-kor="성취감">sense of achievement</b> than anything I had done in banking.</p>
+                  <p class="mb-6">I'm fifty-three now. I grow olives, keep four horses, and rent two rooms to travelers.</p>
+                  <p class="mb-6">My parents spent years worrying that I had thrown away a perfectly good career.</p>
+                  <p class="mb-6">Perhaps I did.</p>
+                  <p class="mb-6">But whenever I'm repairing a fence in the Portuguese countryside, I think about the life they planned for me—and I'm very glad I wasn't very good at following plans.</p>
+              </div>
+              <hr class="border-white/10">
+              <div class="text-slate-400 italic leading-relaxed space-y-6">
+                  <p class="mb-6">저는 싱가포르의 부유한 가정에서 자랐고, 부모님은 제 인생이 어떤 모습이어야 하는지 아주 명확하게 생각하고 계셨어요. 저는 금융을 공부하고, 아버지 회사에 들어가고, 괜찮은 사람과 결혼해서 가족 가까이에서 살아야 했죠.</p>
+                  <p class="mb-6"><b class="highlight">처음에는</b> 저도 그 계획에 아무런 의문을 갖지 않았어요.</p>
+                  <p class="mb-6">런던의 대학에서 금융을 공부했습니다. 그런데 이상하게도 저를 훨씬 더 많이 변화시킨 건 대학이 아니라 런던이라는 도시 자체였어요. 음악가, 사진작가, 식당 직원, 배우들을 만났고, 멋진 직업을 가져야 한다는 것에 전혀 신경 쓰지 않는 사람들도 만났어요. 그런 자유로운 삶이 저에게 굉장히 <b class="highlight">매력적으로 느껴졌어요</b>.</p>
+                  <p class="mb-6">졸업 후 싱가포르의 한 은행에 취직했습니다. 11개월 만에 그만뒀어요.</p>
+                  <p class="mb-6">급여는 아주 좋았지만 <b class="highlight">저와는 맞지 않았어요</b>. 사실 관심도 없는 일에 계속 관심 있는 척해야 해서 오히려 <b class="highlight">자존감</b>이 낮아졌습니다.</p>
+                  <p class="mb-6">그러던 중 아버지가 심장마비를 일으키셨어요.</p>
+                  <p class="mb-6">갑자기 저는 임시로라도 가족 회사에 들어가는 것 외에는 <b class="highlight">선택의 여지가 없었어요</b>. 마음은 몹시 <b class="highlight">복잡했습니다</b>. 가족을 돕고 싶었지만, ‘임시로’ 시작한 일이 제 남은 인생 전체가 될까 봐 두려웠어요.</p>
+                  <p class="mb-6">실제로 거의 그렇게 될 뻔했죠.</p>
+                  <p class="mb-6">그곳에서 3년 동안 일했습니다. 그러다 아르헨티나로 출장을 갔을 때 호텔에서 마거릿이라는 나이 든 영국 여성을 만났어요. 그녀는 <b class="highlight">억양이 아주 강해서</b> 첫 대화에서는 아마 절반 정도밖에 알아듣지 못했을 거예요. 그래도 한 가지는 알아들었습니다. 웨일스에서 작은 말 농장을 운영하고 있다는 것이었죠.</p>
+                  <p class="mb-6">이상하게도 그 이야기가 계속 머릿속에서 떠나지 않았어요.</p>
+                  <p class="mb-6">6개월 뒤, 마침내 회사를 그만둘 <b class="highlight">용기를 냈습니다</b>. 웨일스로 날아가 마거릿에게 일손이 필요한지 물었어요.</p>
+                  <p class="mb-6">그녀가 저를 빤히 쳐다보며 말했습니다.</p>
+                  <p class="mb-6">“말에 대해 아는 게 있어요?”</p>
+                  <p class="mb-6">“없어요.”</p>
+                  <p class="mb-6">“농사는요?”</p>
+                  <p class="mb-6">“없어요.”</p>
+                  <p class="mb-6">“웨일스에 대해서는요?”</p>
+                  <p class="mb-6">“별로요.”</p>
+                  <p class="mb-6">그런데도 저를 고용했습니다.</p>
+                  <p class="mb-6">제 경력을 아무 이유 없이 망쳐버린 게 아니라는 걸 증명하고 싶은 <b class="highlight">마음이 강했기 때문에</b>, 할 수 있는 모든 걸 배웠어요. 마구간을 청소하고, 울타리를 고치고, 트랙터를 몰았고, 결국에는 말을 훈련하는 법까지 배웠습니다.</p>
+                  <p class="mb-6">그곳에서 8년을 보냈어요.</p>
+                  <p class="mb-6">그러다 제 인생에서 가장 이상한 전환점이 찾아왔습니다. 한 영화 촬영팀이 우리 농장의 말 몇 마리를 빌렸고, 제가 촬영 현장에서 말을 관리하는 일을 도왔어요. 그 일이 다른 영화 일로 이어졌습니다. 이후 6년 동안 유럽 곳곳을 다니며 시대극 영화에 필요한 말을 공급하고 관리했어요.</p>
+                  <p class="mb-6">결국 공항과 영화 촬영장 생활에 지쳤습니다. 작고 변하지 않는 무언가를 원했어요.</p>
+                  <p class="mb-6">그래서 포르투갈로 이주해 버려진 농가를 하나 샀습니다. 2년에 걸쳐 직접 집을 고쳤어요. 지붕 공사를 끝냈을 때 느낀 <b class="highlight">성취감</b>은 은행에서 일하면서 느꼈던 그 어떤 것보다 컸습니다.</p>
+                  <p class="mb-6">지금 저는 쉰세 살이에요. 올리브를 재배하고, 말 네 마리를 키우며, 방 두 개를 여행객들에게 빌려주고 있습니다.</p>
+                  <p class="mb-6">부모님은 제가 멀쩡한 직업을 내던졌다며 오랫동안 걱정하셨어요.</p>
+                  <p class="mb-6">어쩌면 정말 그랬을지도 모르죠.</p>
+                  <p class="mb-6">하지만 포르투갈 시골에서 울타리를 고칠 때면 부모님이 저를 위해 계획했던 삶을 떠올립니다. 그리고 제가 계획을 따르는 데 별로 소질이 없었다는 사실이 참 다행이라고 생각해요.</p>
+              </div>
+          </section>
+
+      </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "91845.m4a";
+</script>
+  </body>
+  </html>

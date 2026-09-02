@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | I’m Just Interested in Mushrooms</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+      :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+      body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+      .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+      .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+      input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+      input:focus::placeholder { opacity: 0 !important; }
+      .mystery-cell { transition: color 0.3s; }
+      .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+      .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+      .highlight { color: var(--teal); font-weight: 700; }
+      .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+      audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🍄</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">I’m Just Interested in Mushrooms</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">owner</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">주인 / 소유자</td></tr>
+                <tr><td class="p-4"><b class="text-white">stray cat</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">길고양이</td></tr>
+                <tr><td class="p-4"><b class="text-white">on the right path</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">올바른 방향으로 가고 있는 / 제대로 하고 있는</td></tr>
+                <tr><td class="p-4"><b class="text-white">willpower</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">의지력 / 자제력</td></tr>
+                <tr><td class="p-4"><b class="text-white">flavorful</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">풍미가 좋은 / 맛이 풍부한</td></tr>
+                <tr><td class="p-4"><b class="text-white">mushroom cap</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">버섯 갓</td></tr>
+                <tr><td class="p-4"><b class="text-white">gluttonously</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">게걸스럽게 / 탐식하듯</td></tr>
+                <tr><td class="p-4"><b class="text-white">glutton</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">먹보 / 대식가</td></tr>
+                <tr><td class="p-4"><b class="text-white">local</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">현지의 / 지역의 / 동네의</td></tr>
+                <tr><td class="p-4"><b class="text-white">persistence</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">끈기 / 지속성</td></tr>
+                <tr><td class="p-4"><b class="text-white">perseverance</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">인내심 / 끈기</td></tr>
+                <tr><td class="p-4"><b class="text-white">resilience</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">회복력 / 어려움을 이겨내는 힘</td></tr>
+                <tr><td class="p-4"><b class="text-white">follow through</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">끝까지 해내다 / 계획한 것을 실행하다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">on the right path</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">실제 길뿐 아니라 목표나 문제 해결에서 “제대로 된 방향으로 가고 있다”는 뜻으로 자주 사용합니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">glutton / gluttonously</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">glutton은 지나치게 많이 먹는 사람을 뜻합니다. gluttonously는 “탐욕스럽게 먹는 모습”을 강조해서 일상 대화에서는 다소 과장되거나 유머러스하게 들릴 수 있어요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">persistence</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">포기하지 않고 계속하는 끈기를 뜻해요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">perseverance</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">어려움이 있어도 계속 노력하는 끈기와 인내를 뜻합니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">resilience</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">힘든 일이나 실패를 겪은 뒤에도 다시 회복하고 계속 나아갈 수 있는 능력을 말합니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">follow through</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">시작하거나 약속한 일을 말로만 끝내지 않고 실제로 끝까지 실행한다는 뜻입니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">I’ve developed an interest in mushrooms.</p>
+                <p class="mb-6">Not in a strange way. I cook a lot, and mushrooms are incredibly versatile. A good mushroom can be surprisingly <b class="highlight quiz-target" data-ans="flavorful" data-kor="풍미가 좋은 / 맛이 풍부한">flavorful</b>, especially if you cook it properly.</p>
+                <p class="mb-6">It started with ordinary supermarket mushrooms. Then I discovered a <b class="highlight quiz-target" data-ans="local" data-kor="현지의 / 지역의 / 동네의">local</b> market that sold varieties I’d never seen before.</p>
+                <p class="mb-6">Naturally, I wanted to try them.</p>
+                <p class="mb-6">At first, I was only interested in eating them. I’d examine the <b class="highlight quiz-target" data-ans="mushroom cap" data-kor="버섯 갓">mushroom cap</b>, check the texture, cook it in butter, and write down whether I liked it.</p>
+                <p class="mb-6">I’m not a <b class="highlight quiz-target" data-ans="glutton" data-kor="먹보 / 대식가">glutton</b>. This is research.</p>
+                <p class="mb-6">Eventually, though, buying mushrooms wasn’t enough. I wanted to find them myself.</p>
+                <p class="mb-6">Before anyone gets concerned, I don’t eat random mushrooms I find in the woods. I know there are dangerous species. I’m interested in identifying and photographing them.</p>
+                <p class="mb-6">Mostly.</p>
+                <p class="mb-6">So I bought a field guide.</p>
+                <p class="mb-6">Then another field guide, because the first one didn’t have enough pictures.</p>
+                <p class="mb-6">Then a magnifying glass.</p>
+                <p class="mb-6">Then a special knife.</p>
+                <p class="mb-6">Then a basket.</p>
+                <p class="mb-6">You do not technically need a basket to look at mushrooms, but once you’ve bought one, you feel like you’re <b class="highlight quiz-target" data-ans="on the right path" data-kor="올바른 방향으로 가고 있는 / 제대로 하고 있는">on the right path</b>.</p>
+                <p class="mb-6">The real test of <b class="highlight quiz-target" data-ans="willpower" data-kor="의지력 / 자제력">willpower</b> comes after heavy rain. That’s when mushrooms start appearing everywhere.</p>
+                <p class="mb-6">I’ll tell myself, “I’m staying home today.”</p>
+                <p class="mb-6">Then I’ll wonder whether anything has appeared near the old oak trees.</p>
+                <p class="mb-6">I cave.</p>
+                <p class="mb-6">Mushroom hunting requires <b class="highlight quiz-target" data-ans="persistence" data-kor="끈기 / 지속성">persistence</b>. You can walk for two hours and find almost nothing. It also takes <b class="highlight quiz-target" data-ans="perseverance" data-kor="인내심 / 끈기">perseverance</b> because sometimes you return to the same place three days in a row.</p>
+                <p class="mb-6">That demonstrates <b class="highlight quiz-target" data-ans="resilience" data-kor="회복력 / 어려움을 이겨내는 힘">resilience</b>.</p>
+                <p class="mb-6">At least, that’s what I tell myself.</p>
+                <p class="mb-6">The important thing is to <b class="highlight quiz-target" data-ans="follow through" data-kor="끝까지 해내다 / 계획한 것을 실행하다">follow through</b>. If you’ve been monitoring a particular patch of forest for several weeks, you can’t just stop visiting right before something interesting appears.</p>
+                <p class="mb-6">That would make all the previous visits pointless.</p>
+                <p class="mb-6">Last Sunday, I woke up at 4:50 a.m. because it had rained overnight. By 5:30, I was in the woods, <b class="highlight quiz-target" data-ans="gluttonously" data-kor="게걸스럽게 / 탐식하듯">gluttonously</b> photographing mushrooms from every possible angle.</p>
+                <p class="mb-6">At 8:00, the <b class="highlight quiz-target" data-ans="owner" data-kor="주인 / 소유자">owner</b> of the land asked what I was doing.</p>
+                <p class="mb-6">Apparently, I had crossed onto private property.</p>
+                <p class="mb-6">While apologizing, I noticed a <b class="highlight quiz-target" data-ans="stray cat" data-kor="길고양이">stray cat</b> sitting beside an enormous mushroom.</p>
+                <p class="mb-6">I asked if I could take one quick picture.</p>
+                <p class="mb-6">So, yes.</p>
+                <p class="mb-6">I can hear it now.</p>
+                <p class="mb-6">Normal people interested in cooking probably don’t trespass at sunrise because they desperately need a photograph of a mushroom next to a cat.</p>
+                <p class="mb-6">This has gotten a little crazy.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>저는 버섯에 관심이 생겼습니다.</p>
+                <p>이상한 방식으로 말고요. 저는 요리를 많이 하는데, 버섯은 정말 다양하게 활용할 수 있습니다. 좋은 버섯은 제대로 요리하면 놀랄 정도로 <b class="highlight">풍미가 좋을</b> 수 있어요.</p>
+                <p>처음에는 평범한 마트 버섯으로 시작했습니다. 그러다가 처음 보는 종류의 버섯을 파는 <b class="highlight">동네</b> 시장을 발견했어요.</p>
+                <p>당연히 먹어보고 싶었죠.</p>
+                <p>처음에는 먹는 데만 관심이 있었습니다. <b class="highlight">버섯 갓</b>을 살펴보고, 질감을 확인하고, 버터에 요리한 다음 마음에 들었는지 기록했어요.</p>
+                <p>저는 <b class="highlight">먹보</b>가 아닙니다. 연구예요.</p>
+                <p>그런데 어느 순간 버섯을 사는 것만으로는 부족해졌습니다. 직접 찾고 싶어졌어요.</p>
+                <p>걱정하시기 전에 말씀드리자면, 숲에서 발견한 아무 버섯이나 먹는 건 아닙니다. 위험한 종류가 있다는 것도 알아요. 저는 버섯을 식별하고 사진을 찍는 데 관심이 있는 겁니다.</p>
+                <p>대체로요.</p>
+                <p>그래서 도감을 하나 샀습니다.</p>
+                <p>그러고는 첫 번째 책에 사진이 충분하지 않아서 도감을 하나 더 샀어요.</p>
+                <p>그다음에는 돋보기.</p>
+                <p>특수 칼.</p>
+                <p>바구니.</p>
+                <p>버섯을 구경하는 데 엄밀히 말해서 바구니까지 필요하지는 않습니다. 하지만 일단 바구니를 사고 나면 뭔가 <b class="highlight">제대로 된 방향으로 가고 있다는</b> 느낌이 들어요.</p>
+                <p>진짜 <b class="highlight">의지력</b>이 시험받는 건 비가 많이 온 다음입니다. 그때 버섯들이 여기저기 나타나기 시작하거든요.</p>
+                <p>저는 스스로에게 말합니다.</p>
+                <p>“오늘은 집에 있을 거야.”</p>
+                <p>그러다가 오래된 참나무 근처에 뭔가 올라오지 않았을까 궁금해집니다.</p>
+                <p>결국 못 참고 나갑니다.</p>
+                <p>버섯을 찾으려면 <b class="highlight">끈기</b>가 필요합니다. 두 시간을 걸어도 거의 아무것도 발견하지 못할 수 있어요. 그리고 같은 장소에 사흘 연속 돌아갈 때도 있기 때문에 <b class="highlight">인내심과 끈기</b>도 필요합니다.</p>
+                <p>그건 <b class="highlight">회복력</b>을 보여주는 행동입니다.</p>
+                <p>적어도 저는 그렇게 생각합니다.</p>
+                <p>중요한 건 <b class="highlight">끝까지 해내는 것</b>이에요. 몇 주 동안 특정 숲 지역을 계속 관찰해 왔다면, 뭔가 흥미로운 것이 나타나기 직전에 갑자기 그만둘 수는 없잖아요.</p>
+                <p>그러면 그전에 갔던 모든 방문이 헛수고가 됩니다.</p>
+                <p>지난 일요일에는 밤새 비가 왔기 때문에 새벽 4시 50분에 일어났습니다. 5시 30분에는 숲에 들어가서 가능한 모든 각도에서 버섯 사진을 <b class="highlight">탐식하듯 정신없이</b> 찍고 있었어요.</p>
+                <p>8시쯤 그 땅의 <b class="highlight">주인</b>이 제가 뭘 하고 있는지 물었습니다.</p>
+                <p>알고 보니 사유지에 들어가 있었던 겁니다.</p>
+                <p>사과를 하다가 거대한 버섯 옆에 앉아 있는 <b class="highlight">길고양이</b> 한 마리를 발견했습니다.</p>
+                <p>그래서 사진 한 장만 빨리 찍어도 되냐고 물어봤어요.</p>
+                <p>그러니까, 네.</p>
+                <p>이제 저도 어떻게 들리는지 알겠네요.</p>
+                <p>요리에 관심 있는 평범한 사람이 고양이 옆에 있는 버섯 사진을 꼭 찍어야 한다는 이유로 해 뜰 무렵 남의 땅에 들어가지는 않을 것 같습니다.</p>
+                <p>이건 좀 심해진 것 같네요.</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "921020.m4a";
+</script>
+ </body>
+ </html>

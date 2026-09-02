@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | I Just Like Coffee</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+      :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+      body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+      .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+      .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+      input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+      input:focus::placeholder { opacity: 0 !important; }
+      .mystery-cell { transition: color 0.3s; }
+      .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+      .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+      .highlight { color: var(--teal); font-weight: 700; }
+      .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+      audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">☕</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">I Just Like Coffee</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">two year's worth of</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">2년 치의</td></tr>
+                <tr><td class="p-4"><b class="text-white">when we first got married</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">우리가 막 결혼했을 때</td></tr>
+                <tr><td class="p-4"><b class="text-white">stray cat</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">길고양이</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">two year's worth of</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">“2년 치의 양”이라는 뜻입니다. 표준 표기는 two years’ worth of예요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">when we first got married</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">단순히 결혼한 순간보다 “막 결혼해서 신혼이었을 때”라는 시기를 자연스럽게 나타냅니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">I’m a sucker for good coffee.</p>
+                <p class="mb-6">I realize that sounds extremely ordinary. Half the adults I know would probably say the same thing. Some people need coffee in the morning. I happen to care a little more about what kind of coffee it is.</p>
+                <p class="mb-6">This started when <b class="highlight quiz-target" data-ans="when we first got married" data-kor="우리가 막 결혼했을 때">we first got married</b>. My wife bought me a small coffee grinder because I complained that pre-ground coffee lost its flavor too quickly. It was a thoughtful gift.</p>
+                <p class="mb-6">Unfortunately, it also made me realize how bad my previous coffee had been.</p>
+                <p class="mb-6">So I bought better beans. Then I learned that different grinders produce different results. I bought a second grinder.</p>
+                <p class="mb-6">There’s nothing strange about owning two grinders. One is better for espresso.</p>
+                <p class="mb-6">Then I discovered roasting dates.</p>
+                <p class="mb-6">Now, I can never walk past a coffee shop without checking the bags. I don’t necessarily buy anything. I just pick them up, check where the beans were grown, look at the roast date, and sometimes smell the little valve on the bag.</p>
+                <p class="mb-6">People do that.</p>
+                <p class="mb-6">I think.</p>
+                <p class="mb-6">I also keep notes. Nothing serious—just the beans, country, region, altitude, processing method, roast date, water temperature, grind size, and how the coffee tasted.</p>
+                <p class="mb-6">Okay, that sounds like a lot when I list it.</p>
+                <p class="mb-6">But it saves time. If I buy the same beans later, I already know how to make them properly.</p>
+                <p class="mb-6">I currently have almost <b class="highlight quiz-target" data-ans="two years' worth of" data-kor="2년 치의">two year's worth of</b> coffee notes.</p>
+                <p class="mb-6">I have tried deleting them, but I can’t help myself. What if I need to know what I thought about an Ethiopian coffee I drank seventeen months ago?</p>
+                <p class="mb-6">You never know.</p>
+                <p class="mb-6">I even have a favorite café <b class="highlight quiz-target" data-ans="stray cat" data-kor="길고양이">stray cat</b>. He sits outside a roastery I visit, and I’ve noticed that he’s usually there on Tuesday mornings. I am not scheduling my coffee trips around the cat.</p>
+                <p class="mb-6">Tuesday just happens to be a good day to buy coffee.</p>
+                <p class="mb-6">Anyway, everyone has a hobby. Some people know every player on their favorite football team. I know which local cafés use water that’s slightly too hot.</p>
+                <p class="mb-6">That’s basically the same thing.</p>
+                <p class="mb-6">Although I did recently take my own coffee scale on vacation.</p>
+                <p class="mb-6">Okay.</p>
+                <p class="mb-6">Maybe “I like coffee” is no longer a completely accurate description.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>저는 맛있는 커피에 약합니다.</p>
+                <p>굉장히 평범하게 들린다는 건 알아요. 제가 아는 성인의 절반 정도는 똑같이 말할 겁니다. 어떤 사람들은 아침에 커피가 꼭 필요하죠. 저는 단지 어떤 커피인지에 조금 더 신경을 쓸 뿐입니다.</p>
+                <p>이건 <b class="highlight">우리가 막 결혼했을 때</b> 시작됐어요. 제가 미리 갈아 놓은 커피는 향이 너무 빨리 사라진다고 불평하자 아내가 작은 커피 그라인더를 사줬습니다. 사려 깊은 선물이었죠.</p>
+                <p>문제는 그 덕분에 제가 전에 마시던 커피가 얼마나 별로였는지 알게 됐다는 겁니다.</p>
+                <p>그래서 더 좋은 원두를 샀습니다. 그러다가 그라인더마다 결과가 다르다는 걸 알게 됐고, 두 번째 그라인더를 샀어요.</p>
+                <p>그라인더 두 개 정도는 이상하지 않습니다. 하나는 에스프레소에 더 좋거든요.</p>
+                <p>그러다가 로스팅 날짜라는 걸 알게 됐습니다.</p>
+                <p>이제 저는 커피숍을 지나갈 때마다 원두 봉지를 확인하지 않고는 못 지나갑니다. 꼭 사는 건 아니에요. 그냥 들어서 생산지와 로스팅 날짜를 보고, 가끔 봉지에 달린 작은 밸브의 향을 맡아봅니다.</p>
+                <p>사람들 다 그러잖아요.</p>
+                <p>그런 것 같은데요.</p>
+                <p>기록도 합니다. 별거 아니에요. 원두, 국가, 지역, 고도, 가공 방식, 로스팅 날짜, 물 온도, 분쇄도, 그리고 맛 정도만 적습니다.</p>
+                <p>좋아요. 이렇게 나열하니까 좀 많아 보이네요.</p>
+                <p>하지만 시간을 절약해 줍니다. 같은 원두를 다시 사면 어떻게 내려야 하는지 이미 알고 있으니까요.</p>
+                <p>현재 커피 기록이 거의 <b class="highlight">2년 치의</b> 있습니다.</p>
+                <p>지우려고 해본 적도 있지만 도저히 못 하겠어요. 17개월 전에 마셨던 에티오피아 커피를 제가 어떻게 평가했는지 알아야 할 일이 생기면 어떡해요?</p>
+                <p>모르는 일이잖아요.</p>
+                <p>제가 좋아하는 카페 <b class="highlight">길고양이</b>도 있습니다. 자주 가는 로스터리 밖에 앉아 있는데, 보통 화요일 아침에 있다는 걸 알아냈어요. 고양이에 맞춰 커피 사러 가는 시간을 정하는 건 아닙니다.</p>
+                <p>그냥 화요일이 우연히 커피 사기 좋은 날인 거예요.</p>
+                <p>어쨌든 누구에게나 취미는 있습니다. 어떤 사람들은 좋아하는 축구팀 선수들을 전부 알잖아요. 저는 동네 어느 카페가 물을 조금 지나치게 뜨겁게 쓰는지 압니다.</p>
+                <p>기본적으로 똑같은 거죠.</p>
+                <p>물론 최근에 여행 갈 때 제 커피 저울을 가져가기는 했습니다.</p>
+                <p>좋아요.</p>
+                <p>어쩌면 이제 “저는 커피를 좋아해요”라는 말만으로는 정확한 설명이 아닐지도 모르겠네요.</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "92630.m4a";
+</script>
+ </body>
+ </html>

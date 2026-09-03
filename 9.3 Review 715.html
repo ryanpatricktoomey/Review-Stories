@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+      <title>Review Note | The Introvert Who Became the Entertainment</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+      <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+      </style>
+</head>
+<body class="p-4 md:p-12">
+      <div class="max-w-4xl mx-auto space-y-8">
+
+          <header class="text-center space-y-4">
+              <div class="flex items-center justify-center gap-4">
+                  <span class="text-5xl">🚌</span>
+                  <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Introvert Who Became the Entertainment</h1>
+              </div>
+              <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+          </header>
+
+          <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+              <div class="flex items-center justify-between px-2">
+                  <div class="flex items-center gap-3">
+                      <span class="text-xl">🎧</span>
+                      <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                  </div>
+                  <div class="flex gap-2">
+                      <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          <span class="text-lg">↺</span> 5s
+                      </button>
+                      <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          5s <span class="text-lg">↻</span>
+                      </button>
+                  </div>
+              </div>
+              <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+          </div>
+
+          <div class="flex justify-center">
+              <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+          </div>
+
+          <section class="glass rounded-3xl overflow-hidden shadow-xl">
+              <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                  <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+              </div>
+              <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                  <tr><td class="p-4"><b class="text-white">the life of the party</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">파티 분위기를 이끄는 사람 / 분위기 메이커</td></tr>
+                  <tr><td class="p-4"><b class="text-white">step up</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">나서다 / 책임을 맡다 / 한발 나아가 역할을 하다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">stand out</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">눈에 띄다 / 두드러지다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">outstanding</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">뛰어난 / 아주 훌륭한</td></tr>
+                  <tr><td class="p-4"><b class="text-white">extraordinary</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">비범한 / 놀라운 / 대단한</td></tr>
+                  <tr><td class="p-4"><b class="text-white">ghost me</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">갑자기 연락을 끊다 / 잠수 타다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">where are you staying?</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">어디에서 묵고 있어요?</td></tr>
+                  <tr><td class="p-4"><b class="text-white">the best way</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">가장 좋은 방법</td></tr>
+                  <tr><td class="p-4"><b class="text-white">one way</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">한 가지 방법</td></tr>
+              </tbody></table>
+          </section>
+
+          <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="glass p-5 rounded-2xl border border-teal-500/20">
+                  <h3 class="text-teal-400 font-bold text-lg mb-2">the life of the party</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">파티에서 가장 활발하게 사람들을 웃기거나 분위기를 띄우는 사람을 말해요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-teal-500/20">
+                  <h3 class="text-teal-400 font-bold text-lg mb-2">step up</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">필요할 때 책임을 맡거나 적극적으로 나서다는 뜻이에요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-teal-500/20">
+                  <h3 class="text-teal-400 font-bold text-lg mb-2">stand out</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">다른 사람이나 것들 사이에서 특별히 눈에 띄다는 뜻이에요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-teal-500/20">
+                  <h3 class="text-teal-400 font-bold text-lg mb-2">outstanding</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">문맥에 따라 “아직 해결되지 않은”이라는 뜻도 있지만, 여기서는 보통 “매우 뛰어난”이라는 의미로 쓰여요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-teal-500/20">
+                  <h3 class="text-teal-400 font-bold text-lg mb-2">ghost me</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">설명 없이 갑자기 연락을 끊고 답장을 하지 않는 아주 일상적인 표현이에요.</p>
+              </div>
+          </section>
+
+          <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+              <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                  <p class="mb-6">Noah had agreed to a weekend trip with his coworker Ben because Ben had promised him something very specific.</p>
+                  <p class="mb-6">“You won’t have to socialize much.”</p>
+                  <p class="mb-6">That promise lasted seven minutes.</p>
+                  <p class="mb-6">When Noah entered the rented house, twenty people were already drinking, cooking, and shouting across the living room. Ben disappeared almost immediately to talk to old friends.</p>
+                  <p class="mb-6">Noah found the quietest corner and sat down.</p>
+                  <p class="mb-6">A woman named Chloe dropped into the chair beside him.</p>
+                  <p class="mb-6">“So, <b class="highlight quiz-target" data-ans="where are you staying?" data-kor="어디에서 묵고 있어요?">where are you staying?</b>”</p>
+                  <p class="mb-6">Noah looked around.</p>
+                  <p class="mb-6">“Here?”</p>
+                  <p class="mb-6">She laughed. “I mean after the trip. Are you staying in the city?”</p>
+                  <p class="mb-6">“Oh. No.”</p>
+                  <p class="mb-6">The conversation ended.</p>
+                  <p class="mb-6">Noah was pleased with himself.</p>
+                  <p class="mb-6">Then Ben suddenly stood on a chair.</p>
+                  <p class="mb-6">“We have a problem!”</p>
+                  <p class="mb-6">Everyone went quiet.</p>
+                  <p class="mb-6">“The guy who planned tonight’s games is sick. We need someone else to run them.”</p>
+                  <p class="mb-6">Nobody volunteered.</p>
+                  <p class="mb-6">Ben looked directly at Noah.</p>
+                  <p class="mb-6">“No.”<br>“You haven’t even heard me yet.”<br>“I know that look.”</p>
+                  <p class="mb-6">Ben smiled. “Come on. <b class="highlight quiz-target" data-ans="Step up" data-kor="나서다 / 책임을 맡다 / 한발 나아가 역할을 하다">Step up</b>.”</p>
+                  <p class="mb-6">Five minutes later, Noah was standing in front of twenty strangers holding a list of party games.</p>
+                  <p class="mb-6">His only goal was to finish as quickly as possible.</p>
+                  <p class="mb-6">“Okay,” he said. “Game one. Divide into two teams.”</p>
+                  <p class="mb-6">Someone shouted, “Give us some energy!”</p>
+                  <p class="mb-6">Noah stared at him.</p>
+                  <p class="mb-6">“No.”</p>
+                  <p class="mb-6">People laughed.</p>
+                  <p class="mb-6">That made things worse.</p>
+                  <p class="mb-6">They thought he was funny.</p>
+                  <p class="mb-6">Every short answer got another laugh. Every uncomfortable pause made people laugh harder. Soon people were calling Noah <b class="highlight quiz-target" data-ans="the life of the party" data-kor="파티 분위기를 이끄는 사람 / 분위기 메이커">the life of the party</b>.</p>
+                  <p class="mb-6">Ben whispered, “You’re killing it.”<br>“I’m trying to end it.”<br>“Whatever you’re doing, keep doing it.”</p>
+                  <p class="mb-6">Noah somehow began to <b class="highlight quiz-target" data-ans="stand out" data-kor="눈에 띄다 / 두드러지다">stand out</b> more than anyone else in the room. One man told him his hosting was <b class="highlight quiz-target" data-ans="outstanding" data-kor="뛰어난 / 아주 훌륭한">outstanding</b>. Chloe called his dry humor <b class="highlight quiz-target" data-ans="extraordinary" data-kor="비범한 / 놀라운 / 대단한">extraordinary</b>.</p>
+                  <p class="mb-6">Noah found both comments deeply upsetting.</p>
+                  <p class="mb-6">During a break, he pulled Ben into the kitchen.</p>
+                  <p class="mb-6">“What is <b class="highlight quiz-target" data-ans="the best way" data-kor="가장 좋은 방법">the best way</b> to make everyone stop paying attention to me?”</p>
+                  <p class="mb-6">Ben thought for a moment.</p>
+                  <p class="mb-6">“Leave?”<br>“That was my first idea.”<br>“There’s <b class="highlight quiz-target" data-ans="one way" data-kor="한 가지 방법">one way</b> you could do it without being rude. Just say you’re tired.”</p>
+                  <p class="mb-6">Noah nodded.</p>
+                  <p class="mb-6">He walked back into the living room.</p>
+                  <p class="mb-6">“Everyone, I’m exhausted, so I’m going upstairs.”</p>
+                  <p class="mb-6">The room erupted.</p>
+                  <p class="mb-6">“Noah!”<br>“Don’t leave!”<br>“One more game!”</p>
+                  <p class="mb-6">Someone shouted, “You can’t <b class="highlight quiz-target" data-ans="ghost me" data-kor="갑자기 연락을 끊다 / 잠수 타다">ghost me</b> after making me laugh all night!”</p>
+                  <p class="mb-6">Noah froze.</p>
+                  <p class="mb-6">Then he slowly turned toward Ben.</p>
+                  <p class="mb-6">“You told me nobody would make me socialize.”</p>
+                  <p class="mb-6">Ben smiled apologetically.</p>
+                  <p class="mb-6">“I was wrong.”</p>
+                  <p class="mb-6">Noah pointed upstairs.</p>
+                  <p class="mb-6">“I’m locking the door.”</p>
+                  <p class="mb-6">This time, nobody laughed.</p>
+                  <p class="mb-6">Noah considered that the most successful thing he had done all evening.</p>
+              </div>
+              <hr class="border-white/10">
+              <div class="text-slate-400 italic leading-relaxed space-y-6">
+                  <p>노아는 직장 동료 벤이 아주 구체적으로 약속했기 때문에 주말 여행에 가기로 했다.</p>
+                  <p>“사람들이랑 많이 어울릴 필요 없을 거야.”</p>
+                  <p>그 약속은 7분 동안 유지됐다.</p>
+                  <p>노아가 빌린 집에 들어갔을 때, 이미 스무 명이 거실에서 술을 마시고, 요리하고, 큰 소리로 대화하고 있었다. 벤은 옛 친구들과 이야기하러 거의 바로 사라졌다.</p>
+                  <p>노아는 가장 조용한 구석을 찾아 앉았다.</p>
+                  <p>클로이라는 여자가 옆 의자에 털썩 앉았다.</p>
+                  <p>“그래서 <b class="highlight">어디에서 묵고 있어요?</b>”</p>
+                  <p>노아는 주변을 둘러봤다.</p>
+                  <p>“여기요?”</p>
+                  <p>그녀가 웃었다.</p>
+                  <p>“아니, 여행 끝나고요. 이 도시에 더 머물 거예요?”</p>
+                  <p>“아뇨.”</p>
+                  <p>대화가 끝났다.</p>
+                  <p>노아는 꽤 만족스러웠다.</p>
+                  <p>그때 갑자기 벤이 의자 위에 올라섰다.</p>
+                  <p>“문제가 생겼어요!”</p>
+                  <p>모두가 조용해졌다.</p>
+                  <p>“오늘 밤 게임 진행하기로 한 사람이 아파요. 다른 누군가가 진행해야 해요.”</p>
+                  <p>아무도 자원하지 않았다.</p>
+                  <p>벤은 노아를 똑바로 바라봤다.</p>
+                  <p>“싫어.”<br>“아직 아무 말도 안 했는데.”<br>“그 표정 알아.”</p>
+                  <p>벤이 웃었다.<br>“어서. 네가 좀 <b class="highlight">나서 봐</b>.”</p>
+                  <p>5분 뒤, 노아는 파티 게임 목록을 들고 낯선 사람 스무 명 앞에 서 있었다.</p>
+                  <p>그의 유일한 목표는 최대한 빨리 끝내는 것이었다.</p>
+                  <p>“좋아요. 첫 번째 게임입니다. 두 팀으로 나누세요.”</p>
+                  <p>누군가 소리쳤다.<br>“좀 신나게 해주세요!”</p>
+                  <p>노아가 그 사람을 쳐다봤다.</p>
+                  <p>“싫은데요.”</p>
+                  <p>사람들이 웃었다.</p>
+                  <p>상황은 더 나빠졌다.</p>
+                  <p>사람들은 그가 웃긴다고 생각했다.</p>
+                  <p>짧게 대답할 때마다 사람들이 또 웃었다. 어색하게 침묵할 때마다 더 크게 웃었다. 곧 사람들은 노아를 파티의 <b class="highlight">분위기 메이커</b>라고 부르기 시작했다.</p>
+                  <p>벤이 속삭였다.<br>“너 완전 잘하고 있어.”<br>“난 이걸 끝내려고 하는 중이야.”<br>“뭘 하고 있는지는 모르겠지만 계속해.”</p>
+                  <p>어쩌다 보니 노아는 방 안의 누구보다 더 <b class="highlight">눈에 띄기</b> 시작했다. 한 남자는 그의 진행이 아주 <b class="highlight">훌륭하다고</b> 말했다. 클로이는 그의 무표정한 유머가 정말 <b class="highlight">비범하다고</b> 했다.</p>
+                  <p>노아에게는 두 칭찬 모두 매우 불쾌했다.</p>
+                  <p>쉬는 시간에 그는 벤을 주방으로 끌고 갔다.</p>
+                  <p>“사람들이 나한테 관심을 그만 가지게 하는 <b class="highlight">가장 좋은 방법이</b> 뭐야?”</p>
+                  <p>벤이 잠시 생각했다.</p>
+                  <p>“떠나는 거?”<br>“그게 내 첫 번째 생각이었어.”<br>“무례하지 않게 할 수 있는 <b class="highlight">한 가지 방법은</b> 있어. 그냥 피곤하다고 해.”</p>
+                  <p>노아가 고개를 끄덕였다.</p>
+                  <p>그는 거실로 돌아갔다.</p>
+                  <p>“여러분, 저 너무 피곤해서 이제 위층으로 올라갈게요.”</p>
+                  <p>사람들이 난리가 났다.</p>
+                  <p>“노아!”<br>“가지 마요!”<br>“게임 하나만 더!”</p>
+                  <p>누군가 소리쳤다.<br>“밤새 이렇게 웃겨놓고 갑자기 <b class="highlight">잠수 타면</b> 안 되죠!”</p>
+                  <p>노아는 그대로 멈췄다.</p>
+                  <p>그리고 천천히 벤을 바라봤다.</p>
+                  <p>“너 아무도 나한테 사람들과 어울리라고 안 할 거라며.”</p>
+                  <p>벤이 미안한 듯 웃었다.</p>
+                  <p>“내가 틀렸네.”</p>
+                  <p>노아는 위층을 가리켰다.</p>
+                  <p>“나 문 잠글 거야.”</p>
+                  <p>이번에는 아무도 웃지 않았다.</p>
+                  <p>노아는 그것이 그날 저녁 자신이 한 일 중 가장 성공적인 일이었다고 생각했다.</p>
+              </div>
+          </section>
+
+      </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "93715.m4a";
+</script>
+  </body>
+  </html>

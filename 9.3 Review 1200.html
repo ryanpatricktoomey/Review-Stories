@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+      <title>Review Note | The Weekend He Finally Escaped</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+      <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+      </style>
+</head>
+<body class="p-4 md:p-12">
+      <div class="max-w-4xl mx-auto space-y-8">
+
+          <header class="text-center space-y-4">
+              <div class="flex items-center justify-center gap-4">
+                  <span class="text-5xl">🎤</span>
+                  <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Weekend He Finally Escaped</h1>
+              </div>
+              <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+          </header>
+
+          <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+              <div class="flex items-center justify-between px-2">
+                  <div class="flex items-center gap-3">
+                      <span class="text-xl">🎧</span>
+                      <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                  </div>
+                  <div class="flex gap-2">
+                      <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          <span class="text-lg">↺</span> 5s
+                      </button>
+                      <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          5s <span class="text-lg">↻</span>
+                      </button>
+                  </div>
+              </div>
+              <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+          </div>
+
+          <div class="flex justify-center">
+              <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+          </div>
+
+          <section class="glass rounded-3xl overflow-hidden shadow-xl">
+              <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                  <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+              </div>
+              <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                  <tr><td class="p-4"><b class="text-white">get close with people</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">사람들과 가까워지다 / 친해지다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">stand out</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">눈에 띄다 / 두드러지다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">in the spotlight</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">관심의 중심에 있는 / 주목받는</td></tr>
+                  <tr><td class="p-4"><b class="text-white">predrink</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">본격적으로 술자리에 가기 전에 미리 술을 마시다</td></tr>
+              </tbody></table>
+          </section>
+
+          <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="glass p-5 rounded-2xl border border-teal-500/20">
+                  <h3 class="text-teal-400 font-bold text-lg mb-2">get close with people</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">실제 회화에서는 보통 get close to people이 더 자연스러워요. 사람들과 정서적으로 가까워지거나 친해진다는 뜻이에요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-teal-500/20">
+                  <h3 class="text-teal-400 font-bold text-lg mb-2">stand out</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">여러 사람이나 사물 사이에서 특히 눈에 띄거나 두드러진다는 뜻이에요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-teal-500/20">
+                  <h3 class="text-teal-400 font-bold text-lg mb-2">in the spotlight</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">실제 스포트라이트 아래 있다는 뜻도 있지만, 보통 사람들의 관심과 주목이 자신에게 집중된 상태를 말해요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-teal-500/20">
+                  <h3 class="text-teal-400 font-bold text-lg mb-2">predrink</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">파티나 술집에 가기 전에 집이나 다른 장소에서 먼저 술을 마시는 것을 뜻해요.</p>
+              </div>
+          </section>
+
+          <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+              <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                  <p class="mb-6">Chris had known the weekend trip was a mistake before dinner.</p>
+                  <p class="mb-6">There were nineteen people in the rented house, and almost all of them already knew each other. Chris knew only his friend Matt.</p>
+                  <p class="mb-6">Unfortunately, Matt had one goal.</p>
+                  <p class="mb-6">“You need to <b class="highlight quiz-target" data-ans="get close to people" data-kor="사람들과 가까워지다 / 친해지다">get closer to people</b>,” he told Chris.</p>
+                  <p class="mb-6">“I don’t.”</p>
+                  <p class="mb-6">“You’ve been sitting in that chair for forty minutes.”</p>
+                  <p class="mb-6">“I like this chair.”</p>
+                  <p class="mb-6">At seven, someone announced that everyone should <b class="highlight quiz-target" data-ans="predrink" data-kor="본격적으로 술자리에 가기 전에 미리 술을 마시다">predrink</b> before going to a nearby festival.</p>
+                  <p class="mb-6">Chris didn’t even want to go to the festival.</p>
+                  <p class="mb-6">Then Matt handed him a drink.</p>
+                  <p class="mb-6">“No.”<br>“It’ll help you relax.”<br>“I am relaxed. Nobody is talking to me.”</p>
+                  <p class="mb-6">That ended immediately.</p>
+                  <p class="mb-6">A woman sat beside him.</p>
+                  <p class="mb-6">“Chris, right? Tell me something interesting about yourself.”</p>
+                  <p class="mb-6">Chris looked at Matt.</p>
+                  <p class="mb-6">Matt smiled and walked away.</p>
+                  <p class="mb-6">By the time everyone finished their drinks, Chris had answered questions about his job, dating life, family, hobbies, and plans for the future.</p>
+                  <p class="mb-6">Then the rain started.</p>
+                  <p class="mb-6">The festival was canceled.</p>
+                  <p class="mb-6">Chris felt hopeful for exactly five seconds.</p>
+                  <p class="mb-6">“Party here instead!” someone shouted.</p>
+                  <p class="mb-6">Music started.</p>
+                  <p class="mb-6">Furniture was moved.</p>
+                  <p class="mb-6">Then someone brought out a microphone.</p>
+                  <p class="mb-6">“We’re doing a talent show!”</p>
+                  <p class="mb-6">Chris quietly moved toward the stairs.</p>
+                  <p class="mb-6">Matt saw him.</p>
+                  <p class="mb-6">“Where are you going?”<br>“Bed.”<br>“It’s eight fifteen.”<br>“I’ve had a long day.”</p>
+                  <p class="mb-6">Before Chris could leave, someone shouted, “Matt! Bring your quiet friend up here!”</p>
+                  <p class="mb-6">Chris froze.</p>
+                  <p class="mb-6">“No.”<br>Matt laughed. “Come on.”<br>“No.”</p>
+                  <p class="mb-6">But now everyone was looking at him.</p>
+                  <p class="mb-6">Chris had spent the entire weekend trying not to <b class="highlight quiz-target" data-ans="stand out" data-kor="눈에 띄다 / 두드러지다">stand out</b>, and suddenly nineteen people were chanting his name.</p>
+                  <p class="mb-6">“Chris! Chris! Chris!”</p>
+                  <p class="mb-6">Someone pushed the microphone into his hand.</p>
+                  <p class="mb-6">He was completely <b class="highlight quiz-target" data-ans="in the spotlight" data-kor="관심의 중심에 있는 / 주목받는">in the spotlight</b>.</p>
+                  <p class="mb-6">“So,” the host said, “what’s your talent?”</p>
+                  <p class="mb-6">Chris stared at the room.</p>
+                  <p class="mb-6">“I don’t have one.”</p>
+                  <p class="mb-6">People laughed.</p>
+                  <p class="mb-6">“No, seriously!”<br>“I’m serious.”</p>
+                  <p class="mb-6">That made them laugh harder.</p>
+                  <p class="mb-6">Someone shouted, “Tell us a story!”<br>Another person yelled, “Sing!”<br>Matt said, “Just do something.”</p>
+                  <p class="mb-6">Chris handed him the microphone.</p>
+                  <p class="mb-6">“No.”</p>
+                  <p class="mb-6">He walked upstairs and locked himself in the bathroom.</p>
+                  <p class="mb-6">Thirty seconds later, someone knocked.</p>
+                  <p class="mb-6">“Chris! We’re doing group karaoke next!”</p>
+                  <p class="mb-6">Another voice shouted, “Then drinking games!”</p>
+                  <p class="mb-6">Someone else added, “And tomorrow morning we’re doing a group hike!”</p>
+                  <p class="mb-6">Chris closed his eyes.</p>
+                  <p class="mb-6">Then he heard Matt outside the door.</p>
+                  <p class="mb-6">“Come on, man. This is how you <b class="highlight quiz-target" data-ans="get close to people" data-kor="사람들과 가까워지다 / 친해지다">get close to people</b>.”</p>
+                  <p class="mb-6">That was it.</p>
+                  <p class="mb-6">Chris opened the door, walked straight past everyone, grabbed his coat, backpack, and shoes, and headed for the entrance.</p>
+                  <p class="mb-6">Matt followed him.</p>
+                  <p class="mb-6">“Where are you going?”<br>“Home.”<br>“It’s raining.”<br>“I know.”<br>“The station is almost five kilometers away.”<br>“I know.”<br>“You can’t seriously walk there.”</p>
+                  <p class="mb-6">Chris opened the door.</p>
+                  <p class="mb-6">Cold rain hit him immediately.</p>
+                  <p class="mb-6">Behind him, someone shouted, “Chris! Karaoke!”</p>
+                  <p class="mb-6">Chris stepped outside.</p>
+                  <p class="mb-6">Matt stared at him.</p>
+                  <p class="mb-6">“You’d rather walk five kilometers in the rain?”</p>
+                  <p class="mb-6">Chris pulled up his hood.</p>
+                  <p class="mb-6">“Much rather.”</p>
+                  <p class="mb-6">Then he ran.</p>
+                  <p class="mb-6">Five minutes later, his clothes were soaked and his shoes were full of water.</p>
+                  <p class="mb-6">But nobody was asking him to sing.</p>
+                  <p class="mb-6">For Chris, that made it a successful escape.</p>
+              </div>
+              <hr class="border-white/10">
+              <div class="text-slate-400 italic leading-relaxed space-y-6">
+                  <p>크리스는 저녁 식사도 하기 전에 이번 주말 여행이 실수였다는 걸 알고 있었다.</p>
+                  <p>빌린 집에는 열아홉 명이 있었고, 거의 모두 서로 아는 사이였다. 크리스가 아는 사람은 친구 맷뿐이었다.</p>
+                  <p>불행하게도 맷에게는 한 가지 목표가 있었다.</p>
+                  <p>“너 <b class="highlight">사람들과 좀 가까워져야</b> 해.”</p>
+                  <p>“싫은데.”</p>
+                  <p>“너 그 의자에 40분째 앉아 있잖아.”</p>
+                  <p>“난 이 의자가 좋아.”</p>
+                  <p>7시가 되자 누군가 근처 축제에 가기 전에 다 같이 <b class="highlight">미리 술을 마시자고</b> 말했다.</p>
+                  <p>크리스는 애초에 축제에 가고 싶지도 않았다.</p>
+                  <p>그러자 맷이 그에게 술 한 잔을 건넸다.</p>
+                  <p>“싫어.”<br>“좀 긴장 풀릴 거야.”<br>“나 지금 편해. 아무도 나한테 말 안 걸고 있잖아.”</p>
+                  <p>그 상태는 즉시 끝났다.</p>
+                  <p>한 여자가 그의 옆에 앉았다.</p>
+                  <p>“크리스 맞죠? 본인에 대해 재미있는 거 하나 말해봐요.”</p>
+                  <p>크리스는 맷을 바라봤다.</p>
+                  <p>맷은 웃으며 자리를 떠났다.</p>
+                  <p>사람들이 술을 다 마실 때쯤, 크리스는 직업, 연애, 가족, 취미, 미래 계획에 관한 질문을 모두 받은 상태였다.</p>
+                  <p>그때 비가 내리기 시작했다.</p>
+                  <p>축제가 취소됐다.</p>
+                  <p>크리스는 정확히 5초 동안 희망을 느꼈다.</p>
+                  <p>“그럼 여기서 파티해요!” 누군가 외쳤다.</p>
+                  <p>음악이 시작됐다.</p>
+                  <p>가구를 옮겼다.</p>
+                  <p>그리고 누군가 마이크를 가져왔다.</p>
+                  <p>“장기자랑 할 거예요!”</p>
+                  <p>크리스는 조용히 계단 쪽으로 움직였다.</p>
+                  <p>맷이 그를 봤다.</p>
+                  <p>“어디 가?”<br>“자러.”<br>“8시 15분인데?”<br>“긴 하루였어.”</p>
+                  <p>크리스가 떠나기도 전에 누군가가 외쳤다.<br>“맷! 조용한 친구 데리고 올라와!”</p>
+                  <p>크리스는 굳었다.</p>
+                  <p>“싫어.”<br>맷이 웃었다.<br>“그러지 말고.”<br>“싫어.”</p>
+                  <p>하지만 이제 모두가 그를 바라보고 있었다.</p>
+                  <p>크리스는 주말 내내 <b class="highlight">눈에 띄지</b> 않으려고 노력했는데, 갑자기 열아홉 명이 그의 이름을 외치기 시작했다.</p>
+                  <p>“크리스! 크리스! 크리스!”</p>
+                  <p>누군가 그의 손에 마이크를 쥐여줬다.</p>
+                  <p>그는 완전히 <b class="highlight">관심의 중심에</b> 서 있었다.</p>
+                  <p>“자,” 진행자가 말했다. “특기가 뭐예요?”</p>
+                  <p>크리스는 방 안을 바라봤다.</p>
+                  <p>“없는데요.”</p>
+                  <p>사람들이 웃었다.</p>
+                  <p>“아니, 진짜로요!”<br>“진짜 없어요.”</p>
+                  <p>그러자 사람들은 더 크게 웃었다.</p>
+                  <p>누군가 외쳤다.<br>“이야기 하나 해줘요!”<br>다른 사람이 소리쳤다.<br>“노래해요!”<br>맷이 말했다.<br>“그냥 뭐라도 해.”</p>
+                  <p>크리스는 마이크를 맷에게 건넸다.</p>
+                  <p>“싫어.”</p>
+                  <p>그는 위층으로 올라가 화장실 문을 잠갔다.</p>
+                  <p>30초 뒤, 누군가 문을 두드렸다.</p>
+                  <p>“크리스! 다음에는 단체 노래방 할 거예요!”</p>
+                  <p>다른 목소리가 외쳤다.<br>“그다음엔 술 게임!”</p>
+                  <p>또 다른 사람이 덧붙였다.<br>“그리고 내일 아침에는 다 같이 등산 가요!”</p>
+                  <p>크리스는 눈을 감았다.</p>
+                  <p>그때 문 밖에서 맷의 목소리가 들렸다.<br>“이봐. 이렇게 해야 <b class="highlight">사람들과 가까워지는 거야</b>.”</p>
+                  <p>그게 마지막이었다.</p>
+                  <p>크리스는 문을 열고 곧장 모두를 지나쳐 코트, 배낭, 신발을 챙긴 뒤 현관으로 향했다.</p>
+                  <p>맷이 뒤따라왔다.</p>
+                  <p>“어디 가?”<br>“집.”<br>“비 오잖아.”<br>“알아.”<br>“역까지 거의 5킬로미터야.”<br>“알아.”<br>“진짜 거기까지 걸어갈 생각이야?”</p>
+                  <p>크리스는 문을 열었다.</p>
+                  <p>차가운 비가 즉시 그를 때렸다.</p>
+                  <p>뒤에서 누군가 외쳤다.<br>“크리스! 노래방!”</p>
+                  <p>크리스는 밖으로 나갔다.</p>
+                  <p>맷이 그를 바라봤다.<br>“비 맞으면서 5킬로미터 걷는 게 더 낫다고?”</p>
+                  <p>크리스는 후드를 뒤집어썼다.</p>
+                  <p>“훨씬.”</p>
+                  <p>그리고 뛰기 시작했다.</p>
+                  <p>5분 뒤, 옷은 흠뻑 젖었고 신발에는 물이 가득했다.</p>
+                  <p>하지만 아무도 그에게 노래를 시키지 않았다.</p>
+                  <p>크리스에게는 그것만으로도 성공적인 탈출이었다.</p>
+              </div>
+          </section>
+
+      </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "931200.m4a";
+</script>
+  </body>
+  </html>

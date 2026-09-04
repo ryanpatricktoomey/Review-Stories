@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | Why Does Every Event Need So Much Stuff?</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🤯</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">Why Does Every Event Need So Much Stuff?</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">make him realize</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그가 깨닫게 하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">my responsibility</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">내 책임</td></tr>
+                <tr><td class="p-4"><b class="text-white">a wake</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">장례식 전후에 고인을 추모하며 모이는 자리</td></tr>
+                <tr><td class="p-4"><b class="text-white">refreshments</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">다과, 간단한 음식과 음료</td></tr>
+                <tr><td class="p-4"><b class="text-white">wedding crasher</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">초대받지 않고 결혼식에 나타난 사람</td></tr>
+                <tr><td class="p-4"><b class="text-white">disposable</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">일회용의 / 쓰고 버리는</td></tr>
+                <tr><td class="p-4"><b class="text-white">single use</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">일회용의 / 한 번만 사용하는</td></tr>
+                <tr><td class="p-4"><b class="text-white">eye infection</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">안구 감염, 눈의 염증</td></tr>
+                <tr><td class="p-4"><b class="text-white">pink eye</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">결막염</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="font-bold text-amber-400 text-lg">make him realize</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">단순히 정보를 알려주는 것이 아니라, 상대가 어떤 사실이나 문제를 스스로 확실히 깨닫게 만든다는 뜻이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="font-bold text-amber-400 text-lg">a wake</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">영어권 일부 문화에서 장례식 전후로 가족과 지인들이 모여 고인을 추모하는 자리를 말해요. 꼭 엄숙한 장례 의식 자체와 같은 것은 아니에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="font-bold text-amber-400 text-lg">refreshments</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">행사나 모임에서 제공하는 음료와 간단한 음식, 다과를 통틀어 말해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="font-bold text-amber-400 text-lg">wedding crasher</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">초대받지 않았는데도 결혼식에 몰래 참석하는 사람을 뜻하는 재미있는 표현이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="font-bold text-amber-400 text-lg">pink eye</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">일상적인 표현으로 결막염을 가리켜요. 의학적으로는 conjunctivitis라고 해요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">I have three questions for society.</p>
+                <p class="mb-6">First: why does every important event require food?</p>
+                <p class="mb-6">A meeting? <b class="highlight quiz-target" data-ans="refreshments" data-kor="다과">Refreshments</b>.</p>
+                <p class="mb-6">A wedding? Food.</p>
+                <p class="mb-6">A funeral? Food.</p>
+                <p class="mb-6">Even <b class="highlight quiz-target" data-ans="a wake" data-kor="추모 모임">a wake</b>, which is literally a gathering because someone has died, somehow turns into, “Would you like a sandwich?”</p>
+                <p class="mb-6">I’m not criticizing anyone for eating. Obviously people need food. I’m asking why we act like an event is incomplete unless somebody has organized drinks, snacks, plates, napkins, cups, and probably three kinds of cookies.</p>
+                <p class="mb-6">And then somebody has to clean all of it up!</p>
+                <p class="mb-6">At some point, one person says, “Don’t worry, I’ll handle it.”</p>
+                <p class="mb-6">Why is that suddenly <b class="highlight quiz-target" data-ans="my responsibility" data-kor="내 책임">my responsibility</b>?</p>
+                <p class="mb-6">If I’m grieving, I do not want to be thinking about whether we have enough coffee.</p>
+                <p class="mb-6">Second: why do weddings need to be so unbelievably complicated?</p>
+                <p class="mb-6">You need invitations. Seating plans. Flowers. Decorations. Special clothes. Professional photos. A cake that costs more than my refrigerator.</p>
+                <p class="mb-6">And apparently you also need someone standing near the entrance making sure no <b class="highlight quiz-target" data-ans="wedding crasher" data-kor="결혼식 불청객">wedding crasher</b> has appeared.</p>
+                <p class="mb-6">Seriously?</p>
+                <p class="mb-6">If a stranger wants to sit quietly in the back and watch me get married, let him. Maybe seeing the bill afterward will <b class="highlight quiz-target" data-ans="make him realize" data-kor="그가 깨닫게 하다">make him realize</b> he never wants a wedding of his own.</p>
+                <p class="mb-6">Honestly, half the things at weddings exist for about six hours.</p>
+                <p class="mb-6">The decorations? Gone.</p>
+                <p class="mb-6">The flowers? Gone.</p>
+                <p class="mb-6">The little name cards? Gone.</p>
+                <p class="mb-6">And so much of it is <b class="highlight quiz-target" data-ans="disposable" data-kor="일회용의">disposable</b>. We buy hundreds of things, use them once, take a photo, and throw them away.</p>
+                <p class="mb-6">Which brings me to my third complaint: <b class="highlight quiz-target" data-ans="single use" data-kor="일회용의">single-use</b> products in general.</p>
+                <p class="mb-6">Why is everything designed to be used for five minutes?</p>
+                <p class="mb-6">Cups, cutlery, decorations, tiny plastic containers—use it once and goodbye.</p>
+                <p class="mb-6">Yes, sometimes disposable products are genuinely useful. If I have an <b class="highlight quiz-target" data-ans="eye infection" data-kor="안구 감염">eye infection</b>, for example, I understand not sharing certain things. If I have <b class="highlight quiz-target" data-ans="pink eye" data-kor="결막염">pink eye</b>, please keep your distance. I will not be offended.</p>
+                <p class="mb-6">But most of the time, convenience has become an excuse for creating an enormous amount of unnecessary stuff.</p>
+                <p class="mb-6">And that’s what bothers me.</p>
+                <p class="mb-6">We keep adding things because they’re “normal.”</p>
+                <p class="mb-6">Food at every event. Fifty wedding traditions. Mountains of things designed to be thrown away.</p>
+                <p class="mb-6">Nobody stops and asks, “Do we actually need this?”</p>
+                <p class="mb-6">I’m asking.</p>
+                <p class="mb-6">And my answer, surprisingly often, is no.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">저는 사회에 세 가지 질문이 있어요.</p>
+                <p class="mb-6">첫째, 왜 중요한 행사에는 항상 음식이 있어야 하죠?</p>
+                <p class="mb-6">회의? <b class="highlight">다과</b>.</p>
+                <p class="mb-6">결혼식? 음식.</p>
+                <p class="mb-6">장례식? 음식.</p>
+                <p class="mb-6">심지어 누군가가 세상을 떠났기 때문에 모이는 <b class="highlight">추모 모임</b>에서도 어느 순간 “샌드위치 좀 드실래요?”라는 말이 나와요.</p>
+                <p class="mb-6">먹는 사람들을 비판하는 게 아니에요. 당연히 사람은 먹어야죠. 제가 궁금한 건 왜 누군가 음료, 간식, 접시, 냅킨, 컵, 그리고 아마 쿠키 세 종류까지 준비하지 않으면 행사가 완성되지 않은 것처럼 생각하냐는 거예요.</p>
+                <p class="mb-6">그리고 결국 누군가는 그걸 전부 치워야 하죠!</p>
+                <p class="mb-6">그러면 어느 순간 한 사람이 말합니다.</p>
+                <p class="mb-6">“걱정 마, 내가 할게.”</p>
+                <p class="mb-6">왜 그게 갑자기 <b class="highlight">제 책임</b>이 되는 거죠?</p>
+                <p class="mb-6">제가 슬픔에 빠져 있는데 커피가 충분한지까지 생각하고 싶지는 않아요.</p>
+                <p class="mb-6">둘째, 결혼식은 왜 그렇게 믿을 수 없을 정도로 복잡해야 하나요?</p>
+                <p class="mb-6">청첩장도 필요하고, 좌석 배치도 필요하고, 꽃도 필요하고, 장식도 필요하고, 특별한 옷도 필요하고, 전문 사진도 필요하고, 우리 집 냉장고보다 비싼 케이크도 필요해요.</p>
+                <p class="mb-6">그리고 입구에는 초대받지 않은 <b class="highlight">결혼식 불청객</b>이 나타나지 않았는지 확인하는 사람까지 있어야 한대요.</p>
+                <p class="mb-6">진심이에요?</p>
+                <p class="mb-6">낯선 사람이 조용히 뒤에 앉아서 제가 결혼하는 걸 보고 싶다면 그냥 두세요. 나중에 비용을 보면 자기는 절대로 결혼식을 하고 싶지 않다는 걸 <b class="highlight">깨닫게 될</b>지도 모르잖아요.</p>
+                <p class="mb-6">솔직히 결혼식에 있는 물건 절반은 여섯 시간 정도만 존재해요.</p>
+                <p class="mb-6">장식? 사라집니다.</p>
+                <p class="mb-6">꽃? 사라집니다.</p>
+                <p class="mb-6">작은 이름표? 사라집니다.</p>
+                <p class="mb-6">그리고 정말 많은 물건이 <b class="highlight">일회용</b>이에요. 수백 개를 사고, 한 번 쓰고, 사진 찍고, 버립니다.</p>
+                <p class="mb-6">그러면 자연스럽게 제 세 번째 불만으로 넘어가죠. 전반적인 <b class="highlight">일회용</b> 제품이에요.</p>
+                <p class="mb-6">왜 모든 물건이 5분 쓰고 버리도록 만들어지는 거예요?</p>
+                <p class="mb-6">컵, 식기, 장식, 작은 플라스틱 용기까지 한 번 쓰고 끝이에요.</p>
+                <p class="mb-6">물론 일회용 제품이 정말 유용할 때도 있습니다. 예를 들어 제가 <b class="highlight">안구 감염</b>에 걸렸다면 어떤 물건들을 공유하지 않는 게 이해돼요. 제가 <b class="highlight">결막염</b>에 걸렸다면 저한테서 거리를 두세요. 기분 나쁘지 않을 겁니다.</p>
+                <p class="mb-6">하지만 대부분의 경우 편리함이 불필요한 물건을 엄청나게 만들어 내는 핑계가 되어 버렸어요.</p>
+                <p class="mb-6">그게 저는 정말 답답해요.</p>
+                <p class="mb-6">우리는 그저 “원래 다 그렇게 하니까” 계속 무언가를 추가합니다.</p>
+                <p class="mb-6">모든 행사에 음식. 결혼식의 수십 가지 관습. 한 번 쓰고 버리기 위해 만들어진 산더미 같은 물건들.</p>
+                <p class="mb-6">아무도 멈춰서 묻지 않아요.</p>
+                <p class="mb-6">“우리 이거 진짜 필요한가?”</p>
+                <p class="mb-6">저는 묻겠습니다.</p>
+                <p class="mb-6">그리고 놀랄 만큼 자주 제 대답은 ‘아니요’예요.</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "941020.m4a";
+</script>
+</body>
+</html>

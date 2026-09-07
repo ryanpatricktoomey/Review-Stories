@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | Everyone Knows</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">😰</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">Everyone Knows</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">hornet</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">말벌</td></tr>
+                <tr><td class="p-4"><b class="text-white">kill time</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">시간을 때우다</td></tr>
+                <tr><td class="p-4"><b class="text-white">stall</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">시간을 끌다 / 지연시키다</td></tr>
+                <tr><td class="p-4"><b class="text-white">dirty look</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">못마땅한 눈초리 / 째려보는 표정</td></tr>
+                <tr><td class="p-4"><b class="text-white">complaints</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">불만 / 항의</td></tr>
+                <tr><td class="p-4"><b class="text-white">passed out</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">기절했다 / 의식을 잃었다</td></tr>
+                <tr><td class="p-4"><b class="text-white">fainted</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">기절했다</td></tr>
+                <tr><td class="p-4"><b class="text-white">ER</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">응급실</td></tr>
+                <tr><td class="p-4"><b class="text-white">I hope it goes well</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">잘 되길 바라요</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border border-teal-500/20 space-y-2"><h3 class="text-amber-400 font-bold text-lg">kill time</h3><p class="text-slate-300 text-sm leading-relaxed">할 일이 없을 때 다른 일을 하면서 시간을 보내거나 때우다는 뜻이에요.</p></div>
+            <div class="glass p-5 rounded-2xl border border-teal-500/20 space-y-2"><h3 class="text-amber-400 font-bold text-lg">stall</h3><p class="text-slate-300 text-sm leading-relaxed">일부러 시간을 끌거나 무언가가 진행되는 것을 지연시키는 뜻으로 자주 써요.</p></div>
+            <div class="glass p-5 rounded-2xl border border-teal-500/20 space-y-2"><h3 class="text-amber-400 font-bold text-lg">dirty look</h3><p class="text-slate-300 text-sm leading-relaxed">실제로 얼굴이 ‘더럽다’는 뜻이 아니라, 화나거나 못마땅하다는 것을 보여주는 눈빛이나 표정이에요.</p></div>
+            <div class="glass p-5 rounded-2xl border border-teal-500/20 space-y-2"><h3 class="text-amber-400 font-bold text-lg">passed out / fainted</h3><p class="text-slate-300 text-sm leading-relaxed">둘 다 ‘기절했다’는 뜻이지만, pass out이 일상 대화에서 더 캐주얼해요. faint는 조금 더 직접적으로 ‘기절하다’를 나타냅니다.</p></div>
+            <div class="glass p-5 rounded-2xl border border-teal-500/20 space-y-2"><h3 class="text-amber-400 font-bold text-lg">ER</h3><p class="text-slate-300 text-sm leading-relaxed">emergency room의 줄임말로, 병원의 ‘응급실’을 뜻해요.</p></div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Something was wrong. I knew it the moment I walked into the office. Mina and Chris were talking beside the coffee machine. When they saw me, they immediately stopped. Mina looked down at her phone. Chris walked away. Okay. Weird.</p>
+                <p class="mb-6">I sat at my desk and opened my email. There was a message from my manager. "Come see me at 10. We need to discuss something." My stomach tightened. Discuss what? I looked across the room. Mina glanced at me, then quickly looked away. She knew. They all knew. But knew what?</p>
+                <p class="mb-6">I started going through everything I'd done that week. On Monday, I'd been twenty minutes late. On Wednesday, a client had sent several <b class="highlight quiz-target" data-ans="complaints" data-kor="불만">complaints</b> about our new website. Yesterday, I'd accidentally given Chris a <b class="highlight quiz-target" data-ans="dirty look" data-kor="못마땅한 눈초리">dirty look</b> during a meeting because I had a headache. Was that it? Maybe Chris thought I hated him. Maybe he'd reported me.</p>
+                <p class="mb-6">At 9:20, my manager walked past my desk. “Ten o'clock,” she said quietly. “I remember.” She nodded and kept walking. Why did she say it like that?</p>
+                <p class="mb-6">I couldn't work. I went downstairs to <b class="highlight quiz-target" data-ans="kill time" data-kor="시간을 때우다">kill time</b> at the café, but after five minutes, I started wondering whether leaving my desk made me look even worse. I went back upstairs.</p>
+                <p class="mb-6">At 9:55, Mina approached me. “Ryan, before you go in there—” My heart started pounding. “What?” She hesitated. “Never mind.” “Never mind?! Mina, what is happening?” She stared at me. “You seriously don't know?”</p>
+                <p class="mb-6">That was it. I was finished. Had someone <b class="highlight quiz-target" data-ans="passed out" data-kor="의식을 잃었다">passed out</b> because of something I'd done? Had a client <b class="highlight quiz-target" data-ans="fainted" data-kor="기절했다">fainted</b> after seeing the bill? Was someone in the <b class="highlight quiz-target" data-ans="ER" data-kor="응급실">ER</b>? My brain was producing disasters faster than I could reject them.</p>
+                <p class="mb-6">At exactly ten, I entered my manager's office. She looked unusually serious. “Sit down.” I sat. She stared at me for a few seconds. Then she said, “We have a problem.” I swallowed. “A <b class="highlight quiz-target" data-ans="hornet" data-kor="말벌">hornet</b>.” I blinked. “A what?” “A <b class="highlight quiz-target" data-ans="hornet" data-kor="말벌">hornet</b>. In the break room.” She pointed toward the hallway.</p>
+                <p class="mb-6">Apparently, everyone knew I kept bees as a hobby. They had been waiting for me all morning because nobody wanted to go near it. “So… I'm not in trouble?” “In trouble?” She laughed. “No. We need you to get it out.”</p>
+                <p class="mb-6">I leaned back in the chair. That was it. Twenty minutes of imagining unemployment, workplace investigations, unconscious clients, and emergency rooms. For a bug.</p>
+                <p class="mb-6">Mina appeared at the door. “Well?” I stood up. “It’s a <b class="highlight quiz-target" data-ans="hornet" data-kor="말벌">hornet</b>.” “I know.” “You could have told me.” She smiled. “We were trying to <b class="highlight quiz-target" data-ans="stall" data-kor="시간을 끌다">stall</b> until you got here.” I stared at her. “<b class="highlight quiz-target" data-ans="I hope it goes well" data-kor="잘 되길 바라요">I hope it goes well</b>,” she said, and closed the door.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>뭔가 잘못되어 있었다. 사무실에 들어서는 순간 알 수 있었다. 미나와 크리스가 커피 머신 옆에서 이야기를 하고 있었다. 그런데 나를 보자마자 갑자기 말을 멈췄다. 미나는 휴대폰을 내려다봤고, 크리스는 자리를 떠났다. 좋아. 이상한데.</p>
+                <p>나는 자리에 앉아 이메일을 열었다. 매니저에게 메시지가 와 있었다. 10시에 나한테 와요. 이야기할 게 있어요. 속이 긴장되기 시작했다. 무슨 이야기? 사무실 건너편을 바라봤다. 미나가 나를 흘끗 보더니 재빨리 시선을 피했다. 알고 있는 거야. 다들 알고 있어. 그런데 뭘?</p>
+                <p>나는 그 주에 내가 했던 모든 일을 되짚어 보기 시작했다. 월요일에는 20분 늦었다. 수요일에는 한 고객이 새 웹사이트에 대해 여러 건의 <b class="highlight">불만</b>을 보냈다. 어제는 두통 때문에 회의 중에 실수로 크리스를 <b class="highlight">못마땅한 표정</b>으로 쳐다봤다. 그것 때문인가? 어쩌면 크리스는 내가 자기를 싫어한다고 생각했을지도 모른다. 나를 신고했을 수도 있고.</p>
+                <p>9시 20분, 매니저가 내 책상 옆을 지나갔다. “10시예요.” “기억하고 있어요.” 그녀는 고개를 끄덕이고 계속 걸어갔다. 왜 저런 식으로 말한 거지?</p>
+                <p>일에 집중할 수가 없었다. <b class="highlight">시간을 때우려고</b> 아래층 카페에 갔지만, 5분쯤 지나자 내가 자리를 비운 것이 오히려 상황을 더 나쁘게 보이게 하는 건 아닐까 하는 생각이 들었다. 다시 위층으로 올라갔다.</p>
+                <p>9시 55분, 미나가 내게 다가왔다. “라이언, 들어가기 전에—” 심장이 세게 뛰기 시작했다. “뭐?” 그녀가 망설였다. “아니야.” “아니라고?! 미나, 대체 무슨 일이야?” 그녀가 나를 바라봤다. “진짜 모르는 거야?”</p>
+                <p>끝났다. 난 망했다. 혹시 내가 한 일 때문에 누군가 <b class="highlight">의식을 잃은</b> 건가? 고객이 청구서를 보고 <b class="highlight">기절한</b> 건가? 누가 <b class="highlight">응급실</b>에 간 건가? 내 머릿속에서는 내가 하나를 부정하기도 전에 새로운 재앙이 계속 만들어지고 있었다.</p>
+                <p>정확히 10시에 매니저의 사무실로 들어갔다. 그녀는 평소보다 심각한 표정이었다. “앉아요.” 앉았다. 그녀는 몇 초 동안 나를 바라봤다. 그리고 말했다. “문제가 생겼어요.” 침을 삼켰다. “<b class="highlight">말벌</b>이요.” 눈을 깜빡였다. “뭐라고요?” “<b class="highlight">말벌</b>이요. 휴게실에 있어요.” 그녀가 복도를 가리켰다.</p>
+                <p>알고 보니 내가 취미로 벌을 키운다는 걸 사무실 사람들이 모두 알고 있었다. 아무도 말벌 근처에 가고 싶지 않아서 아침 내내 내가 오기만을 기다리고 있었던 것이다. “그러면… 저 문제 생긴 거 아니에요?” “문제요?” 그녀가 웃었다. “아니요. 그걸 밖으로 내보내 줬으면 해서요.”</p>
+                <p>나는 의자에 몸을 기댔다. 그게 전부였다. 20분 동안 나는 해고, 사내 조사, 의식을 잃은 고객, 응급실까지 상상했다. 벌레 한 마리 때문에.</p>
+                <p>미나가 문 앞에 나타났다. “그래서?” 나는 자리에서 일어났다. “<b class="highlight">말벌</b>이래.” “알아.” “그냥 나한테 말해주면 됐잖아.” 그녀가 웃었다. “네가 올 때까지 <b class="highlight">시간을 끌고</b> 있었어.” 나는 그녀를 빤히 바라봤다. “<b class="highlight">잘 되길 바랄게</b>.” 그녀는 그렇게 말하고 문을 닫았다.</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "97630.m4a";
+</script>
+</body>
+</html>

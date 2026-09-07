@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Last Message</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">😰</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Last Message</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">wood-fired</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">장작불로 구운 / 장작 화덕으로 조리한</td></tr>
+                <tr><td class="p-4"><b class="text-white">cost an arm and a leg</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">엄청 비싸다 / 돈이 아주 많이 들다</td></tr>
+                <tr><td class="p-4"><b class="text-white">assignment</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">과제 / 업무</td></tr>
+                <tr><td class="p-4"><b class="text-white">on my way home</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">집에 가는 길에</td></tr>
+                <tr><td class="p-4"><b class="text-white">power outage</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">정전</td></tr>
+                <tr><td class="p-4"><b class="text-white">I thought something happened to you</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">너한테 무슨 일 생긴 줄 알았어</td></tr>
+                <tr><td class="p-4"><b class="text-white">menstrual cramps</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">생리통</td></tr>
+                <tr><td class="p-4"><b class="text-white">on my period</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">생리 중인</td></tr>
+                <tr><td class="p-4"><b class="text-white">my leg cramped</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">다리에 쥐가 났다</td></tr>
+                <tr><td class="p-4"><b class="text-white">cramp my style</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">내 방식대로 못 하게 하다 / 내 자유를 방해하다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border border-teal-500/20 space-y-2"><h3 class="text-amber-400 font-bold text-lg">wood-fired</h3><p class="text-slate-300 text-sm leading-relaxed">장작을 연료로 사용하는 조리 방식을 말해요. wood-fired pizza, wood-fired oven처럼 자주 씁니다.</p></div>
+            <div class="glass p-5 rounded-2xl border border-teal-500/20 space-y-2"><h3 class="text-amber-400 font-bold text-lg">cost an arm and a leg</h3><p class="text-slate-300 text-sm leading-relaxed">실제 팔과 다리를 말하는 것이 아니라, 무언가가 ‘엄청나게 비싸다’는 뜻의 흔한 관용 표현이에요.</p></div>
+            <div class="glass p-5 rounded-2xl border border-teal-500/20 space-y-2"><h3 class="text-amber-400 font-bold text-lg">on my way home</h3><p class="text-slate-300 text-sm leading-relaxed">‘집에 가는 길에/중에’라는 뜻이에요. on my way to work처럼 목적지를 바꿔서 활용할 수 있어요.</p></div>
+            <div class="glass p-5 rounded-2xl border border-teal-500/20 space-y-2"><h3 class="text-amber-400 font-bold text-lg">on my period</h3><p class="text-slate-300 text-sm leading-relaxed">“생리 중이다”라는 일상적이고 직접적인 표현이에요.</p></div>
+            <div class="glass p-5 rounded-2xl border border-teal-500/20 space-y-2"><h3 class="text-amber-400 font-bold text-lg">my leg cramped</h3><p class="text-slate-300 text-sm leading-relaxed">다리 근육이 갑자기 강하게 수축해서 ‘쥐가 났다’는 뜻이에요. I got a cramp in my leg도 자연스럽습니다.</p></div>
+            <div class="glass p-5 rounded-2xl border border-teal-500/20 space-y-2"><h3 class="text-amber-400 font-bold text-lg">cramp my style</h3><p class="text-slate-300 text-sm leading-relaxed">실제 근육 경련과 관계없이, 누군가 또는 무언가가 내가 원하는 방식대로 행동하지 못하게 한다는 관용 표현이에요.</p></div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">At 6:15, I got a message from my sister. "Call me. It’s important." I called immediately. Nothing. I called twice more. Still nothing. Okay. There were a hundred normal explanations. Her phone was on silent. She was driving. She was in the shower.</p>
+                <p class="mb-6">Then I remembered what she'd told me that morning. She was <b class="highlight quiz-target" data-ans="on her period" data-kor="생리 중인">on her period</b> and having terrible <b class="highlight quiz-target" data-ans="menstrual cramps" data-kor="생리통">menstrual cramps</b>. What if the pain had suddenly gotten worse? I sent her a message. "Are you okay?" No reply.</p>
+                <p class="mb-6">At 6:25, I called her roommate, Jess. “Is Emma home?” “No. She said she was stopping somewhere <b class="highlight quiz-target" data-ans="on her way home" data-kor="집에 가는 길에">on her way home</b>.” “Where?” “I don't know.” Of course she didn't know. I started pacing around my apartment. Maybe Emma had collapsed somewhere. Maybe she'd had an accident. Maybe—</p>
+                <p class="mb-6">My phone rang. Jess. “Hey, there's a <b class="highlight quiz-target" data-ans="power outage" data-kor="정전">power outage</b> in our neighborhood. Emma's phone might be dead.” That should have made me feel better. It didn't. “What if she was driving when the lights went out?” “Traffic lights have backup systems, Ryan.” “Not all of them!” “Calm down.” Easy for her to say.</p>
+                <p class="mb-6">I grabbed my jacket. My laptop was still open on the table. I had an <b class="highlight quiz-target" data-ans="assignment" data-kor="과제">assignment</b> due the next morning, but I couldn't sit there while my sister was possibly lying unconscious beside a road.</p>
+                <p class="mb-6">I drove toward her neighborhood. Halfway there, I spotted Emma's car outside a restaurant. I slammed on the brakes and parked. Why was her car here?</p>
+                <p class="mb-6">I ran inside. “Excuse me,” I said to the host. “Have you seen a woman about thirty, brown hair, blue jacket?” He pointed toward the back. I rushed through the restaurant.</p>
+                <p class="mb-6">And there she was. Sitting at a table. Eating <b class="highlight quiz-target" data-ans="wood-fired" data-kor="장작불로 구운">wood-fired</b> pizza. She looked up. “Ryan?” I stopped. “You're alive.” “What?” “<b class="highlight quiz-target" data-ans="I thought something happened to you" data-kor="너한테 무슨 일 생긴 줄 알았어">I thought something happened to you</b>!”</p>
+                <p class="mb-6">She stared at me with a slice of pizza halfway to her mouth. “My battery died.” “You said it was important!” “It is.” “What is?” She pushed a menu toward me. “Mom's birthday. Look at these prices. This place <b class="highlight quiz-target" data-ans="costs an arm and a leg" data-kor="엄청 비싸다">costs an arm and a leg</b>. Do you think she'd even like it?”</p>
+                <p class="mb-6">I just stared at her. That was the emergency. Pizza prices.</p>
+                <p class="mb-6">Emma stood up, then suddenly grabbed the table. “Ow.” My heart jumped. “What?!” “Relax. <b class="highlight quiz-target" data-ans="My leg cramped" data-kor="다리에 쥐가 났다">My leg cramped</b>.” I closed my eyes.</p>
+                <p class="mb-6">She sat down and looked at me suspiciously. “Are you okay?” “I've spent the last forty minutes imagining you unconscious in a ditch.” She laughed. “Sorry.”</p>
+                <p class="mb-6">I pulled out a chair. “Fine. I'm staying.” “I thought you had work.” “I do.” She handed me the menu. “Well, don't let me <b class="highlight quiz-target" data-ans="cramp your style" data-kor="방해하다">cramp your style</b>.”</p>
+                <p class="mb-6">I looked at the menu, then at her. After the evening I'd just had, even that terrible joke was a relief.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>6시 15분, 여동생에게 메시지가 왔다. 전화해. 중요한 일이야. 나는 바로 전화했다. 받지 않았다. 두 번 더 전화했다. 여전히 받지 않았다. 괜찮아. 평범한 이유는 백 가지도 있을 수 있었다. 휴대폰을 무음으로 해놨을 수도 있고, 운전 중일 수도 있고, 샤워 중일 수도 있었다.</p>
+                <p>그러다 아침에 여동생이 했던 말이 생각났다. <b class="highlight">생리 중</b>이었고 <b class="highlight">생리통</b>이 심하다고 했다. 통증이 갑자기 더 심해진 거라면? 나는 메시지를 보냈다. 괜찮아? 답장이 없었다.</p>
+                <p>6시 25분, 여동생의 룸메이트인 제스에게 전화했다. “엠마 집에 있어?” “아니. <b class="highlight">집에 오는 길에</b> 어디 좀 들른다고 했어.” “어디?” “몰라.” 당연히 모르겠지. 나는 아파트 안을 서성거리기 시작했다. 어딘가에서 쓰러진 건 아닐까. 사고가 난 건 아닐까. 혹시—</p>
+                <p>전화가 울렸다. 제스였다. “이봐, 우리 동네에 <b class="highlight">정전</b>이 났어. 엠마 휴대폰 배터리가 나갔을 수도 있어.” 그 말을 들으면 안심해야 했다. 하지만 전혀 그렇지 않았다. “신호등이 꺼졌을 때 운전하고 있었으면 어떡해?” “신호등에는 비상 시스템이 있어, 라이언.” “전부 다 있는 건 아니잖아!” “진정해.” 말은 쉽지.</p>
+                <p>나는 재킷을 집어 들었다. 노트북은 여전히 테이블 위에 열려 있었다. 다음 날 아침까지 제출해야 할 <b class="highlight">과제</b>가 있었지만, 여동생이 길가 어딘가에 의식을 잃고 쓰러져 있을지도 모르는데 가만히 앉아 있을 수는 없었다.</p>
+                <p>나는 여동생이 사는 동네 쪽으로 차를 몰았다. 절반쯤 갔을 때 한 식당 앞에서 엠마의 차를 발견했다. 급히 차를 세우고 주차했다. 왜 차가 여기 있지?</p>
+                <p>식당 안으로 뛰어 들어갔다. “실례합니다. 서른 살 정도에 갈색 머리, 파란 재킷을 입은 여자 보셨어요?” 직원이 안쪽을 가리켰다. 나는 식당 안쪽으로 급히 걸어갔다.</p>
+                <p>그리고 거기에 엠마가 있었다. 테이블에 앉아서. <b class="highlight">장작 화덕</b> 피자를 먹고 있었다. 엠마가 고개를 들었다. “라이언?” 나는 멈춰 섰다. “살아 있네.” “뭐?” “<b class="highlight">너한테 무슨 일 생긴 줄 알았어</b>!”</p>
+                <p>엠마는 피자 조각을 입으로 가져가다 말고 나를 바라봤다. “배터리가 나갔어.” “중요한 일이라고 했잖아!” “중요하지.” “뭔데?” 엠마가 메뉴를 내 쪽으로 밀었다. “엄마 생일 말이야. 이 가격 좀 봐. 여기 <b class="highlight">엄청 비싸</b>. 엄마가 여기 좋아하기나 할까?”</p>
+                <p>나는 그냥 여동생을 바라봤다. 그게 긴급 상황이었다. 피자 가격.</p>
+                <p>엠마가 자리에서 일어나다 갑자기 테이블을 붙잡았다. “아!” 심장이 철렁했다. “왜?!” “진정해. <b class="highlight">다리에 쥐 났어</b>.” 나는 눈을 감았다.</p>
+                <p>엠마는 다시 앉아 나를 이상하다는 듯 바라봤다. “너 괜찮아?” “지난 40분 동안 네가 도랑에 의식 잃고 쓰러져 있는 모습을 상상했어.” 엠마가 웃었다. “미안.”</p>
+                <p>나는 의자를 빼서 앉았다. “됐어. 나 여기 있을래.” “너 일해야 하는 거 아니야?” “맞아.” 엠마가 메뉴를 건넸다. “그럼 내가 네 <b class="highlight">스타일을 방해하진</b> 않을게.”</p>
+                <p>나는 메뉴를 보고, 다시 엠마를 바라봤다. 내가 방금 보낸 저녁을 생각하면, 그 끔찍한 농담조차도 다행스럽게 느껴졌다.</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "971020.m4a";
+</script>
+</body>
+</html>

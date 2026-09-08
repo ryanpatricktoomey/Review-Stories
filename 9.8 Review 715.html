@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | When Does a Hill Become a Mountain?</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🏔️</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">When Does a Hill Become a Mountain?</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4"></section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">At what point does a hill become a mountain?</p>
+                <p class="mb-6">I know. Not exactly an urgent problem.</p>
+                <p class="mb-6">Nobody has ever called me at three in the morning and said, “We need you downtown. There’s a hill, and we’re not sure what to call it.”</p>
+                <p class="mb-6">But think about it.</p>
+                <p class="mb-6">You’re standing at the bottom of something large. It rises out of the ground. You walk up it. Your legs hurt. You regret not bringing water.</p>
+                <p class="mb-6">Hill?</p>
+                <p class="mb-6">Mountain?</p>
+                <p class="mb-6">Surely there must be a line somewhere.</p>
+                <p class="mb-6">Maybe it’s height.</p>
+                <p class="mb-6">That would make sense. Below a certain height: hill. Above it: mountain.</p>
+                <p class="mb-6">Nice and simple.</p>
+                <p class="mb-6">Except who chose the number?</p>
+                <p class="mb-6">Imagine two pieces of land. One is 599 meters high. The other is 600.</p>
+                <p class="mb-6">Are we really saying that one extra meter completely changes what the thing is?</p>
+                <p class="mb-6">You could carry a large chair to the top of the first one and suddenly create a mountain.</p>
+                <p class="mb-6">That doesn’t feel right.</p>
+                <p class="mb-6">Maybe it depends on how steep it is.</p>
+                <p class="mb-6">But then what about a very tall, gentle slope? You could walk up it without even noticing how high you were getting. Does that make it less of a mountain?</p>
+                <p class="mb-6">And what if you grew up next to it?</p>
+                <p class="mb-6">Maybe that changes things too.</p>
+                <p class="mb-6">If you saw the same enormous shape outside your bedroom window every morning for twenty years, maybe eventually it would stop feeling impressive. It would just be that thing behind your house.</p>
+                <p class="mb-6">So perhaps a mountain isn’t only about size.</p>
+                <p class="mb-6">Maybe it’s also about perspective.</p>
+                <p class="mb-6">Which is where this stupid question starts causing problems.</p>
+                <p class="mb-6">Because people work like this too.</p>
+                <p class="mb-6">When does someone become successful?</p>
+                <p class="mb-6">When are you officially an adult?</p>
+                <p class="mb-6">When does a hobby become a career?</p>
+                <p class="mb-6">When does being careful become being afraid?</p>
+                <p class="mb-6">We talk as if these things have clean borders. Before this point, you are one thing. After it, you are something else.</p>
+                <p class="mb-6">But usually there’s no sign.</p>
+                <p class="mb-6">No one walks over and says, “Congratulations. At 2:17 this afternoon, you officially became confident.”</p>
+                <p class="mb-6">Most changes are slow.</p>
+                <p class="mb-6">So slow that while they’re happening, you may not even notice them.</p>
+                <p class="mb-6">Maybe that’s why we like names and categories. They make gradual things feel clear.</p>
+                <p class="mb-6">Hill.</p>
+                <p class="mb-6">Mountain.</p>
+                <p class="mb-6">Child.</p>
+                <p class="mb-6">Adult.</p>
+                <p class="mb-6">Failure.</p>
+                <p class="mb-6">Success.</p>
+                <p class="mb-6">But the world doesn’t always change at the same moment that the word changes.</p>
+                <p class="mb-6">So I still don’t know when a hill becomes a mountain.</p>
+                <p class="mb-6">Maybe there is a technical answer somewhere.</p>
+                <p class="mb-6">But I think the more interesting question is this:</p>
+                <p class="mb-6">How many things in your life have already changed...</p>
+                <p class="mb-6">and you just haven’t changed the name yet?</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">언제부터 언덕이 산이 되는 걸까요?</p>
+                <p class="mb-6">알아요. 딱히 급한 문제는 아니죠.</p>
+                <p class="mb-6">새벽 세 시에 누가 저한테 전화해서 “지금 시내로 와 주세요. 언덕 하나가 있는데 뭘로 불러야 할지 모르겠어요”라고 한 적은 없으니까요.</p>
+                <p class="mb-6">그런데 한번 생각해 보세요.</p>
+                <p class="mb-6">여러분이 뭔가 커다란 것의 아래에 서 있어요. 땅에서 높이 솟아 있고, 여러분은 그 위를 걸어 올라가죠. 다리는 아프고, 물을 안 가져온 걸 후회하기 시작합니다.</p>
+                <p class="mb-6">언덕일까요?</p>
+                <p class="mb-6">산일까요?</p>
+                <p class="mb-6">분명 어딘가에는 경계가 있어야 할 것 같아요.</p>
+                <p class="mb-6">아마 높이일 수도 있겠죠.</p>
+                <p class="mb-6">그럴듯해요. 어느 높이 아래면 언덕, 그보다 높으면 산.</p>
+                <p class="mb-6">깔끔하고 간단하죠.</p>
+                <p class="mb-6">그런데 그 숫자는 누가 정했을까요?</p>
+                <p class="mb-6">땅 두 곳이 있다고 해봅시다. 하나는 높이가 599미터이고, 다른 하나는 600미터예요.</p>
+                <p class="mb-6">정말 딱 1미터 차이 때문에 하나는 완전히 다른 것이 되는 걸까요?</p>
+                <p class="mb-6">그렇다면 첫 번째 언덕 꼭대기에 큰 의자 하나를 들고 올라가면 갑자기 산을 만들어버릴 수도 있겠네요.</p>
+                <p class="mb-6">그건 좀 이상하죠.</p>
+                <p class="mb-6">어쩌면 경사도에 따라 결정되는 걸까요?</p>
+                <p class="mb-6">그렇다면 아주 높지만 완만한 경사는요? 얼마나 높이 올라가고 있는지도 거의 느끼지 못할 정도로 편하게 걸을 수 있다면, 그건 산답지 않은 걸까요?</p>
+                <p class="mb-6">그리고 만약 여러분이 그 옆에서 자랐다면요?</p>
+                <p class="mb-6">그것도 느낌을 바꿀 수 있을 것 같아요.</p>
+                <p class="mb-6">20년 동안 매일 아침 침실 창문 밖으로 똑같은 거대한 모습을 봤다면, 어느 순간 더 이상 대단하게 느껴지지 않을 수도 있잖아요. 그냥 집 뒤에 있는 그것이 되는 거죠.</p>
+                <p class="mb-6">그렇다면 산이라는 것은 단순히 크기의 문제가 아닐지도 몰라요.</p>
+                <p class="mb-6">어쩌면 관점의 문제이기도 하겠죠.</p>
+                <p class="mb-6">그리고 바로 여기서부터 이 쓸데없는 질문이 골치 아파지기 시작합니다.</p>
+                <p class="mb-6">사람도 비슷하거든요.</p>
+                <p class="mb-6">언제부터 성공한 사람이 되는 걸까요?</p>
+                <p class="mb-6">언제부터 공식적으로 어른이 되는 걸까요?</p>
+                <p class="mb-6">언제부터 취미가 직업이 되는 걸까요?</p>
+                <p class="mb-6">언제부터 조심하는 것이 두려워하는 것이 되는 걸까요?</p>
+                <p class="mb-6">우리는 이런 것들에도 명확한 경계가 있는 것처럼 말합니다. 이 지점 전까지는 한 가지였고, 그 뒤부터는 다른 것이 되는 것처럼요.</p>
+                <p class="mb-6">하지만 보통 표지판은 없습니다.</p>
+                <p class="mb-6">누군가 다가와서 “축하합니다. 오늘 오후 2시 17분부터 공식적으로 자신감 있는 사람이 되셨습니다”라고 말해주지도 않죠.</p>
+                <p class="mb-6">대부분의 변화는 천천히 일어납니다.</p>
+                <p class="mb-6">너무 천천히 일어나서, 변화하고 있는 동안에는 본인조차 알아차리지 못할 수도 있어요.</p>
+                <p class="mb-6">아마 그래서 우리가 이름과 범주를 좋아하는지도 모르겠습니다. 천천히 변하는 것들을 명확하게 느끼게 해주니까요.</p>
+                <p class="mb-6">언덕.</p>
+                <p class="mb-6">산.</p>
+                <p class="mb-6">아이.</p>
+                <p class="mb-6">어른.</p>
+                <p class="mb-6">실패.</p>
+                <p class="mb-6">성공.</p>
+                <p class="mb-6">하지만 세상이 변하는 순간과 우리가 그것을 부르는 말이 변하는 순간이 항상 같지는 않습니다.</p>
+                <p class="mb-6">그래서 저는 아직도 언제 언덕이 산이 되는지 모르겠어요.</p>
+                <p class="mb-6">어딘가에는 기술적인 정답이 있을지도 모르죠.</p>
+                <p class="mb-6">하지만 저는 이 질문이 더 재미있는 것 같아요.</p>
+                <p class="mb-6">여러분의 삶에서 이미 변해버린 것들 중에...</p>
+                <p class="mb-6">여러분이 아직 이름만 바꾸지 않은 것은 얼마나 많을까요?</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+    function skipAudio(seconds) {
+        const player = document.getElementById('player');
+        if (player.src) {
+            player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+        }
+    }
+
+    function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+    let _quizOriginals = new Map();
+
+    function toggleQuiz() {
+        const btn = document.getElementById('quizBtn');
+        const isQuiz = btn.innerText.includes("Quiz");
+        const targets = document.querySelectorAll('.quiz-target');
+        const cells = document.querySelectorAll('.mystery-cell');
+
+        if (isQuiz) {
+            btn.innerText = "Study Mode 📖";
+            cells.forEach(c => c.classList.add('quiz-hidden'));
+            targets.forEach(t => {
+                const ans = t.dataset.ans; const kor = t.dataset.kor;
+                _quizOriginals.set(t, t.innerHTML);
+                t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+            });
+        } else {
+            btn.innerText = "Quiz Mode 👻";
+            cells.forEach(c => c.classList.remove('quiz-hidden'));
+            targets.forEach(t => {
+                if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+            });
+            _quizOriginals.clear();
+        }
+    }
+
+    function checkQuiz(i, a) {
+        if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+            i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+            confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+            checkAllSolved();
+        } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+    }
+
+    function checkAllSolved() {
+        const inputs = document.querySelectorAll('.quiz-input');
+        if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+            var duration = 3 * 1000; var end = Date.now() + duration;
+            (function frame() {
+                confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                if (Date.now() < end) requestAnimationFrame(frame);
+            }());
+        }
+    }
+
+    document.getElementById('player').src = "98715.m4a";
+</script>
+</body>
+</html>

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+      <title>Review Note | The Chocolate Bar That Melted</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+      <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+      </style>
+</head>
+<body class="p-4 md:p-12">
+      <div class="max-w-4xl mx-auto space-y-8">
+
+          <header class="text-center space-y-4">
+              <div class="flex items-center justify-center gap-4">
+                  <span class="text-5xl">🍫</span>
+                  <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Chocolate Bar That Melted</h1>
+              </div>
+              <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+          </header>
+
+          <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+              <div class="flex items-center justify-between px-2">
+                  <div class="flex items-center gap-3">
+                      <span class="text-xl">🎧</span>
+                      <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                  </div>
+                  <div class="flex gap-2">
+                      <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          <span class="text-lg">↺</span> 5s
+                      </button>
+                      <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          5s <span class="text-lg">↻</span>
+                      </button>
+                  </div>
+              </div>
+              <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+          </div>
+
+          <div class="flex justify-center">
+              <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+          </div>
+
+          <section class="glass rounded-3xl overflow-hidden shadow-xl">
+              <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                  <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+              </div>
+              <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                  <tr><td class="p-4"><b class="text-white">work up the courage</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">용기를 내다 / 용기를 끌어모으다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">civil servant</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">공무원</td></tr>
+                  <tr><td class="p-4"><b class="text-white">first come first served</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">선착순 / 먼저 온 사람이 먼저</td></tr>
+                  <tr><td class="p-4"><b class="text-white">privacy</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">사생활 / 프라이버시</td></tr>
+                  <tr><td class="p-4"><b class="text-white">see their true colors</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">본색을 보다 / 진짜 모습을 알게 되다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">serendipity</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">뜻밖의 행운 / 우연한 발견</td></tr>
+              </tbody></table>
+          </section>
+
+          <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="glass p-5 rounded-2xl border border-teal-500/20">
+                  <h3 class="text-teal-400 font-bold mb-2">work up the courage</h3>
+                  <p class="text-slate-300 text-sm">망설이다가 결국 행동할 만큼 용기를 내는 것을 말합니다.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-teal-500/20">
+                  <h3 class="text-teal-400 font-bold mb-2">first come first served</h3>
+                  <p class="text-slate-300 text-sm">먼저 도착하거나 신청한 사람이 먼저 기회를 받는다는 뜻입니다.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-teal-500/20">
+                  <h3 class="text-teal-400 font-bold mb-2">see their true colors</h3>
+                  <p class="text-slate-300 text-sm">원래는 사람의 숨겨진 성격이나 의도를 알게 된다는 뜻입니다. 보통 좋지 않은 면이 드러날 때 많이 씁니다.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-teal-500/20">
+                  <h3 class="text-teal-400 font-bold mb-2">serendipity</h3>
+                  <p class="text-slate-300 text-sm">다른 것을 하다가 우연히 예상하지 못한 가치 있는 것을 발견하는 것을 말합니다.</p>
+              </div>
+          </section>
+
+          <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+              <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                  <p class="mb-6">In 1945, Percy Spencer was working for Raytheon, an American electronics company.</p>
+                  <p class="mb-6">He wasn't a university professor or a <b class="highlight quiz-target" data-ans="civil servant" data-kor="공무원">civil servant</b>. He was an engineer who had become an expert in radar technology.</p>
+                  <p class="mb-6">One day, Spencer was working near a magnetron, a device that produces microwaves for radar equipment.</p>
+                  <p class="mb-6">Then he noticed something strange.</p>
+                  <p class="mb-6">A candy bar in his pocket had melted.</p>
+                  <p class="mb-6">Most people might have been annoyed, cleaned up the mess, and gone back to work. Spencer became curious.</p>
+                  <p class="mb-6">Why had it melted?</p>
+                  <p class="mb-6">He didn't have to <b class="highlight quiz-target" data-ans="work up the courage" data-kor="용기를 끌어모으다">work up the courage</b> to investigate some dangerous mystery. He simply started experimenting.</p>
+                  <p class="mb-6">He reportedly tried popcorn kernels.</p>
+                  <p class="mb-6">They popped.</p>
+                  <p class="mb-6">Then he and a colleague tried an egg. The egg heated so quickly that it exploded.</p>
+                  <p class="mb-6">At that point, the microwaves were beginning to show their <b class="highlight quiz-target" data-ans="true colors" data-kor="진짜 모습">true colors</b>. Radar equipment had been designed to detect enemy aircraft, but the same energy could also heat food.</p>
+                  <p class="mb-6">That was the unexpected part.</p>
+                  <p class="mb-6">Spencer had not gone to work that morning trying to invent a new oven. Nobody had announced a competition where great inventions would be handed out <b class="highlight quiz-target" data-ans="first come, first served" data-kor="선착순">first come, first served</b>.</p>
+                  <p class="mb-6">He was trying to improve radar technology.</p>
+                  <p class="mb-6">Instead, he noticed a melted snack.</p>
+                  <p class="mb-6">That is what makes the story such a clean example of <b class="highlight quiz-target" data-ans="serendipity" data-kor="세렌디피티">serendipity</b>.</p>
+                  <p class="mb-6">Spencer and Raytheon began experimenting with a metal box that trapped microwave energy inside. Food placed in the box heated rapidly.</p>
+                  <p class="mb-6">The first commercial microwave ovens were nothing like the small machines in kitchens today. Early models were huge, expensive, and used mainly in places such as restaurants and ships. They certainly weren't something an ordinary family would casually put on the counter.</p>
+                  <p class="mb-6">Over time, though, the technology became smaller and cheaper.</p>
+                  <p class="mb-6">Today, heating yesterday's dinner in two minutes feels completely ordinary. We rarely think about the radar research behind it.</p>
+                  <p class="mb-6">And there is something funny about the discovery itself.</p>
+                  <p class="mb-6">Major scientific breakthroughs often sound as if they should happen in a perfectly controlled laboratory, with serious scientists protecting every experiment and working in complete <b class="highlight quiz-target" data-ans="privacy" data-kor="사적인 공간">privacy</b>.</p>
+                  <p class="mb-6">This one began because an engineer reached toward his pocket and discovered that his chocolate had melted.</p>
+                  <p class="mb-6">Spencer had been looking for better radar.</p>
+                  <p class="mb-6">He found a new way to cook food.</p>
+                  <p class="mb-6">That's <b class="highlight quiz-target" data-ans="serendipity" data-kor="세렌디피티">serendipity</b>: not simply getting what you wanted by luck, but accidentally finding something valuable that you weren't looking for at all.</p>
+              </div>
+              <hr class="border-white/10">
+              <div class="text-slate-400 italic leading-relaxed space-y-6">
+                  <p class="mb-6">1945년, 퍼시 스펜서는 미국 전자회사 레이시온에서 일하고 있었습니다.</p>
+                  <p class="mb-6">그는 대학 교수도, <b class="highlight">공무원</b>도 아니었습니다. 레이더 기술의 전문가가 된 엔지니어였습니다.</p>
+                  <p class="mb-6">어느 날 스펜서는 레이더 장비에 사용되는 마이크로파를 만들어 내는 장치인 마그네트론 근처에서 작업하고 있었습니다.</p>
+                  <p class="mb-6">그러다 이상한 것을 발견했습니다.</p>
+                  <p class="mb-6">주머니에 있던 초콜릿 바가 녹아 있었습니다.</p>
+                  <p class="mb-6">대부분의 사람이라면 짜증을 내고, 지저분해진 것을 치운 뒤 다시 일을 했을지도 모릅니다. 하지만 스펜서는 궁금해졌습니다.</p>
+                  <p class="mb-6">왜 녹았을까?</p>
+                  <p class="mb-6">위험한 미스터리를 조사하기 위해 굳이 <b class="highlight">용기를 끌어모아야</b> 했던 것은 아닙니다. 그는 그냥 실험을 시작했습니다.</p>
+                  <p class="mb-6">그는 팝콘 옥수수 알을 시험해 본 것으로 알려져 있습니다.</p>
+                  <p class="mb-6">옥수수가 터졌습니다.</p>
+                  <p class="mb-6">그다음에는 동료와 함께 달걀을 시험했습니다. 달걀은 너무 빠르게 가열되어 터져 버렸습니다.</p>
+                  <p class="mb-6">이쯤 되자 마이크로파가 자신의 <b class="highlight">진짜 모습</b>을 드러내기 시작했습니다. 원래 레이더 장비는 적의 항공기를 탐지하기 위해 만들어졌지만, 그와 같은 에너지가 음식도 데울 수 있었던 것입니다.</p>
+                  <p class="mb-6">바로 그 점이 예상 밖이었습니다.</p>
+                  <p class="mb-6">스펜서는 그날 아침 새로운 오븐을 발명하려고 출근한 것이 아니었습니다. 위대한 발명을 <b class="highlight">선착순</b>으로 나눠 주는 대회가 있었던 것도 아닙니다.</p>
+                  <p class="mb-6">그는 레이더 기술을 개선하려고 하고 있었습니다.</p>
+                  <p class="mb-6">그런데 녹아 버린 간식 하나를 발견했습니다.</p>
+                  <p class="mb-6">이것이 이 이야기를 아주 깔끔한 <b class="highlight">세렌디피티</b>의 사례로 만드는 이유입니다.</p>
+                  <p class="mb-6">스펜서와 레이시온은 마이크로파 에너지를 안에 가두는 금속 상자를 이용해 실험하기 시작했습니다. 그 안에 음식을 넣으면 빠르게 데워졌습니다.</p>
+                  <p class="mb-6">최초의 상업용 전자레인지는 오늘날 주방에 있는 작은 기계와는 전혀 달랐습니다. 초기 제품은 거대하고 비쌌으며 주로 식당이나 선박 같은 곳에서 사용되었습니다. 평범한 가정이 주방 조리대 위에 가볍게 올려놓을 만한 물건은 아니었습니다.</p>
+                  <p class="mb-6">하지만 시간이 지나면서 기술은 더 작아지고 저렴해졌습니다.</p>
+                  <p class="mb-6">오늘날에는 어제 먹다 남은 음식을 2분 만에 데우는 일이 너무나 평범하게 느껴집니다. 그 뒤에 레이더 연구가 있었다는 사실은 거의 생각하지 않습니다.</p>
+                  <p class="mb-6">그리고 발견 과정 자체에는 조금 재미있는 점도 있습니다.</p>
+                  <p class="mb-6">중대한 과학적 발견이라고 하면 완벽하게 통제된 연구실에서 진지한 과학자들이 모든 실험을 지키며 완전한 <b class="highlight">사적인 공간</b>에서 연구하는 모습을 떠올리기 쉽습니다.</p>
+                  <p class="mb-6">하지만 이 발견은 한 엔지니어가 주머니에 손을 뻗었다가 초콜릿이 녹아 있다는 사실을 발견하면서 시작되었습니다.</p>
+                  <p class="mb-6">스펜서는 더 나은 레이더를 찾고 있었습니다.</p>
+                  <p class="mb-6">그런데 새로운 음식 조리 방법을 발견했습니다.</p>
+                  <p class="mb-6">그것이 바로 <b class="highlight">세렌디피티</b>입니다. 단순히 원하던 것을 운 좋게 얻는 것이 아니라, 애초에 찾고 있지도 않았던 가치 있는 것을 우연히 발견하는 것입니다.</p>
+              </div>
+          </section>
+
+      </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "99845.m4a";
+</script>
+  </body>
+  </html>

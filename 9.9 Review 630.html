@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+      <title>Review Note | The Four-Dollar Painting</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+      <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+      </style>
+</head>
+<body class="p-4 md:p-12">
+      <div class="max-w-4xl mx-auto space-y-8">
+
+          <header class="text-center space-y-4">
+              <div class="flex items-center justify-center gap-4">
+                  <span class="text-5xl">🖼️</span>
+                  <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Four-Dollar Painting</h1>
+              </div>
+              <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+          </header>
+
+          <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+              <div class="flex items-center justify-between px-2">
+                  <div class="flex items-center gap-3">
+                      <span class="text-xl">🎧</span>
+                      <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                  </div>
+                  <div class="flex gap-2">
+                      <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          <span class="text-lg">↺</span> 5s
+                      </button>
+                      <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          5s <span class="text-lg">↻</span>
+                      </button>
+                  </div>
+              </div>
+              <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+          </div>
+
+          <div class="flex justify-center">
+              <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+          </div>
+
+          <section class="glass rounded-3xl overflow-hidden shadow-xl">
+              <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                  <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+              </div>
+              <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                  <tr><td class="p-4"><b class="text-white">luck with people</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">사람 복 / 사람을 잘 만나는 운</td></tr>
+                  <tr><td class="p-4"><b class="text-white">luck with money</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">금전운 / 돈과 관련된 운</td></tr>
+                  <tr><td class="p-4"><b class="text-white">retraced my steps</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">왔던 길을 되짚어 갔다 / 지나온 곳을 다시 따라가 봤다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">autograph</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">사인</td></tr>
+                  <tr><td class="p-4"><b class="text-white">in his prime</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">전성기의 / 한창때의</td></tr>
+                  <tr><td class="p-4"><b class="text-white">past my prime</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">전성기가 지난 / 한창때가 지난</td></tr>
+                  <tr><td class="p-4"><b class="text-white">drooling</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">침을 흘리는 / 몹시 탐내는</td></tr>
+                  <tr><td class="p-4"><b class="text-white">drooling over something</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">무언가를 몹시 탐내다 / 군침을 흘리다</td></tr>
+              </tbody></table>
+          </section>
+
+          <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="glass p-5 rounded-2xl border border-teal-500/20">
+                  <h3 class="text-teal-400 font-bold mb-2">luck with people</h3>
+                  <p class="text-slate-300 text-sm">단순히 “사람과의 운”이라기보다 좋은 친구, 동료, 배우자 등을 잘 만나는 사람 복을 말할 때 자연스럽습니다.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-teal-500/20">
+                  <h3 class="text-teal-400 font-bold mb-2">retrace my steps</h3>
+                  <p class="text-slate-300 text-sm">잃어버린 물건 등을 찾으려고 자신이 지나왔던 길이나 행동을 거꾸로 되짚어 보는 표현입니다.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-teal-500/20">
+                  <h3 class="text-teal-400 font-bold mb-2">in his prime / past my prime</h3>
+                  <p class="text-slate-300 text-sm">사람의 능력이나 체력이 가장 좋은 시기를 prime이라고 합니다. past my prime은 그 전성기가 지났다는 뜻입니다.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-teal-500/20">
+                  <h3 class="text-teal-400 font-bold mb-2">drooling over something</h3>
+                  <p class="text-slate-300 text-sm">실제로 침을 흘린다는 뜻도 있지만, 물건 등을 너무 갖고 싶어서 군침을 흘리다 / 몹시 탐내다라는 뜻으로도 씁니다.</p>
+              </div>
+          </section>
+
+          <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+              <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                  <p class="mb-6">In 1989, a man was walking through a flea market in Pennsylvania when an old painting caught his attention.</p>
+                  <p class="mb-6">It wasn't a masterpiece. In fact, he wasn't particularly interested in the painting at all. He liked the frame.</p>
+                  <p class="mb-6">The price was four dollars.</p>
+                  <p class="mb-6">So he bought it.</p>
+                  <p class="mb-6">At that point, it looked like a tiny bit of <b class="highlight quiz-target" data-ans="luck with money" data-kor="금전운">luck with money</b> at best. Four dollars for a decent old frame wasn't bad. He took it home and began taking the painting apart.</p>
+                  <p class="mb-6">Then he noticed something behind it.</p>
+                  <p class="mb-6">Hidden between the painting and the backing was a folded piece of paper. When he opened it, he saw something familiar: the Declaration of Independence.</p>
+                  <p class="mb-6">His first thought was not that he had discovered a national treasure. He assumed it was an old reproduction.</p>
+                  <p class="mb-6">That was reasonable. Copies of famous historical documents aren't exactly rare, and this one didn't even have John Hancock's famous handwritten <b class="highlight quiz-target" data-ans="autograph" data-kor="사인">autograph</b> across the bottom. It was a printed document.</p>
+                  <p class="mb-6">The man kept it, but apparently didn't think much of it.</p>
+                  <p class="mb-6">Fortunately, a friend later encouraged him to have it examined professionally.</p>
+                  <p class="mb-6">That changed everything.</p>
+                  <p class="mb-6">The paper turned out to be a genuine Dunlap broadside—one of the first printed copies of the Declaration of Independence, produced in Philadelphia in July 1776. Only a small number were known to have survived.</p>
+                  <p class="mb-6">Suddenly, collectors weren't interested in the four-dollar painting. They were practically <b class="highlight quiz-target" data-ans="drooling over" data-kor="군침을 흘리다">drooling over</b> the piece of paper that had been hiding behind it.</p>
+                  <p class="mb-6">In 1991, the document went to auction.</p>
+                  <p class="mb-6">It sold for $2.42 million.</p>
+                  <p class="mb-6">Think about the chain of coincidences required for that to happen. The document had survived for more than two centuries. Someone had placed it behind an unimportant painting. The painting had ended up at a flea market. Then one particular shopper happened to notice the frame, decided it was worth four dollars, took it home, and opened it.</p>
+                  <p class="mb-6">Had he walked past that table, the document might have remained hidden.</p>
+                  <p class="mb-6">And the strangest part?</p>
+                  <p class="mb-6">He wasn't searching for American history.</p>
+                  <p class="mb-6">He wasn't hunting for valuable documents.</p>
+                  <p class="mb-6">He didn't even want the painting.</p>
+                  <p class="mb-6">He wanted the frame.</p>
+                  <p class="mb-6">Sometimes incredible luck doesn't arrive looking like a jackpot. Sometimes it looks like an ugly four-dollar painting.</p>
+              </div>
+              <hr class="border-white/10">
+              <div class="text-slate-400 italic leading-relaxed space-y-6">
+                  <p class="mb-6">1989년, 한 남자가 펜실베이니아의 벼룩시장을 걷다가 오래된 그림 하나를 발견했습니다.</p>
+                  <p class="mb-6">명작은 아니었습니다. 사실 그는 그림 자체에는 별로 관심도 없었습니다. 마음에 든 것은 액자였습니다.</p>
+                  <p class="mb-6">가격은 4달러였습니다.</p>
+                  <p class="mb-6">그래서 그는 그것을 샀습니다.</p>
+                  <p class="mb-6">그 순간만 해도 기껏해야 작은 <b class="highlight">금전운</b> 정도로 보였을 겁니다. 괜찮은 오래된 액자를 4달러에 샀다면 나쁘지 않은 거래였으니까요. 그는 그것을 집으로 가져가 그림과 액자를 분리하기 시작했습니다.</p>
+                  <p class="mb-6">그러다 뒤쪽에서 무언가를 발견했습니다.</p>
+                  <p class="mb-6">그림과 뒷판 사이에 접힌 종이 한 장이 숨겨져 있었습니다. 종이를 펼쳐 보니 익숙한 것이 보였습니다. 미국 독립선언문이었습니다.</p>
+                  <p class="mb-6">그는 자신이 국가적 보물을 발견했다고 생각하지 않았습니다. 그냥 오래된 복제품일 거라고 생각했습니다.</p>
+                  <p class="mb-6">그렇게 생각하는 것도 당연했습니다. 유명한 역사 문서의 복제품은 흔했고, 게다가 그 종이에는 사람들이 잘 아는 존 핸콕의 커다란 친필 <b class="highlight">사인</b>조차 없었습니다. 인쇄된 문서였던 것이죠.</p>
+                  <p class="mb-6">남자는 그 종이를 보관했지만, 처음에는 그다지 중요하게 생각하지 않았던 것으로 보입니다.</p>
+                  <p class="mb-6">다행히 나중에 한 친구가 전문가에게 감정을 받아 보라고 권했습니다.</p>
+                  <p class="mb-6">그러자 모든 것이 달라졌습니다.</p>
+                  <p class="mb-6">그 종이는 진짜 '던랩 브로드사이드'로 밝혀졌습니다. 1776년 7월 필라델피아에서 인쇄된 미국 독립선언문의 최초 인쇄본 중 하나였습니다. 현재까지 살아남은 것으로 알려진 것은 극소수뿐이었습니다.</p>
+                  <p class="mb-6">갑자기 수집가들의 관심은 4달러짜리 그림이 아니었습니다. 그 뒤에 숨어 있던 종이 한 장을 거의 <b class="highlight">군침을 흘릴</b> 정도로 탐내게 된 것입니다.</p>
+                  <p class="mb-6">1991년, 그 문서는 경매에 나왔습니다.</p>
+                  <p class="mb-6">낙찰가는 242만 달러였습니다.</p>
+                  <p class="mb-6">이 일이 일어나기 위해 얼마나 많은 우연이 필요했는지 생각해 보세요. 그 문서는 200년이 넘는 시간을 살아남았습니다. 누군가 별로 중요하지 않은 그림 뒤에 그것을 넣었습니다. 그 그림은 결국 벼룩시장까지 흘러갔습니다. 그리고 수많은 사람 중 한 사람이 우연히 그 액자를 발견하고, 4달러의 가치가 있다고 생각해 사고, 집으로 가져가 뜯어 보았습니다.</p>
+                  <p class="mb-6">그가 그 가판대를 그냥 지나쳤다면, 그 문서는 계속 숨겨져 있었을지도 모릅니다.</p>
+                  <p class="mb-6">그리고 가장 이상한 점은 무엇일까요?</p>
+                  <p class="mb-6">그는 미국 역사 유물을 찾고 있던 것이 아니었습니다.</p>
+                  <p class="mb-6">값비싼 문서를 찾아다니던 것도 아니었습니다.</p>
+                  <p class="mb-6">심지어 그 그림을 원했던 것도 아닙니다.</p>
+                  <p class="mb-6">그가 원했던 건 액자였습니다.</p>
+                  <p class="mb-6">엄청난 행운이 항상 잭팟처럼 보이는 모습으로 찾아오는 것은 아닙니다. 때로는 볼품없는 4달러짜리 그림의 모습으로 찾아오기도 합니다.</p>
+              </div>
+          </section>
+
+      </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "99630.m4a";
+</script>
+  </body>
+  </html>

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+      <title>Review Note | The Ship in the Broken Dike</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+      <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+      </style>
+</head>
+<body class="p-4 md:p-12">
+      <div class="max-w-4xl mx-auto space-y-8">
+
+          <header class="text-center space-y-4">
+              <div class="flex items-center justify-center gap-4">
+                  <span class="text-5xl">🚢</span>
+                  <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Ship in the Broken Dike</h1>
+              </div>
+              <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+          </header>
+
+          <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+              <div class="flex items-center justify-between px-2">
+                  <div class="flex items-center gap-3">
+                      <span class="text-xl">🎧</span>
+                      <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                  </div>
+                  <div class="flex gap-2">
+                      <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          <span class="text-lg">↺</span> 5s
+                      </button>
+                      <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          5s <span class="text-lg">↻</span>
+                      </button>
+                  </div>
+              </div>
+              <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+          </div>
+
+          <div class="flex justify-center">
+              <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+          </div>
+
+          <section class="glass rounded-3xl overflow-hidden shadow-xl">
+              <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                  <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+              </div>
+              <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                  <tr><td class="p-4"><b class="text-white">mole</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">점 / 두더지</td></tr>
+                  <tr><td class="p-4"><b class="text-white">remove it</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그것을 제거하다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">flooding</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">홍수 / 침수</td></tr>
+                  <tr><td class="p-4"><b class="text-white">severe weather</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">악천후</td></tr>
+                  <tr><td class="p-4"><b class="text-white">have a blackout</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">정전되다 / 정전을 겪다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">destruction</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">파괴 / 큰 피해</td></tr>
+                  <tr><td class="p-4"><b class="text-white">inflation</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">인플레이션 / 물가 상승</td></tr>
+                  <tr><td class="p-4"><b class="text-white">below sea level</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">해수면보다 낮은</td></tr>
+                  <tr><td class="p-4"><b class="text-white">screech</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">날카로운 소리를 내다 / 끼익 소리가 나다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">her voice breaks</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그녀의 목소리가 갈라진다 / 감정 때문에 목소리가 끊긴다</td></tr>
+              </tbody></table>
+          </section>
+
+          <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="glass p-5 rounded-2xl border border-teal-500/20">
+                  <h3 class="text-teal-400 font-bold mb-2">mole</h3>
+                  <p class="text-slate-300 text-sm">피부의 “점”과 동물 “두더지” 두 뜻이 있습니다.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-teal-500/20">
+                  <h3 class="text-teal-400 font-bold mb-2">have a blackout</h3>
+                  <p class="text-slate-300 text-sm">여기서는 지역의 전기가 끊기는 “정전을 겪다”라는 의미입니다.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-teal-500/20">
+                  <h3 class="text-teal-400 font-bold mb-2">screech</h3>
+                  <p class="text-slate-300 text-sm">사람의 높은 비명뿐 아니라 금속, 타이어 등이 내는 날카로운 소리에도 씁니다.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-teal-500/20">
+                  <h3 class="text-teal-400 font-bold mb-2">her voice breaks</h3>
+                  <p class="text-slate-300 text-sm">감정이 북받쳐 말하는 도중 목소리가 떨리거나 끊기는 상황에 자연스럽게 사용할 수 있습니다.</p>
+              </div>
+          </section>
+
+          <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+              <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                  <p class="mb-6">During the night of January 31, 1953, the Netherlands was hit by a disastrous North Sea storm.</p>
+                  <p class="mb-6">This was especially dangerous because large parts of the country are <b class="highlight quiz-target" data-ans="below sea level" data-kor="해수면보다 낮은">below sea level</b>.</p>
+                  <p class="mb-6">The combination of <b class="highlight quiz-target" data-ans="severe weather" data-kor="악천후">severe weather</b> and an unusually high tide pushed enormous amounts of seawater toward the coast. Dikes began to fail. More than 150 breaches eventually opened across the affected provinces.</p>
+                  <p class="mb-6">The resulting <b class="highlight quiz-target" data-ans="flooding" data-kor="홍수">flooding</b> killed more than 1,800 people in the Netherlands.</p>
+                  <p class="mb-6">But at Nieuwerkerk aan den IJssel, something extraordinary happened.</p>
+                  <p class="mb-6">A dike was beginning to give way. On the other side was an extremely low-lying and densely populated area. If the opening became much larger, the water could cause even greater <b class="highlight quiz-target" data-ans="destruction" data-kor="파괴와 피해">destruction</b>.</p>
+                  <p class="mb-6">Someone came up with a desperate solution.</p>
+                  <p class="mb-6">They needed to put something enormous into the hole.</p>
+                  <p class="mb-6">A ship.</p>
+                  <p class="mb-6">The vessel Twee Gebroeders was nearby. Its captain, Arie Evegroen, was asked to steer the ship directly toward the damaged section of the dike.</p>
+                  <p class="mb-6">This was not like noticing a <b class="highlight quiz-target" data-ans="mole" data-kor="점">mole</b> on your skin and asking a doctor to <b class="highlight quiz-target" data-ans="remove it" data-kor="제거하다">remove it</b>. The weakness was in a structure holding back the sea, and the solution involved deliberately driving a large ship into it.</p>
+                  <p class="mb-6">Evegroen did it.</p>
+                  <p class="mb-6">With wind and water raging around him, he maneuvered the vessel toward the opening. At exactly the right moment, the ship was pushed sideways into the gap.</p>
+                  <p class="mb-6">It worked.</p>
+                  <p class="mb-6">The hull blocked much of the opening, and people quickly added sandbags and other material around it.</p>
+                  <p class="mb-6">Think about the sounds that night: roaring water, violent wind, timber and metal under pressure. A ship scraping against a damaged dike would hardly have arrived quietly; in such chaos, even a sudden <b class="highlight quiz-target" data-ans="screech" data-kor="날카로운 소리">screech</b> of metal would have been one more sound among many.</p>
+                  <p class="mb-6">Across the disaster zone, power and communications failed. Families could <b class="highlight quiz-target" data-ans="have a blackout" data-kor="정전을 겪다">have a blackout</b> and have no easy way of knowing what was happening only a few kilometers away.</p>
+                  <p class="mb-6">The economic damage was also enormous. Putting a historical price into modern terms requires adjusting for <b class="highlight quiz-target" data-ans="inflation" data-kor="물가 상승">inflation</b>, but no amount of money captures what families lost.</p>
+                  <p class="mb-6">The ship did not end the 1953 disaster.</p>
+                  <p class="mb-6">It did something more specific.</p>
+                  <p class="mb-6">It helped prevent one dangerous breach from becoming much worse.</p>
+                  <p class="mb-6">That night, luck wasn't a winning lottery ticket or an accidental discovery.</p>
+                  <p class="mb-6">It was having the right object—a ship—in the right place, at exactly the moment when somebody had the courage to use it as a wall against the sea.</p>
+              </div>
+              <hr class="border-white/10">
+              <div class="text-slate-400 italic leading-relaxed space-y-6">
+                  <p class="mb-6">1953년 1월 31일 밤, 네덜란드는 북해에서 몰려온 끔찍한 폭풍을 맞았습니다.</p>
+                  <p class="mb-6">네덜란드 국토의 넓은 지역이 <b class="highlight">해수면보다 낮기</b> 때문에 특히 위험한 상황이었습니다.</p>
+                  <p class="mb-6"><b class="highlight">악천후</b>와 비정상적으로 높은 조수가 겹치면서 엄청난 양의 바닷물이 해안으로 밀려왔습니다. 제방들이 무너지기 시작했습니다. 피해 지역에서는 결국 150곳이 넘는 제방이 터졌습니다.</p>
+                  <p class="mb-6">그 결과 발생한 <b class="highlight">홍수</b>로 네덜란드에서 1,800명이 넘는 사람들이 목숨을 잃었습니다.</p>
+                  <p class="mb-6">하지만 니우어르케르크안덴에이설에서는 놀라운 일이 벌어졌습니다.</p>
+                  <p class="mb-6">제방 하나가 무너지기 시작하고 있었습니다. 그 너머에는 매우 낮고 인구가 밀집한 지역이 있었습니다. 구멍이 훨씬 커진다면 물이 더 엄청난 <b class="highlight">파괴와 피해</b>를 일으킬 수 있었습니다.</p>
+                  <p class="mb-6">누군가 필사적인 해결책을 생각해 냈습니다.</p>
+                  <p class="mb-6">그 구멍에 아주 거대한 무언가를 넣어야 했습니다.</p>
+                  <p class="mb-6">배였습니다.</p>
+                  <p class="mb-6">근처에는 Twee Gebroeders라는 배가 있었습니다. 선장 아리 에버흐룬은 배를 손상된 제방 쪽으로 직접 몰아 달라는 요청을 받았습니다.</p>
+                  <p class="mb-6">이것은 피부에서 <b class="highlight">점</b> 하나를 발견하고 의사에게 <b class="highlight">제거해</b> 달라고 하는 것 같은 간단한 문제가 아니었습니다. 바다를 막고 있는 구조물 자체에 약점이 생긴 것이었고, 해결책은 커다란 배를 일부러 그곳으로 몰아넣는 것이었습니다.</p>
+                  <p class="mb-6">에버흐룬은 실행했습니다.</p>
+                  <p class="mb-6">거센 바람과 물이 몰아치는 가운데 그는 배를 제방의 구멍 쪽으로 움직였습니다. 정확한 순간에 배가 옆으로 밀려 들어가면서 틈을 막았습니다.</p>
+                  <p class="mb-6">성공했습니다.</p>
+                  <p class="mb-6">배의 선체가 구멍의 상당 부분을 막았고, 사람들은 곧바로 주변에 모래주머니와 다른 재료를 쌓았습니다.</p>
+                  <p class="mb-6">그날 밤의 소리를 상상해 보세요. 거칠게 몰아치는 물, 강풍, 압력을 받는 목재와 금속. 손상된 제방에 배가 부딪히고 긁히는 과정이 조용했을 리 없습니다. 그런 혼란 속에서는 금속이 갑자기 내는 <b class="highlight">날카로운 끼익 소리</b>조차 수많은 소리 중 하나였을 것입니다.</p>
+                  <p class="mb-6">재난 지역 곳곳에서는 전력과 통신이 끊겼습니다. 가족들은 <b class="highlight">정전을 겪으면서도</b> 불과 몇 킬로미터 떨어진 곳에서 무슨 일이 벌어지는지 알 방법이 거의 없을 수 있었습니다.</p>
+                  <p class="mb-6">경제적 피해도 엄청났습니다. 당시의 피해액을 오늘날의 돈으로 비교하려면 <b class="highlight">물가 상승</b>을 반영해야 하지만, 돈으로는 가족들이 잃은 것을 모두 표현할 수 없습니다.</p>
+                  <p class="mb-6">그 배가 1953년의 재난 전체를 막은 것은 아닙니다.</p>
+                  <p class="mb-6">훨씬 구체적인 일을 했습니다.</p>
+                  <p class="mb-6">위험한 제방 붕괴 하나가 훨씬 더 심각해지는 것을 막는 데 도움을 주었습니다.</p>
+                  <p class="mb-6">그날 밤의 행운은 당첨된 복권도, 우연한 발견도 아니었습니다.</p>
+                  <p class="mb-6">필요한 바로 그 순간, 필요한 바로 그 장소에 배 한 척이 있었고, 누군가 그것을 바다를 막는 벽으로 사용할 용기를 냈다는 것이었습니다.</p>
+              </div>
+          </section>
+
+      </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "991020.m4a";
+</script>
+  </body>
+  </html>

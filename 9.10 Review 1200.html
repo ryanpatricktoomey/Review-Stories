@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+      <title>Review Note | Just Drink Some Water</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+      <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+      </style>
+</head>
+<body class="p-4 md:p-12">
+      <div class="max-w-4xl mx-auto space-y-8">
+
+          <header class="text-center space-y-4">
+              <div class="flex items-center justify-center gap-4">
+                  <span class="text-5xl">🥾</span>
+                  <h1 class="text-3xl md:text-4xl font-extrabold text-white">Just Drink Some Water</h1>
+              </div>
+              <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+          </header>
+
+          <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+              <div class="flex items-center justify-between px-2">
+                  <div class="flex items-center gap-3">
+                      <span class="text-xl">🎧</span>
+                      <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                  </div>
+                  <div class="flex gap-2">
+                      <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          <span class="text-lg">↺</span> 5s
+                      </button>
+                      <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          5s <span class="text-lg">↻</span>
+                      </button>
+                  </div>
+              </div>
+              <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+          </div>
+
+          <div class="flex justify-center">
+              <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+          </div>
+
+          <section class="glass rounded-3xl overflow-hidden shadow-xl">
+              <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                  <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+              </div>
+              <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                  <tr><td class="p-4"><b class="text-white">electrolytes</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">전해질</td></tr>
+                  <tr><td class="p-4"><b class="text-white">scenery</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">경치 / 풍경</td></tr>
+                  <tr><td class="p-4"><b class="text-white">gained weight</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">살이 쪘다 / 체중이 늘었다</td></tr>
+              </tbody></table>
+          </section>
+
+          <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <h3 class="text-teal-400 font-bold text-lg">electrolytes</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">나트륨, 칼륨처럼 체내 수분 균형 등에 중요한 미네랄을 말해요. 운동이나 땀을 많이 흘린 상황에서 replace/replenish electrolytes 같은 표현을 자주 씁니다.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <h3 class="text-teal-400 font-bold text-lg">scenery</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">한 장소에서 보이는 자연환경이나 풍경을 전체적으로 가리켜요. 보통 셀 수 없는 명사라서 beautiful scenery처럼 씁니다.</p>
+              </div>
+          </section>
+
+          <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+              <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                  <p class="mb-6">I cannot stand Nicole.</p>
+                  <p class="mb-6">We work together, and last year she got obsessed with hiking. Since then, every conversation eventually becomes about hiking.</p>
+                  <p class="mb-6">Tired? Go hiking.</p>
+                  <p class="mb-6">Stressed? Go hiking.</p>
+                  <p class="mb-6">Bad date? Apparently, also hiking.</p>
+                  <p class="mb-6">Worst of all, she carries a giant water bottle everywhere and constantly tells people about <b class="highlight quiz-target" data-ans="electrolytes" data-kor="전해질">electrolytes</b>.</p>
+                  <p class="mb-6">So when my friend Julie invited me hiking on Saturday, I almost said no.</p>
+                  <p class="mb-6">“Come on,” she said. “The <b class="highlight quiz-target" data-ans="scenery" data-kor="경치 / 풍경">scenery</b> is supposed to be beautiful.”</p>
+                  <p class="mb-6">“Fine.”</p>
+                  <p class="mb-6">Halfway up the mountain, Julie stopped.</p>
+                  <p class="mb-6">“I need a break.”</p>
+                  <p class="mb-6">“Already?”</p>
+                  <p class="mb-6">“I'm dying.”</p>
+                  <p class="mb-6">She sat down and drank some water.</p>
+                  <p class="mb-6">Then she said, “I've gotten so out of shape. I <b class="highlight quiz-target" data-ans="gained weight" data-kor="살이 쪘다 / 체중이 늘었다">gained weight</b> this summer.”</p>
+                  <p class="mb-6">“Who cares? Take your time.”</p>
+                  <p class="mb-6">“I feel terrible.”</p>
+                  <p class="mb-6">I looked at her sweaty face.</p>
+                  <p class="mb-6">And then I said it.</p>
+                  <p class="mb-6">“Did you bring <b class="highlight quiz-target" data-ans="electrolytes" data-kor="전해질">electrolytes</b>?”</p>
+                  <p class="mb-6">Julie stared at me.</p>
+                  <p class="mb-6">I stared back.</p>
+                  <p class="mb-6">“What?”</p>
+                  <p class="mb-6">“You just sounded like Nicole.”</p>
+                  <p class="mb-6">My stomach dropped.</p>
+                  <p class="mb-6">“No, I didn't.”</p>
+                  <p class="mb-6">“You absolutely did.”</p>
+                  <p class="mb-6">“I was asking a medical question.”</p>
+                  <p class="mb-6">Julie started laughing.</p>
+                  <p class="mb-6">“It's not funny.”</p>
+                  <p class="mb-6">We continued walking.</p>
+                  <p class="mb-6">Ten minutes later, she complained that her legs hurt.</p>
+                  <p class="mb-6">Without thinking, I said, “You'll feel amazing when we get to the top.”</p>
+                  <p class="mb-6">I stopped walking.</p>
+                  <p class="mb-6">Julie stopped too.</p>
+                  <p class="mb-6">“Oh no,” she said.</p>
+                  <p class="mb-6">“Shut up.”</p>
+                  <p class="mb-6">“That's Nicole too, isn't it?”</p>
+                  <p class="mb-6">I knew the answer.</p>
+                  <p class="mb-6">At the top, I stood looking out over the mountains. The view was incredible.</p>
+                  <p class="mb-6">Julie came up beside me.</p>
+                  <p class="mb-6">“Worth it?”</p>
+                  <p class="mb-6">I wanted to say no.</p>
+                  <p class="mb-6">Instead, I heard myself say, “This is why I hike.”</p>
+                  <p class="mb-6">Julie slowly turned toward me.</p>
+                  <p class="mb-6">I closed my eyes.</p>
+                  <p class="mb-6">“Don't.”</p>
+                  <p class="mb-6">She smiled.</p>
+                  <p class="mb-6">“You're becoming her.”</p>
+                  <p class="mb-6">“I hate her.”</p>
+                  <p class="mb-6">“You're carrying her water bottle.”</p>
+                  <p class="mb-6">I looked down.</p>
+                  <p class="mb-6">Nicole had given it to me at the office Christmas party.</p>
+                  <p class="mb-6">I hadn't even noticed I'd brought it.</p>
+                  <p class="mb-6">I took a long drink.</p>
+                  <p class="mb-6">Julie raised an eyebrow.</p>
+                  <p class="mb-6">“<b class="highlight quiz-target" data-ans="Electrolytes" data-kor="전해질">Electrolytes</b>?”</p>
+                  <p class="mb-6">“Don't talk to me.”</p>
+              </div>
+              <hr class="border-white/10">
+              <div class="text-slate-400 italic leading-relaxed space-y-6">
+                  <p class="mb-6">나는 니콜을 정말 못 견딘다.</p>
+                  <p class="mb-6">우리는 같이 일하는데, 작년에 니콜이 등산에 완전히 빠졌다. 그때부터 니콜과 무슨 대화를 하든 결국 등산 이야기로 끝난다.</p>
+                  <p class="mb-6">피곤해? 등산해.</p>
+                  <p class="mb-6">스트레스 받아? 등산해.</p>
+                  <p class="mb-6">데이트 망쳤어? 그것도 역시 등산이 해결책이란다.</p>
+                  <p class="mb-6">무엇보다 니콜은 커다란 물병을 어디든 들고 다니면서 사람들에게 끊임없이 <b class="highlight">전해질</b> 이야기를 한다.</p>
+                  <p class="mb-6">그래서 친구 줄리가 토요일에 같이 등산하자고 했을 때 나는 거의 거절할 뻔했다.</p>
+                  <p class="mb-6">“같이 가자. <b class="highlight">경치</b>가 정말 좋대.”</p>
+                  <p class="mb-6">“알았어.”</p>
+                  <p class="mb-6">산을 절반쯤 올라갔을 때 줄리가 멈췄다.</p>
+                  <p class="mb-6">“나 좀 쉬어야겠어.”</p>
+                  <p class="mb-6">“벌써?”</p>
+                  <p class="mb-6">“죽을 것 같아.”</p>
+                  <p class="mb-6">줄리는 앉아서 물을 마셨다.</p>
+                  <p class="mb-6">그러더니 말했다.</p>
+                  <p class="mb-6">“나 체력이 진짜 안 좋아졌어. 이번 여름에 <b class="highlight">살도 쪘거든</b>.”</p>
+                  <p class="mb-6">“그게 뭐 어때? 천천히 가.”</p>
+                  <p class="mb-6">“너무 힘들어.”</p>
+                  <p class="mb-6">나는 땀에 젖은 줄리의 얼굴을 바라봤다.</p>
+                  <p class="mb-6">그리고 그 말을 해 버렸다.</p>
+                  <p class="mb-6">“<b class="highlight">전해질</b> 챙겨 왔어?”</p>
+                  <p class="mb-6">줄리가 나를 쳐다봤다.</p>
+                  <p class="mb-6">나도 줄리를 바라봤다.</p>
+                  <p class="mb-6">“왜?”</p>
+                  <p class="mb-6">“방금 니콜 같았어.”</p>
+                  <p class="mb-6">가슴이 철렁했다.</p>
+                  <p class="mb-6">“아니거든.”</p>
+                  <p class="mb-6">“완전 똑같았어.”</p>
+                  <p class="mb-6">“난 의학적인 질문을 한 거야.”</p>
+                  <p class="mb-6">줄리가 웃기 시작했다.</p>
+                  <p class="mb-6">“안 웃겨.”</p>
+                  <p class="mb-6">우리는 다시 걷기 시작했다.</p>
+                  <p class="mb-6">10분 뒤, 줄리가 다리가 아프다고 했다.</p>
+                  <p class="mb-6">나는 별생각 없이 말했다.</p>
+                  <p class="mb-6">“정상에 도착하면 기분 엄청 좋을 거야.”</p>
+                  <p class="mb-6">나는 걸음을 멈췄다.</p>
+                  <p class="mb-6">줄리도 멈췄다.</p>
+                  <p class="mb-6">“설마.” 줄리가 말했다.</p>
+                  <p class="mb-6">“조용히 해.”</p>
+                  <p class="mb-6">“그것도 니콜이 하는 말이지?”</p>
+                  <p class="mb-6">나는 답을 알고 있었다.</p>
+                  <p class="mb-6">정상에 도착해서 산 너머를 바라봤다. 정말 멋진 <b class="highlight">풍경</b>이었다.</p>
+                  <p class="mb-6">줄리가 내 옆으로 왔다.</p>
+                  <p class="mb-6">“올라올 만했어?”</p>
+                  <p class="mb-6">나는 아니라고 말하고 싶었다.</p>
+                  <p class="mb-6">그런데 내 입에서 이런 말이 나왔다.</p>
+                  <p class="mb-6">“이래서 내가 등산하는 거야.”</p>
+                  <p class="mb-6">줄리가 천천히 나를 바라봤다.</p>
+                  <p class="mb-6">나는 눈을 감았다.</p>
+                  <p class="mb-6">“하지 마.”</p>
+                  <p class="mb-6">줄리가 웃었다.</p>
+                  <p class="mb-6">“너 걔처럼 변하고 있어.”</p>
+                  <p class="mb-6">“난 걔가 싫어.”</p>
+                  <p class="mb-6">“너 지금 걔 물병 들고 있잖아.”</p>
+                  <p class="mb-6">나는 아래를 내려다봤다.</p>
+                  <p class="mb-6">회사 크리스마스 파티에서 니콜이 나에게 준 물병이었다.</p>
+                  <p class="mb-6">그걸 가져왔다는 사실조차 의식하지 못하고 있었다.</p>
+                  <p class="mb-6">나는 물을 길게 한 모금 마셨다.</p>
+                  <p class="mb-6">줄리가 눈썹을 치켜올렸다.</p>
+                  <p class="mb-6">“<b class="highlight">전해질</b>?”</p>
+                  <p class="mb-6">“말 걸지 마.”</p>
+              </div>
+          </section>
+
+      </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "9101200.m4a";
+</script>
+  </body>
+  </html>

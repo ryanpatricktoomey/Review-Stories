@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+      <title>Review Note | I Sound Like Her</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+      <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+      </style>
+</head>
+<body class="p-4 md:p-12">
+      <div class="max-w-4xl mx-auto space-y-8">
+
+          <header class="text-center space-y-4">
+              <div class="flex items-center justify-center gap-4">
+                  <span class="text-5xl">😨</span>
+                  <h1 class="text-3xl md:text-4xl font-extrabold text-white">I Sound Like Her</h1>
+              </div>
+              <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+          </header>
+
+          <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+              <div class="flex items-center justify-between px-2">
+                  <div class="flex items-center gap-3">
+                      <span class="text-xl">🎧</span>
+                      <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                  </div>
+                  <div class="flex gap-2">
+                      <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          <span class="text-lg">↺</span> 5s
+                      </button>
+                      <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          5s <span class="text-lg">↻</span>
+                      </button>
+                  </div>
+              </div>
+              <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+          </div>
+
+          <div class="flex justify-center">
+              <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+          </div>
+
+          <section class="glass rounded-3xl overflow-hidden shadow-xl">
+              <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                  <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+              </div>
+              <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                  <tr><td class="p-4"><b class="text-white">way of speaking</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">말투 / 말하는 방식</td></tr>
+                  <tr><td class="p-4"><b class="text-white">reflective</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">사색적인 / 자신을 돌아보는</td></tr>
+                  <tr><td class="p-4"><b class="text-white">examine yourself</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">자신을 돌아보다 / 스스로를 성찰하다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">run away from problems</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">문제를 회피하다 / 문제에서 도망치다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">a keeper</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">놓치면 안 될 좋은 사람 / 계속 곁에 두고 싶은 사람</td></tr>
+                  <tr><td class="p-4"><b class="text-white">nag</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">잔소리하다 / 계속 닦달하다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">respectable</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">존경받을 만한 / 품위 있는</td></tr>
+                  <tr><td class="p-4"><b class="text-white">respectful</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">존중하는 / 예의를 갖춘</td></tr>
+                  <tr><td class="p-4"><b class="text-white">infrastructure</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">기반 시설 / 인프라</td></tr>
+                  <tr><td class="p-4"><b class="text-white">rob</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">강탈하다 / 빼앗다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">rip off</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">바가지를 씌우다 / 터무니없이 비싸게 받다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">live together</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">같이 살다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">hang out together</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">같이 어울려 놀다 / 시간을 보내다</td></tr>
+              </tbody></table>
+          </section>
+
+          <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <h3 class="text-teal-400 font-bold text-lg">reflective</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">단순히 ‘생각이 많은’ 것보다 자신의 경험이나 행동을 차분히 되돌아보는 느낌이에요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <h3 class="text-teal-400 font-bold text-lg">a keeper</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">연애에서 특히 자주 쓰이며, “이 사람은 정말 괜찮으니 놓치면 안 된다”라는 뜻이에요. 사람 외에도 계속 가지고 있을 만한 좋은 물건 등에 쓸 수 있어요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <h3 class="text-teal-400 font-bold text-lg">nag</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">한 번 부탁하거나 지적하는 것이 아니라 같은 문제를 반복해서 잔소리하거나 닦달하는 느낌이 있습니다.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <h3 class="text-teal-400 font-bold text-lg">respectable / respectful</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">respectable은 그 사람이나 행동 자체가 ‘존경받을 만한’ 것이고, respectful은 다른 사람에게 ‘존중하는 태도를 보이는’ 것입니다.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <h3 class="text-teal-400 font-bold text-lg">rob</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">보통 rob someone/a place처럼 사람이나 장소를 목적어로 씁니다. steal과 목적어를 쓰는 방식이 다릅니다.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <h3 class="text-teal-400 font-bold text-lg">rip off</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">여기서는 누군가에게 실제 가치보다 훨씬 많은 돈을 내게 해서 ‘바가지를 씌우다’라는 뜻입니다.</p>
+              </div>
+          </section>
+
+          <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+              <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                  <p class="mb-6">My sister Leah has a very particular <b class="highlight quiz-target" data-ans="way of speaking" data-kor="말투 / 말하는 방식">way of speaking</b>.</p>
+                  <p class="mb-6">She doesn't give advice. She gives verdicts.</p>
+                  <p class="mb-6">If I complain about work, she says, “You need to <b class="highlight quiz-target" data-ans="examine yourself" data-kor="자신을 돌아보다 / 스스로를 성찰하다">examine yourself</b>.”</p>
+                  <p class="mb-6">If I avoid an uncomfortable conversation, she tells me, “You always <b class="highlight quiz-target" data-ans="run away from problems" data-kor="문제를 회피하다 / 문제에서 도망치다">run away from problems</b>.”</p>
+                  <p class="mb-6">If I mention that my boyfriend forgot to buy milk, she says, “Don't <b class="highlight quiz-target" data-ans="nag" data-kor="잔소리하다 / 계속 닦달하다">nag</b> him. He's <b class="highlight quiz-target" data-ans="a keeper" data-kor="놓치면 안 될 좋은 사람 / 계속 곁에 두고 싶은 사람">a keeper</b>.”</p>
+                  <p class="mb-6">I cannot stand it.</p>
+                  <p class="mb-6">On Friday night, my boyfriend, Ben, and I went out for dinner with our friends Sophie and Mark. Sophie was complaining about her new apartment.</p>
+                  <p class="mb-6">“The building has terrible <b class="highlight quiz-target" data-ans="infrastructure" data-kor="기반 시설 / 인프라">infrastructure</b>,” she said. “The elevator breaks constantly, and the internet barely works.”</p>
+                  <p class="mb-6">“Then move,” Mark said.</p>
+                  <p class="mb-6">“I just moved in!”</p>
+                  <p class="mb-6">Ben laughed. “Give her a week.”</p>
+                  <p class="mb-6">Sophie shook her head. “And the rent! They're practically <b class="highlight quiz-target" data-ans="robbing" data-kor="강탈하다 / 빼앗다">robbing</b> me.”</p>
+                  <p class="mb-6">“They definitely <b class="highlight quiz-target" data-ans="ripped you off" data-kor="바가지를 씌우다 / 터무니없이 비싸게 받다">ripped you off</b>,” I said.</p>
+                  <p class="mb-6">So far, everything was normal.</p>
+                  <p class="mb-6">Then Mark mentioned that he and Sophie were thinking about moving in together.</p>
+                  <p class="mb-6">“You're going to <b class="highlight quiz-target" data-ans="live together" data-kor="같이 살다">live together</b>?” Ben asked.</p>
+                  <p class="mb-6">“Maybe,” Sophie said. “We already <b class="highlight quiz-target" data-ans="hang out together" data-kor="같이 어울려 놀다 / 시간을 보내다">hang out together</b> almost every day.”</p>
+                  <p class="mb-6">Mark looked nervous. “I just don't know if I'm ready.”</p>
+                  <p class="mb-6">And then it happened.</p>
+                  <p class="mb-6">I leaned toward him and said, “Maybe you need to <b class="highlight quiz-target" data-ans="examine yourself" data-kor="자신을 돌아보다 / 스스로를 성찰하다">examine yourself</b> and figure out what you're afraid of.”</p>
+                  <p class="mb-6">Silence.</p>
+                  <p class="mb-6">My stomach dropped.</p>
+                  <p class="mb-6">Ben slowly turned toward me.</p>
+                  <p class="mb-6">“What?” I said.</p>
+                  <p class="mb-6">“That sounded exactly like Leah.”</p>
+                  <p class="mb-6">“No, it didn't.”</p>
+                  <p class="mb-6">Sophie nodded. “It really did.”</p>
+                  <p class="mb-6">I felt genuinely sick.</p>
+                  <p class="mb-6">“I am a <b class="highlight quiz-target" data-ans="reflective" data-kor="사색적인 / 자신을 돌아보는">reflective</b> person. Leah doesn't own self-reflection.”</p>
+                  <p class="mb-6">Nobody answered.</p>
+                  <p class="mb-6">Then Mark said, “I think I just need more time.”</p>
+                  <p class="mb-6">And I heard myself say, “Just make sure you're not <b class="highlight quiz-target" data-ans="running away from the problem" data-kor="문제를 회피하다 / 문제에서 도망치다">running away from the problem</b>.”</p>
+                  <p class="mb-6">Ben covered his face.</p>
+                  <p class="mb-6">“Oh, no,” I whispered.</p>
+                  <p class="mb-6">Sophie started laughing.</p>
+                  <p class="mb-6">“This isn't funny.”</p>
+                  <p class="mb-6">“It is a little funny.”</p>
+                  <p class="mb-6">I sat back and tried to understand what was happening. Leah and I had been spending more time together because our mother was moving house. Apparently, somewhere during all those evenings packing boxes, her personality had entered my body.</p>
+                  <p class="mb-6">Ben reached for my hand.</p>
+                  <p class="mb-6">“At least you've picked up some good things from her.”</p>
+                  <p class="mb-6">“Name one.”</p>
+                  <p class="mb-6">He thought about it.</p>
+                  <p class="mb-6">“Well, you're more patient.”</p>
+                  <p class="mb-6">“That is <b class="highlight quiz-target" data-ans="respectable" data-kor="존경받을 만한 / 품위 있는">respectable</b> of you,” I said seriously. “And very <b class="highlight quiz-target" data-ans="respectful" data-kor="존중하는 / 예의를 갖춘">respectful</b>.”</p>
+                  <p class="mb-6">Ben froze.</p>
+                  <p class="mb-6">I froze.</p>
+                  <p class="mb-6">Those were Leah's favorite words.</p>
+                  <p class="mb-6">I stood up.</p>
+                  <p class="mb-6">“I'm going home.”</p>
+                  <p class="mb-6">Ben grabbed his coat.</p>
+                  <p class="mb-6">“I'll come with you.”</p>
+                  <p class="mb-6">“No. I need to be alone.”</p>
+                  <p class="mb-6">He smiled. “Are you <b class="highlight quiz-target" data-ans="running away from your problems" data-kor="문제를 회피하다 / 문제에서 도망치다">running away from your problems</b>?”</p>
+                  <p class="mb-6">I stared at him.</p>
+                  <p class="mb-6">“Ben.”</p>
+                  <p class="mb-6">“Yes?”</p>
+                  <p class="mb-6">“Don't make me start <b class="highlight quiz-target" data-ans="nagging" data-kor="잔소리하다 / 계속 닦달하다">nagging</b> you.”</p>
+              </div>
+              <hr class="border-white/10">
+              <div class="text-slate-400 italic leading-relaxed space-y-6">
+                  <p class="mb-6">내 여동생 리아는 아주 독특한 <b class="highlight">말투</b>가 있다.</p>
+                  <p class="mb-6">리아는 조언을 하지 않는다. 판결을 내린다.</p>
+                  <p class="mb-6">내가 회사 일로 불평하면 이렇게 말한다.</p>
+                  <p class="mb-6">“너 <b class="highlight">자신을 좀 돌아볼</b> 필요가 있어.”</p>
+                  <p class="mb-6">내가 불편한 대화를 피하면 이렇게 말한다.</p>
+                  <p class="mb-6">“넌 항상 <b class="highlight">문제를 회피하잖아</b>.”</p>
+                  <p class="mb-6">내 남자친구가 우유 사는 걸 깜빡했다고 말하면 이런다.</p>
+                  <p class="mb-6">“걔한테 <b class="highlight">잔소리하지</b> 마. 그런 남자는 <b class="highlight">놓치면 안 돼</b>.”</p>
+                  <p class="mb-6">나는 그게 정말 싫다.</p>
+                  <p class="mb-6">금요일 밤, 남자친구 벤과 나는 친구 소피, 마크와 저녁을 먹으러 갔다. 소피는 새 아파트에 대해 불평하고 있었다.</p>
+                  <p class="mb-6">“건물 <b class="highlight">기반 시설</b>이 엉망이야. 엘리베이터는 계속 고장 나고 인터넷도 거의 안 돼.”</p>
+                  <p class="mb-6">“그럼 이사해.” 마크가 말했다.</p>
+                  <p class="mb-6">“나 방금 이사 왔거든!”</p>
+                  <p class="mb-6">벤이 웃었다. “일주일은 줘 봐.”</p>
+                  <p class="mb-6">소피가 고개를 저었다.</p>
+                  <p class="mb-6">“게다가 월세도 봐. 거의 나를 <b class="highlight">강탈하는</b> 수준이야.”</p>
+                  <p class="mb-6">“완전히 <b class="highlight">바가지 썼네</b>.” 내가 말했다.</p>
+                  <p class="mb-6">여기까지는 모든 게 정상이었다.</p>
+                  <p class="mb-6">그러다 마크가 자기와 소피가 <b class="highlight">같이 살까</b> 고민 중이라고 말했다.</p>
+                  <p class="mb-6">“둘이 <b class="highlight">같이 살려고</b>?” 벤이 물었다.</p>
+                  <p class="mb-6">“아마도. 어차피 거의 매일 <b class="highlight">같이 시간을 보내니까</b>.” 소피가 말했다.</p>
+                  <p class="mb-6">마크는 불안해 보였다.</p>
+                  <p class="mb-6">“그냥 내가 준비됐는지 모르겠어.”</p>
+                  <p class="mb-6">그때 일이 벌어졌다.</p>
+                  <p class="mb-6">나는 마크 쪽으로 몸을 기울이며 말했다.</p>
+                  <p class="mb-6">“네가 뭘 두려워하는 건지 알려면 네 <b class="highlight">자신을 좀 돌아봐야</b> 하는 거 아닐까?”</p>
+                  <p class="mb-6">정적이 흘렀다.</p>
+                  <p class="mb-6">가슴이 철렁했다.</p>
+                  <p class="mb-6">벤이 천천히 나를 바라봤다.</p>
+                  <p class="mb-6">“왜?”</p>
+                  <p class="mb-6">“방금 완전히 리아 같았어.”</p>
+                  <p class="mb-6">“아니거든.”</p>
+                  <p class="mb-6">소피가 고개를 끄덕였다.</p>
+                  <p class="mb-6">“진짜 그랬어.”</p>
+                  <p class="mb-6">정말 속이 안 좋아지는 기분이었다.</p>
+                  <p class="mb-6">“난 원래 <b class="highlight">자기 성찰을 하는</b> 사람이야. 리아가 자기 성찰을 독점한 건 아니잖아.”</p>
+                  <p class="mb-6">아무도 대답하지 않았다.</p>
+                  <p class="mb-6">그러자 마크가 말했다.</p>
+                  <p class="mb-6">“그냥 시간이 좀 더 필요한 것 같아.”</p>
+                  <p class="mb-6">그리고 나는 내가 이렇게 말하는 걸 들었다.</p>
+                  <p class="mb-6">“그냥 네가 <b class="highlight">그 문제에서 도망치고</b> 있는 건 아닌지만 확인해 봐.”</p>
+                  <p class="mb-6">벤이 얼굴을 감쌌다.</p>
+                  <p class="mb-6">“안 돼.”</p>
+                  <p class="mb-6">내가 중얼거렸다.</p>
+                  <p class="mb-6">소피가 웃기 시작했다.</p>
+                  <p class="mb-6">“이거 안 웃겨.”</p>
+                  <p class="mb-6">“조금은 웃겨.”</p>
+                  <p class="mb-6">나는 의자에 기대어 도대체 무슨 일이 벌어지고 있는지 생각했다. 엄마가 이사를 준비하고 있어서 최근 리아와 함께 보내는 시간이 많았다. 같이 상자를 포장하며 보낸 그 수많은 저녁 중 어느 순간, 리아의 성격이 내 몸 안으로 들어온 모양이었다.</p>
+                  <p class="mb-6">벤이 내 손을 잡았다.</p>
+                  <p class="mb-6">“그래도 걔한테 좋은 점도 좀 배웠잖아.”</p>
+                  <p class="mb-6">“하나만 말해 봐.”</p>
+                  <p class="mb-6">벤은 잠시 생각했다.</p>
+                  <p class="mb-6">“음, 전보다 참을성이 많아졌어.”</p>
+                  <p class="mb-6">“그렇게 말해 주다니 정말 <b class="highlight">훌륭하네</b>.” 내가 진지하게 말했다. “그리고 아주 상대방을 <b class="highlight">존중하는</b> 태도야.”</p>
+                  <p class="mb-6">벤이 굳었다.</p>
+                  <p class="mb-6">나도 굳었다.</p>
+                  <p class="mb-6">리아가 가장 좋아하는 단어들이었다.</p>
+                  <p class="mb-6">나는 자리에서 일어났다.</p>
+                  <p class="mb-6">“나 집에 갈래.”</p>
+                  <p class="mb-6">벤도 코트를 집었다.</p>
+                  <p class="mb-6">“같이 갈게.”</p>
+                  <p class="mb-6">“아니. 혼자 있고 싶어.”</p>
+                  <p class="mb-6">그가 웃었다.</p>
+                  <p class="mb-6">“<b class="highlight">문제에서 도망치는 거야</b>?”</p>
+                  <p class="mb-6">나는 그를 노려봤다.</p>
+                  <p class="mb-6">“벤.”</p>
+                  <p class="mb-6">“응?”</p>
+                  <p class="mb-6">“내가 너한테 <b class="highlight">잔소리하기</b> 시작하게 만들지 마.”</p>
+              </div>
+          </section>
+
+      </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "910715.m4a";
+</script>
+  </body>
+  </html>

@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+      <title>Review Note | The Flowers</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+      <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+      </style>
+</head>
+<body class="p-4 md:p-12">
+      <div class="max-w-4xl mx-auto space-y-8">
+
+          <header class="text-center space-y-4">
+              <div class="flex items-center justify-center gap-4">
+                  <span class="text-5xl">💐</span>
+                  <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Flowers</h1>
+              </div>
+              <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+          </header>
+
+          <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+              <div class="flex items-center justify-between px-2">
+                  <div class="flex items-center gap-3">
+                      <span class="text-xl">🎧</span>
+                      <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                  </div>
+                  <div class="flex gap-2">
+                      <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          <span class="text-lg">↺</span> 5s
+                      </button>
+                      <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          5s <span class="text-lg">↻</span>
+                      </button>
+                  </div>
+              </div>
+              <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+          </div>
+
+          <div class="flex justify-center">
+              <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+          </div>
+
+          <section class="glass rounded-3xl overflow-hidden shadow-xl">
+              <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                  <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+              </div>
+              <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                  <tr><td class="p-4"><b class="text-white">get close</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">가까워지다 / 친해지다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">in a hurry</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">서두르는 / 급한</td></tr>
+                  <tr><td class="p-4"><b class="text-white">fraud</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">사기 / 사기꾼</td></tr>
+                  <tr><td class="p-4"><b class="text-white">rip off</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">바가지를 씌우다 / 터무니없이 비싸게 받다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">freezer</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">냉동고</td></tr>
+                  <tr><td class="p-4"><b class="text-white">rose petal</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">장미 꽃잎</td></tr>
+                  <tr><td class="p-4"><b class="text-white">hydrangea</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">수국</td></tr>
+                  <tr><td class="p-4"><b class="text-white">zone out</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">멍해지다 / 집중이 끊기다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">daydream</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">공상하다 / 딴생각하다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">space out</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">멍때리다 / 정신이 딴 데 가다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">get your act together</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">정신 차리고 제대로 하다 / 상황을 수습하다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">smarten up</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">정신 차리다 / 좀 더 똑바로 행동하다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">pull yourself together</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">마음을 추스르다 / 정신을 가다듬다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">snap out of it</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">정신 차리다 / 그 상태에서 빨리 벗어나다</td></tr>
+              </tbody></table>
+          </section>
+
+          <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <h3 class="text-teal-400 font-bold text-lg">get close</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">사람끼리 친밀해진다는 뜻도 있고, 물리적으로 가까이 간다는 뜻도 있어요. get close to someone이면 문맥에 따라 “누군가와 친해지다” 또는 “누군가에게 가까이 다가가다”가 됩니다.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <h3 class="text-teal-400 font-bold text-lg">rip off</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">물건이나 서비스에 터무니없는 가격을 받는다는 뜻으로 자주 씁니다. I got ripped off처럼 수동형으로 하면 “바가지 썼어”라는 아주 자연스러운 표현이 됩니다.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <h3 class="text-teal-400 font-bold text-lg">zone out / space out</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">둘 다 집중이 끊기고 멍해지는 상황에 자연스럽습니다. zone out은 주변에 집중하지 않게 되는 느낌, space out은 정신이 잠깐 딴 데 가 있는 느낌으로 많이 쓰지만 상당히 겹칩니다.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <h3 class="text-teal-400 font-bold text-lg">get your act together</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">일이 엉망이거나 제대로 대처하지 못하는 사람에게 “정신 차리고 제대로 해”라고 할 때 씁니다. 꽤 직접적인 표현입니다.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <h3 class="text-teal-400 font-bold text-lg">pull yourself together</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">감정적으로 흔들리는 사람에게 마음을 진정시키고 통제력을 되찾으라는 의미로 자주 씁니다.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <h3 class="text-teal-400 font-bold text-lg">snap out of it</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">우울함, 충격, 멍한 상태 등에 빠져 있는 사람에게 빨리 그 상태에서 벗어나라는 뜻입니다. 상대에게 직접 말하면 상당히 강하게 들릴 수 있습니다.</p>
+              </div>
+          </section>
+
+          <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+              <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                  <p class="mb-6">I hate Vanessa.</p>
+                  <p class="mb-6">Unfortunately, our desks are next to each other, so we've <b class="highlight quiz-target" data-ans="gotten close" data-kor="가까워지다 / 친해지다">gotten close</b> enough for me to know exactly what I hate about her.</p>
+                  <p class="mb-6">Vanessa is obsessed with efficiency. If I <b class="highlight quiz-target" data-ans="zone out" data-kor="멍해지다 / 집중이 끊기다">zone out</b> during a meeting, she taps my notebook. If I'm <b class="highlight quiz-target" data-ans="daydreaming" data-kor="공상하다 / 딴생각하다">daydreaming</b> over lunch, she waves a hand in front of my face.</p>
+                  <p class="mb-6">“Come on, Claire. <b class="highlight quiz-target" data-ans="Snap out of it" data-kor="정신 차리다 / 그 상태에서 빨리 벗어나다">Snap out of it</b>.”</p>
+                  <p class="mb-6">I hate that phrase most of all.</p>
+                  <p class="mb-6">On Thursday, I was <b class="highlight quiz-target" data-ans="in a hurry" data-kor="서두르는 / 급한">in a hurry</b> because I had to pick up flowers for my mother's birthday before dinner.</p>
+                  <p class="mb-6">The florist showed me a huge arrangement of roses and <b class="highlight quiz-target" data-ans="hydrangeas" data-kor="수국">hydrangeas</b>.</p>
+                  <p class="mb-6">“How much?”</p>
+                  <p class="mb-6">“Eighty-five dollars.”</p>
+                  <p class="mb-6">“Eighty-five?”</p>
+                  <p class="mb-6">I stared at one <b class="highlight quiz-target" data-ans="rose petal" data-kor="장미 꽃잎">rose petal</b> that had already fallen onto the counter.</p>
+                  <p class="mb-6">“This is a <b class="highlight quiz-target" data-ans="rip-off" data-kor="바가지를 씌우다 / 터무니없이 비싸게 받다">rip-off</b>.”</p>
+                  <p class="mb-6">The florist looked offended.</p>
+                  <p class="mb-6">“Sorry,” I said quickly. “I'll take it.”</p>
+                  <p class="mb-6">At home, I put the flowers on the table and opened the <b class="highlight quiz-target" data-ans="freezer" data-kor="냉동고">freezer</b> to get some ice. Then my phone rang.</p>
+                  <p class="mb-6">It was my brother.</p>
+                  <p class="mb-6">“Claire, I'm in trouble.”</p>
+                  <p class="mb-6">He had forgotten to buy Mom a present.</p>
+                  <p class="mb-6">“Can I put my name on your card?”</p>
+                  <p class="mb-6">“No.”</p>
+                  <p class="mb-6">“Please?”</p>
+                  <p class="mb-6">“You're thirty-two years old. You need to <b class="highlight quiz-target" data-ans="get your act together" data-kor="정신 차리고 제대로 하다 / 상황을 수습하다">get your act together</b>.”</p>
+                  <p class="mb-6">There was silence.</p>
+                  <p class="mb-6">I stopped with my hand still inside the <b class="highlight quiz-target" data-ans="freezer" data-kor="냉동고">freezer</b>.</p>
+                  <p class="mb-6">“What did I just say?”</p>
+                  <p class="mb-6">“What?”</p>
+                  <p class="mb-6">I slowly closed the door.</p>
+                  <p class="mb-6">Vanessa.</p>
+                  <p class="mb-6">She told people to <b class="highlight quiz-target" data-ans="get their act together" data-kor="정신 차리고 제대로 하다 / 상황을 수습하다">get their act together</b> constantly.</p>
+                  <p class="mb-6">“Claire?”</p>
+                  <p class="mb-6">“Nothing.”</p>
+                  <p class="mb-6">My brother continued explaining his problem, but I <b class="highlight quiz-target" data-ans="spaced out" data-kor="멍때리다 / 정신이 딴 데 가다">spaced out</b> completely.</p>
+                  <p class="mb-6">“Hello?”</p>
+                  <p class="mb-6">“Sorry.”</p>
+                  <p class="mb-6">“Can I sign the card or not?”</p>
+                  <p class="mb-6">“No. You need to—”</p>
+                  <p class="mb-6">I stopped myself.</p>
+                  <p class="mb-6">“Need to what?”</p>
+                  <p class="mb-6">“Nothing!”</p>
+                  <p class="mb-6">I hung up.</p>
+                  <p class="mb-6">This was disturbing. Vanessa was rubbing off on me.</p>
+                  <p class="mb-6">I walked into the bathroom and stared at myself.</p>
+                  <p class="mb-6">“Okay. <b class="highlight quiz-target" data-ans="Pull yourself together" data-kor="마음을 추스르다 / 정신을 가다듬다">Pull yourself together</b>.”</p>
+                  <p class="mb-6">My face went cold.</p>
+                  <p class="mb-6">That was another Vanessa phrase.</p>
+                  <p class="mb-6">“No. No, no, no.”</p>
+                  <p class="mb-6">I pointed at myself in the mirror.</p>
+                  <p class="mb-6">“You need to <b class="highlight quiz-target" data-ans="smarten up" data-kor="정신 차리다 / 좀 더 똑바로 행동하다">smarten up</b>.”</p>
+                  <p class="mb-6">I froze.</p>
+                  <p class="mb-6">Vanessa said that too.</p>
+                  <p class="mb-6">I had apparently reached the stage where I was using Vanessa's expressions to stop myself from using Vanessa's expressions.</p>
+                  <p class="mb-6">The doorbell rang. My brother had arrived.</p>
+                  <p class="mb-6">He saw my face. “Are you okay?”</p>
+                  <p class="mb-6">“I think I'm becoming Vanessa.”</p>
+                  <p class="mb-6">He laughed.</p>
+                  <p class="mb-6">“This is serious.”</p>
+                  <p class="mb-6">“You hate her.”</p>
+                  <p class="mb-6">“Exactly!”</p>
+                  <p class="mb-6">He started laughing harder.</p>
+                  <p class="mb-6">I glared at him. “<b class="highlight quiz-target" data-ans="Snap out of it" data-kor="정신 차리다 / 그 상태에서 빨리 벗어나다">Snap out of it</b>.”</p>
+                  <p class="mb-6">We both went silent.</p>
+                  <p class="mb-6">Then he smiled.</p>
+                  <p class="mb-6">“So... can I put my name on the card?”</p>
+                  <p class="mb-6">I handed it to him.</p>
+                  <p class="mb-6">“Fine.”</p>
+                  <p class="mb-6">“Really?”</p>
+                  <p class="mb-6">“Yes. And if you tell anyone about this, I'll report you for <b class="highlight quiz-target" data-ans="fraud" data-kor="사기 / 사기꾼">fraud</b>.”</p>
+              </div>
+              <hr class="border-white/10">
+              <div class="text-slate-400 italic leading-relaxed space-y-6">
+                  <p class="mb-6">나는 바네사를 정말 싫어한다.</p>
+                  <p class="mb-6">불행히도 우리 책상은 바로 옆이라서, 내가 그녀의 어떤 점을 싫어하는지 정확히 알 만큼은 서로 <b class="highlight">가까워졌다</b>.</p>
+                  <p class="mb-6">바네사는 효율성에 집착한다. 내가 회의 중에 <b class="highlight">멍해지면</b> 내 노트를 톡톡 친다. 점심을 먹다가 내가 <b class="highlight">딴생각을 하고 있으면</b> 얼굴 앞에서 손을 흔든다.</p>
+                  <p class="mb-6">“<b class="highlight">정신 차려</b>, 클레어. <b class="highlight">그 상태에서 좀 벗어나</b>.”</p>
+                  <p class="mb-6">나는 그 말을 무엇보다 싫어한다.</p>
+                  <p class="mb-6">목요일에는 엄마 생일 저녁 식사 전에 꽃을 사야 해서 <b class="highlight">서두르고 있었다</b>.</p>
+                  <p class="mb-6">꽃집 직원이 장미와 <b class="highlight">수국</b>으로 만든 커다란 꽃다발을 보여줬다.</p>
+                  <p class="mb-6">“얼마예요?”</p>
+                  <p class="mb-6">“85달러요.”</p>
+                  <p class="mb-6">“85달러요?”</p>
+                  <p class="mb-6">나는 이미 카운터 위에 떨어져 있는 <b class="highlight">장미 꽃잎</b> 하나를 바라봤다.</p>
+                  <p class="mb-6">“완전 <b class="highlight">바가지네</b>요.”</p>
+                  <p class="mb-6">꽃집 직원의 표정이 굳었다.</p>
+                  <p class="mb-6">“죄송해요. 그냥 살게요.”</p>
+                  <p class="mb-6">집에 도착한 나는 꽃을 테이블에 놓고 얼음을 꺼내려고 <b class="highlight">냉동고</b>를 열었다. 그때 전화가 울렸다.</p>
+                  <p class="mb-6">남동생이었다.</p>
+                  <p class="mb-6">“클레어, 나 큰일 났어.”</p>
+                  <p class="mb-6">녀석은 엄마 선물 사는 걸 깜빡했다.</p>
+                  <p class="mb-6">“누나 카드에 내 이름도 써도 돼?”</p>
+                  <p class="mb-6">“안 돼.”</p>
+                  <p class="mb-6">“제발?”</p>
+                  <p class="mb-6">“너 서른두 살이야. 이제 <b class="highlight">정신 좀 차리고 제대로 해야지</b>.”</p>
+                  <p class="mb-6">침묵이 흘렀다.</p>
+                  <p class="mb-6">나는 한 손을 <b class="highlight">냉동고</b> 안에 넣은 채 그대로 멈췄다.</p>
+                  <p class="mb-6">“나 방금 뭐라고 했지?”</p>
+                  <p class="mb-6">“뭐?”</p>
+                  <p class="mb-6">나는 천천히 <b class="highlight">냉동고</b> 문을 닫았다.</p>
+                  <p class="mb-6">바네사.</p>
+                  <p class="mb-6">바네사는 사람들에게 항상 <b class="highlight">정신 차리고 제대로 하라</b>고 말했다.</p>
+                  <p class="mb-6">“클레어?”</p>
+                  <p class="mb-6">“아무것도 아니야.”</p>
+                  <p class="mb-6">동생은 계속 자기 문제를 설명했지만, 나는 완전히 <b class="highlight">멍해져서 딴생각에 빠졌다</b>.</p>
+                  <p class="mb-6">“여보세요?”</p>
+                  <p class="mb-6">“미안.”</p>
+                  <p class="mb-6">“그래서 카드에 내 이름 써도 돼, 안 돼?”</p>
+                  <p class="mb-6">“안 돼. 넌 이제 좀—”</p>
+                  <p class="mb-6">나는 말을 멈췄다.</p>
+                  <p class="mb-6">“좀 뭐?”</p>
+                  <p class="mb-6">“아무것도 아니야!”</p>
+                  <p class="mb-6">나는 전화를 끊었다.</p>
+                  <p class="mb-6">심각한 일이었다. 바네사가 나에게 물들고 있었다.</p>
+                  <p class="mb-6">나는 화장실로 가서 거울 속의 나를 바라봤다.</p>
+                  <p class="mb-6">“좋아. <b class="highlight">마음을 좀 추슬러</b>.”</p>
+                  <p class="mb-6">얼굴이 굳었다.</p>
+                  <p class="mb-6">그것도 바네사가 자주 쓰는 말이었다.</p>
+                  <p class="mb-6">“안 돼. 안 돼, 안 돼.”</p>
+                  <p class="mb-6">나는 거울 속 나를 손가락으로 가리켰다.</p>
+                  <p class="mb-6">“너 <b class="highlight">정신 좀 차려야</b> 해.”</p>
+                  <p class="mb-6">나는 그대로 얼어붙었다.</p>
+                  <p class="mb-6">바네사도 그 말을 썼다.</p>
+                  <p class="mb-6">나는 어느새 바네사의 표현을 쓰지 않기 위해 바네사의 표현을 사용하는 단계에 도달해 있었다.</p>
+                  <p class="mb-6">초인종이 울렸다. 남동생이 도착했다.</p>
+                  <p class="mb-6">녀석은 내 얼굴을 보자 물었다.</p>
+                  <p class="mb-6">“괜찮아?”</p>
+                  <p class="mb-6">“나 바네사가 되어 가는 것 같아.”</p>
+                  <p class="mb-6">동생이 웃었다.</p>
+                  <p class="mb-6">“심각한 일이야.”</p>
+                  <p class="mb-6">“누나 걔 싫어하잖아.”</p>
+                  <p class="mb-6">“그러니까!”</p>
+                  <p class="mb-6">동생은 더 크게 웃기 시작했다.</p>
+                  <p class="mb-6">나는 녀석을 노려봤다.</p>
+                  <p class="mb-6">“<b class="highlight">정신 차려</b>.”</p>
+                  <p class="mb-6">둘 다 조용해졌다.</p>
+                  <p class="mb-6">잠시 후 동생이 웃으며 말했다.</p>
+                  <p class="mb-6">“그래서… 카드에 내 이름 써도 돼?”</p>
+                  <p class="mb-6">나는 카드를 건넸다.</p>
+                  <p class="mb-6">“그래.”</p>
+                  <p class="mb-6">“진짜?”</p>
+                  <p class="mb-6">“응. 대신 이 일 누구한테 말하면 <b class="highlight">사기</b>로 신고할 거야.”</p>
+              </div>
+          </section>
+
+      </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "910845.m4a";
+</script>
+  </body>
+  </html>

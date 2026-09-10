@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+      <title>Review Note | The Lunch Table</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+      <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+      </style>
+</head>
+<body class="p-4 md:p-12">
+      <div class="max-w-4xl mx-auto space-y-8">
+
+          <header class="text-center space-y-4">
+              <div class="flex items-center justify-center gap-4">
+                  <span class="text-5xl">😨</span>
+                  <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Lunch Table</h1>
+              </div>
+              <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+          </header>
+
+          <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+              <div class="flex items-center justify-between px-2">
+                  <div class="flex items-center gap-3">
+                      <span class="text-xl">🎧</span>
+                      <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                  </div>
+                  <div class="flex gap-2">
+                      <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          <span class="text-lg">↺</span> 5s
+                      </button>
+                      <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          5s <span class="text-lg">↻</span>
+                      </button>
+                  </div>
+              </div>
+              <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+          </div>
+
+          <div class="flex justify-center">
+              <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+          </div>
+
+          <section class="glass rounded-3xl overflow-hidden shadow-xl">
+              <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                  <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+              </div>
+              <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                  <tr><td class="p-4"><b class="text-white">stay in character</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">배역/캐릭터를 유지하다 / 설정을 깨지 않다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">lead time</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">준비에 필요한 시간 / 요청부터 완료까지 걸리는 시간</td></tr>
+                  <tr><td class="p-4"><b class="text-white">noise between floors</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">층간소음</td></tr>
+                  <tr><td class="p-4"><b class="text-white">floss</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">치실을 쓰다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">hypocrite</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">위선자</td></tr>
+                  <tr><td class="p-4"><b class="text-white">narcissist</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">자기애가 강한 사람 / 나르시시스트</td></tr>
+                  <tr><td class="p-4"><b class="text-white">set boundaries</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">선을 긋다 / 관계에서 허용 범위를 정하다</td></tr>
+              </tbody></table>
+          </section>
+
+          <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <h3 class="text-teal-400 font-bold text-lg">stay in character</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">연기나 역할극에서 맡은 인물의 말투와 행동을 계속 유지한다는 뜻이에요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <h3 class="text-teal-400 font-bold text-lg">lead time</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">어떤 일을 요청한 시점부터 실제로 준비되거나 완료되기까지 필요한 시간을 뜻해요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <h3 class="text-teal-400 font-bold text-lg">hypocrite</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">남에게 말하는 원칙과 자신의 실제 행동이 다른 사람을 비판적으로 부르는 표현이에요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <h3 class="text-teal-400 font-bold text-lg">set boundaries</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">인간관계에서 상대에게 어디까지 허용할 것인지 명확하게 정한다는 뜻이에요.</p>
+              </div>
+          </section>
+
+          <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+              <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                  <p class="mb-6">I hate Rachel.</p>
+                  <p class="mb-6">She sits across from me at work, which means I've spent three years listening to her opinions.</p>
+                  <p class="mb-6">Rachel thinks everyone needs therapy. If someone has a difficult mother, they need to <b class="highlight quiz-target" data-ans="set boundaries" data-kor="선을 긋다 / 관계에서 허용 범위를 정하다">set boundaries</b>. If someone complains about a selfish boyfriend, he's probably a <b class="highlight quiz-target" data-ans="narcissist" data-kor="자기애가 강한 사람 / 나르시시스트">narcissist</b>.</p>
+                  <p class="mb-6">And if someone gives advice they don't follow themselves?</p>
+                  <p class="mb-6">“Classic <b class="highlight quiz-target" data-ans="hypocrite" data-kor="위선자">hypocrite</b>.”</p>
+                  <p class="mb-6">I hate the way she says classic.</p>
+                  <p class="mb-6">On Tuesday, I was having lunch with two coworkers when Hannah started complaining about her boyfriend.</p>
+                  <p class="mb-6">“He called me six times last night.”</p>
+                  <p class="mb-6">“Six?” I said.</p>
+                  <p class="mb-6">“I told him I was having dinner with my sister. He kept asking when I'd be home.”</p>
+                  <p class="mb-6">“That would drive me crazy.”</p>
+                  <p class="mb-6">“I know. But maybe I'm overreacting.”</p>
+                  <p class="mb-6">I shook my head.</p>
+                  <p class="mb-6">“You need to <b class="highlight quiz-target" data-ans="set some boundaries" data-kor="선을 긋다 / 관계에서 허용 범위를 정하다">set some boundaries</b>.”</p>
+                  <p class="mb-6">Hannah nodded.</p>
+                  <p class="mb-6">Then I noticed Sarah staring at me.</p>
+                  <p class="mb-6">“What?”</p>
+                  <p class="mb-6">“Nothing.”</p>
+                  <p class="mb-6">“No, what?”</p>
+                  <p class="mb-6">She smiled. “You sounded like Rachel.”</p>
+                  <p class="mb-6">I nearly dropped my fork.</p>
+                  <p class="mb-6">“I did not.”</p>
+                  <p class="mb-6">“A little.”</p>
+                  <p class="mb-6">“Don't ever say that to me.”</p>
+                  <p class="mb-6">We kept eating.</p>
+                  <p class="mb-6">Hannah explained that her boyfriend also hated when she went out without him.</p>
+                  <p class="mb-6">“He says it's because he worries about me.”</p>
+                  <p class="mb-6">I rolled my eyes.</p>
+                  <p class="mb-6">“Of course he does.”</p>
+                  <p class="mb-6">Sarah looked at me.</p>
+                  <p class="mb-6">“What now?”</p>
+                  <p class="mb-6">“Nothing.”</p>
+                  <p class="mb-6">“Sarah.”</p>
+                  <p class="mb-6">She hesitated. “You did the face.”</p>
+                  <p class="mb-6">“What face?”</p>
+                  <p class="mb-6">“Rachel's face.”</p>
+                  <p class="mb-6">I put my sandwich down.</p>
+                  <p class="mb-6">“I don't have Rachel's face.”</p>
+                  <p class="mb-6">“You just did.”</p>
+                  <p class="mb-6">“This conversation is over.”</p>
+                  <p class="mb-6">For the next five minutes, I barely spoke.</p>
+                  <p class="mb-6">Then Hannah said, “The weird thing is, he goes out with his friends whenever he wants.”</p>
+                  <p class="mb-6">And before I could stop myself, I said:</p>
+                  <p class="mb-6">“Classic <b class="highlight quiz-target" data-ans="hypocrite" data-kor="위선자">hypocrite</b>.”</p>
+                  <p class="mb-6">Silence.</p>
+                  <p class="mb-6">Sarah's mouth fell open.</p>
+                  <p class="mb-6">My stomach dropped.</p>
+                  <p class="mb-6">“Oh my God.”</p>
+                  <p class="mb-6">Hannah started laughing.</p>
+                  <p class="mb-6">“This isn't funny.”</p>
+                  <p class="mb-6">Sarah was laughing too hard to answer.</p>
+                  <p class="mb-6">I stood up.</p>
+                  <p class="mb-6">“I'm going back to my desk.”</p>
+                  <p class="mb-6">As I walked away, Rachel passed me carrying her coffee.</p>
+                  <p class="mb-6">“Everything okay?”</p>
+                  <p class="mb-6">I stared at her.</p>
+                  <p class="mb-6">Three years. Five days a week. Eight hours a day.</p>
+                  <p class="mb-6">Of course something had rubbed off.</p>
+                  <p class="mb-6">Rachel smiled. “You look upset.”</p>
+                  <p class="mb-6">“I don't want to talk about it.”</p>
+                  <p class="mb-6">She nodded approvingly.</p>
+                  <p class="mb-6">“Good. <b class="highlight quiz-target" data-ans="Set boundaries" data-kor="선을 긋다 / 관계에서 허용 범위를 정하다">Set boundaries</b>.”</p>
+                  <p class="mb-6">I hated her even more.</p>
+              </div>
+              <hr class="border-white/10">
+              <div class="text-slate-400 italic leading-relaxed space-y-6">
+                  <p class="mb-6">나는 레이첼이 정말 싫다.</p>
+                  <p class="mb-6">그녀는 회사에서 내 맞은편에 앉는다. 즉, 나는 지난 3년 동안 그녀의 온갖 의견을 들어 왔다.</p>
+                  <p class="mb-6">레이첼은 모든 사람에게 상담이 필요하다고 생각한다. 엄마 때문에 힘든 사람이 있으면 <b class="highlight">선을 그어야</b> 한다고 한다. 누군가 이기적인 남자친구에 대해 불평하면 그 남자는 아마 <b class="highlight">나르시시스트</b>란다.</p>
+                  <p class="mb-6">그리고 자기가 지키지도 않는 조언을 남에게 하는 사람이 있으면?</p>
+                  <p class="mb-6">“전형적인 <b class="highlight">위선자</b>네.”</p>
+                  <p class="mb-6">나는 특히 그녀가 ‘전형적이네’라고 말하는 방식이 싫다.</p>
+                  <p class="mb-6">화요일, 나는 직장 동료 두 명과 점심을 먹고 있었는데 한나가 남자친구에 대해 불평하기 시작했다.</p>
+                  <p class="mb-6">“어젯밤에 나한테 여섯 번이나 전화했어.”</p>
+                  <p class="mb-6">“여섯 번?”</p>
+                  <p class="mb-6">“언니랑 저녁 먹는다고 했는데 계속 언제 집에 갈 거냐고 묻는 거야.”</p>
+                  <p class="mb-6">“나라면 미칠 것 같아.”</p>
+                  <p class="mb-6">“그러니까. 근데 내가 너무 예민한 건가 싶기도 하고.”</p>
+                  <p class="mb-6">나는 고개를 저었다.</p>
+                  <p class="mb-6">“너도 좀 <b class="highlight">선을 그어야</b> 해.”</p>
+                  <p class="mb-6">한나가 고개를 끄덕였다.</p>
+                  <p class="mb-6">그때 사라가 나를 빤히 보고 있다는 걸 알아챘다.</p>
+                  <p class="mb-6">“왜?”</p>
+                  <p class="mb-6">“아무것도 아니야.”</p>
+                  <p class="mb-6">“아니, 왜?”</p>
+                  <p class="mb-6">사라가 웃었다.</p>
+                  <p class="mb-6">“방금 레이첼 같았어.”</p>
+                  <p class="mb-6">나는 포크를 떨어뜨릴 뻔했다.</p>
+                  <p class="mb-6">“아니거든.”</p>
+                  <p class="mb-6">“조금.”</p>
+                  <p class="mb-6">“다시는 나한테 그런 말 하지 마.”</p>
+                  <p class="mb-6">우리는 계속 밥을 먹었다.</p>
+                  <p class="mb-6">한나는 남자친구가 자기가 없는 자리에서 친구들을 만나는 것도 싫어한다고 설명했다.</p>
+                  <p class="mb-6">“자기가 나를 걱정해서 그러는 거래.”</p>
+                  <p class="mb-6">나는 눈을 굴렸다.</p>
+                  <p class="mb-6">“당연히 그렇게 말하겠지.”</p>
+                  <p class="mb-6">사라가 또 나를 바라봤다.</p>
+                  <p class="mb-6">“이번엔 또 왜?”</p>
+                  <p class="mb-6">“아무것도 아니야.”</p>
+                  <p class="mb-6">“사라.”</p>
+                  <p class="mb-6">사라가 잠시 망설였다.</p>
+                  <p class="mb-6">“그 표정 했어.”</p>
+                  <p class="mb-6">“무슨 표정?”</p>
+                  <p class="mb-6">“레이첼 표정.”</p>
+                  <p class="mb-6">나는 샌드위치를 내려놓았다.</p>
+                  <p class="mb-6">“나한테 레이첼 표정 같은 건 없어.”</p>
+                  <p class="mb-6">“방금 했어.”</p>
+                  <p class="mb-6">“이 대화 끝났어.”</p>
+                  <p class="mb-6">그 뒤 5분 동안 나는 거의 말을 하지 않았다.</p>
+                  <p class="mb-6">그러다 한나가 말했다.</p>
+                  <p class="mb-6">“근데 웃긴 건 자기는 친구들이랑 나가고 싶을 때마다 나간다는 거야.”</p>
+                  <p class="mb-6">그리고 나는 미처 막기도 전에 말했다.</p>
+                  <p class="mb-6">“전형적인 <b class="highlight">위선자</b>네.”</p>
+                  <p class="mb-6">정적이 흘렀다.</p>
+                  <p class="mb-6">사라의 입이 벌어졌다.</p>
+                  <p class="mb-6">가슴이 철렁했다.</p>
+                  <p class="mb-6">“세상에.”</p>
+                  <p class="mb-6">한나가 웃기 시작했다.</p>
+                  <p class="mb-6">“안 웃겨.”</p>
+                  <p class="mb-6">사라는 너무 웃어서 대답도 못 했다.</p>
+                  <p class="mb-6">나는 자리에서 일어났다.</p>
+                  <p class="mb-6">“나 먼저 자리로 돌아갈게.”</p>
+                  <p class="mb-6">걸어가는데 레이첼이 커피를 들고 내 옆을 지나갔다.</p>
+                  <p class="mb-6">“괜찮아?”</p>
+                  <p class="mb-6">나는 그녀를 바라봤다.</p>
+                  <p class="mb-6">3년.</p>
+                  <p class="mb-6">일주일에 5일.</p>
+                  <p class="mb-6">하루에 8시간.</p>
+                  <p class="mb-6">뭔가가 나한테 옮지 않는 게 오히려 이상했다.</p>
+                  <p class="mb-6">레이첼이 웃었다.</p>
+                  <p class="mb-6">“화나 보이는데.”</p>
+                  <p class="mb-6">“얘기하고 싶지 않아.”</p>
+                  <p class="mb-6">그녀가 만족스럽다는 듯 고개를 끄덕였다.</p>
+                  <p class="mb-6">“잘했어. <b class="highlight">선은 확실히 그어야지</b>.”</p>
+                  <p class="mb-6">나는 그녀가 더 싫어졌다.</p>
+              </div>
+          </section>
+
+      </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "9101020.m4a";
+</script>
+  </body>
+  </html>

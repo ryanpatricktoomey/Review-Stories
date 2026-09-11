@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The House or the City</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🏠</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The House or the City</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">hard water</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">경수 / 미네랄 함량이 높은 물</td></tr>
+                <tr><td class="p-4"><b class="text-white">soft water</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">연수 / 미네랄 함량이 낮은 물</td></tr>
+                <tr><td class="p-4"><b class="text-white">hot water bottle</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">온수 주머니 / 뜨거운 물을 넣어 몸을 따뜻하게 하는 주머니</td></tr>
+                <tr><td class="p-4"><b class="text-white">cafeteria</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">구내식당 / 카페테리아</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-3xl p-6 border border-teal-500/20">
+                <h3 class="text-teal-400 font-bold mb-2">hard water / soft water</h3>
+                <p class="text-slate-300 text-sm">물의 물리적인 단단함이나 부드러움을 뜻하는 것이 아니에요. 칼슘, 마그네슘 같은 미네랄 함량에 따라 물을 구분할 때 사용하는 표현입니다.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 border border-teal-500/20">
+                <h3 class="text-teal-400 font-bold mb-2">hot water bottle</h3>
+                <p class="text-slate-300 text-sm">뜨거운 물을 넣어 침대나 몸을 따뜻하게 하는 고무 주머니예요. 특히 영국 영어에서 흔히 쓰는 표현입니다.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 border border-teal-500/20">
+                <h3 class="text-teal-400 font-bold mb-2">cafeteria</h3>
+                <p class="text-slate-300 text-sm">학교나 회사처럼 사람들이 음식을 받아서 자리로 가져가 먹는 구내식당을 가리킬 때 자주 사용합니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">For ten years, Mark had complained about London.</p>
+                <p class="mb-6">The rent was ridiculous. His commute was an hour. His apartment was so small that his dining table was also his desk.</p>
+                <p class="mb-6">Then his aunt died and left him a house.</p>
+                <p class="mb-6">A whole house.</p>
+                <p class="mb-6">The problem was where it was.</p>
+                <p class="mb-6">Mark stood in the kitchen, looking through the window at fields covered in frost. The nearest town was twenty minutes away by car. London was almost four hours away.</p>
+                <p class="mb-6">His company had given him a choice: stay in London and continue working at headquarters, or move into the house and work remotely.</p>
+                <p class="mb-6">But remote employees weren't considered for management positions.</p>
+                <p class="mb-6">So the real choice was simple.</p>
+                <p class="mb-6">Career or home.</p>
+                <p class="mb-6">Mark turned on the kitchen tap. White marks covered the old metal faucet.</p>
+                <p class="mb-6">“<b class="highlight quiz-target" data-ans="Hard water" data-kor="경수 / 미네랄 함량이 높은 물">Hard water</b>,” the plumber had told him that morning. “You'll notice the difference if you're used to <b class="highlight quiz-target" data-ans="soft water" data-kor="연수 / 미네랄 함량이 낮은 물">soft water</b>.”</p>
+                <p class="mb-6">Great. Even the water was giving him problems.</p>
+                <p class="mb-6">Still, the house was beautiful.</p>
+                <p class="mb-6">There were three bedrooms. Three.</p>
+                <p class="mb-6">In London, Mark paid half his salary for one bedroom and a kitchen barely large enough for two people to stand in.</p>
+                <p class="mb-6">If he moved here, he would have no mortgage and almost no housing costs.</p>
+                <p class="mb-6">He could cook. Get a dog. Have a garden.</p>
+                <p class="mb-6">He could stop eating lunch in the company <b class="highlight quiz-target" data-ans="cafeteria" data-kor="구내식당 / 카페테리아">cafeteria</b> while answering emails.</p>
+                <p class="mb-6">He pictured a quiet morning at the kitchen table.</p>
+                <p class="mb-6">Then he pictured Tuesday night.</p>
+                <p class="mb-6">No friends nearby. No restaurant downstairs. No quick drink after work.</p>
+                <p class="mb-6">Just him.</p>
+                <p class="mb-6">And fields.</p>
+                <p class="mb-6">Lots of fields.</p>
+                <p class="mb-6">He went upstairs. The house was freezing. His aunt had apparently believed central heating was a personal weakness. Mark found an old <b class="highlight quiz-target" data-ans="hot water bottle" data-kor="온수 주머니 / 뜨거운 물을 넣어 몸을 따뜻하게 하는 주머니">hot water bottle</b> in a bedroom cupboard and laughed.</p>
+                <p class="mb-6">“So this is my exciting new life.”</p>
+                <p class="mb-6">He sat on the bed.</p>
+                <p class="mb-6">Maybe he was being unfair.</p>
+                <p class="mb-6">What exactly was so wonderful about London?</p>
+                <p class="mb-6">Work?</p>
+                <p class="mb-6">That was the uncomfortable answer.</p>
+                <p class="mb-6">He liked his job. More importantly, he was good at it. His manager was leaving next year, and everyone knew Mark was the likely replacement.</p>
+                <p class="mb-6">If he moved here, that opportunity would disappear.</p>
+                <p class="mb-6">But if he stayed in London, the house would have to be sold. He couldn't afford to maintain an empty property hundreds of kilometers away.</p>
+                <p class="mb-6">He walked to the window.</p>
+                <p class="mb-6">For the first time in his adult life, he had been given the chance to live without worrying about rent.</p>
+                <p class="mb-6">All he had to give up was the career he had spent ten years building.</p>
+                <p class="mb-6">Or he could sell the house, return to his tiny apartment, and keep chasing the career he wanted.</p>
+                <p class="mb-6">His phone rang.</p>
+                <p class="mb-6">It was the estate agent.</p>
+                <p class="mb-6">Mark looked around the bedroom before answering.</p>
+                <p class="mb-6">Keep the house?</p>
+                <p class="mb-6">Or keep the career?</p>
+                <p class="mb-6">What would you give up?</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">마크는 10년 동안 런던에 대해 불평하며 살았다.</p>
+                <p class="mb-6">월세는 말도 안 되게 비쌌고, 출퇴근에는 한 시간이 걸렸다. 아파트는 너무 작아서 식탁을 책상으로도 써야 했다.</p>
+                <p class="mb-6">그러던 어느 날 이모가 세상을 떠나면서 그에게 집을 남겼다.</p>
+                <p class="mb-6">집 한 채를 통째로.</p>
+                <p class="mb-6">문제는 그 집의 위치였다.</p>
+                <p class="mb-6">마크는 부엌에 서서 창밖의 서리 덮인 들판을 바라봤다. 가장 가까운 마을까지도 차로 20분이 걸렸다. 런던까지는 거의 네 시간이었다.</p>
+                <p class="mb-6">회사에서는 선택권을 주었다. 런던에 남아 본사에서 계속 근무하거나, 이 집으로 이사해서 원격으로 일하는 것이었다.</p>
+                <p class="mb-6">하지만 원격 근무자는 관리직 승진 대상에서 제외됐다.</p>
+                <p class="mb-6">그러니 진짜 선택은 단순했다.</p>
+                <p class="mb-6">커리어냐, 집이냐.</p>
+                <p class="mb-6">마크는 부엌 수도꼭지를 틀었다. 오래된 금속 수도꼭지에는 하얀 얼룩이 가득했다.</p>
+                <p class="mb-6">“<b class="highlight">경수예요</b>.”</p>
+                <p class="mb-6">그날 아침 배관공이 말했다.</p>
+                <p class="mb-6">“<b class="highlight">연수에</b> 익숙하시면 차이를 느끼실 겁니다.”</p>
+                <p class="mb-6">잘됐다. 이제는 물까지 말썽이었다.</p>
+                <p class="mb-6">그래도 집은 아름다웠다.</p>
+                <p class="mb-6">침실이 세 개였다. 무려 세 개.</p>
+                <p class="mb-6">런던에서는 월급의 절반을 내고 침실 하나와 두 사람이 함께 서 있기도 힘든 작은 부엌에서 살고 있었다.</p>
+                <p class="mb-6">이곳으로 이사하면 주택 대출도 없고 주거비도 거의 들지 않는다.</p>
+                <p class="mb-6">요리도 할 수 있다. 개도 키울 수 있다. 정원도 가꿀 수 있다.</p>
+                <p class="mb-6">이메일에 답하면서 회사 <b class="highlight">구내식당에서</b> 점심을 먹는 생활도 끝낼 수 있었다.</p>
+                <p class="mb-6">그는 부엌 식탁에서 보내는 조용한 아침을 상상했다.</p>
+                <p class="mb-6">그러다 화요일 밤을 상상했다.</p>
+                <p class="mb-6">근처에는 친구도 없다. 아래층에 식당도 없다. 퇴근 후 가볍게 술 한잔할 곳도 없다.</p>
+                <p class="mb-6">그저 자기 혼자뿐이다.</p>
+                <p class="mb-6">그리고 들판.</p>
+                <p class="mb-6">끝없이 많은 들판.</p>
+                <p class="mb-6">그는 위층으로 올라갔다. 집 안은 몹시 추웠다. 이모는 중앙난방을 인간의 나약함쯤으로 생각했던 모양이었다. 마크는 침실 찬장에서 낡은 <b class="highlight">온수 주머니</b> 하나를 발견하고 웃었다.</p>
+                <p class="mb-6">“그래, 이게 내 신나는 새 인생이구나.”</p>
+                <p class="mb-6">그는 침대에 앉았다.</p>
+                <p class="mb-6">어쩌면 자신이 너무 부정적으로 생각하는 것인지도 몰랐다.</p>
+                <p class="mb-6">런던이 그렇게 좋은 이유가 대체 뭘까?</p>
+                <p class="mb-6">직장?</p>
+                <p class="mb-6">그게 인정하기 불편한 답이었다.</p>
+                <p class="mb-6">그는 자신의 일을 좋아했다. 더 중요한 건 그 일을 잘한다는 것이었다. 그의 상사는 내년에 회사를 떠날 예정이었고, 모두가 마크를 유력한 후임자로 생각하고 있었다.</p>
+                <p class="mb-6">이곳으로 이사하면 그 기회는 사라진다.</p>
+                <p class="mb-6">하지만 런던에 남는다면 이 집을 팔아야 한다. 수백 킬로미터 떨어진 빈집을 계속 관리할 경제적 여유는 없었다.</p>
+                <p class="mb-6">그는 창가로 걸어갔다.</p>
+                <p class="mb-6">성인이 된 이후 처음으로 월세 걱정 없이 살 수 있는 기회가 생겼다.</p>
+                <p class="mb-6">그러기 위해 포기해야 하는 것은 10년 동안 쌓아 온 커리어였다.</p>
+                <p class="mb-6">아니면 집을 팔고, 런던의 작은 아파트로 돌아가 자신이 원하는 커리어를 계속 좇을 수도 있었다.</p>
+                <p class="mb-6">휴대폰이 울렸다.</p>
+                <p class="mb-6">부동산 중개인이었다.</p>
+                <p class="mb-6">마크는 전화를 받기 전에 침실을 천천히 둘러봤다.</p>
+                <p class="mb-6">집을 지킬 것인가?</p>
+                <p class="mb-6">커리어를 지킬 것인가?</p>
+                <p class="mb-6">당신이라면 무엇을 포기하겠는가?</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+    function skipAudio(seconds) {
+        const player = document.getElementById('player');
+        if (player.src) {
+            player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+        }
+    }
+
+    function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+    let _quizOriginals = new Map();
+
+    function toggleQuiz() {
+        const btn = document.getElementById('quizBtn');
+        const isQuiz = btn.innerText.includes("Quiz");
+        const targets = document.querySelectorAll('.quiz-target');
+        const cells = document.querySelectorAll('.mystery-cell');
+
+        if (isQuiz) {
+            btn.innerText = "Study Mode 📖";
+            cells.forEach(c => c.classList.add('quiz-hidden'));
+            targets.forEach(t => {
+                const ans = t.dataset.ans; const kor = t.dataset.kor;
+                _quizOriginals.set(t, t.innerHTML);
+                t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+            });
+        } else {
+            btn.innerText = "Quiz Mode 👻";
+            cells.forEach(c => c.classList.remove('quiz-hidden'));
+            targets.forEach(t => {
+                if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+            });
+            _quizOriginals.clear();
+        }
+    }
+
+    function checkQuiz(i, a) {
+        if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+            i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+            confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+            checkAllSolved();
+        } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+    }
+
+    function checkAllSolved() {
+        const inputs = document.querySelectorAll('.quiz-input');
+        if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+            var duration = 3 * 1000; var end = Date.now() + duration;
+            (function frame() {
+                confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                if (Date.now() < end) requestAnimationFrame(frame);
+            }());
+        }
+    }
+
+    document.getElementById('player').src = "9111200.m4a";
+</script>
+</body>
+</html>

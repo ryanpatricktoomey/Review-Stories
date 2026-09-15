@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+      <title>Review Note | The Red Carpet</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+      <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+      </style>
+</head>
+<body class="p-4 md:p-12">
+      <div class="max-w-4xl mx-auto space-y-8">
+
+          <header class="text-center space-y-4">
+              <div class="flex items-center justify-center gap-4">
+                  <span class="text-5xl">🥩</span>
+                  <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Red Carpet</h1>
+              </div>
+              <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+          </header>
+
+          <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+              <div class="flex items-center justify-between px-2">
+                  <div class="flex items-center gap-3">
+                      <span class="text-xl">🎧</span>
+                      <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                  </div>
+                  <div class="flex gap-2">
+                      <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          <span class="text-lg">↺</span> 5s
+                      </button>
+                      <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          5s <span class="text-lg">↻</span>
+                      </button>
+                  </div>
+              </div>
+              <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+          </div>
+
+          <div class="flex justify-center">
+              <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+          </div>
+
+          <section class="glass rounded-3xl overflow-hidden shadow-xl">
+              <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                  <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+              </div>
+              <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                  <tr><td class="p-4"><b class="text-white">rolled out the red carpet for us</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">우리를 아주 극진하게 대접했다 / VIP처럼 환대했다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">interesting</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">흥미로운 / 재미있는</td></tr>
+                  <tr><td class="p-4"><b class="text-white">curious</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">궁금한 / 호기심이 생기는</td></tr>
+                  <tr><td class="p-4"><b class="text-white">fascinating</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">아주 흥미로운 / 매력적이고 신기한</td></tr>
+                  <tr><td class="p-4"><b class="text-white">academy</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">학원 / 학교 / 전문 교육기관</td></tr>
+              </tbody></table>
+          </section>
+
+          <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="glass rounded-3xl p-6 border border-teal-500/20 space-y-2">
+                  <h3 class="text-teal-400 font-bold text-lg">rolled out the red carpet for us</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">원래 중요한 손님을 위해 레드 카펫을 까는 것에서 나온 표현이에요. 실제 카펫을 의미하기보다 누군가를 아주 특별하고 극진하게 대접했다는 뜻으로 자주 사용합니다.</p>
+              </div>
+              <div class="glass rounded-3xl p-6 border border-teal-500/20 space-y-2">
+                  <h3 class="text-teal-400 font-bold text-lg">interesting / curious / fascinating</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">모두 관심과 관련 있지만 강도와 용법이 달라요. interesting은 일반적으로 “흥미로운,” fascinating은 훨씬 강하게 “아주 흥미로운,” curious는 보통 사람이 무언가에 대해 “궁금해하는” 상태를 나타냅니다.</p>
+              </div>
+              <div class="glass rounded-3xl p-6 border border-teal-500/20 space-y-2">
+                  <h3 class="text-teal-400 font-bold text-lg">academy</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">한국어의 “학원”과 완전히 일치하지는 않습니다. 영어에서는 특정 분야를 전문적으로 가르치는 학교나 교육기관을 가리키는 경우가 많아요.</p>
+              </div>
+          </section>
+
+          <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+              <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                  <p class="mb-6">Marcus woke to the smell of roasting meat.</p>
+                  <p class="mb-6">Three days earlier, an early winter storm had trapped him in the mountains. He had slipped on an icy trail and broken his leg. An elderly woman named Evelyn had found him and dragged him back to her cabin.</p>
+                  <p class="mb-6">Marcus had expected a miserable winter.</p>
+                  <p class="mb-6">Instead, Evelyn practically <b class="highlight quiz-target" data-ans="rolled out the red carpet for" data-kor="VIP처럼 환대했다">rolled out the red carpet for</b> him.</p>
+                  <p class="mb-6">She gave him the best bedroom, kept the fire burning day and night, and cooked enormous meals. Marcus didn't have to lift a finger. She even brought dessert to his bed every evening.</p>
+                  <p class="mb-6">“I've never eaten this well in my life,” he told her.</p>
+                  <p class="mb-6">“You need your strength,” Evelyn replied.</p>
+                  <p class="mb-6">Marcus had taught history at a small military <b class="highlight quiz-target" data-ans="academy" data-kor="학교">academy</b> before taking time off to travel. He was naturally <b class="highlight quiz-target" data-ans="curious" data-kor="호기심이 많은">curious</b>, and Evelyn's isolated life interested him. But whenever he asked about her past, she changed the subject.</p>
+                  <p class="mb-6">After six weeks, Marcus had gained twelve kilograms.</p>
+                  <p class="mb-6">One evening, Evelyn brought him an enormous piece of pie.</p>
+                  <p class="mb-6">Marcus stared at it.</p>
+                  <p class="mb-6">“That's <b class="highlight quiz-target" data-ans="interesting" data-kor="흥미롭네요">interesting</b>.”</p>
+                  <p class="mb-6">“What is?”</p>
+                  <p class="mb-6">“You never ask if I'm hungry. You just keep feeding me.”</p>
+                  <p class="mb-6">Evelyn smiled.</p>
+                  <p class="mb-6">“You complain too much for a man getting free pie.”</p>
+                  <p class="mb-6">Marcus laughed and ate it.</p>
+                  <p class="mb-6">But the next morning, while Evelyn was outside, he tried standing.</p>
+                  <p class="mb-6">His leg supported him easily.</p>
+                  <p class="mb-6">Marcus stared down at it.</p>
+                  <p class="mb-6">Evelyn had been telling him for weeks that the bone wasn't ready.</p>
+                  <p class="mb-6">Now he was more than curious.</p>
+                  <p class="mb-6">He searched for his boots and coat.</p>
+                  <p class="mb-6">Both were missing.</p>
+                  <p class="mb-6">In Evelyn's bedroom, he found a notebook containing names, dates, and weights. His own weight had been recorded every week.</p>
+                  <p class="mb-6">82 kg.</p>
+                  <p class="mb-6">86 kg.</p>
+                  <p class="mb-6">90 kg.</p>
+                  <p class="mb-6">94 kg.</p>
+                  <p class="mb-6">Beside the final number was one word:</p>
+                  <p class="mb-6">Tomorrow.</p>
+                  <p class="mb-6">Marcus's fear was mixed with a horrible kind of fascination. The records went back decades. Different names, different weights, always the same pattern.</p>
+                  <p class="mb-6">“<b class="highlight quiz-target" data-ans="Fascinating" data-kor="아주 흥미롭군요">Fascinating</b>.”</p>
+                  <p class="mb-6">Marcus spun around.</p>
+                  <p class="mb-6">Evelyn was standing in the doorway.</p>
+                  <p class="mb-6">She looked at the notebook in his hands.</p>
+                  <p class="mb-6">“I've been doing this a long time,” she said.</p>
+                  <p class="mb-6">Marcus backed away.</p>
+                  <p class="mb-6">“Doing what?”</p>
+                  <p class="mb-6">Evelyn looked at his stomach.</p>
+                  <p class="mb-6">Marcus understood.</p>
+                  <p class="mb-6">The huge meals. The forced rest. The missing boots.</p>
+                  <p class="mb-6">She hadn't been helping him recover.</p>
+                  <p class="mb-6">She had been preparing him.</p>
+                  <p class="mb-6">Marcus looked toward the window. Deep snow surrounded the cabin for miles. Even with a healed leg, he couldn't survive outside without his winter clothes.</p>
+                  <p class="mb-6">Evelyn calmly opened a wooden cabinet.</p>
+                  <p class="mb-6">Inside were several knives and a heavy saw.</p>
+                  <p class="mb-6">“Why tomorrow?” Marcus whispered.</p>
+                  <p class="mb-6">Evelyn took out a knife.</p>
+                  <p class="mb-6">“Because tonight,” she said, “you're having dessert.”</p>
+              </div>
+              <hr class="border-white/10">
+              <div class="text-slate-400 italic leading-relaxed space-y-6">
+                  <p class="mb-6">마커스는 고기가 구워지는 냄새를 맡으며 눈을 떴다.</p>
+                  <p class="mb-6">3일 전, 예년보다 일찍 찾아온 겨울 폭풍 때문에 그는 산에 갇혔다. 얼어붙은 등산로에서 미끄러져 다리가 부러졌고, 에블린이라는 노파가 그를 발견해 오두막까지 끌고 왔다.</p>
+                  <p class="mb-6">마커스는 끔찍한 겨울을 보내게 될 거라고 생각했다.</p>
+                  <p class="mb-6">하지만 에블린은 오히려 그를 <b class="highlight">VIP 손님처럼 극진하게 대접했다</b>.</p>
+                  <p class="mb-6">가장 좋은 침실을 내주고, 밤낮으로 불이 꺼지지 않게 했으며, 엄청난 양의 음식을 만들어주었다. 마커스는 손 하나 까딱할 필요가 없었다. 심지어 매일 저녁 침대까지 디저트를 가져다주었다.</p>
+                  <p class="mb-6">“평생 이렇게 잘 먹어본 적이 없어요.” 그가 말했다.</p>
+                  <p class="mb-6">“기운을 되찾아야죠.” 에블린이 대답했다.</p>
+                  <p class="mb-6">마커스는 여행을 위해 일을 쉬기 전 작은 군사 <b class="highlight">학교</b>에서 역사를 가르쳤다. 원래 <b class="highlight">호기심이 많은</b> 사람이었기 때문에 에블린이 이렇게 외딴곳에서 살아가는 것이 궁금했다. 하지만 그녀의 과거를 물을 때마다 에블린은 화제를 바꿨다.</p>
+                  <p class="mb-6">6주가 지나자 마커스는 12kg이나 살이 쪘다.</p>
+                  <p class="mb-6">어느 날 저녁, 에블린은 엄청나게 큰 파이 한 조각을 가져왔다.</p>
+                  <p class="mb-6">마커스는 그것을 바라보았다.</p>
+                  <p class="mb-6">“그거 <b class="highlight">흥미롭네요</b>.”</p>
+                  <p class="mb-6">“뭐가요?”</p>
+                  <p class="mb-6">“제가 배고픈지는 한 번도 안 물어보시네요. 그냥 계속 먹이기만 하고.”</p>
+                  <p class="mb-6">에블린은 미소를 지었다.</p>
+                  <p class="mb-6">“공짜 파이를 먹는 사람치고 불평이 많네요.”</p>
+                  <p class="mb-6">마커스는 웃으며 파이를 먹었다.</p>
+                  <p class="mb-6">하지만 다음 날 아침, 에블린이 밖에 나간 사이 그는 일어서 보았다.</p>
+                  <p class="mb-6">다리는 아무 문제 없이 몸을 지탱했다.</p>
+                  <p class="mb-6">마커스는 자신의 다리를 내려다보았다.</p>
+                  <p class="mb-6">에블린은 몇 주 동안 아직 뼈가 충분히 회복되지 않았다고 말해왔다.</p>
+                  <p class="mb-6">이제 그는 단순히 궁금한 정도를 넘어섰다.</p>
+                  <p class="mb-6">부츠와 코트를 찾아보았다.</p>
+                  <p class="mb-6">둘 다 없었다.</p>
+                  <p class="mb-6">에블린의 침실에서 이름과 날짜, 몸무게가 적힌 공책을 발견했다. 자신의 몸무게도 매주 기록되어 있었다.</p>
+                  <p class="mb-6">82kg.</p>
+                  <p class="mb-6">86kg.</p>
+                  <p class="mb-6">90kg.</p>
+                  <p class="mb-6">94kg.</p>
+                  <p class="mb-6">마지막 숫자 옆에는 단어 하나가 있었다.</p>
+                  <p class="mb-6">내일.</p>
+                  <p class="mb-6">마커스는 두려움을 느끼면서도 소름 끼치는 호기심을 떨칠 수 없었다. 기록은 수십 년 전까지 이어졌다. 이름도, 몸무게도 달랐지만 항상 같은 패턴이었다.</p>
+                  <p class="mb-6">“<b class="highlight">아주 흥미롭군요</b>.”</p>
+                  <p class="mb-6">마커스는 깜짝 놀라 돌아섰다.</p>
+                  <p class="mb-6">에블린이 문간에 서 있었다.</p>
+                  <p class="mb-6">그녀는 그의 손에 들린 공책을 바라보았다.</p>
+                  <p class="mb-6">“이 일을 아주 오래 해왔어요.” 그녀가 말했다.</p>
+                  <p class="mb-6">마커스는 뒤로 물러났다.</p>
+                  <p class="mb-6">“무슨 일을요?”</p>
+                  <p class="mb-6">에블린은 그의 배를 바라보았다.</p>
+                  <p class="mb-6">마커스는 이해했다.</p>
+                  <p class="mb-6">엄청난 식사. 강제로 시킨 휴식. 사라진 부츠.</p>
+                  <p class="mb-6">그녀는 그의 회복을 돕고 있었던 것이 아니었다.</p>
+                  <p class="mb-6">그를 준비시키고 있었던 것이다.</p>
+                  <p class="mb-6">마커스는 창문 쪽을 바라보았다. 오두막 주변 수 킬로미터가 깊은 눈으로 뒤덮여 있었다. 다리가 다 나았다고 해도 겨울옷 없이는 밖에서 살아남을 수 없었다.</p>
+                  <p class="mb-6">에블린은 침착하게 나무 수납장을 열었다.</p>
+                  <p class="mb-6">안에는 칼 여러 자루와 무거운 톱이 있었다.</p>
+                  <p class="mb-6">“왜 내일이죠?” 마커스가 속삭였다.</p>
+                  <p class="mb-6">에블린은 칼 하나를 꺼냈다.</p>
+                  <p class="mb-6">“왜냐하면 오늘 밤에는,” 그녀가 말했다. “디저트를 먹어야 하니까요.”</p>
+              </div>
+          </section>
+
+      </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "9151200.m4a";
+</script>
+  </body>
+  </html>

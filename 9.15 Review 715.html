@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+      <title>Review Note | A Long Recovery</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+      <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+      </style>
+</head>
+<body class="p-4 md:p-12">
+      <div class="max-w-4xl mx-auto space-y-8">
+
+          <header class="text-center space-y-4">
+              <div class="flex items-center justify-center gap-4">
+                  <span class="text-5xl">🥘</span>
+                  <h1 class="text-3xl md:text-4xl font-extrabold text-white">A Long Recovery</h1>
+              </div>
+              <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+          </header>
+
+          <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+              <div class="flex items-center justify-between px-2">
+                  <div class="flex items-center gap-3">
+                      <span class="text-xl">🎧</span>
+                      <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                  </div>
+                  <div class="flex gap-2">
+                      <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          <span class="text-lg">↺</span> 5s
+                      </button>
+                      <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          5s <span class="text-lg">↻</span>
+                      </button>
+                  </div>
+              </div>
+              <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+          </div>
+
+          <div class="flex justify-center">
+              <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+          </div>
+
+          <section class="glass rounded-3xl overflow-hidden shadow-xl">
+              <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                  <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+              </div>
+              <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                  <tr><td class="p-4"><b class="text-white">the first pancake always gets a little burnt</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">첫 번째 팬케이크는 원래 조금 타는 법이다 / 처음부터 완벽할 수는 없다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">dressed me</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">내 옷을 입혀줬다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">a lot of dishes</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">많은 요리 / 여러 가지 음식</td></tr>
+                  <tr><td class="p-4"><b class="text-white">freeriding</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">무임승차하기 / 남의 노력이나 돈에 얹혀가기</td></tr>
+                  <tr><td class="p-4"><b class="text-white">leech</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">남에게 붙어서 계속 얻어먹는 사람 / 기생충 같은 사람</td></tr>
+                  <tr><td class="p-4"><b class="text-white">freeloader</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">돈이나 노력을 내지 않고 남에게 얹혀사는 사람</td></tr>
+                  <tr><td class="p-4"><b class="text-white">mooch</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">남에게 공짜로 얻어먹거나 얻어 쓰다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">moocher</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">남에게 계속 얻어먹거나 얻어 쓰는 사람</td></tr>
+                  <tr><td class="p-4"><b class="text-white">take advantage of</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">이용하다 / (상황·기회를) 활용하다</td></tr>
+              </tbody></table>
+          </section>
+
+          <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="glass rounded-3xl p-6 border border-teal-500/20 space-y-2">
+                  <h3 class="text-teal-400 font-bold text-lg">the first pancake always gets a little burnt</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">첫 시도는 완벽하지 않아도 된다는 뜻으로 쓸 수 있는 비유적인 표현이에요. 실제 팬케이크에 대해서도 말할 수 있어요.</p>
+              </div>
+              <div class="glass rounded-3xl p-6 border border-teal-500/20 space-y-2">
+                  <h3 class="text-teal-400 font-bold text-lg">freeriding / freeloader / mooch / moocher / leech</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">모두 남에게 의존하면서 자기 몫을 하지 않는다는 느낌이 있지만 뉘앙스가 달라요. freeloader와 moocher는 사람을 일상적으로 비판할 때 쓸 수 있고, leech는 사람을 기생충에 비유하기 때문에 훨씬 모욕적이에요. mooch는 동사로도 사용할 수 있어요.</p>
+              </div>
+              <div class="glass rounded-3xl p-6 border border-teal-500/20 space-y-2">
+                  <h3 class="text-teal-400 font-bold text-lg">take advantage of</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">문맥에 따라 “좋은 기회를 활용하다”라는 중립·긍정적 의미와 “사람을 이용하다”라는 부정적인 의미가 모두 가능합니다.</p>
+              </div>
+          </section>
+
+          <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+              <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                  <p class="mb-6">Evan broke his leg on the second day of his trip.</p>
+                  <p class="mb-6">An early winter storm had covered the mountain trail in ice, and after falling down a steep slope, he spent hours dragging himself through the snow. He was nearly unconscious when an elderly woman named Ruth found him near her cabin.</p>
+                  <p class="mb-6">For the next six weeks, she cared for him.</p>
+                  <p class="mb-6">At first, Evan was embarrassed by how much help he needed. Ruth cooked, washed his clothes, and even <b class="highlight quiz-target" data-ans="dressed me" data-kor="옷을 입혀줬다">dressed him</b> when his leg hurt too much to move.</p>
+                  <p class="mb-6">“You must think I’m a complete <b class="highlight quiz-target" data-ans="freeloader" data-kor="얹혀사는 사람">freeloader</b>,” he said one morning.</p>
+                  <p class="mb-6">Ruth smiled. “You have a broken leg. That’s different.”</p>
+                  <p class="mb-6">She was also an extraordinary cook. Every evening, she prepared <b class="highlight quiz-target" data-ans="a lot of dishes" data-kor="많은 요리">a lot of dishes</b>: roast meat, potatoes, bread, soup, vegetables, and usually dessert.</p>
+                  <p class="mb-6">Evan ate everything.</p>
+                  <p class="mb-6">After a month, his clothes were getting tight. He joked that he had spent the winter <b class="highlight quiz-target" data-ans="mooching" data-kor="얻어먹으며">mooching</b> off an old woman.</p>
+                  <p class="mb-6">“I’m becoming a professional <b class="highlight quiz-target" data-ans="moocher" data-kor="얻어먹는 사람">moocher</b>,” he said.</p>
+                  <p class="mb-6">Ruth’s smile disappeared.</p>
+                  <p class="mb-6">“Don’t say that.”</p>
+                  <p class="mb-6">Evan was surprised by her seriousness.</p>
+                  <p class="mb-6">“I’m joking.”</p>
+                  <p class="mb-6">“You need the food.”</p>
+                  <p class="mb-6">Something about the way she said it made him uncomfortable.</p>
+                  <p class="mb-6">A week later, Evan decided that his leg was strong enough to test. Ruth had repeatedly told him it wasn't ready, but while she was outside gathering wood, he stood.</p>
+                  <p class="mb-6">It barely hurt.</p>
+                  <p class="mb-6">He walked across the room.</p>
+                  <p class="mb-6">Then he tried to find his boots.</p>
+                  <p class="mb-6">They were gone.</p>
+                  <p class="mb-6">His coat was gone too.</p>
+                  <p class="mb-6">Evan began searching the kitchen. Inside a drawer, he found a notebook containing his name and a list of dates.</p>
+                  <p class="mb-6">Beside every date was his weight.</p>
+                  <p class="mb-6">He suddenly understood why Ruth had insisted on weighing him every Sunday. She had claimed she was checking his recovery.</p>
+                  <p class="mb-6">She wasn't.</p>
+                  <p class="mb-6">The numbers climbed steadily from 74 kilograms to 89.</p>
+                  <p class="mb-6">Beside the final number, Ruth had written:</p>
+                  <p class="mb-6">Almost ready.</p>
+                  <p class="mb-6">Evan heard the cabin door open.</p>
+                  <p class="mb-6">He froze up.</p>
+                  <p class="mb-6">Ruth entered carrying firewood. Her expression changed when she saw the notebook.</p>
+                  <p class="mb-6">“You shouldn't have looked in there.”</p>
+                  <p class="mb-6">“What is this?”</p>
+                  <p class="mb-6">She put down the wood.</p>
+                  <p class="mb-6">Evan backed toward the door. “You've been <b class="highlight quiz-target" data-ans="taking advantage of" data-kor="이용하고 있던">taking advantage of</b> me.”</p>
+                  <p class="mb-6">Ruth looked genuinely confused.</p>
+                  <p class="mb-6">“Taking advantage of you?”</p>
+                  <p class="mb-6">“You kept me here. You kept feeding me.”</p>
+                  <p class="mb-6">For the first time, she laughed.</p>
+                  <p class="mb-6">“Evan, you've misunderstood.”</p>
+                  <p class="mb-6">His shoulders relaxed slightly.</p>
+                  <p class="mb-6">Then she continued.</p>
+                  <p class="mb-6">“You weren't <b class="highlight quiz-target" data-ans="freeriding" data-kor="무임승차하고">freeriding</b>. I wasn't feeding you for free.”</p>
+                  <p class="mb-6">She walked toward the kitchen counter and picked up a long knife.</p>
+                  <p class="mb-6">Evan stared at it.</p>
+                  <p class="mb-6">Ruth examined the blade.</p>
+                  <p class="mb-6">“My husband used to do the preparation,” she said. “I'm still learning.”</p>
+                  <p class="mb-6">She looked at Evan and gave a small, nervous smile.</p>
+                  <p class="mb-6">“<b class="highlight quiz-target" data-ans="The first pancake always gets a little burnt" data-kor="첫 번째 팬케이크는 원래 조금 타는 법이다">The first pancake always gets a little burnt</b>.”</p>
+                  <p class="mb-6">Outside, snow covered the mountain. Evan had no boots, no coat, and a leg that could walk but couldn't run.</p>
+                  <p class="mb-6">He finally understood.</p>
+                  <p class="mb-6">He had never been a <b class="highlight quiz-target" data-ans="leech" data-kor="기생충">leech</b> living comfortably in Ruth's cabin.</p>
+                  <p class="mb-6">He had been livestock.</p>
+              </div>
+              <hr class="border-white/10">
+              <div class="text-slate-400 italic leading-relaxed space-y-6">
+                  <p class="mb-6">에번은 여행 둘째 날 다리가 부러졌다.</p>
+                  <p class="mb-6">예년보다 일찍 찾아온 겨울 폭풍 때문에 산길은 얼음으로 뒤덮여 있었고, 가파른 비탈에서 굴러떨어진 그는 몇 시간 동안 눈밭을 기어서 이동했다. 오두막 근처에서 루스라는 노파가 그를 발견했을 때 그는 거의 의식을 잃은 상태였다.</p>
+                  <p class="mb-6">그 후 6주 동안 그녀는 그를 돌봐주었다.</p>
+                  <p class="mb-6">처음에 에번은 자신이 너무 많은 도움을 받아야 한다는 사실이 민망했다. 루스는 요리하고 빨래해 주었으며, 다리가 너무 아파 움직이기 힘들 때는 심지어 그의 <b class="highlight">옷까지 입혀주었다</b>.</p>
+                  <p class="mb-6">“제가 완전히 <b class="highlight">얹혀사는 사람</b>이라고 생각하시겠어요.” 어느 날 아침 에번이 말했다.</p>
+                  <p class="mb-6">루스는 미소를 지었다.</p>
+                  <p class="mb-6">“다리가 부러졌잖아요. 그건 다르죠.”</p>
+                  <p class="mb-6">그녀는 요리도 아주 잘했다. 매일 저녁 <b class="highlight">많은 요리</b>를 준비했다. 구운 고기, 감자, 빵, 수프, 채소에 보통 디저트까지 있었다.</p>
+                  <p class="mb-6">에번은 전부 먹었다.</p>
+                  <p class="mb-6">한 달이 지나자 옷이 꽉 끼기 시작했다. 그는 겨울 내내 노파에게 <b class="highlight">얻어먹으며</b> 지내고 있다고 농담했다.</p>
+                  <p class="mb-6">“저 이제 전문 <b class="highlight">얻어먹는 사람</b>이 되어가고 있네요.”</p>
+                  <p class="mb-6">루스의 미소가 사라졌다.</p>
+                  <p class="mb-6">“그런 말 하지 말아요.”</p>
+                  <p class="mb-6">에번은 그녀가 너무 진지하게 반응해서 놀랐다.</p>
+                  <p class="mb-6">“농담이에요.”</p>
+                  <p class="mb-6">“당신은 음식이 필요해요.”</p>
+                  <p class="mb-6">그녀의 말투에서 무언가 불편한 느낌이 들었다.</p>
+                  <p class="mb-6">일주일 뒤, 에번은 이제 다리 상태를 확인해 볼 만큼 충분히 회복했다고 판단했다. 루스는 계속 아직 멀었다고 말했지만, 그녀가 장작을 가지러 밖에 나간 사이 그는 일어섰다.</p>
+                  <p class="mb-6">거의 아프지 않았다.</p>
+                  <p class="mb-6">그는 방을 가로질러 걸었다.</p>
+                  <p class="mb-6">그리고 부츠를 찾았다.</p>
+                  <p class="mb-6">사라져 있었다.</p>
+                  <p class="mb-6">코트도 없었다.</p>
+                  <p class="mb-6">에번은 주방을 뒤지기 시작했다. 서랍 안에서 자신의 이름과 날짜들이 적힌 공책을 발견했다.</p>
+                  <p class="mb-6">각 날짜 옆에는 그의 몸무게가 적혀 있었다.</p>
+                  <p class="mb-6">그제야 그는 루스가 왜 매주 일요일마다 자신의 몸무게를 재려고 했는지 이해했다. 그녀는 회복 상태를 확인하는 거라고 말했다.</p>
+                  <p class="mb-6">그게 아니었다.</p>
+                  <p class="mb-6">숫자는 74kg에서 89kg까지 꾸준히 올라가고 있었다.</p>
+                  <p class="mb-6">마지막 숫자 옆에는 이렇게 적혀 있었다.</p>
+                  <p class="mb-6">거의 준비됨.</p>
+                  <p class="mb-6">오두막 문이 열리는 소리가 들렸다.</p>
+                  <p class="mb-6">에번은 그대로 얼어붙었다.</p>
+                  <p class="mb-6">루스가 장작을 들고 들어왔다. 에번이 공책을 들고 있는 것을 보자 그녀의 표정이 달라졌다.</p>
+                  <p class="mb-6">“그걸 보면 안 됐는데.”</p>
+                  <p class="mb-6">“이게 뭐예요?”</p>
+                  <p class="mb-6">그녀는 장작을 내려놓았다.</p>
+                  <p class="mb-6">에번은 문 쪽으로 물러섰다.</p>
+                  <p class="mb-6">“당신은 절 <b class="highlight">이용하고</b> 있었군요.”</p>
+                  <p class="mb-6">루스는 정말 이해가 안 된다는 표정을 지었다.</p>
+                  <p class="mb-6">“당신을 이용했다고요?”</p>
+                  <p class="mb-6">“날 여기 붙잡아 뒀잖아요. 계속 먹이고.”</p>
+                  <p class="mb-6">처음으로 그녀가 웃었다.</p>
+                  <p class="mb-6">“에번, 잘못 이해했어요.”</p>
+                  <p class="mb-6">그의 어깨에서 긴장이 조금 풀렸다.</p>
+                  <p class="mb-6">그러자 그녀가 말을 이었다.</p>
+                  <p class="mb-6">“당신이 <b class="highlight">무임승차하고</b> 있었던 게 아니에요. 내가 공짜로 먹여준 게 아니니까.”</p>
+                  <p class="mb-6">그녀는 주방 조리대로 걸어가 긴 칼 하나를 집어 들었다.</p>
+                  <p class="mb-6">에번은 칼을 바라보았다.</p>
+                  <p class="mb-6">루스는 칼날을 살펴보았다.</p>
+                  <p class="mb-6">“이런 준비는 남편이 하곤 했어요. 전 아직 배우는 중이죠.”</p>
+                  <p class="mb-6">그녀는 에번을 바라보며 조금 긴장된 미소를 지었다.</p>
+                  <p class="mb-6">“<b class="highlight">첫 번째 팬케이크는 원래 조금 타는 법</b>이잖아요.”</p>
+                  <p class="mb-6">밖에는 눈이 산 전체를 뒤덮고 있었다. 에번에게는 부츠도, 코트도 없었고, 다리는 걸을 수는 있어도 달릴 수는 없었다.</p>
+                  <p class="mb-6">그제야 그는 모든 것을 이해했다.</p>
+                  <p class="mb-6">그는 루스의 오두막에서 편하게 얹혀살던 <b class="highlight">기생충</b> 같은 사람이 아니었다.</p>
+                  <p class="mb-6">그는 가축이었다.</p>
+              </div>
+          </section>
+
+      </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "915715.m4a";
+</script>
+  </body>
+  </html>

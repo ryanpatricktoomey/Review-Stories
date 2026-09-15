@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+      <title>Review Note | The Woman with the Dimple</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+      <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+      </style>
+</head>
+<body class="p-4 md:p-12">
+      <div class="max-w-4xl mx-auto space-y-8">
+
+          <header class="text-center space-y-4">
+              <div class="flex items-center justify-center gap-4">
+                  <span class="text-5xl">🧵</span>
+                  <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Woman with the Dimple</h1>
+              </div>
+              <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+          </header>
+
+          <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+              <div class="flex items-center justify-between px-2">
+                  <div class="flex items-center gap-3">
+                      <span class="text-xl">🎧</span>
+                      <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                  </div>
+                  <div class="flex gap-2">
+                      <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          <span class="text-lg">↺</span> 5s
+                      </button>
+                      <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          5s <span class="text-lg">↻</span>
+                      </button>
+                  </div>
+              </div>
+              <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+          </div>
+
+          <div class="flex justify-center">
+              <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+          </div>
+
+          <section class="glass rounded-3xl overflow-hidden shadow-xl">
+              <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                  <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+              </div>
+              <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                  <tr><td class="p-4"><b class="text-white">I knew something was up</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">뭔가 이상한 일이 있다는 걸 알고 있었어 / 뭔가 수상한 줄 알았어</td></tr>
+                  <tr><td class="p-4"><b class="text-white">I knew it</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">역시 그럴 줄 알았어</td></tr>
+                  <tr><td class="p-4"><b class="text-white">that explains it</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그래서 그랬구나 / 이제 이해가 되네</td></tr>
+                  <tr><td class="p-4"><b class="text-white">white mums</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">흰 국화</td></tr>
+                  <tr><td class="p-4"><b class="text-white">good with her hands</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">손재주가 좋다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">housewarming party</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">집들이</td></tr>
+                  <tr><td class="p-4"><b class="text-white">had some struggles</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">힘든 일들을 좀 겪었다 / 어려움이 좀 있었다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">has some scars</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">흉터가 좀 있다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">dimple</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">보조개</td></tr>
+              </tbody></table>
+          </section>
+
+          <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="glass rounded-3xl p-6 border border-teal-500/20 space-y-2">
+                  <h3 class="text-teal-400 font-bold text-lg">I knew something was up</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">something is up은 “뭔가 평소와 다르다 / 수상한 일이 있다”라는 뜻이에요. 정확히 무엇인지는 모르지만 이상한 낌새를 느꼈을 때 자연스럽게 씁니다.</p>
+              </div>
+              <div class="glass rounded-3xl p-6 border border-teal-500/20 space-y-2">
+                  <h3 class="text-teal-400 font-bold text-lg">I knew it</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">의심하거나 예상했던 것이 사실로 밝혀졌을 때 “역시 그럴 줄 알았어”라는 느낌입니다.</p>
+              </div>
+              <div class="glass rounded-3xl p-6 border border-teal-500/20 space-y-2">
+                  <h3 class="text-teal-400 font-bold text-lg">that explains it</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">새로운 정보를 듣고 이전에 이해되지 않았던 상황이 이해될 때 “아, 그래서 그랬구나”라는 뜻으로 씁니다.</p>
+              </div>
+              <div class="glass rounded-3xl p-6 border border-teal-500/20 space-y-2">
+                  <h3 class="text-teal-400 font-bold text-lg">good with her hands</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">손으로 무언가를 만들거나 고치거나 다루는 데 능숙하다는 뜻입니다. 문맥에 따라 요리, 수리, 공예 등 다양한 손재주를 말할 수 있어요.</p>
+              </div>
+              <div class="glass rounded-3xl p-6 border border-teal-500/20 space-y-2">
+                  <h3 class="text-teal-400 font-bold text-lg">had some struggles</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">구체적으로 힘들었던 일을 자세히 밝히지 않고, 인생에서 어려운 시기를 겪었다고 부드럽게 표현할 때 쓸 수 있습니다.</p>
+              </div>
+          </section>
+
+          <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+              <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                  <p class="mb-6">By the time Arthur reached the cabin, he could no longer stand.</p>
+                  <p class="mb-6">He had broken his leg falling from an icy mountain trail. An early winter storm had buried the road, and the elderly woman who found him said nobody would be coming until the weather improved.</p>
+                  <p class="mb-6">Her name was Helen.</p>
+                  <p class="mb-6">She was small, with gray hair and a deep <b class="highlight quiz-target" data-ans="dimple" data-kor="보조개">dimple</b> in one cheek when she smiled. She told Arthur she had <b class="highlight quiz-target" data-ans="had some struggles" data-kor="힘든 일들을 좀 겪었다">had some struggles</b> in her life and preferred living alone.</p>
+                  <p class="mb-6">“You’re lucky I’m <b class="highlight quiz-target" data-ans="good with my hands" data-kor="손재주가 좋다">good with my hands</b>,” she said while making a wooden support for his leg.</p>
+                  <p class="mb-6">She was right. She repaired his clothes, made furniture, and cooked enormous meals. Arthur didn't have to lift a finger. Helen took care of everything.</p>
+                  <p class="mb-6">Within a month, he had gained eight kilograms.</p>
+                  <p class="mb-6">One afternoon, Arthur noticed a photograph on the wall. It showed a younger Helen standing beside a man at what looked like a <b class="highlight quiz-target" data-ans="housewarming party" data-kor="집들이">housewarming party</b>.</p>
+                  <p class="mb-6">“Your husband?”</p>
+                  <p class="mb-6">Helen nodded. “He died years ago.”</p>
+                  <p class="mb-6">Beside the photograph was a vase of <b class="highlight quiz-target" data-ans="white mums" data-kor="흰 국화">white mums</b>.</p>
+                  <p class="mb-6">Arthur didn't ask about them.</p>
+                  <p class="mb-6">As his leg improved, however, Helen continued insisting that he couldn't walk. Arthur became suspicious.</p>
+                  <p class="mb-6">One morning, while she was outside, he stood by himself.</p>
+                  <p class="mb-6">His leg supported him easily.</p>
+                  <p class="mb-6">“<b class="highlight quiz-target" data-ans="I knew something was up" data-kor="뭔가 수상한 줄 알았어">I knew something was up</b>,” he whispered.</p>
+                  <p class="mb-6">He searched for his boots and coat. Both were missing.</p>
+                  <p class="mb-6">Then he found a notebook under Helen's bed.</p>
+                  <p class="mb-6">It contained names, dates, and weights.</p>
+                  <p class="mb-6">Arthur found his own name.</p>
+                  <p class="mb-6">October 30 — 79 kg.</p>
+                  <p class="mb-6">November 20 — 84 kg.</p>
+                  <p class="mb-6">December 11 — 89 kg.</p>
+                  <p class="mb-6">Below it:</p>
+                  <p class="mb-6">Almost ready.</p>
+                  <p class="mb-6">Arthur stared at the numbers.</p>
+                  <p class="mb-6">“<b class="highlight quiz-target" data-ans="That explains it" data-kor="그래서 그랬구나">That explains it</b>.”</p>
+                  <p class="mb-6">The huge dinners. The desserts. Helen getting angry whenever he didn't finish his food.</p>
+                  <p class="mb-6">He turned the page.</p>
+                  <p class="mb-6">There were photographs of three men.</p>
+                  <p class="mb-6">Arthur recognized one immediately.</p>
+                  <p class="mb-6">Helen's husband.</p>
+                  <p class="mb-6">Except the date written below the photograph was five years after the date Helen had given for his death.</p>
+                  <p class="mb-6">The cabin door opened.</p>
+                  <p class="mb-6">Arthur quickly closed the notebook.</p>
+                  <p class="mb-6">Helen entered and looked at him standing beside the bed.</p>
+                  <p class="mb-6">“Your leg seems better.”</p>
+                  <p class="mb-6">“Where are my boots?”</p>
+                  <p class="mb-6">Helen sighed.</p>
+                  <p class="mb-6">Arthur looked down at her hands. For the first time, he noticed that she <b class="highlight quiz-target" data-ans="has some scars" data-kor="흉터가 좀 있다">had some scars</b> across her fingers and wrists.</p>
+                  <p class="mb-6">“You didn't rescue me, did you?”</p>
+                  <p class="mb-6">Helen smiled.</p>
+                  <p class="mb-6">The dimple appeared.</p>
+                  <p class="mb-6">Arthur suddenly understood what the other men in the notebook had been.</p>
+                  <p class="mb-6">“<b class="highlight quiz-target" data-ans="I knew it" data-kor="역시 그럴 줄 알았어">I knew it</b>.”</p>
+                  <p class="mb-6">Helen walked into the kitchen.</p>
+                  <p class="mb-6">Arthur followed her with his eyes.</p>
+                  <p class="mb-6">On the table was a large metal tray. Beside it lay several knives and a heavy saw.</p>
+                  <p class="mb-6">Helen calmly began sharpening one of the knives.</p>
+                  <p class="mb-6">Arthur looked outside.</p>
+                  <p class="mb-6">Snow covered the mountain. His coat and boots were gone. His leg could support him, but he couldn't possibly outrun her through deep snow.</p>
+                  <p class="mb-6">Helen tested the knife against her thumb.</p>
+                  <p class="mb-6">Then she looked at him.</p>
+                  <p class="mb-6">“Dinner will be a little late tonight.”</p>
+              </div>
+              <hr class="border-white/10">
+              <div class="text-slate-400 italic leading-relaxed space-y-6">
+                  <p class="mb-6">아서가 오두막에 도착했을 때는 더 이상 서 있을 수도 없었다.</p>
+                  <p class="mb-6">얼어붙은 산길에서 떨어지면서 다리가 부러졌다. 예년보다 일찍 찾아온 겨울 폭풍이 길을 눈으로 덮어버렸고, 그를 발견한 노파는 날씨가 좋아질 때까지 아무도 이곳에 오지 않을 거라고 말했다.</p>
+                  <p class="mb-6">그녀의 이름은 헬렌이었다.</p>
+                  <p class="mb-6">작은 체구에 회색 머리를 하고 있었고, 웃을 때 한쪽 볼에 깊은 <b class="highlight">보조개</b>가 생겼다. 그녀는 살면서 <b class="highlight">힘든 일들을 좀 겪었고</b>, 그래서 혼자 사는 것을 좋아한다고 말했다.</p>
+                  <p class="mb-6">“내가 <b class="highlight">손재주가 좋아서</b> 다행인 줄 알아요.” 그녀는 아서의 다리를 고정할 나무 받침대를 만들며 말했다.</p>
+                  <p class="mb-6">실제로 그랬다. 그녀는 그의 옷을 수선하고, 가구를 만들고, 엄청난 양의 음식을 요리했다. 아서는 손 하나 까딱할 필요가 없었다. 헬렌이 모든 것을 알아서 챙겼다.</p>
+                  <p class="mb-6">한 달 만에 그는 8kg이나 살이 쪘다.</p>
+                  <p class="mb-6">어느 오후, 아서는 벽에 걸린 사진 한 장을 발견했다. 젊은 시절의 헬렌이 한 남자 옆에 서 있었고, 장소는 <b class="highlight">집들이</b>처럼 보였다.</p>
+                  <p class="mb-6">“남편이에요?”</p>
+                  <p class="mb-6">헬렌은 고개를 끄덕였다.</p>
+                  <p class="mb-6">“몇 년 전에 죽었어요.”</p>
+                  <p class="mb-6">사진 옆에는 <b class="highlight">흰 국화</b>가 꽂힌 꽃병이 있었다.</p>
+                  <p class="mb-6">아서는 더 이상 묻지 않았다.</p>
+                  <p class="mb-6">하지만 다리가 좋아져도 헬렌은 계속 걸으면 안 된다고 주장했다. 아서는 의심하기 시작했다.</p>
+                  <p class="mb-6">어느 날 아침, 그녀가 밖에 나간 사이 그는 혼자 일어섰다.</p>
+                  <p class="mb-6">다리는 쉽게 몸을 지탱했다.</p>
+                  <p class="mb-6">“<b class="highlight">뭔가 수상한 줄 알았어</b>.” 그가 중얼거렸다.</p>
+                  <p class="mb-6">부츠와 코트를 찾아보았다. 둘 다 사라져 있었다.</p>
+                  <p class="mb-6">그러다 헬렌의 침대 밑에서 공책 하나를 발견했다.</p>
+                  <p class="mb-6">그 안에는 이름, 날짜, 몸무게가 적혀 있었다.</p>
+                  <p class="mb-6">아서 자신의 이름도 있었다.</p>
+                  <p class="mb-6">10월 30일 — 79kg.</p>
+                  <p class="mb-6">11월 20일 — 84kg.</p>
+                  <p class="mb-6">12월 11일 — 89kg.</p>
+                  <p class="mb-6">그 아래에는 이렇게 쓰여 있었다.</p>
+                  <p class="mb-6">거의 준비됨.</p>
+                  <p class="mb-6">아서는 숫자를 바라보았다.</p>
+                  <p class="mb-6">“<b class="highlight">그래서 그랬구나</b>.”</p>
+                  <p class="mb-6">엄청난 저녁 식사. 디저트. 그가 음식을 남길 때마다 화를 내던 헬렌.</p>
+                  <p class="mb-6">다음 페이지를 넘겼다.</p>
+                  <p class="mb-6">남자 세 명의 사진이 있었다.</p>
+                  <p class="mb-6">그중 한 명은 바로 알아볼 수 있었다.</p>
+                  <p class="mb-6">헬렌의 남편이었다.</p>
+                  <p class="mb-6">하지만 사진 밑에 적힌 날짜는 헬렌이 남편이 죽었다고 말한 시점보다 5년이나 뒤였다.</p>
+                  <p class="mb-6">오두막 문이 열렸다.</p>
+                  <p class="mb-6">아서는 재빨리 공책을 덮었다.</p>
+                  <p class="mb-6">헬렌이 들어와 침대 옆에 서 있는 그를 바라보았다.</p>
+                  <p class="mb-6">“다리가 좋아진 것 같네요.”</p>
+                  <p class="mb-6">“제 부츠 어디 있어요?”</p>
+                  <p class="mb-6">헬렌은 한숨을 쉬었다.</p>
+                  <p class="mb-6">아서는 그녀의 손을 내려다보았다. 처음으로 그녀의 손가락과 손목에 <b class="highlight">흉터가 좀 있다는</b> 것을 알아차렸다.</p>
+                  <p class="mb-6">“날 구해준 게 아니었군요?”</p>
+                  <p class="mb-6">헬렌이 미소를 지었다.</p>
+                  <p class="mb-6">보조개가 나타났다.</p>
+                  <p class="mb-6">아서에게 공책 속 다른 남자들이 누구였는지 갑자기 이해됐다.</p>
+                  <p class="mb-6">“<b class="highlight">역시 그럴 줄 알았어</b>.”</p>
+                  <p class="mb-6">헬렌은 주방으로 걸어갔다.</p>
+                  <p class="mb-6">아서는 눈으로 그녀를 따라갔다.</p>
+                  <p class="mb-6">식탁 위에는 커다란 금속 쟁반이 있었다. 그 옆에는 칼 여러 자루와 무거운 톱이 놓여 있었다.</p>
+                  <p class="mb-6">헬렌은 침착하게 칼 하나를 갈기 시작했다.</p>
+                  <p class="mb-6">아서는 밖을 바라보았다.</p>
+                  <p class="mb-6">산은 눈으로 뒤덮여 있었다. 코트와 부츠는 사라졌고, 다리는 몸을 지탱할 수 있었지만 깊은 눈 속에서 그녀를 피해 달아나는 것은 불가능했다.</p>
+                  <p class="mb-6">헬렌은 엄지손가락으로 칼날을 확인했다.</p>
+                  <p class="mb-6">그리고 아서를 바라보았다.</p>
+                  <p class="mb-6">“오늘 저녁은 조금 늦겠네요.”</p>
+              </div>
+          </section>
+
+      </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "9151020.m4a";
+</script>
+  </body>
+  </html>

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+      <title>Review Note | The Perfect Cover-Up</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+      <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+      </style>
+</head>
+<body class="p-4 md:p-12">
+      <div class="max-w-4xl mx-auto space-y-8">
+
+          <header class="text-center space-y-4">
+              <div class="flex items-center justify-center gap-4">
+                  <span class="text-5xl">🍺</span>
+                  <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Perfect Cover-Up</h1>
+              </div>
+              <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+          </header>
+
+          <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+              <div class="flex items-center justify-between px-2">
+                  <div class="flex items-center gap-3">
+                      <span class="text-xl">🎧</span>
+                      <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                  </div>
+                  <div class="flex gap-2">
+                      <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          <span class="text-lg">↺</span> 5s
+                      </button>
+                      <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          5s <span class="text-lg">↻</span>
+                      </button>
+                  </div>
+              </div>
+              <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+          </div>
+
+          <div class="flex justify-center">
+              <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+          </div>
+
+          <section class="glass rounded-3xl overflow-hidden shadow-xl">
+              <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                  <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+              </div>
+              <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                  <tr><td class="p-4"><b class="text-white">pedal</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">페달</td></tr>
+                  <tr><td class="p-4"><b class="text-white">took it away</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그것을 가져갔다 / 빼앗아 갔다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">confiscated</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">압수했다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">neighbor</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">이웃</td></tr>
+                  <tr><td class="p-4"><b class="text-white">neighborhood</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">동네</td></tr>
+                  <tr><td class="p-4"><b class="text-white">water shortages</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">물 부족</td></tr>
+                  <tr><td class="p-4"><b class="text-white">water rationing</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">제한 급수 / 물 배급제</td></tr>
+                  <tr><td class="p-4"><b class="text-white">next door neighbor</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">바로 옆집 이웃</td></tr>
+                  <tr><td class="p-4"><b class="text-white">school record</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">학교 생활 기록 / 학적 기록</td></tr>
+                  <tr><td class="p-4"><b class="text-white">keep your nose clean</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">문제 일으키지 말고 얌전히 지내다</td></tr>
+              </tbody></table>
+          </section>
+
+          <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="glass p-5 rounded-2xl space-y-2 border border-white/5">
+                  <h3 class="text-teal-400 font-bold text-lg">confiscated</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">규칙을 어겨서 물건을 공식적으로 빼앗거나 압수했다는 뜻이에요. 선생님이 학생의 휴대폰을 압수하는 상황에도 자연스럽습니다.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl space-y-2 border border-white/5">
+                  <h3 class="text-teal-400 font-bold text-lg">water rationing</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">물이 부족할 때 사용할 수 있는 물의 양이나 시간을 제한하는 조치를 말해요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl space-y-2 border border-white/5">
+                  <h3 class="text-teal-400 font-bold text-lg">school record</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">학교에서 학생에 관해 보관하는 공식적인 기록을 뜻해요. 성적뿐 아니라 출결이나 징계 기록 등을 가리킬 수도 있습니다.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl space-y-2 border border-white/5">
+                  <h3 class="text-teal-400 font-bold text-lg">keep your nose clean</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">직역하면 “코를 깨끗하게 유지하다”지만 실제로는 “문제에 휘말리지 말고 얌전히 지내라”라는 뜻의 관용 표현이에요.</p>
+              </div>
+          </section>
+
+          <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+              <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                  <p class="mb-6">Jake’s parents were supposed to be away until Sunday night, so on Saturday he invited twelve friends over.</p>
+                  <p class="mb-6">By ten o’clock, there were beer cans on the kitchen counter, two bottles of vodka on the table, and music loud enough for the whole <b class="highlight quiz-target" data-ans="neighborhood" data-kor="동네">neighborhood</b> to hear.</p>
+                  <p class="mb-6">Then Jake’s phone buzzed.</p>
+                  <p class="mb-6">COMING HOME. THE OUTDOOR CONCERT WAS CANCELED BECAUSE OF THE STORM. WE’LL BE THERE IN 25 MINUTES.</p>
+                  <p class="mb-6">Jake stared at the message.</p>
+                  <p class="mb-6">“We’re busted.”</p>
+                  <p class="mb-6">Everyone stopped talking.</p>
+                  <p class="mb-6">“My parents are coming home!”</p>
+                  <p class="mb-6">The room exploded into action. Jake grabbed a garbage bag while his friends collected cans and bottles. His <b class="highlight quiz-target" data-ans="next door neighbor" data-kor="바로 옆집 이웃">next door neighbor</b>, Mrs. Harris, had already looked through her window twice, so Jake immediately turned off the music.</p>
+                  <p class="mb-6">“Take all the alcohol with you!”</p>
+                  <p class="mb-6">His friend Noah filled a backpack with bottles.</p>
+                  <p class="mb-6">“Your mom is going to <b class="highlight quiz-target" data-ans="confiscate" data-kor="압수하다">confiscate</b> all of this if she finds it.”</p>
+                  <p class="mb-6">“<b class="highlight quiz-target" data-ans="Confiscate" data-kor="압수하다">Confiscate</b> it? She’s going to kill me. I’ll be grounded until I’m thirty.”</p>
+                  <p class="mb-6">Someone had spilled beer on the rug. Two people cleaned it while Jake opened the windows. Another friend found three cans behind the sofa.</p>
+                  <p class="mb-6">Twenty minutes later, everyone was gone.</p>
+                  <p class="mb-6">Jake checked the house carefully. No bottles. No cans. No wet towels. He even sprayed air freshener in the living room.</p>
+                  <p class="mb-6">When his parents walked in, Jake was sitting on the sofa with a history book.</p>
+                  <p class="mb-6">His dad looked surprised. “Studying?”</p>
+                  <p class="mb-6">“I have a test.”</p>
+                  <p class="mb-6">His mom looked around the room.</p>
+                  <p class="mb-6">Jake’s heart was pounding. He had been in trouble at school earlier that year after a teacher <b class="highlight quiz-target" data-ans="took his phone away" data-kor="그의 휴대폰을 빼앗아 갔다">took his phone away</b> during class. His dad had warned him, “You already have enough problems on your <b class="highlight quiz-target" data-ans="school record" data-kor="학교 생활 기록">school record</b>. Just <b class="highlight quiz-target" data-ans="keep your nose clean" data-kor="문제 일으키지 말고 얌전히 지내다">keep your nose clean</b> for a while.”</p>
+                  <p class="mb-6">Jake certainly hadn’t followed that advice tonight.</p>
+                  <p class="mb-6">His mother walked into the kitchen.</p>
+                  <p class="mb-6">Jake waited.</p>
+                  <p class="mb-6">Nothing.</p>
+                  <p class="mb-6">She came back and said, “The roads were terrible. Luckily, we made it home before the storm got worse.”</p>
+                  <p class="mb-6">Jake smiled.</p>
+                  <p class="mb-6">He had actually gotten away with it.</p>
+                  <p class="mb-6">Then his mother picked something up from behind a plant.</p>
+                  <p class="mb-6">“Jake?”</p>
+                  <p class="mb-6">He turned around.</p>
+                  <p class="mb-6">She was holding a bottle opener.</p>
+                  <p class="mb-6">“We don’t own this.”</p>
+              </div>
+              <hr class="border-white/10">
+              <div class="text-slate-400 italic leading-relaxed space-y-6">
+                  <p>제이크의 부모님은 일요일 밤까지 집을 비울 예정이어서, 토요일에 제이크는 친구 열두 명을 집으로 초대했다.</p>
+                  <p>밤 10시쯤 되자 부엌 조리대에는 맥주 캔이 널려 있었고, 테이블에는 보드카 두 병이 놓여 있었다. 음악 소리는 온 <b class="highlight">동네</b>에 들릴 만큼 컸다.</p>
+                  <p>그때 제이크의 휴대폰이 울렸다.</p>
+                  <p>집에 가는 중이야. 폭풍 때문에 야외 콘서트가 취소됐어. 25분 뒤에 도착해.</p>
+                  <p>제이크는 메시지를 바라봤다.</p>
+                  <p>“우리 걸렸다.”</p>
+                  <p>모두가 말을 멈췄다.</p>
+                  <p>“우리 부모님 집에 오고 있어!”</p>
+                  <p>방 안은 순식간에 아수라장이 되었다. 제이크가 쓰레기봉투를 들고 친구들은 캔과 병을 모았다. <b class="highlight">바로 옆집 이웃</b>인 해리스 부인이 벌써 창문으로 두 번이나 내다봤기 때문에 제이크는 즉시 음악을 껐다.</p>
+                  <p>“술 전부 가지고 나가!”</p>
+                  <p>친구 노아가 배낭에 술병을 채웠다.</p>
+                  <p>“너희 엄마가 발견하면 이거 전부 <b class="highlight">압수할</b> 거야.”</p>
+                  <p>“<b class="highlight">압수</b>? 우리 엄마 나 죽일걸. 서른 살까지 외출 금지당할 거야.”</p>
+                  <p>누군가 카펫에 맥주를 쏟아 놓았다. 두 명이 그것을 닦는 동안 제이크는 창문을 열었다. 다른 친구는 소파 뒤에서 맥주 캔 세 개를 발견했다.</p>
+                  <p>20분 뒤에는 모두가 떠난 상태였다.</p>
+                  <p>제이크는 집 안을 꼼꼼하게 확인했다. 술병도 없고, 캔도 없고, 젖은 수건도 없었다. 심지어 거실에 방향제까지 뿌렸다.</p>
+                  <p>부모님이 들어왔을 때 제이크는 역사책을 들고 소파에 앉아 있었다.</p>
+                  <p>아빠가 놀란 표정을 지었다.</p>
+                  <p>“공부하고 있어?”</p>
+                  <p>“시험 있어요.”</p>
+                  <p>엄마가 방 안을 둘러봤다.</p>
+                  <p>제이크의 심장은 세게 뛰고 있었다. 그해 초 학교에서 수업 중 선생님이 그의 <b class="highlight">휴대폰을 빼앗아 간</b> 일 때문에 이미 문제가 된 적이 있었다. 아빠는 그에게 이렇게 경고했었다.</p>
+                  <p>“<b class="highlight">학교 기록</b>에 이미 문제가 충분히 있어. 당분간은 <b class="highlight">문제 일으키지 말고 얌전히 지내</b>.”</p>
+                  <p>오늘 밤 제이크는 그 충고를 전혀 따르지 않았다.</p>
+                  <p>엄마가 부엌으로 들어갔다.</p>
+                  <p>제이크는 기다렸다.</p>
+                  <p>아무 일도 없었다.</p>
+                  <p>엄마가 돌아와 말했다.</p>
+                  <p>“길이 정말 엉망이었어. 다행히 폭풍이 더 심해지기 전에 집에 도착했네.”</p>
+                  <p>제이크는 미소를 지었다.</p>
+                  <p>정말 안 걸리고 넘어간 것이었다.</p>
+                  <p>그때 엄마가 화분 뒤에서 무언가를 집어 들었다.</p>
+                  <p>“제이크?”</p>
+                  <p>제이크가 돌아봤다.</p>
+                  <p>엄마의 손에는 병따개가 들려 있었다.</p>
+                  <p>“우리 집에는 이거 없는데.”</p>
+              </div>
+          </section>
+
+      </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "916630.m4a";
+</script>
+  </body>
+  </html>

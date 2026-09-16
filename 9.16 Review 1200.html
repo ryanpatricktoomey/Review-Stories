@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+      <title>Review Note | The Last Bottle</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+      <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+      </style>
+</head>
+<body class="p-4 md:p-12">
+      <div class="max-w-4xl mx-auto space-y-8">
+
+          <header class="text-center space-y-4">
+              <div class="flex items-center justify-center gap-4">
+                  <span class="text-5xl">🍺</span>
+                  <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Last Bottle</h1>
+              </div>
+              <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+          </header>
+
+          <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+              <div class="flex items-center justify-between px-2">
+                  <div class="flex items-center gap-3">
+                      <span class="text-xl">🎧</span>
+                      <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                  </div>
+                  <div class="flex gap-2">
+                      <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          <span class="text-lg">↺</span> 5s
+                      </button>
+                      <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          5s <span class="text-lg">↻</span>
+                      </button>
+                  </div>
+              </div>
+              <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+          </div>
+
+          <div class="flex justify-center">
+              <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+          </div>
+
+          <section class="glass rounded-3xl overflow-hidden shadow-xl">
+              <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                  <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+              </div>
+              <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                  <tr><td class="p-4"><b class="text-white">tease</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">놀리다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">never let me live it down</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그 일을 두고두고 놀리다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">pretend you're asleep</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">자는 척해</td></tr>
+                  <tr><td class="p-4"><b class="text-white">got my bad luck out of the way</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">액땜했다 / 나쁜 운을 미리 겪었다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">almost got a fine</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">거의 벌금을 낼 뻔했다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">they fined me</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그들이 나에게 벌금을 부과했다</td></tr>
+              </tbody></table>
+          </section>
+
+          <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="glass p-5 rounded-2xl space-y-2 border border-white/5">
+                  <h3 class="text-teal-400 font-bold text-lg">never let me live it down</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">창피한 일을 계속 기억하면서 두고두고 놀린다는 뜻이에요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl space-y-2 border border-white/5">
+                  <h3 class="text-teal-400 font-bold text-lg">got my bad luck out of the way</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">나쁜 일을 이미 겪었으니 이제 운이 좋아질 거라는 의미로, “액땜했다”와 비슷해요.</p>
+              </div>
+          </section>
+
+          <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+              <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                  <p class="mb-6">Jake's parents were at a wedding thirty minutes away. They planned to stay at a nearby hotel, so Jake invited some friends over.</p>
+                  <p class="mb-6">By ten, there were twenty people in the house. Music was playing, and several people had brought beer.</p>
+                  <p class="mb-6">Then Jake's phone rang.</p>
+                  <p class="mb-6">“We're coming home,” his mother said.</p>
+                  <p class="mb-6">“What? Why?”</p>
+                  <p class="mb-6">“Your dad isn't feeling well, so we left the wedding early. We haven't been drinking, and I'd rather sleep at home.”</p>
+                  <p class="mb-6">Jake looked at the crowded living room.</p>
+                  <p class="mb-6">“How far away are you?”</p>
+                  <p class="mb-6">“About twenty-five minutes.”</p>
+                  <p class="mb-6">Jake hung up.</p>
+                  <p class="mb-6">“Party's over! Everybody out!”</p>
+                  <p class="mb-6">His friend Ryan started to <b class="highlight quiz-target" data-ans="tease" data-kor="놀리다">tease</b> him. “You're dead.”</p>
+                  <p class="mb-6">“Very funny. Help me clean.”</p>
+                  <p class="mb-6">Everyone moved fast. They collected the cans, took the alcohol, wiped the tables, and opened the windows.</p>
+                  <p class="mb-6">Twenty minutes later, the house looked normal.</p>
+                  <p class="mb-6">Jake checked every room.</p>
+                  <p class="mb-6">Nothing.</p>
+                  <p class="mb-6">He sat on the sofa just before his parents walked in.</p>
+                  <p class="mb-6">His dad looked miserable.</p>
+                  <p class="mb-6">“I <b class="highlight quiz-target" data-ans="almost got a fine" data-kor="거의 벌금을 낼 뻔했다">almost got a fine</b> on the way home. There was a police car behind me.”</p>
+                  <p class="mb-6">His mother laughed. “Better than me. <b class="highlight quiz-target" data-ans="They fined me" data-kor="그들이 나에게 벌금을 부과했다">They fined me</b> last month.”</p>
+                  <p class="mb-6">Jake smiled. “Maybe we've <b class="highlight quiz-target" data-ans="gotten our bad luck out of the way" data-kor="액땜했다">gotten our bad luck out of the way</b>.”</p>
+                  <p class="mb-6">His parents went upstairs.</p>
+                  <p class="mb-6">Jake couldn't believe it. He had gotten away with the party.</p>
+                  <p class="mb-6">He texted Ryan.</p>
+                  <p class="mb-6">They didn't notice anything.</p>
+                  <p class="mb-6">Ryan replied:</p>
+                  <p class="mb-6">Good. <b class="highlight quiz-target" data-ans="Pretend you're asleep" data-kor="자는 척해">Pretend you're asleep</b> before they start asking questions.</p>
+                  <p class="mb-6">Jake laughed.</p>
+                  <p class="mb-6">If they ever find out, you'll <b class="highlight quiz-target" data-ans="never let me live it down" data-kor="그 일을 두고두고 놀리다">never let me live it down</b>.</p>
+                  <p class="mb-6">Then he heard his mother call from the kitchen.</p>
+                  <p class="mb-6">“Jake?”</p>
+                  <p class="mb-6">His smile disappeared.</p>
+                  <p class="mb-6">She was standing in front of the open freezer.</p>
+                  <p class="mb-6">In her hand was a bottle of vodka.</p>
+                  <p class="mb-6">Someone had put it behind the frozen pizza while cleaning.</p>
+                  <p class="mb-6">His mother looked at the bottle, then at Jake.</p>
+                  <p class="mb-6">“Want to tell me why this is in my freezer?”</p>
+                  <p class="mb-6">Jake stared at it.</p>
+                  <p class="mb-6">They had cleaned everything.</p>
+                  <p class="mb-6">Almost everything.</p>
+              </div>
+              <hr class="border-white/10">
+              <div class="text-slate-400 italic leading-relaxed space-y-6">
+                  <p>제이크의 부모님은 집에서 30분 떨어진 곳에서 열리는 결혼식에 가 있었다. 근처 호텔에서 묵을 예정이었기 때문에 제이크는 친구들을 집으로 초대했다.</p>
+                  <p>밤 10시가 되자 집에는 스무 명이나 있었다. 음악이 나오고 있었고, 몇몇 친구들은 맥주를 가져왔다.</p>
+                  <p>그때 제이크의 휴대폰이 울렸다.</p>
+                  <p>“우리 집에 가는 중이야.” 엄마가 말했다.</p>
+                  <p>“뭐라고요? 왜요?”</p>
+                  <p>“아빠가 몸이 안 좋아서 결혼식에서 일찍 나왔어. 우리 둘 다 술도 안 마셨고, 그냥 집에서 자는 게 나을 것 같아.”</p>
+                  <p>제이크는 사람들로 가득한 거실을 바라봤다.</p>
+                  <p>“얼마나 걸려요?”</p>
+                  <p>“한 25분.”</p>
+                  <p>제이크는 전화를 끊었다.</p>
+                  <p>“파티 끝났어! 다 나가!”</p>
+                  <p>친구 라이언이 그를 <b class="highlight">놀리기</b> 시작했다. “너 죽었다.”</p>
+                  <p>“참 재밌네. 청소나 도와줘.”</p>
+                  <p>모두가 빠르게 움직였다. 캔을 모으고, 술을 챙기고, 테이블을 닦고, 창문을 열었다.</p>
+                  <p>20분 뒤, 집은 평소처럼 보였다.</p>
+                  <p>제이크는 모든 방을 확인했다.</p>
+                  <p>아무것도 없었다.</p>
+                  <p>부모님이 들어오기 직전, 그는 소파에 앉았다.</p>
+                  <p>아빠는 상태가 안 좋아 보였다.</p>
+                  <p>“집에 오는 길에 <b class="highlight">거의 벌금 낼 뻔했어</b>. 뒤에 경찰차가 있었거든.”</p>
+                  <p>엄마가 웃었다. “나보다는 낫네. <b class="highlight">난 지난달에 벌금 냈잖아</b>.”</p>
+                  <p>제이크가 웃었다. “이제 우리 <b class="highlight">액땜은 다 했나 봐요</b>.”</p>
+                  <p>부모님은 위층으로 올라갔다.</p>
+                  <p>제이크는 믿을 수가 없었다. 파티를 열고도 들키지 않은 것이었다.</p>
+                  <p>그는 라이언에게 문자를 보냈다.</p>
+                  <p>아무것도 눈치 못 챘어.</p>
+                  <p>라이언이 답장했다.</p>
+                  <p>잘됐네. 질문하기 시작하기 전에 <b class="highlight">자는 척해</b>.</p>
+                  <p>제이크가 웃었다.</p>
+                  <p>부모님이 알게 되면 넌 이걸로 <b class="highlight">평생 날 놀리겠지</b>.</p>
+                  <p>그때 부엌에서 엄마의 목소리가 들렸다.</p>
+                  <p>“제이크?”</p>
+                  <p>제이크의 미소가 사라졌다.</p>
+                  <p>엄마는 열린 냉동실 앞에 서 있었다.</p>
+                  <p>손에는 보드카 한 병이 들려 있었다.</p>
+                  <p>청소를 하던 누군가가 냉동 피자 뒤에 그 병을 넣어 둔 것이었다.</p>
+                  <p>엄마는 병을 보고, 다시 제이크를 바라봤다.</p>
+                  <p>“이게 왜 우리 집 냉동실에 있는지 설명해 줄래?”</p>
+                  <p>제이크는 술병을 바라봤다.</p>
+                  <p>모든 걸 치웠다고 생각했다.</p>
+                  <p>거의 모든 것을.</p>
+              </div>
+          </section>
+
+      </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "9161200.m4a";
+</script>
+  </body>
+  </html>

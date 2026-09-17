@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | Story: I Got My Freedom Back</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🍺</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">Story: I Got My Freedom Back</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">the cat adopted you</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">고양이가 당신을 선택했네요 / 고양이가 당신을 입양했네요</td></tr>
+                <tr><td class="p-4"><b class="text-white">make an effort</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">노력하다 / 애쓰다</td></tr>
+                <tr><td class="p-4"><b class="text-white">loan words</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">외래어</td></tr>
+                <tr><td class="p-4"><b class="text-white">club</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">클럽</td></tr>
+                <tr><td class="p-4"><b class="text-white">breadwinner</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">주된 생계 책임자</td></tr>
+                <tr><td class="p-4"><b class="text-white">head of the family</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">집안의 가장 / 가족의 대표</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <div class="flex items-center gap-2">
+                    <span class="text-amber-400 text-lg">💡</span>
+                    <h3 class="font-bold text-white">the cat adopted you</h3>
+                </div>
+                <p class="text-slate-300 text-sm leading-relaxed">고양이가 스스로 특정 사람을 선택해서 따라다니거나 그 집에 눌러앉았을 때 장난스럽게 쓰는 표현입니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <div class="flex items-center gap-2">
+                    <span class="text-amber-400 text-lg">💡</span>
+                    <h3 class="font-bold text-white">make an effort</h3>
+                </div>
+                <p class="text-slate-300 text-sm leading-relaxed">단순히 무언가를 ‘해보다’보다, 의식적으로 시간이나 에너지를 들여 노력한다는 느낌입니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <div class="flex items-center gap-2">
+                    <span class="text-amber-400 text-lg">💡</span>
+                    <h3 class="font-bold text-white">breadwinner</h3>
+                </div>
+                <p class="text-slate-300 text-sm leading-relaxed">가족의 생활비를 주로 책임지는 사람을 뜻합니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <div class="flex items-center gap-2">
+                    <span class="text-amber-400 text-lg">💡</span>
+                    <h3 class="font-bold text-white">head of the family</h3>
+                </div>
+                <p class="text-slate-300 text-sm leading-relaxed">가족을 대표하거나 책임지는 사람이라는 뜻입니다. 전통적인 가족 역할에 대해 말할 때 자주 나오는 표현입니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">My wife never told me I couldn't go out.</p>
+                <p class="mb-6">I want to make that clear because, for years, I told the story differently.</p>
+                <p class="mb-6">I said marriage had taken away my freedom.</p>
+                <p class="mb-6">Before I got married, Friday nights belonged to me. My friends and I would meet after work, go to a bar, sometimes end up at a <b class="highlight quiz-target" data-ans="club" data-kor="클럽">club</b>, and come home whenever we felt like it.</p>
+                <p class="mb-6">Then I married Rachel. We had two children.</p>
+                <p class="mb-6">I loved being a husband and father. I liked being the <b class="highlight quiz-target" data-ans="breadwinner" data-kor="주된 생계 책임자">breadwinner</b>. I was proud when we bought our first house. I even liked the boring Sunday mornings when the kids climbed into our bed and nobody wanted to get up.</p>
+                <p class="mb-6">A stray cat started appearing in our garden one winter. I fed him once, then twice, and eventually he began waiting for me beside my car.</p>
+                <p class="mb-6">Rachel laughed. “I think <b class="highlight quiz-target" data-ans="the cat adopted you" data-kor="고양이가 당신을 입양했나 봐">the cat adopted you</b>.”</p>
+                <p class="mb-6">That was my life.</p>
+                <p class="mb-6">And I loved it.</p>
+                <p class="mb-6">I just didn't understand why I had to give up my old life to have it.</p>
+                <p class="mb-6">So I didn't.</p>
+                <p class="mb-6">At first, I went out once or twice a month. Then every Friday.</p>
+                <p class="mb-6">Rachel rarely complained.</p>
+                <p class="mb-6">She just started saying things like, “Remember, Emma has swimming at nine tomorrow.”</p>
+                <p class="mb-6">I'd say, “Of course.”</p>
+                <p class="mb-6">Then I'd come home at three.</p>
+                <p class="mb-6">Saturday morning she'd shake me awake.</p>
+                <p class="mb-6">“Swimming.”</p>
+                <p class="mb-6">“I feel terrible.”</p>
+                <p class="mb-6">“I know.”</p>
+                <p class="mb-6">“Can you take her?”</p>
+                <p class="mb-6">Usually, she did.</p>
+                <p class="mb-6">I told myself I deserved Friday nights because I worked hard. I was paying most of the bills. Wasn't that what being the <b class="highlight quiz-target" data-ans="head of the family" data-kor="집안의 가장">head of the family</b> meant?</p>
+                <p class="mb-6">Then I started spending more too.</p>
+                <p class="mb-6">Drinks. Taxis. Restaurants. A weekend trip with friends.</p>
+                <p class="mb-6">Rachel found the credit-card bill.</p>
+                <p class="mb-6">“We're supposed to be saving.”</p>
+                <p class="mb-6">“I know.”</p>
+                <p class="mb-6">“So why did you spend this much?”</p>
+                <p class="mb-6">“I'm allowed to have a life.”</p>
+                <p class="mb-6">She stared at me.</p>
+                <p class="mb-6">“You have one.”</p>
+                <p class="mb-6">That made me furious.</p>
+                <p class="mb-6">I accused her of wanting me to become one of those men who went to work, came home, and never saw his friends.</p>
+                <p class="mb-6">She said, “I'm asking you to <b class="highlight quiz-target" data-ans="make an effort" data-kor="노력해 달라는">make an effort</b> to be here when you say you'll be here.”</p>
+                <p class="mb-6">I promised I would.</p>
+                <p class="mb-6">And I meant it.</p>
+                <p class="mb-6">That was the strange part.</p>
+                <p class="mb-6">Every Sunday, I meant it.</p>
+                <p class="mb-6">Every Friday, somebody sent a message.</p>
+                <p class="mb-6">One drink?</p>
+                <p class="mb-6">I always thought I could have both.</p>
+                <p class="mb-6">Eventually Rachel stopped arguing.</p>
+                <p class="mb-6">I thought that meant she'd accepted it.</p>
+                <p class="mb-6">She stopped asking when I'd be home. She stopped putting my name on Saturday plans. She opened her own bank account and started paying certain bills herself.</p>
+                <p class="mb-6">I barely noticed.</p>
+                <p class="mb-6">Then one Friday I came home at two in the morning and found an envelope on the kitchen table.</p>
+                <p class="mb-6">Rachel and the children were at her mother's house.</p>
+                <p class="mb-6">The letter wasn't dramatic.</p>
+                <p class="mb-6">That hurt more.</p>
+                <p class="mb-6">She wrote that she was tired of waiting for me to decide whether I wanted to live like a husband or a single man.</p>
+                <p class="mb-6">She wasn't asking me to choose anymore.</p>
+                <p class="mb-6">She had chosen.</p>
+                <p class="mb-6">For the next few months, I had exactly the life I'd been fighting for.</p>
+                <p class="mb-6">Nobody asked when I'd be home.</p>
+                <p class="mb-6">Nobody cared how much I spent.</p>
+                <p class="mb-6">I could go anywhere on Friday night.</p>
+                <p class="mb-6">I could sleep until noon on Saturday.</p>
+                <p class="mb-6">The house was completely quiet.</p>
+                <p class="mb-6">Even the cat disappeared. Rachel had taken him because Emma couldn't sleep without him.</p>
+                <p class="mb-6">One Saturday I woke at eleven thirty and lay there for a while, enjoying the fact that nobody needed anything from me.</p>
+                <p class="mb-6">Then I remembered Emma had swimming.</p>
+                <p class="mb-6">For a second, I almost got up.</p>
+                <p class="mb-6">Then I remembered I wasn't taking her anymore.</p>
+                <p class="mb-6">I had spent years saying I wanted my freedom back.</p>
+                <p class="mb-6">I got it.</p>
+                <p class="mb-6">What I hadn't understood was that freedom wasn't something marriage had stolen from me.</p>
+                <p class="mb-6">It was something I had traded for a life I once wanted badly enough to give it up.</p>
+                <p class="mb-6">By the time I understood that, the trade had already been reversed.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">아내는 나에게 밖에 나가지 말라고 한 적이 한 번도 없었다.</p>
+                <p class="mb-6">이 점은 분명히 하고 싶다. 몇 년 동안 나는 전혀 다르게 이야기했기 때문이다.</p>
+                <p class="mb-6">나는 결혼 때문에 자유를 잃었다고 말했다.</p>
+                <p class="mb-6">결혼 전에는 금요일 밤이 온전히 내 것이었다. 친구들과 퇴근 후 만나 술집에 갔고, 가끔은 <b class="highlight">클럽</b>까지 갔다가 우리가 원하는 시간에 집에 돌아왔다.</p>
+                <p class="mb-6">그러다 레이첼과 결혼했다. 아이도 둘 생겼다.</p>
+                <p class="mb-6">나는 남편이자 아버지인 삶을 좋아했다. 가족의 <b class="highlight">주된 생계 책임자</b>라는 것도 좋았다. 처음으로 집을 샀을 때는 자랑스러웠다. 일요일 아침 아이들이 우리 침대로 기어 올라와 아무도 일어나고 싶어 하지 않던 그 지루한 시간조차 좋았다.</p>
+                <p class="mb-6">어느 겨울에는 길고양이 한 마리가 우리 집 정원에 나타나기 시작했다. 한 번 밥을 줬고, 또 한 번 줬다. 그러자 어느 순간부터 내가 차에서 내리면 옆에서 기다리고 있었다.</p>
+                <p class="mb-6">레이첼이 웃었다.</p>
+                <p class="mb-6">“<b class="highlight">고양이가 당신을 입양했나 봐</b>.”</p>
+                <p class="mb-6">그게 내 삶이었다.</p>
+                <p class="mb-6">그리고 나는 그 삶을 사랑했다.</p>
+                <p class="mb-6">다만 그 삶을 가지려면 왜 예전 삶을 포기해야 하는지 이해하지 못했다.</p>
+                <p class="mb-6">그래서 포기하지 않았다.</p>
+                <p class="mb-6">처음에는 한 달에 한두 번 나갔다. 그러다 매주 금요일이 됐다.</p>
+                <p class="mb-6">레이첼은 거의 불평하지 않았다.</p>
+                <p class="mb-6">그저 이런 말을 하기 시작했다.</p>
+                <p class="mb-6">“내일 엠마 수영 수업 9시인 거 기억하지?”</p>
+                <p class="mb-6">“당연하지.”</p>
+                <p class="mb-6">그러고는 새벽 3시에 집에 들어왔다.</p>
+                <p class="mb-6">토요일 아침이면 아내가 나를 깨웠다.</p>
+                <p class="mb-6">“수영.”</p>
+                <p class="mb-6">“나 너무 힘들어.”</p>
+                <p class="mb-6">“알아.”</p>
+                <p class="mb-6">“당신이 데려가면 안 돼?”</p>
+                <p class="mb-6">대부분 아내가 데려갔다.</p>
+                <p class="mb-6">나는 열심히 일하니까 금요일 밤 정도는 누릴 자격이 있다고 생각했다. 생활비 대부분을 내가 내고 있었다. <b class="highlight">집안의 가장</b>이라는 게 그런 것 아닌가?</p>
+                <p class="mb-6">그러다 돈도 더 쓰기 시작했다.</p>
+                <p class="mb-6">술값. 택시비. 식당. 친구들과 떠난 주말여행.</p>
+                <p class="mb-6">레이첼이 카드 명세서를 발견했다.</p>
+                <p class="mb-6">“우리 저축하기로 했잖아.”</p>
+                <p class="mb-6">“알아.”</p>
+                <p class="mb-6">“그런데 왜 이렇게 많이 썼어?”</p>
+                <p class="mb-6">“나도 내 인생을 살 권리가 있잖아.”</p>
+                <p class="mb-6">아내가 나를 바라봤다.</p>
+                <p class="mb-6">“이미 살고 있잖아.”</p>
+                <p class="mb-6">그 말에 나는 화가 났다.</p>
+                <p class="mb-6">나는 아내가 나를 회사에 갔다가 집에 와서 친구도 만나지 않는 그런 남자로 만들려고 한다고 비난했다.</p>
+                <p class="mb-6">아내가 말했다.</p>
+                <p class="mb-6">“나는 그냥 당신이 온다고 한 시간에 여기 있으려고 <b class="highlight">노력해 달라는</b> 거야.”</p>
+                <p class="mb-6">나는 그러겠다고 약속했다.</p>
+                <p class="mb-6">그리고 진심이었다.</p>
+                <p class="mb-6">그게 이상한 점이었다.</p>
+                <p class="mb-6">일요일마다 진심이었다.</p>
+                <p class="mb-6">그러다 금요일이 되면 누군가 메시지를 보냈다.</p>
+                <p class="mb-6">한잔할래?</p>
+                <p class="mb-6">나는 늘 둘 다 가질 수 있다고 생각했다.</p>
+                <p class="mb-6">그러다 어느 순간 레이첼은 더 이상 싸우지 않았다.</p>
+                <p class="mb-6">나는 아내가 받아들인 줄 알았다.</p>
+                <p class="mb-6">몇 시에 들어올 건지 묻지 않았다. 토요일 계획에 내 이름을 넣지도 않았다. 자기 명의의 은행 계좌를 만들었고 몇몇 생활비도 직접 내기 시작했다.</p>
+                <p class="mb-6">나는 거의 눈치채지 못했다.</p>
+                <p class="mb-6">그러던 어느 금요일, 새벽 2시에 집에 돌아오니 부엌 식탁 위에 봉투 하나가 놓여 있었다.</p>
+                <p class="mb-6">레이첼과 아이들은 장모님 집에 가 있었다.</p>
+                <p class="mb-6">편지에는 극적인 말이 없었다.</p>
+                <p class="mb-6">그래서 더 아팠다.</p>
+                <p class="mb-6">아내는 내가 남편처럼 살고 싶은 건지, 독신 남자처럼 살고 싶은 건지 결정하기를 기다리는 데 지쳤다고 썼다.</p>
+                <p class="mb-6">이제는 나에게 선택하라고 요구하지 않겠다고 했다.</p>
+                <p class="mb-6">아내가 선택했다고 했다.</p>
+                <p class="mb-6">그 뒤 몇 달 동안 나는 내가 그토록 원했던 삶을 정확히 갖게 됐다.</p>
+                <p class="mb-6">아무도 몇 시에 들어오는지 묻지 않았다.</p>
+                <p class="mb-6">얼마를 쓰든 아무도 신경 쓰지 않았다.</p>
+                <p class="mb-6">금요일 밤에는 어디든 갈 수 있었다.</p>
+                <p class="mb-6">토요일에는 정오까지 잘 수 있었다.</p>
+                <p class="mb-6">집은 완전히 조용했다.</p>
+                <p class="mb-6">고양이까지 사라졌다. 엠마가 고양이 없이는 잠을 못 잔다며 레이첼이 데려갔다.</p>
+                <p class="mb-6">어느 토요일 오전 11시 반에 눈을 떴다. 아무도 나에게 아무것도 요구하지 않는다는 사실을 즐기며 잠시 누워 있었다.</p>
+                <p class="mb-6">그러다 엠마의 수영 수업이 생각났다.</p>
+                <p class="mb-6">순간적으로 일어날 뻔했다.</p>
+                <p class="mb-6">그러다 이제는 내가 데려가는 게 아니라는 사실이 떠올랐다.</p>
+                <p class="mb-6">나는 몇 년 동안 자유를 되찾고 싶다고 말했다.</p>
+                <p class="mb-6">결국 자유를 얻었다.</p>
+                <p class="mb-6">내가 이해하지 못했던 것은 결혼이 내 자유를 빼앗은 것이 아니었다는 사실이다.</p>
+                <p class="mb-6">그 자유는 내가 한때 너무나 원했던 삶을 얻기 위해 스스로 포기했던 것이었다.</p>
+                <p class="mb-6">그 사실을 이해했을 때는 이미 그 교환이 반대로 이루어진 뒤였다.</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+    function skipAudio(seconds) {
+        const player = document.getElementById('player');
+        if (player.src) {
+            player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+        }
+    }
+
+    function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+    let _quizOriginals = new Map();
+
+    function toggleQuiz() {
+        const btn = document.getElementById('quizBtn');
+        const isQuiz = btn.innerText.includes("Quiz");
+        const targets = document.querySelectorAll('.quiz-target');
+        const cells = document.querySelectorAll('.mystery-cell');
+
+        if (isQuiz) {
+            btn.innerText = "Study Mode 📖";
+            cells.forEach(c => c.classList.add('quiz-hidden'));
+            targets.forEach(t => {
+                const ans = t.dataset.ans; const kor = t.dataset.kor;
+                _quizOriginals.set(t, t.innerHTML);
+                t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+            });
+        } else {
+            btn.innerText = "Quiz Mode 👻";
+            cells.forEach(c => c.classList.remove('quiz-hidden'));
+            targets.forEach(t => {
+                if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+            });
+            _quizOriginals.clear();
+        }
+    }
+
+    function checkQuiz(i, a) {
+        if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+            i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+            confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+            checkAllSolved();
+        } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+    }
+
+    function checkAllSolved() {
+        const inputs = document.querySelectorAll('.quiz-input');
+        if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+            var duration = 3 * 1000; var end = Date.now() + duration;
+            (function frame() {
+                confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                if (Date.now() < end) requestAnimationFrame(frame);
+            }());
+        }
+    }
+
+    document.getElementById('player').src = "917715.m4a";
+</script>
+</body>
+</html>

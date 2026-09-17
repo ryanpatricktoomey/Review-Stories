@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | Story: I Refused to Choose</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">⚖️</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">Story: I Refused to Choose</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">care what others think</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">다른 사람들이 어떻게 생각하는지 신경 쓰다</td></tr>
+                <tr><td class="p-4"><b class="text-white">repairs</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">수리 / 수리 작업</td></tr>
+                <tr><td class="p-4"><b class="text-white">staycation</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">집이나 가까운 곳에서 보내는 휴가</td></tr>
+                <tr><td class="p-4"><b class="text-white">new guy</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">새로 온 남자 / 신입</td></tr>
+                <tr><td class="p-4"><b class="text-white">fresh face</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">새로운 얼굴 / 새로 온 사람</td></tr>
+                <tr><td class="p-4"><b class="text-white">gain it all back</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">(뺀 체중 등을) 전부 다시 찌다</td></tr>
+                <tr><td class="p-4"><b class="text-white">hangry</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">배고파서 짜증 나는</td></tr>
+                <tr><td class="p-4"><b class="text-white">fasting</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">단식 / 공복 유지</td></tr>
+                <tr><td class="p-4"><b class="text-white">skinny fat</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">겉보기에는 말랐지만 체지방이 많은 상태</td></tr>
+                <tr><td class="p-4"><b class="text-white">obese</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">비만인</td></tr>
+                <tr><td class="p-4"><b class="text-white">obesity</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">비만</td></tr>
+                <tr><td class="p-4"><b class="text-white">visceral fat</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">내장 지방</td></tr>
+                <tr><td class="p-4"><b class="text-white">morbidly obese</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">고도 비만인 / 심각한 비만 상태인</td></tr>
+                <tr><td class="p-4"><b class="text-white">overweight</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">과체중인</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <div class="flex items-center gap-2">
+                    <span class="text-amber-400 text-lg">💡</span>
+                    <h3 class="font-bold text-white">care what others think</h3>
+                </div>
+                <p class="text-slate-300 text-sm leading-relaxed">다른 사람의 평가나 시선을 중요하게 생각한다는 뜻입니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <div class="flex items-center gap-2">
+                    <span class="text-amber-400 text-lg">💡</span>
+                    <h3 class="font-bold text-white">gain it all back</h3>
+                </div>
+                <p class="text-slate-300 text-sm leading-relaxed">특히 힘들게 뺀 체중이 전부 다시 늘어나는 상황에서 자주 씁니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <div class="flex items-center gap-2">
+                    <span class="text-amber-400 text-lg">💡</span>
+                    <h3 class="font-bold text-white">hangry</h3>
+                </div>
+                <p class="text-slate-300 text-sm leading-relaxed">hungry + angry. 너무 배가 고파서 짜증이 나거나 예민해진 상태입니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <div class="flex items-center gap-2">
+                    <span class="text-amber-400 text-lg">💡</span>
+                    <h3 class="font-bold text-white">skinny fat</h3>
+                </div>
+                <p class="text-slate-300 text-sm leading-relaxed">겉으로는 마른 편이지만 체지방 비율이 높은 상태를 가리키는 비격식 표현입니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <div class="flex items-center gap-2">
+                    <span class="text-amber-400 text-lg">💡</span>
+                    <h3 class="font-bold text-white">fresh face</h3>
+                </div>
+                <p class="text-slate-300 text-sm leading-relaxed">어떤 직장이나 집단에 새롭게 들어온 사람을 뜻할 수 있습니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <div class="flex items-center gap-2">
+                    <span class="text-amber-400 text-lg">💡</span>
+                    <h3 class="font-bold text-white">visceral fat</h3>
+                </div>
+                <p class="text-slate-300 text-sm leading-relaxed">복부의 장기 주변에 쌓이는 지방을 뜻합니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">For most of my adult life, I ate whatever I wanted.</p>
+                <p class="mb-6">Pizza twice a week. Beer most nights. Huge restaurant meals. If I was full and dessert arrived, I ate dessert anyway.</p>
+                <p class="mb-6">By thirty-eight, I was <b class="highlight quiz-target" data-ans="obese" data-kor="비만인">obese</b>.</p>
+                <p class="mb-6">My doctor talked to me about <b class="highlight quiz-target" data-ans="obesity" data-kor="비만">obesity</b>, <b class="highlight quiz-target" data-ans="visceral fat" data-kor="내장 지방">visceral fat</b>, and the health problems I might face later. I went home frightened enough to finally change.</p>
+                <p class="mb-6">Over the next eighteen months, I lost thirty kilograms.</p>
+                <p class="mb-6">Eventually, I wasn't even <b class="highlight quiz-target" data-ans="overweight" data-kor="과체중인">overweight</b>.</p>
+                <p class="mb-6">I felt fantastic.</p>
+                <p class="mb-6">Then I made a very stupid decision.</p>
+                <p class="mb-6">I decided I wanted my old diet back.</p>
+                <p class="mb-6">Not my old body. Just my old diet.</p>
+                <p class="mb-6">I didn't see why I had to choose.</p>
+                <p class="mb-6">My solution was simple: if I ate too much one day, I'd compensate the next day with <b class="highlight quiz-target" data-ans="fasting" data-kor="단식">fasting</b>.</p>
+                <p class="mb-6">Friday night, I'd eat pizza and drink beer with my friends.</p>
+                <p class="mb-6">Saturday, I'd barely eat.</p>
+                <p class="mb-6">Sunday brunch? Fine. I'd skip dinner.</p>
+                <p class="mb-6">I called it balance.</p>
+                <p class="mb-6">My wife called it ridiculous.</p>
+                <p class="mb-6">“You already found something that works,” she said.</p>
+                <p class="mb-6">“Yes, but I don't want to spend my entire life watching what I eat.”</p>
+                <p class="mb-6">“So don't. Have pizza sometimes.”</p>
+                <p class="mb-6">“Sometimes isn't the point.”</p>
+                <p class="mb-6">That was the part she couldn't understand.</p>
+                <p class="mb-6">I didn't want moderation.</p>
+                <p class="mb-6">I wanted to eat exactly as I had before and somehow keep the body I'd earned afterward.</p>
+                <p class="mb-6">At first, my system worked.</p>
+                <p class="mb-6">Then my <b class="highlight quiz-target" data-ans="fasting" data-kor="단식하는">fasting</b> days became miserable. I was constantly <b class="highlight quiz-target" data-ans="hangry" data-kor="배고파서 짜증 나는">hangry</b>, so I started avoiding people. When the <b class="highlight quiz-target" data-ans="new guy" data-kor="새로 온 남자">new guy</b> at work offered me a sandwich one afternoon, I snapped, “Do I look like I need a sandwich?”</p>
+                <p class="mb-6">The poor <b class="highlight quiz-target" data-ans="fresh face" data-kor="새로운 얼굴">fresh face</b> had known me for three days.</p>
+                <p class="mb-6">Then the weight started coming back.</p>
+                <p class="mb-6">Three kilograms.</p>
+                <p class="mb-6">Five.</p>
+                <p class="mb-6">Eight.</p>
+                <p class="mb-6">I panicked.</p>
+                <p class="mb-6">I increased the <b class="highlight quiz-target" data-ans="fasting" data-kor="단식">fasting</b>.</p>
+                <p class="mb-6">That made the overeating worse.</p>
+                <p class="mb-6">Soon every large meal required punishment the next day.</p>
+                <p class="mb-6">My wife stopped enjoying restaurants with me because I'd spend the entire meal talking about what I wasn't going to eat tomorrow.</p>
+                <p class="mb-6">For our anniversary, we'd planned a <b class="highlight quiz-target" data-ans="staycation" data-kor="스테이케이션">staycation</b> because our house needed expensive <b class="highlight quiz-target" data-ans="repairs" data-kor="수리 작업">repairs</b>.</p>
+                <p class="mb-6">She booked our favorite restaurant.</p>
+                <p class="mb-6">I promised myself I would just enjoy the evening.</p>
+                <p class="mb-6">I couldn't.</p>
+                <p class="mb-6">I ate everything I wanted, then spent the walk home calculating how long I'd need to fast.</p>
+                <p class="mb-6">My wife finally stopped.</p>
+                <p class="mb-6">“Can I ask you something?”</p>
+                <p class="mb-6">“What?”</p>
+                <p class="mb-6">“Which life do you actually want?”</p>
+                <p class="mb-6">“I want both.”</p>
+                <p class="mb-6">“I know. That's the problem.”</p>
+                <p class="mb-6">A year later, I had <b class="highlight quiz-target" data-ans="gained it all back" data-kor="전부 다시 찌다">gained it all back</b>.</p>
+                <p class="mb-6">Actually, I'd gained four kilograms more.</p>
+                <p class="mb-6">I became obsessed with whether I looked <b class="highlight quiz-target" data-ans="skinny fat" data-kor="겉보기에는 말랐지만 체지방이 많은 상태">skinny fat</b>, whether people noticed, whether my coworkers remembered how thin I'd been.</p>
+                <p class="mb-6">I had always claimed I didn't <b class="highlight quiz-target" data-ans="care what others think" data-kor="다른 사람들이 어떻게 생각하는지 신경 쓰다">care what others think</b>.</p>
+                <p class="mb-6">Now I avoided people I hadn't seen in months because I didn't want them to see me.</p>
+                <p class="mb-6">Eventually, I went back to my doctor.</p>
+                <p class="mb-6">I expected some clever new solution.</p>
+                <p class="mb-6">Instead, he basically told me what I'd already learned the first time: find habits I could actually live with.</p>
+                <p class="mb-6">That was when I finally understood what I'd done.</p>
+                <p class="mb-6">I had treated moderation like failure.</p>
+                <p class="mb-6">Pizza sometimes wasn't enough. Beer sometimes wasn't enough. I wanted the body that came from one lifestyle and the pleasures that came from a completely different one.</p>
+                <p class="mb-6">So I kept swinging between them until I couldn't maintain either.</p>
+                <p class="mb-6">It took me eighteen months to lose thirty kilograms.</p>
+                <p class="mb-6">It took me twelve months to <b class="highlight quiz-target" data-ans="gain it all back" data-kor="전부 다시 찌다">gain it all back</b>.</p>
+                <p class="mb-6">And the second time I started losing weight, I finally accepted the one thing I'd spent years trying to avoid:</p>
+                <p class="mb-6">If I wanted a different life, some parts of my old one couldn't come with me.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">성인이 된 뒤 대부분의 시간 동안 나는 먹고 싶은 것을 마음대로 먹었다.</p>
+                <p class="mb-6">일주일에 두 번 피자를 먹었다. 거의 매일 밤 맥주를 마셨다. 식당에서는 엄청난 양을 먹었다. 배가 이미 부른 상태에서 디저트가 나와도 그냥 먹었다.</p>
+                <p class="mb-6">서른여덟 살이 되었을 때 나는 <b class="highlight">비만 상태였다</b>.</p>
+                <p class="mb-6">의사는 <b class="highlight">비만</b>, <b class="highlight">내장 지방</b>, 그리고 나중에 생길 수 있는 건강 문제에 대해 이야기했다. 나는 겁을 먹고 집으로 돌아왔고, 마침내 생활 방식을 바꾸었다.</p>
+                <p class="mb-6">그 후 18개월 동안 30kg을 감량했다.</p>
+                <p class="mb-6">결국 <b class="highlight">과체중도</b> 아니게 되었다.</p>
+                <p class="mb-6">기분은 정말 좋았다.</p>
+                <p class="mb-6">그러다 아주 어리석은 결정을 했다.</p>
+                <p class="mb-6">예전 식습관으로 돌아가고 싶다고 생각한 것이다.</p>
+                <p class="mb-6">예전 몸으로 돌아가고 싶은 것은 아니었다. 예전처럼 먹고 싶었을 뿐이다.</p>
+                <p class="mb-6">왜 둘 중 하나를 선택해야 하는지 이해할 수 없었다.</p>
+                <p class="mb-6">내 해결책은 간단했다. 하루 너무 많이 먹으면 다음 날 <b class="highlight">단식으로</b> 보상하는 것이었다.</p>
+                <p class="mb-6">금요일 밤에는 친구들과 피자를 먹고 맥주를 마셨다.</p>
+                <p class="mb-6">토요일에는 거의 먹지 않았다.</p>
+                <p class="mb-6">일요일 브런치? 괜찮았다. 저녁을 거르면 됐다.</p>
+                <p class="mb-6">나는 그것을 균형이라고 불렀다.</p>
+                <p class="mb-6">아내는 말도 안 된다고 했다.</p>
+                <p class="mb-6">“이미 효과 있는 방법을 찾았잖아.”</p>
+                <p class="mb-6">“알아. 하지만 평생 먹는 걸 신경 쓰면서 살고 싶지는 않아.”</p>
+                <p class="mb-6">“그럼 그러지 마. 가끔 피자 먹어.”</p>
+                <p class="mb-6">“가끔 먹는 게 중요한 게 아니야.”</p>
+                <p class="mb-6">아내가 이해하지 못했던 부분이 바로 그것이었다.</p>
+                <p class="mb-6">나는 적당히 먹고 싶지 않았다.</p>
+                <p class="mb-6">예전과 똑같이 먹으면서, 그 후 힘들게 만든 몸은 그대로 유지하고 싶었다.</p>
+                <p class="mb-6">처음에는 내 방법이 통했다.</p>
+                <p class="mb-6">그러다 <b class="highlight">단식하는</b> 날들이 견디기 힘들어졌다. 늘 배고파서 <b class="highlight">짜증이 났고</b>, 사람들을 피하기 시작했다. 회사의 <b class="highlight">신입 직원이</b> 어느 오후 샌드위치를 권했을 때 나는 짜증을 내며 말했다.</p>
+                <p class="mb-6">“내가 샌드위치가 필요한 사람처럼 보여요?”</p>
+                <p class="mb-6">그 불쌍한 <b class="highlight">새 얼굴은</b> 나를 안 지 사흘밖에 되지 않았다.</p>
+                <p class="mb-6">그러다 체중이 다시 늘기 시작했다.</p>
+                <p class="mb-6">3kg.</p>
+                <p class="mb-6">5kg.</p>
+                <p class="mb-6">8kg.</p>
+                <p class="mb-6">나는 당황했다.</p>
+                <p class="mb-6"><b class="highlight">단식 시간을</b> 늘렸다.</p>
+                <p class="mb-6">그러자 폭식이 더 심해졌다.</p>
+                <p class="mb-6">얼마 지나지 않아 많이 먹은 날 다음에는 반드시 스스로를 벌주듯 굶게 되었다.</p>
+                <p class="mb-6">아내는 나와 식당에 가는 것을 더 이상 즐기지 않았다. 식사 내내 내가 내일 무엇을 먹지 않을 것인지 이야기했기 때문이다.</p>
+                <p class="mb-6">결혼기념일에는 집에 비싼 <b class="highlight">수리가</b> 필요해서 멀리 여행하는 대신 <b class="highlight">스테이케이션을</b> 하기로 했다.</p>
+                <p class="mb-6">아내는 우리가 가장 좋아하는 식당을 예약했다.</p>
+                <p class="mb-6">나는 그날 저녁만큼은 그냥 즐기겠다고 다짐했다.</p>
+                <p class="mb-6">그러지 못했다.</p>
+                <p class="mb-6">먹고 싶은 것을 전부 먹은 뒤, 집으로 걸어가는 내내 몇 시간이나 굶어야 할지 계산했다.</p>
+                <p class="mb-6">결국 아내가 걸음을 멈췄다.</p>
+                <p class="mb-6">“하나만 물어봐도 돼?”</p>
+                <p class="mb-6">“뭔데?”</p>
+                <p class="mb-6">“당신은 대체 어느 쪽 삶을 원하는 거야?”</p>
+                <p class="mb-6">“둘 다.”</p>
+                <p class="mb-6">“알아. 그게 문제야.”</p>
+                <p class="mb-6">1년 뒤, 나는 뺐던 체중을 <b class="highlight">전부 다시 joyed</b>.</p>
+                <p class="mb-6">사실 4kg이 더 늘었다.</p>
+                <p class="mb-6">나는 내가 <b class="highlight">마른 비만처럼</b> 보이는지, 사람들이 알아차리는지, 회사 사람들이 내가 날씬했던 모습을 기억하는지에 집착하기 시작했다.</p>
+                <p class="mb-6">나는 늘 <b class="highlight">다른 사람들이 어떻게 생각하는지 신경 쓰지 않는다고</b> 말해왔다.</p>
+                <p class="mb-6">이제는 몇 달 동안 만나지 않았던 사람들이 살이 다시 찐 나를 볼까 봐 그들을 피했다.</p>
+                <p class="mb-6">결국 다시 의사를 찾아갔다.</p>
+                <p class="mb-6">이번에는 뭔가 새로운 해결책을 알려줄 거라고 생각했다.</p>
+                <p class="mb-6">하지만 의사는 사실상 내가 처음에 이미 배웠던 것을 말했다. 실제로 계속 유지할 수 있는 생활 습관을 찾으라는 것이었다.</p>
+                <p class="mb-6">그제야 내가 무슨 짓을 했는지 이해했다.</p>
+                <p class="mb-6">나는 절제를 실패처럼 생각했다.</p>
+                <p class="mb-6">가끔 먹는 피자로는 부족했다. 가끔 마시는 맥주로는 부족했다. 나는 한 가지 생활 방식으로 얻은 몸과 완전히 다른 생활 방식이 주는 즐거움을 동시에 원했다.</p>
+                <p class="mb-6">그래서 두 삶 사이를 계속 오가다가 결국 어느 쪽도 유지하지 못했다.</p>
+                <p class="mb-6">30kg을 빼는 데는 18개월이 걸렸다.</p>
+                <p class="mb-6">그 체중을 <b class="highlight">전부 다시 찌는 데는</b> 12개월밖에 걸리지 않았다.</p>
+                <p class="mb-6">그리고 두 번째로 체중 감량을 시작했을 때, 나는 마침내 몇 년 동안 피하려 했던 사실을 받아들였다.</p>
+                <p class="mb-6">다른 삶을 원한다면, 예전 삶의 일부는 함께 가져갈 수 없다는 것을.</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+    function skipAudio(seconds) {
+        const player = document.getElementById('player');
+        if (player.src) {
+            player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+        }
+    }
+
+    function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+    let _quizOriginals = new Map();
+
+    function toggleQuiz() {
+        const btn = document.getElementById('quizBtn');
+        const isQuiz = btn.innerText.includes("Quiz");
+        const targets = document.querySelectorAll('.quiz-target');
+        const cells = document.querySelectorAll('.mystery-cell');
+
+        if (isQuiz) {
+            btn.innerText = "Study Mode 📖";
+            cells.forEach(c => c.classList.add('quiz-hidden'));
+            targets.forEach(t => {
+                const ans = t.dataset.ans; const kor = t.dataset.kor;
+                _quizOriginals.set(t, t.innerHTML);
+                t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+            });
+        } else {
+            btn.innerText = "Quiz Mode 👻";
+            cells.forEach(c => c.classList.remove('quiz-hidden'));
+            targets.forEach(t => {
+                if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+            });
+            _quizOriginals.clear();
+        }
+    }
+
+    function checkQuiz(i, a) {
+        if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+            i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+            confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+            checkAllSolved();
+        } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+    }
+
+    function checkAllSolved() {
+        const inputs = document.querySelectorAll('.quiz-input');
+        if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+            var duration = 3 * 1000; var end = Date.now() + duration;
+            (function frame() {
+                confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                if (Date.now() < end) requestAnimationFrame(frame);
+            }());
+        }
+    }
+
+    document.getElementById('player').src = "9171020.m4a";
+</script>
+</body>
+</html>

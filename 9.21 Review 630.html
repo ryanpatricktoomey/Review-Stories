@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Family That Never Gets Tired</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🍽️</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Family That Never Gets Tired</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">take a breath</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">숨을 한번 고르다 / 한숨 돌리다</td></tr>
+                <tr><td class="p-4"><b class="text-white">girly girl</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">아주 여성스러운 스타일을 좋아하는 여자</td></tr>
+                <tr><td class="p-4"><b class="text-white">empathize</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">공감하다 / 상대의 입장을 이해하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">good constitution</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">튼튼한 체질 / 건강한 체질</td></tr>
+                <tr><td class="p-4"><b class="text-white">energizer bunny</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">지칠 줄 모르는 사람 / 에너지가 넘치는 사람</td></tr>
+                <tr><td class="p-4"><b class="text-white">grouchy</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">짜증이 난 / 까칠한 / 퉁명스러운</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl space-y-2 border-l-4 border-teal-500">
+                <h3 class="font-bold text-teal-400 text-lg">girly girl</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">옷, 화장, 액세서리 등 전통적으로 여성스럽다고 여겨지는 것을 아주 좋아하는 여성을 가볍게 표현할 때 써요. 상황에 따라 조금 고정관념처럼 들릴 수도 있어요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2 border-l-4 border-teal-500">
+                <h3 class="font-bold text-teal-400 text-lg">good constitution</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">constitution은 여기서 헌법이 아니라 타고난 신체 상태나 체질을 뜻해요. 다만 일상 대화에서는 strong/healthy constitution이 더 자연스러운 경우가 많아요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2 border-l-4 border-teal-500">
+                <h3 class="font-bold text-teal-400 text-lg">energizer bunny</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">아무리 활동해도 지치지 않는 것처럼 보이는 사람을 말해요. 계속 움직이고 에너지가 넘치는 사람에게 장난스럽게 사용할 수 있어요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2 border-l-4 border-teal-500">
+                <h3 class="font-bold text-teal-400 text-lg">grouchy</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">기분이 안 좋아서 쉽게 짜증을 내거나 퉁명스럽게 구는 상태예요. 사람의 영구적인 성격보다는 그날의 기분을 설명할 때도 자주 써요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Meeting her boyfriend’s family for the first time was stressful enough. Meeting all of them at Chuseok was worse.</p>
+                <p class="mb-6">When Mina arrived at Jun’s parents’ apartment, his mother hugged her immediately.</p>
+                <p class="mb-6">“You’re so pretty! Jun said you were a <b class="highlight quiz-target" data-ans="girly girl" data-kor="아주 여성스러운 스타일을 좋아하는 여자">girly girl</b>.”</p>
+                <p class="mb-6">Mina looked at Jun.</p>
+                <p class="mb-6">“I said you like dresses,” he whispered.</p>
+                <p class="mb-6">Before Mina could answer, his mother pulled her toward the kitchen.</p>
+                <p class="mb-6">“Come help me finish the jeon!”</p>
+                <p class="mb-6">For the next hour, Mina chopped vegetables, carried plates, greeted relatives, and answered questions about her job. Jun’s mother never stopped moving. She cooked, cleaned, refilled drinks, and somehow reorganized a cabinet at the same time.</p>
+                <p class="mb-6">“Your mom is like an <b class="highlight quiz-target" data-ans="Energizer Bunny" data-kor="지칠 줄 모르는 사람">Energizer Bunny</b>,” Mina whispered.</p>
+                <p class="mb-6">Jun laughed. “She takes after my grandmother.”</p>
+                <p class="mb-6">Then his grandmother entered carrying two huge bags of fruit.</p>
+                <p class="mb-6">Mina stared. The woman was seventy-eight.</p>
+                <p class="mb-6">After lunch, Mina expected everyone to relax.</p>
+                <p class="mb-6">Instead, Jun’s father stood up. “Let’s go hiking!”</p>
+                <p class="mb-6">“Hiking?” Mina said.</p>
+                <p class="mb-6">“It’s our Chuseok tradition,” Jun explained.</p>
+                <p class="mb-6">Twenty minutes later, the entire family was climbing a steep hill.</p>
+                <p class="mb-6">Jun’s mother was far ahead. Grandma passed Mina without difficulty.</p>
+                <p class="mb-6">“Come on!” Grandma shouted. “You’re young!”</p>
+                <p class="mb-6">Mina stopped to <b class="highlight quiz-target" data-ans="take a breath" data-kor="숨을 한번 고르다">take a breath</b>.</p>
+                <p class="mb-6">Jun smiled. “My family has pretty <b class="highlight quiz-target" data-ans="good constitutions" data-kor="튼튼한 체질">good constitutions</b>.”</p>
+                <p class="mb-6">Mina didn’t answer.</p>
+                <p class="mb-6">She was beginning to understand something. Jun exercised before work, went cycling on weekends, and became <b class="highlight quiz-target" data-ans="grouchy" data-kor="짜증이 난">grouchy</b> if he stayed inside all day.</p>
+                <p class="mb-6">Apparently, energy ran in the family.</p>
+                <p class="mb-6">At the top, Mina collapsed onto a bench.</p>
+                <p class="mb-6">She tried to <b class="highlight quiz-target" data-ans="empathize" data-kor="공감하다">empathize</b> with them. Maybe this was how they relaxed. Maybe some families genuinely enjoyed spending holidays exhausting themselves.</p>
+                <p class="mb-6">Then Jun’s sister clapped her hands.</p>
+                <p class="mb-6">“Okay! Who wants to play badminton?”</p>
+                <p class="mb-6">Everyone raised a hand.</p>
+                <p class="mb-6">Mina slowly looked at Jun.</p>
+                <p class="mb-6">“And after badminton?”</p>
+                <p class="mb-6">“Karaoke.”</p>
+                <p class="mb-6">“And after karaoke?”</p>
+                <p class="mb-6">“My uncle usually suggests bowling.”</p>
+                <p class="mb-6">Mina took out her phone.</p>
+                <p class="mb-6">“Oh no.”</p>
+                <p class="mb-6">“What?”</p>
+                <p class="mb-6">“My mom just texted me.”</p>
+                <p class="mb-6">Jun looked concerned. “Is everything okay?”</p>
+                <p class="mb-6">Mina stood up.</p>
+                <p class="mb-6">“She needs help with something. Family emergency.”</p>
+                <p class="mb-6">“What happened?”</p>
+                <p class="mb-6">Mina paused.</p>
+                <p class="mb-6">“She… can’t open a jar.”</p>
+                <p class="mb-6">Jun stared at her.</p>
+                <p class="mb-6">“A jar?”</p>
+                <p class="mb-6">“It’s a very important jar.”</p>
+                <p class="mb-6">Ten minutes later, Mina was in a taxi.</p>
+                <p class="mb-6">She leaned back, closed her eyes, and smiled.</p>
+                <p class="mb-6">For the first time all day, nobody was asking her to do anything.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">남자친구의 가족을 처음 만나는 것만으로도 충분히 긴장되는 일이었다. 그런데 추석에 온 가족을 한꺼번에 만나는 건 더 힘들었다.</p>
+                <p class="mb-6">미나가 준의 부모님 아파트에 도착하자 그의 어머니가 곧바로 미나를 껴안았다.</p>
+                <p class="mb-6">“너무 예쁘다! 준이가 <b class="highlight">아주 여성스러운 스타일을 좋아하는 아가씨</b>라고 하던데.”</p>
+                <p class="mb-6">미나는 준을 쳐다봤다.</p>
+                <p class="mb-6">“네가 원피스를 좋아한다고 했어.” 준이 작은 목소리로 말했다.</p>
+                <p class="mb-6">미나가 대답하기도 전에 어머니는 그녀를 부엌으로 데려갔다.</p>
+                <p class="mb-6">“와서 전 부치는 것 좀 도와줘!”</p>
+                <p class="mb-6">그 후 한 시간 동안 미나는 채소를 썰고, 접시를 나르고, 친척들에게 인사하고, 직장에 관한 질문에 대답했다. 준의 어머니는 한순간도 가만히 있지 않았다. 요리하고, 청소하고, 음료를 채워주면서 동시에 찬장 정리까지 했다.</p>
+                <p class="mb-6">“너희 어머니 완전 <b class="highlight">지칠 줄 모르는 분</b>이네.” 미나가 속삭였다.</p>
+                <p class="mb-6">준이 웃었다. “할머니를 닮으셨어.”</p>
+                <p class="mb-6">그때 할머니가 커다란 과일 봉지 두 개를 들고 들어왔다.</p>
+                <p class="mb-6">미나는 할머니를 바라봤다. 일흔여덟 살이었다.</p>
+                <p class="mb-6">점심 식사가 끝난 뒤 미나는 이제 모두 좀 쉬겠거니 했다.</p>
+                <p class="mb-6">그런데 준의 아버지가 자리에서 일어났다.</p>
+                <p class="mb-6">“자, 등산 가자!”</p>
+                <p class="mb-6">“등산이요?” 미나가 물었다.</p>
+                <p class="mb-6">“우리 집 추석 전통이야.” 준이 설명했다.</p>
+                <p class="mb-6">20분 뒤, 온 가족이 가파른 언덕을 오르고 있었다.</p>
+                <p class="mb-6">준의 어머니는 저 멀리 앞서가고 있었다. 할머니도 아무렇지 않게 미나를 추월했다.</p>
+                <p class="mb-6">“어서 와!” 할머니가 외쳤다. “젊은 사람이!”</p>
+                <p class="mb-6">미나는 멈춰 서서 <b class="highlight">숨을 골랐다</b>.</p>
+                <p class="mb-6">준이 웃었다. “우리 가족은 다들 <b class="highlight">체질이 꽤 튼튼해</b>.”</p>
+                <p class="mb-6">미나는 대답하지 않았다.</p>
+                <p class="mb-6">이제 뭔가 이해되기 시작했다. 준은 출근 전에 운동하고, 주말에는 자전거를 탔으며, 하루 종일 집에 있으면 <b class="highlight">짜증을 냈다</b>.</p>
+                <p class="mb-6">아무래도 넘치는 에너지는 집안 내력인 것 같았다.</p>
+                <p class="mb-6">정상에 도착하자 미나는 벤치에 쓰러지듯 앉았다.</p>
+                <p class="mb-6">그녀는 이 가족을 <b class="highlight">이해해 보려고</b> 했다. 어쩌면 이 사람들에게는 이런 게 쉬는 방법일지도 몰랐다. 어떤 가족들은 정말 휴일에 자기 몸을 지치게 하는 걸 좋아할 수도 있었다.</p>
+                <p class="mb-6">그때 준의 여동생이 손뼉을 쳤다.</p>
+                <p class="mb-6">“자! 배드민턴 칠 사람?”</p>
+                <p class="mb-6">모두가 손을 들었다.</p>
+                <p class="mb-6">미나는 천천히 준을 바라봤다.</p>
+                <p class="mb-6">“배드민턴 다음에는?”</p>
+                <p class="mb-6">“노래방.”</p>
+                <p class="mb-6">“노래방 다음에는?”</p>
+                <p class="mb-6">“보통 삼촌이 볼링 치러 가자고 해.”</p>
+                <p class="mb-6">미나는 휴대폰을 꺼냈다.</p>
+                <p class="mb-6">“어머, 어떡해.”</p>
+                <p class="mb-6">“왜?”</p>
+                <p class="mb-6">“엄마한테 방금 문자가 왔어.”</p>
+                <p class="mb-6">준이 걱정스러운 표정을 지었다. “무슨 일 있으셔?”</p>
+                <p class="mb-6">미나는 자리에서 일어났다.</p>
+                <p class="mb-6">“뭘 좀 도와드려야 한대. 가족 비상사태야.”</p>
+                <p class="mb-6">“무슨 일인데?”</p>
+                <p class="mb-6">미나는 잠시 머뭇거렸다.</p>
+                <p class="mb-6">“엄마가… 병뚜껑을 못 열겠대.”</p>
+                <p class="mb-6">준은 미나를 빤히 쳐다봤다.</p>
+                <p class="mb-6">“병뚜껑?”</p>
+                <p class="mb-6">“아주 중요한 병이야.”</p>
+                <p class="mb-6">10분 뒤, 미나는 택시 안에 있었다.</p>
+                <p class="mb-6">그녀는 좌석에 몸을 기대고 눈을 감으며 미소를 지었다.</p>
+                <p class="mb-6">오늘 하루 처음으로, 아무도 그녀에게 뭘 하자고 하지 않았다.</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+    function skipAudio(seconds) {
+        const player = document.getElementById('player');
+        if (player.src) {
+            player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+        }
+    }
+
+    function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+    let _quizOriginals = new Map();
+
+    function toggleQuiz() {
+        const btn = document.getElementById('quizBtn');
+        const isQuiz = btn.innerText.includes("Quiz");
+        const targets = document.querySelectorAll('.quiz-target');
+        const cells = document.querySelectorAll('.mystery-cell');
+
+        if (isQuiz) {
+            btn.innerText = "Study Mode 📖";
+            cells.forEach(c => c.classList.add('quiz-hidden'));
+            targets.forEach(t => {
+                const ans = t.dataset.ans; const kor = t.dataset.kor;
+                _quizOriginals.set(t, t.innerHTML);
+                t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+            });
+        } else {
+            btn.innerText = "Quiz Mode 👻";
+            cells.forEach(c => c.classList.remove('quiz-hidden'));
+            targets.forEach(t => {
+                if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+            });
+            _quizOriginals.clear();
+        }
+    }
+
+    function checkQuiz(i, a) {
+        if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+            i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+            confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+            checkAllSolved();
+        } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+    }
+
+    function checkAllSolved() {
+        const inputs = document.querySelectorAll('.quiz-input');
+        if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+            var duration = 3 * 1000; var end = Date.now() + duration;
+            (function frame() {
+                confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                if (Date.now() < end) requestAnimationFrame(frame);
+            }());
+        }
+    }
+
+    document.getElementById('player').src = "921630.m4a";
+</script>
+</body>
+</html>

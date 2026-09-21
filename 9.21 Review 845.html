@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Family Complaint Department</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">😤</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Family Complaint Department</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">asthma</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">천식</td></tr>
+                <tr><td class="p-4"><b class="text-white">rhinitis</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">비염</td></tr>
+                <tr><td class="p-4"><b class="text-white">allergies</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">알레르기</td></tr>
+                <tr><td class="p-4"><b class="text-white">constitution</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">체질 / 타고난 신체 상태</td></tr>
+                <tr><td class="p-4"><b class="text-white">temperament</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">기질 / 성향</td></tr>
+                <tr><td class="p-4"><b class="text-white">ginkgo</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">은행 / 은행나무</td></tr>
+                <tr><td class="p-4"><b class="text-white">complaint</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">불평 / 불만</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl space-y-2 border-l-4 border-teal-500">
+                <h3 class="font-bold text-teal-400 text-lg">constitution</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">여기서는 ‘헌법’이 아니라 사람의 타고난 체질이나 신체 상태를 뜻해요. a strong constitution이라고 하면 튼튼한 체질이라는 뜻이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2 border-l-4 border-teal-500">
+                <h3 class="font-bold text-teal-400 text-lg">temperament</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">사람의 타고난 감정적 성향이나 기질을 뜻해요. personality보다 선천적인 성향을 말하는 느낌이 조금 더 강해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2 border-l-4 border-teal-500">
+                <h3 class="font-bold text-teal-400 text-lg">complaint</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">일반적으로 ‘불평, 불만’이라는 뜻이에요. make a complaint는 공식적으로 불만을 제기한다는 뜻으로도 자주 사용합니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Yuna knew that her boyfriend, Jaeho, complained a lot.</p>
+                <p class="mb-6">The restaurant was too loud. The subway was too hot. Coffee was too expensive. His office chair was uncomfortable.</p>
+                <p class="mb-6">But everyone had flaws. Yuna loved him, so she had learned to live with it.</p>
+                <p class="mb-6">Then she met his family at Chuseok.</p>
+                <p class="mb-6">As they walked toward his parents’ apartment, Jaeho stepped on a fallen <b class="highlight quiz-target" data-ans="ginkgo" data-kor="은행">ginkgo</b> fruit.</p>
+                <p class="mb-6">“Ugh. I hate this street.”</p>
+                <p class="mb-6">Yuna laughed. “We’ve been here for ten seconds.”</p>
+                <p class="mb-6">His mother opened the door.</p>
+                <p class="mb-6">“You’re late.”</p>
+                <p class="mb-6">“We’re three minutes early,” Jaeho said.</p>
+                <p class="mb-6">“I’ve been waiting, so it feels late.”</p>
+                <p class="mb-6">That should have been Yuna’s warning.</p>
+                <p class="mb-6">At lunch, his father took one bite of galbi.</p>
+                <p class="mb-6">“Too sweet.”</p>
+                <p class="mb-6">His mother immediately looked annoyed. “Last year you said it wasn’t sweet enough.”</p>
+                <p class="mb-6">“I’m just saying.”</p>
+                <p class="mb-6">Jaeho’s sister tried the soup.</p>
+                <p class="mb-6">“Too salty.”</p>
+                <p class="mb-6">Grandma shook her head. “Young people complain about everything these days.”</p>
+                <p class="mb-6">Then she took a bite of rice.</p>
+                <p class="mb-6">“This rice is too dry.”</p>
+                <p class="mb-6">Yuna looked around the table.</p>
+                <p class="mb-6">Oh.</p>
+                <p class="mb-6">Jaeho didn’t just complain a lot.</p>
+                <p class="mb-6">Complaining ran in the family.</p>
+                <p class="mb-6">Soon everyone had a <b class="highlight quiz-target" data-ans="complaint" data-kor="불만거리">complaint</b>. The apartment was too warm. The TV was too loud. The pears were too soft. The holiday traffic was terrible. Even the weather was somehow personally disappointing.</p>
+                <p class="mb-6">Then the conversation moved to health.</p>
+                <p class="mb-6">“My <b class="highlight quiz-target" data-ans="rhinitis" data-kor="비염">rhinitis</b> has been terrible,” Jaeho’s sister said.</p>
+                <p class="mb-6">“That’s because you never clean your room,” her mother replied.</p>
+                <p class="mb-6">“It’s <b class="highlight quiz-target" data-ans="allergies" data-kor="알레르기">allergies</b>.”</p>
+                <p class="mb-6">“Your father has <b class="highlight quiz-target" data-ans="allergies" data-kor="알레르기">allergies</b>.”</p>
+                <p class="mb-6">His father frowned. “I have <b class="highlight quiz-target" data-ans="asthma" data-kor="천식">asthma</b>. That’s different.”</p>
+                <p class="mb-6">Grandma waved her hand. “You all got your weak <b class="highlight quiz-target" data-ans="constitutions" data-kor="체질">constitutions</b> from his side of the family.”</p>
+                <p class="mb-6">“Your side isn’t exactly healthy,” Jaeho’s father said.</p>
+                <p class="mb-6">“At least we have good <b class="highlight quiz-target" data-ans="temperaments" data-kor="기질">temperaments</b>.”</p>
+                <p class="mb-6">Everyone went silent.</p>
+                <p class="mb-6">Then Jaeho’s mother laughed.</p>
+                <p class="mb-6">“You?”</p>
+                <p class="mb-6">For the first time all afternoon, Yuna genuinely enjoyed herself.</p>
+                <p class="mb-6">After lunch, however, the family turned its attention to her.</p>
+                <p class="mb-6">“Your job is pretty far away, isn’t it?”</p>
+                <p class="mb-6">“Yes.”</p>
+                <p class="mb-6">“That commute must be awful.”</p>
+                <p class="mb-6">“It’s actually okay.”</p>
+                <p class="mb-6">“And your apartment is small, right?”</p>
+                <p class="mb-6">“I like it.”</p>
+                <p class="mb-6">Jaeho’s sister frowned. “But the neighborhood is so crowded.”</p>
+                <p class="mb-6">“It doesn’t bother me.”</p>
+                <p class="mb-6">His mother looked at her sympathetically.</p>
+                <p class="mb-6">“You’re very positive.”</p>
+                <p class="mb-6">“Thank you.”</p>
+                <p class="mb-6">She did not mean it as a compliment.</p>
+                <p class="mb-6">Then Jaeho leaned toward Yuna.</p>
+                <p class="mb-6">“Are you okay? You’ve been really quiet.”</p>
+                <p class="mb-6">Yuna stared at him.</p>
+                <p class="mb-6">Suddenly, she understood everything: the restaurant complaints, the weather complaints, the endless comments about traffic.</p>
+                <p class="mb-6">He took after all of them.</p>
+                <p class="mb-6">His father turned on the TV.</p>
+                <p class="mb-6">“Nothing good is ever on during Chuseok.”</p>
+                <p class="mb-6">His mother sighed. “And the commercials are too loud.”</p>
+                <p class="mb-6">His sister groaned. “This sofa is killing my back.”</p>
+                <p class="mb-6">Yuna stood up.</p>
+                <p class="mb-6">Everyone looked at her.</p>
+                <p class="mb-6">“I’m so sorry. I just remembered I need to go home.”</p>
+                <p class="mb-6">“Why?” Jaeho asked.</p>
+                <p class="mb-6">Yuna thought quickly.</p>
+                <p class="mb-6">“I left my window open.”</p>
+                <p class="mb-6">“It’s not going to rain.”</p>
+                <p class="mb-6">“I know.”</p>
+                <p class="mb-6">“Then what’s the problem?”</p>
+                <p class="mb-6">Yuna grabbed her bag.</p>
+                <p class="mb-6">“I’m worried my apartment might be getting too much fresh air.”</p>
+                <p class="mb-6">Nobody understood.</p>
+                <p class="mb-6">That was fine.</p>
+                <p class="mb-6">Twenty minutes later, Yuna was sitting alone on the subway.</p>
+                <p class="mb-6">It was crowded. A baby was crying. Someone was talking loudly on the phone.</p>
+                <p class="mb-6">Yuna smiled.</p>
+                <p class="mb-6">Not one complaint.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">유나는 남자친구 재호가 불평을 많이 한다는 걸 알고 있었다.</p>
+                <p class="mb-6">식당은 너무 시끄럽고, 지하철은 너무 덥고, 커피는 너무 비쌌다. 회사 의자는 불편했다.</p>
+                <p class="mb-6">하지만 누구에게나 단점은 있는 법이었다. 유나는 재호를 사랑했기 때문에 그냥 받아들이며 지내는 법을 배웠다.</p>
+                <p class="mb-6">그러다 추석에 그의 가족을 처음 만났다.</p>
+                <p class="mb-6">부모님 아파트로 걸어가던 중 재호가 떨어진 <b class="highlight">은행</b> 열매를 밟았다.</p>
+                <p class="mb-6">“으. 나 이 길 진짜 싫어.”</p>
+                <p class="mb-6">유나는 웃었다. “우리 여기 온 지 10초 됐어.”</p>
+                <p class="mb-6">재호의 어머니가 문을 열었다.</p>
+                <p class="mb-6">“늦었네.”</p>
+                <p class="mb-6">“저희 3분 일찍 왔는데요.”</p>
+                <p class="mb-6">“나는 기다렸으니까 늦은 것처럼 느껴져.”</p>
+                <p class="mb-6">그때부터 눈치챘어야 했다.</p>
+                <p class="mb-6">점심을 먹으며 아버지가 갈비를 한 입 먹었다.</p>
+                <p class="mb-6">“너무 달아.”</p>
+                <p class="mb-6">어머니가 바로 짜증 난 표정을 지었다. “작년에는 안 달다고 했잖아.”</p>
+                <p class="mb-6">“그냥 그렇다고.”</p>
+                <p class="mb-6">재호의 여동생이 국을 맛봤다.</p>
+                <p class="mb-6">“너무 짜.”</p>
+                <p class="mb-6">할머니가 고개를 저었다. “요즘 젊은 사람들은 뭐든 불평이야.”</p>
+                <p class="mb-6">그러고는 밥을 한 숟갈 드셨다.</p>
+                <p class="mb-6">“이 밥은 너무 말랐네.”</p>
+                <p class="mb-6">유나는 식탁에 앉은 사람들을 둘러봤다.</p>
+                <p class="mb-6">아.</p>
+                <p class="mb-6">재호가 단순히 불평이 많은 사람이었던 게 아니었다.</p>
+                <p class="mb-6">불평은 집안 내력이었다.</p>
+                <p class="mb-6">곧 모두에게 <b class="highlight">불만거리</b>가 하나씩 생겼다. 집은 너무 따뜻했고, TV는 너무 시끄러웠다. 배는 너무 물렀고, 명절 교통은 끔찍했다. 심지어 날씨조차 그들의 기대를 저버린 것 같았다.</p>
+                <p class="mb-6">그러다 대화 주제가 건강으로 넘어갔다.</p>
+                <p class="mb-6">“요즘 <b class="highlight">비염</b>이 너무 심해.” 재호의 여동생이 말했다.</p>
+                <p class="mb-6">“네가 방 청소를 안 해서 그래.” 어머니가 대답했다.</p>
+                <p class="mb-6">“<b class="highlight">알레르기</b> 때문이에요.”</p>
+                <p class="mb-6">“네 아빠가 <b class="highlight">알레르기</b> 있잖아.”</p>
+                <p class="mb-6">아버지가 인상을 썼다. “나는 <b class="highlight">천식</b>이야. 그거랑 달라.”</p>
+                <p class="mb-6">할머니가 손을 내저었다. “너희 약한 <b class="highlight">체질</b>은 다 아빠 쪽에서 온 거야.”</p>
+                <p class="mb-6">“당신 쪽 집안도 딱히 건강하진 않잖아요.” 재호의 아버지가 말했다.</p>
+                <p class="mb-6">“그래도 우리 집안은 <b class="highlight">기질</b>은 좋아.”</p>
+                <p class="mb-6">모두가 조용해졌다.</p>
+                <p class="mb-6">그러더니 재호의 어머니가 웃었다.</p>
+                <p class="mb-6">“어머니가요?”</p>
+                <p class="mb-6">그날 오후 처음으로 유나는 진심으로 즐거웠다.</p>
+                <p class="mb-6">하지만 점심 식사가 끝나자 가족들의 관심이 유나에게 향했다.</p>
+                <p class="mb-6">“직장이 꽤 멀지?”</p>
+                <p class="mb-6">“네.”</p>
+                <p class="mb-6">“출퇴근하기 정말 힘들겠다.”</p>
+                <p class="mb-6">“사실 괜찮아요.”</p>
+                <p class="mb-6">“그리고 아파트가 작다고 했지?”</p>
+                <p class="mb-6">“저는 마음에 들어요.”</p>
+                <p class="mb-6">재호의 여동생이 인상을 썼다. “근데 그 동네 사람 너무 많잖아요.”</p>
+                <p class="mb-6">“저는 괜찮아요.”</p>
+                <p class="mb-6">어머니가 안쓰럽다는 듯 유나를 바라봤다.</p>
+                <p class="mb-6">“참 긍정적이네.”</p>
+                <p class="mb-6">“감사합니다.”</p>
+                <p class="mb-6">칭찬으로 한 말은 아닌 것 같았다.</p>
+                <p class="mb-6">그때 재호가 유나 쪽으로 몸을 기울였다.</p>
+                <p class="mb-6">“괜찮아? 오늘 되게 조용하네.”</p>
+                <p class="mb-6">유나는 재호를 바라봤다.</p>
+                <p class="mb-6">갑자기 모든 게 이해됐다. 식당에 대한 불평, 날씨에 대한 불평, 끝없는 교통 이야기.</p>
+                <p class="mb-6">재호는 이 가족 모두를 닮은 것이었다.</p>
+                <p class="mb-6">아버지가 TV를 켰다.</p>
+                <p class="mb-6">“추석에는 볼 게 하나도 없어.”</p>
+                <p class="mb-6">어머니가 한숨을 쉬었다. “광고는 또 왜 이렇게 시끄러워?”</p>
+                <p class="mb-6">여동생이 신음했다. “이 소파 때문에 허리 아파 죽겠어.”</p>
+                <p class="mb-6">유나는 자리에서 일어났다.</p>
+                <p class="mb-6">모두가 그녀를 바라봤다.</p>
+                <p class="mb-6">“죄송한데 갑자기 집에 가봐야 할 것 같아요.”</p>
+                <p class="mb-6">“왜?” 재호가 물었다.</p>
+                <p class="mb-6">유나는 머리를 빠르게 굴렸다.</p>
+                <p class="mb-6">“창문을 열어놓고 왔어.”</p>
+                <p class="mb-6">“오늘 비 안 오는데.”</p>
+                <p class="mb-6">“알아.”</p>
+                <p class="mb-6">“그럼 뭐가 문제야?”</p>
+                <p class="mb-6">유나는 가방을 집어 들었다.</p>
+                <p class="mb-6">“집에 신선한 공기가 너무 많이 들어가고 있을까 봐 걱정돼.”</p>
+                <p class="mb-6">아무도 이해하지 못했다.</p>
+                <p class="mb-6">상관없었다.</p>
+                <p class="mb-6">20분 뒤, 유나는 혼자 지하철에 앉아 있었다.</p>
+                <p class="mb-6">사람은 많았고, 아기는 울고 있었고, 누군가는 큰 소리로 통화하고 있었다.</p>
+                <p class="mb-6">유나는 미소를 지었다.</p>
+                <p class="mb-6">불평은 단 한마디도 하지 않았다.</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+    function skipAudio(seconds) {
+        const player = document.getElementById('player');
+        if (player.src) {
+            player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+        }
+    }
+
+    function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+    let _quizOriginals = new Map();
+
+    function toggleQuiz() {
+        const btn = document.getElementById('quizBtn');
+        const isQuiz = btn.innerText.includes("Quiz");
+        const targets = document.querySelectorAll('.quiz-target');
+        const cells = document.querySelectorAll('.mystery-cell');
+
+        if (isQuiz) {
+            btn.innerText = "Study Mode 📖";
+            cells.forEach(c => c.classList.add('quiz-hidden'));
+            targets.forEach(t => {
+                const ans = t.dataset.ans; const kor = t.dataset.kor;
+                _quizOriginals.set(t, t.innerHTML);
+                t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+            });
+        } else {
+            btn.innerText = "Quiz Mode 👻";
+            cells.forEach(c => c.classList.remove('quiz-hidden'));
+            targets.forEach(t => {
+                if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+            });
+            _quizOriginals.clear();
+        }
+    }
+
+    function checkQuiz(i, a) {
+        if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+            i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+            confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+            checkAllSolved();
+        } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+    }
+
+    function checkAllSolved() {
+        const inputs = document.querySelectorAll('.quiz-input');
+        if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+            var duration = 3 * 1000; var end = Date.now() + duration;
+            (function frame() {
+                confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                if (Date.now() < end) requestAnimationFrame(frame);
+            }());
+        }
+    }
+
+    document.getElementById('player').src = "921845.m4a";
+</script>
+</body>
+</html>

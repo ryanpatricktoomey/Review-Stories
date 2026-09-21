@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | Just One More Picture</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">📸</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">Just One More Picture</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">height</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">키 / 신장</td></tr>
+                <tr><td class="p-4"><b class="text-white">nodding off</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">꾸벅꾸벅 졸다 / 깜빡 잠들다</td></tr>
+                <tr><td class="p-4"><b class="text-white">wanderlust</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">여행하고 싶은 강한 욕구 / 여행 본능</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl space-y-2 border-l-4 border-teal-500">
+                <h3 class="font-bold text-teal-400 text-lg">nodding off</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">앉아 있다가 자신도 모르게 잠깐씩 잠드는 모습을 말해요. 특히 피곤해서 고개가 떨어지면서 꾸벅꾸벅 조는 상황에 자연스러워요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2 border-l-4 border-teal-500">
+                <h3 class="font-bold text-teal-400 text-lg">wanderlust</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">새로운 곳으로 떠나고 여행하고 싶은 강한 욕구를 뜻해요. 단순히 “여행을 좋아한다”보다 여행에 대한 강한 열망이나 본능에 가까워요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Eunji had been dating Seungwoo for eight months when he invited her to spend Chuseok with his family.</p>
+                <p class="mb-6">On the way there, he gave her one warning.</p>
+                <p class="mb-6">“My mom likes taking pictures.”</p>
+                <p class="mb-6">“That’s fine,” Eunji said. “So does my mom.”</p>
+                <p class="mb-6">Seungwoo looked at her. “No. My mom likes taking pictures.”</p>
+                <p class="mb-6">Eunji didn’t understand the difference.</p>
+                <p class="mb-6">She did twenty minutes later.</p>
+                <p class="mb-6">The moment they entered the apartment, Seungwoo’s mother hugged Eunji and then immediately pulled out her phone.</p>
+                <p class="mb-6">“Stand by the door! First visit!”</p>
+                <p class="mb-6">She took twelve photos.</p>
+                <p class="mb-6">Then Seungwoo’s father came downstairs.</p>
+                <p class="mb-6">“Wait! Let’s get one with Dad.”</p>
+                <p class="mb-6">His sister appeared.</p>
+                <p class="mb-6">“One with Sora!”</p>
+                <p class="mb-6">Grandma came out of the kitchen.</p>
+                <p class="mb-6">“Now Grandma!”</p>
+                <p class="mb-6">Before Eunji had even taken off her coat, she had appeared in approximately forty photographs.</p>
+                <p class="mb-6">During lunch, things got worse.</p>
+                <p class="mb-6">“Don’t eat yet!” Seungwoo’s mother shouted.</p>
+                <p class="mb-6">Everyone froze.</p>
+                <p class="mb-6">She photographed the table from above. Then from the side. Then she moved a bowl of songpyeon three centimeters to the left and started over.</p>
+                <p class="mb-6">Grandma was already <b class="highlight quiz-target" data-ans="nodding off" data-kor="꾸벅꾸벅 졸다">nodding off</b> in her chair.</p>
+                <p class="mb-6">Finally, they were allowed to eat.</p>
+                <p class="mb-6">Eunji reached for a piece of jeon.</p>
+                <p class="mb-6">“Wait!”</p>
+                <p class="mb-6">She slowly put it back.</p>
+                <p class="mb-6">“Eunji, hold it up. Seungwoo, look at her.”</p>
+                <p class="mb-6">“What am I supposed to do?” Seungwoo asked.</p>
+                <p class="mb-6">“Smile!”</p>
+                <p class="mb-6">Click.</p>
+                <p class="mb-6">Eunji began to understand why Seungwoo took photographs of everything: coffee, sunsets, hotel rooms, parking lots.</p>
+                <p class="mb-6">Apparently, it ran in the family.</p>
+                <p class="mb-6">After lunch, his mother brought out old albums.</p>
+                <p class="mb-6">“You two look good together,” she said. “And Eunji has the perfect <b class="highlight quiz-target" data-ans="height" data-kor="키">height</b> for Seungwoo.”</p>
+                <p class="mb-6">Eunji smiled politely.</p>
+                <p class="mb-6">Then came childhood photos.</p>
+                <p class="mb-6">Then graduation photos.</p>
+                <p class="mb-6">Then vacation photos.</p>
+                <p class="mb-6">“Traveling is in our blood,” Seungwoo’s father said proudly. “We all have <b class="highlight quiz-target" data-ans="wanderlust" data-kor="여행 본능">wanderlust</b>.”</p>
+                <p class="mb-6">“That’s true,” Seungwoo said. “Maybe Eunji can come with us next year.”</p>
+                <p class="mb-6">His mother’s eyes lit up.</p>
+                <p class="mb-6">“Yes! We take a family trip every summer.”</p>
+                <p class="mb-6">“That sounds nice,” Eunji said.</p>
+                <p class="mb-6">“We usually take about four thousand pictures.”</p>
+                <p class="mb-6">Eunji stopped smiling.</p>
+                <p class="mb-6">At five o’clock, someone suggested a family photo.</p>
+                <p class="mb-6">They moved the sofa. They closed the curtains. They opened the curtains again. They argued about lighting. They changed seats because Grandma looked too short. Then they changed back because Seungwoo’s father looked too tall.</p>
+                <p class="mb-6">After thirty minutes, they finally took the photo.</p>
+                <p class="mb-6">His mother checked it.</p>
+                <p class="mb-6">“No. My eyes look strange.”</p>
+                <p class="mb-6">Another photo.</p>
+                <p class="mb-6">“Dad isn’t smiling.”</p>
+                <p class="mb-6">Another.</p>
+                <p class="mb-6">“Sora, sit up straight.”</p>
+                <p class="mb-6">Another.</p>
+                <p class="mb-6">“Eunji, could you move slightly closer to Seungwoo?”</p>
+                <p class="mb-6">Another.</p>
+                <p class="mb-6">At photo number twenty-three, Eunji’s phone suddenly rang.</p>
+                <p class="mb-6">She looked at the screen.</p>
+                <p class="mb-6">Nobody was calling.</p>
+                <p class="mb-6">“Oh!” she said. “I need to take this.”</p>
+                <p class="mb-6">She walked quickly into the hallway.</p>
+                <p class="mb-6">A minute later, she returned wearing her coat.</p>
+                <p class="mb-6">“I’m so sorry. My parents need me at home.”</p>
+                <p class="mb-6">Seungwoo’s mother looked disappointed.</p>
+                <p class="mb-6">“Oh! Before you go, one last picture!”</p>
+                <p class="mb-6">Eunji stared at her.</p>
+                <p class="mb-6">Then she smiled.</p>
+                <p class="mb-6">“Of course.”</p>
+                <p class="mb-6">She stood by the door.</p>
+                <p class="mb-6">One picture.</p>
+                <p class="mb-6">Two.</p>
+                <p class="mb-6">Three.</p>
+                <p class="mb-6">On the fourth, Eunji opened the door.</p>
+                <p class="mb-6">“Happy Chuseok!”</p>
+                <p class="mb-6">And disappeared.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">은지는 승우와 사귄 지 8개월쯤 되었을 때 그의 가족과 함께 추석을 보내자는 초대를 받았다.</p>
+                <p class="mb-6">가는 길에 승우가 한 가지 경고를 했다.</p>
+                <p class="mb-6">“우리 엄마 사진 찍는 거 좋아하셔.”</p>
+                <p class="mb-6">“괜찮아. 우리 엄마도 좋아해.”</p>
+                <p class="mb-6">승우가 은지를 바라봤다.</p>
+                <p class="mb-6">“아니. 우리 엄마는 정말 사진 찍는 걸 좋아하셔.”</p>
+                <p class="mb-6">은지는 그 차이를 이해하지 못했다.</p>
+                <p class="mb-6">20분 뒤에는 이해했다.</p>
+                <p class="mb-6">아파트에 들어서자마자 승우의 어머니는 은지를 껴안더니 바로 휴대폰을 꺼냈다.</p>
+                <p class="mb-6">“문 앞에 서봐! 처음 온 날이니까!”</p>
+                <p class="mb-6">사진을 열두 장 찍었다.</p>
+                <p class="mb-6">그때 승우의 아버지가 아래층으로 내려왔다.</p>
+                <p class="mb-6">“잠깐! 아빠랑도 하나 찍자.”</p>
+                <p class="mb-6">여동생이 나타났다.</p>
+                <p class="mb-6">“소라랑도!”</p>
+                <p class="mb-6">할머니가 부엌에서 나오셨다.</p>
+                <p class="mb-6">“이제 할머니랑!”</p>
+                <p class="mb-6">은지는 코트도 벗기 전에 대략 마흔 장의 사진에 등장했다.</p>
+                <p class="mb-6">점심시간이 되자 상황은 더 심해졌다.</p>
+                <p class="mb-6">“아직 먹지 마!” 승우의 어머니가 외쳤다.</p>
+                <p class="mb-6">모두가 그대로 멈췄다.</p>
+                <p class="mb-6">어머니는 식탁을 위에서 찍었다. 그다음 옆에서 찍었다. 그러더니 송편 그릇을 왼쪽으로 3센티미터쯤 옮기고 처음부터 다시 찍기 시작했다.</p>
+                <p class="mb-6">할머니는 의자에 앉아 이미 <b class="highlight">꾸벅꾸벅 졸고</b> 있었다.</p>
+                <p class="mb-6">마침내 식사를 시작해도 된다는 허락이 떨어졌다.</p>
+                <p class="mb-6">은지가 전 하나를 집으려고 했다.</p>
+                <p class="mb-6">“잠깐!”</p>
+                <p class="mb-6">은지는 천천히 전을 내려놓았다.</p>
+                <p class="mb-6">“은지야, 그거 들고 있어 봐. 승우야, 은지 봐.”</p>
+                <p class="mb-6">“내가 뭘 해야 하는데?” 승우가 물었다.</p>
+                <p class="mb-6">“웃어!”</p>
+                <p class="mb-6">찰칵.</p>
+                <p class="mb-6">그제야 은지는 승우가 왜 모든 것의 사진을 찍는지 이해하기 시작했다. 커피, 노을, 호텔 방, 심지어 주차장까지.</p>
+                <p class="mb-6">아무래도 집안 내력인 모양이었다.</p>
+                <p class="mb-6">점심 식사 후 어머니는 옛날 앨범을 꺼냈다.</p>
+                <p class="mb-6">“너희 둘 잘 어울린다. 은지가 승우랑 <b class="highlight">키</b>도 딱 맞네.”</p>
+                <p class="mb-6">은지는 예의 바르게 미소를 지었다.</p>
+                <p class="mb-6">그다음에는 어린 시절 사진이 나왔다.</p>
+                <p class="mb-6">그다음은 졸업 사진.</p>
+                <p class="mb-6">그다음은 여행 사진.</p>
+                <p class="mb-6">“여행은 우리 피에 흐르는 것 같아.” 승우의 아버지가 자랑스럽게 말했다. “우리 가족은 다 <b class="highlight">여행 본능</b>이 있거든.”</p>
+                <p class="mb-6">“맞아요.” 승우가 말했다. “내년에는 은지도 같이 갈 수 있겠다.”</p>
+                <p class="mb-6">어머니의 눈이 반짝였다.</p>
+                <p class="mb-6">“그래! 우리는 매년 여름 가족 여행을 가.”</p>
+                <p class="mb-6">“좋네요.” 은지가 말했다.</p>
+                <p class="mb-6">“보통 사진을 4천 장 정도 찍어.”</p>
+                <p class="mb-6">은지의 미소가 멈췄다.</p>
+                <p class="mb-6">5시가 되자 누군가 가족사진을 찍자고 제안했다.</p>
+                <p class="mb-6">소파를 옮겼다. 커튼을 닫았다. 다시 열었다. 조명 때문에 논쟁을 했다. 할머니가 너무 작아 보인다며 자리를 바꿨다. 그러다 승우 아버지가 너무 커 보인다며 다시 원래 자리로 돌아갔다.</p>
+                <p class="mb-6">30분 뒤, 드디어 사진을 찍었다.</p>
+                <p class="mb-6">어머니가 확인했다.</p>
+                <p class="mb-6">“안 돼. 내 눈이 이상하게 나왔어.”</p>
+                <p class="mb-6">다시 한 장.</p>
+                <p class="mb-6">“아빠가 안 웃었잖아.”</p>
+                <p class="mb-6">다시 한 장.</p>
+                <p class="mb-6">“소라야, 허리 펴.”</p>
+                <p class="mb-6">다시 한 장.</p>
+                <p class="mb-6">“은지야, 승우 쪽으로 조금만 더 붙어줄래?”</p>
+                <p class="mb-6">또 한 장.</p>
+                <p class="mb-6">스물세 번째 사진을 찍을 때 갑자기 은지의 휴대폰이 울렸다.</p>
+                <p class="mb-6">은지는 화면을 봤다.</p>
+                <p class="mb-6">아무에게도 전화가 오지 않았다.</p>
+                <p class="mb-6">“어!” 은지가 말했다. “이거 받아야 해요.”</p>
+                <p class="mb-6">그녀는 재빨리 현관 쪽으로 걸어갔다.</p>
+                <p class="mb-6">1분 뒤, 코트를 입고 돌아왔다.</p>
+                <p class="mb-6">“정말 죄송한데 부모님이 집에 와달라고 하세요.”</p>
+                <p class="mb-6">승우의 어머니가 아쉬운 표정을 지었다.</p>
+                <p class="mb-6">“아! 가기 전에 마지막으로 사진 한 장만!”</p>
+                <p class="mb-6">은지는 어머니를 바라봤다.</p>
+                <p class="mb-6">그리고 미소를 지었다.</p>
+                <p class="mb-6">“물론이죠.”</p>
+                <p class="mb-6">그녀는 문 앞에 섰다.</p>
+                <p class="mb-6">한 장.</p>
+                <p class="mb-6">두 장.</p>
+                <p class="mb-6">세 장.</p>
+                <p class="mb-6">네 번째 사진에서 은지는 문을 열었다.</p>
+                <p class="mb-6">“즐거운 추석 보내세요!”</p>
+                <p class="mb-6">그리고 사라졌다.</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+    function skipAudio(seconds) {
+        const player = document.getElementById('player');
+        if (player.src) {
+            player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+        }
+    }
+
+    function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+    let _quizOriginals = new Map();
+
+    function toggleQuiz() {
+        const btn = document.getElementById('quizBtn');
+        const isQuiz = btn.innerText.includes("Quiz");
+        const targets = document.querySelectorAll('.quiz-target');
+        const cells = document.querySelectorAll('.mystery-cell');
+
+        if (isQuiz) {
+            btn.innerText = "Study Mode 📖";
+            cells.forEach(c => c.classList.add('quiz-hidden'));
+            targets.forEach(t => {
+                const ans = t.dataset.ans; const kor = t.dataset.kor;
+                _quizOriginals.set(t, t.innerHTML);
+                t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+            });
+        } else {
+            btn.innerText = "Quiz Mode 👻";
+            cells.forEach(c => c.classList.remove('quiz-hidden'));
+            targets.forEach(t => {
+                if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+            });
+            _quizOriginals.clear();
+        }
+    }
+
+    function checkQuiz(i, a) {
+        if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+            i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+            confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+            checkAllSolved();
+        } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+    }
+
+    function checkAllSolved() {
+        const inputs = document.querySelectorAll('.quiz-input');
+        if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+            var duration = 3 * 1000; var end = Date.now() + duration;
+            (function frame() {
+                confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                if (Date.now() < end) requestAnimationFrame(frame);
+            }());
+        }
+    }
+
+    document.getElementById('player').src = "9211200.m4a";
+</script>
+</body>
+</html>

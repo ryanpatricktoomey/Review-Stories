@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | Fifteen Years Behind a Locked Door</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🔨</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">Fifteen Years Behind a Locked Door</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">insisted</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">우겼다 / 강하게 주장했다</td></tr>
+                <tr><td class="p-4"><b class="text-white">gave in</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">결국 받아들였다 / 고집을 꺾었다</td></tr>
+                <tr><td class="p-4"><b class="text-white">style of animation</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">애니메이션 스타일 / 작화 스타일</td></tr>
+                <tr><td class="p-4"><b class="text-white">too graphic</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">너무 적나라한 / 폭력 묘사가 너무 직접적인</td></tr>
+                <tr><td class="p-4"><b class="text-white">attack on titan</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">진격의 거인</td></tr>
+                <tr><td class="p-4"><b class="text-white">title</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">제목</td></tr>
+                <tr><td class="p-4"><b class="text-white">give people a piece of my mind</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">사람들에게 할 말을 해버리다 / 따끔하게 한마디 하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">not putting up with anything anymore</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">이제 더 이상 아무것도 참지 않겠다</td></tr>
+                <tr><td class="p-4"><b class="text-white">supervisor</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">상사 / 감독자</td></tr>
+                <tr><td class="p-4"><b class="text-white">hide your feelings</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">감정을 숨기다</td></tr>
+                <tr><td class="p-4"><b class="text-white">f u money</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">엿 먹으라고 하고 떠날 수 있을 정도의 경제적 여유</td></tr>
+                <tr><td class="p-4"><b class="text-white">make jokes at the expense of someone else</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">남을 희생시켜 웃기다 / 남을 놀려서 웃음을 만들다</td></tr>
+                <tr><td class="p-4"><b class="text-white">panic attack</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">공황 발작</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">gave in</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">처음에는 거절하거나 버티다가 결국 상대방의 요구를 받아들이는 것을 말해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">too graphic</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">단순히 폭력적이라는 뜻보다 피, 부상, 성적인 내용 등을 너무 직접적이고 자세하게 보여준다는 의미로 많이 씁니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">give someone a piece of my mind</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">화가 났을 때 참지 않고 상대방에게 불만이나 생각을 강하게 말한다는 관용 표현이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">put up with</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">싫거나 불편한 상황을 참고 견디다. I’m not putting up with this anymore는 “나 이제 이거 더는 못 참아”에 가까워요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">at someone else’s expense</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">다른 사람이 창피해지거나 상처받는 것을 이용해서 웃음이나 이익을 얻는다는 뜻이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">f u money</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">직장이나 사람에게 경제적으로 얽매이지 않고 “싫으면 그만두면 되지”라고 할 수 있을 정도의 돈을 뜻하는 매우 비격식적인 표현이에요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">If you want something light and easy to watch, this is definitely not my recommendation. But if you’re open to a dark Korean thriller, this is a movie you should check out.</p>
+                <p class="mb-6">The main character is an ordinary businessman with a wife and young daughter. One day, he is suddenly kidnapped and locked inside a strange private room. Nobody tells him who kidnapped him or why. He <b class="highlight quiz-target" data-ans="insisted" data-kor="우겼다">insisted</b> that he must have been taken there for a reason, but there is no one around to answer his questions. He tries to escape and even tries to kill himself, but his captors keep him alive.</p>
+                <p class="mb-6">His only connection to the outside world is a television. Through it, he learns that his wife has been murdered and that he is suspected of the crime. After fifteen years, his captors suddenly release him. They give him money and a phone, and the person behind everything challenges him to discover why he was imprisoned.</p>
+                <p class="mb-6">By this point, he is <b class="highlight quiz-target" data-ans="not putting up with anything anymore" data-kor="이제 더 이상 아무것도 참지 않겠다">not putting up with anything anymore</b>. He doesn't want to <b class="highlight quiz-target" data-ans="hide his feelings" data-kor="감정을 숨기다">hide his feelings</b> or quietly return to normal life. Forget <b class="highlight quiz-target" data-ans="F U money" data-kor="엿 먹으라고 하고 떠날 수 있을 정도의 경제적 여유">F U money</b>—he has something much more dangerous: fifteen years of anger and nothing left to lose. He wants revenge, and when people stand in his way, he is very willing to <b class="highlight quiz-target" data-ans="give them a piece of his mind" data-kor="할 말을 해버리다">give them a piece of his mind</b>—although usually with more than words.</p>
+                <p class="mb-6">This isn't a workplace movie, so there isn't a <b class="highlight quiz-target" data-ans="supervisor" data-kor="상사">supervisor</b> making his life miserable, and nobody is trying to <b class="highlight quiz-target" data-ans="make jokes at the expense of someone else" data-kor="남을 희생시켜 웃기다">make jokes at the expense of someone else</b>. The conflict is much darker. The man who imprisoned him knows far more about his past than he does, and the mystery becomes increasingly disturbing.</p>
+                <p class="mb-6">If you enjoyed the intensity of <b class="highlight quiz-target" data-ans="Attack on Titan" data-kor="진격의 거인">Attack on Titan</b> but aren't interested in that <b class="highlight quiz-target" data-ans="style of animation" data-kor="애니메이션 스타일">style of animation</b>, you might find this live-action thriller interesting. However, be warned: some scenes may be <b class="highlight quiz-target" data-ans="too graphic" data-kor="너무 적나라한">too graphic</b> for you. The violence is famous, and the story deals with extremely disturbing subjects.</p>
+                <p class="mb-6">Eventually, the main character gets answers. He desperately wants the truth, even when someone essentially offers him the chance to stop looking. He could have <b class="highlight quiz-target" data-ans="gave in" data-kor="결국 받아들였다">gave in</b>, but he doesn't. Unfortunately, learning the truth is far worse than he expects. Don't expect a simple revenge story or a comfortable catharsis.</p>
+                <p class="mb-6">I won't tell you the <b class="highlight quiz-target" data-ans="title" data-kor="제목">title</b>, because that would ruin the game. This 2003 film later won the Grand Prix at the 2004 Cannes Film Festival and became one of the Korean films that helped attract international attention to Korean cinema.</p>
+                <p class="mb-6">No spoilers—but the final revelations might leave you needing a minute to recover. Maybe even something close to a <b class="highlight quiz-target" data-ans="panic attack" data-kor="공황 발작">panic attack</b>.</p>
+                <p class="mb-6">Do you know what movie it is?</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">가볍고 편하게 볼 수 있는 작품을 찾고 있다면 이 영화는 절대 추천하지 않습니다. 하지만 어두운 한국 스릴러도 괜찮다면 한번 볼 만한 작품입니다.</p>
+                <p class="mb-6">주인공은 아내와 어린 딸이 있는 평범한 회사원입니다. 어느 날 갑자기 납치되어 이상한 사설 감금실에 갇힙니다. 누가 자신을 납치했는지, 왜 그랬는지 아무도 알려주지 않습니다. 그는 분명 자신이 여기 갇힌 데에는 이유가 있을 거라고 <b class="highlight">생각하지만</b>, 질문에 대답해 줄 사람조차 없습니다. 탈출도 시도하고 스스로 목숨을 끊으려고도 하지만, 납치범들은 계속 그를 살려 둡니다.</p>
+                <p class="mb-6">바깥세상과 연결되는 유일한 수단은 텔레비전입니다. 그는 TV를 통해 아내가 살해되었고 자신이 그 사건의 용의자로 몰렸다는 사실을 알게 됩니다. 그리고 15년 후, 납치범들은 갑자기 그를 풀어줍니다. 돈과 휴대전화를 주고, 이 모든 일을 벌인 사람은 자신이 왜 감금되었는지 직접 알아내 보라고 합니다.</p>
+                <p class="mb-6">이쯤 되면 주인공은 <b class="highlight">더 이상 아무것도 참을 생각이 없습니다</b>. <b class="highlight">감정을 숨기거나</b> 조용히 평범한 삶으로 돌아갈 생각도 없습니다. <b class="highlight">경제적으로 자유로워서 직장을 때려치울 수 있는 정도가</b> 아닙니다. 그에게는 훨씬 위험한 것이 있습니다. 15년 동안 쌓인 분노와 더 이상 잃을 것이 없다는 마음입니다. 그는 복수를 원하고, 누군가 앞을 막으면 <b class="highlight">할 말을 강하게 하는</b> 정도에서 끝나지도 않습니다.</p>
+                <p class="mb-6">직장 이야기가 아니기 때문에 그를 괴롭히는 <b class="highlight">상사가</b> 등장하는 것도 아니고, <b class="highlight">누군가를 놀려서 웃음을 만드는</b> 가벼운 분위기도 아닙니다. 갈등은 훨씬 어둡습니다. 그를 가둔 사람은 주인공 자신보다 그의 과거에 대해 더 많은 것을 알고 있고, 진실을 파헤칠수록 이야기는 점점 불편해집니다.</p>
+                <p class="mb-6">《<b class="highlight">진격의 거인</b>》 같은 강렬한 작품을 좋아하지만 그런 <b class="highlight">애니메이션 스타일은</b> 별로라면, 이 실사 스릴러가 흥미로울 수도 있습니다. 다만 주의하세요. 어떤 장면들은 <b class="highlight">지나치게 적나라하다고</b> 느낄 수 있습니다. 폭력적인 장면으로 유명하고, 이야기 자체도 상당히 충격적인 소재를 다룹니다.</p>
+                <p class="mb-6">결국 주인공은 자신이 원했던 답에 가까워집니다. 중간에 멈출 수도 있었지만 그는 <b class="highlight">굴복하지 않습니다</b>. 문제는 진실을 알아내는 것이 그가 예상했던 것보다 훨씬 끔찍하다는 것입니다. 단순한 복수극이나 편안한 카타르시스를 기대해서는 안 됩니다.</p>
+                <p class="mb-6"><b class="highlight">제목은</b> 말하지 않겠습니다. 그러면 게임이 끝나니까요. 이 2003년 작품은 2004년 칸 영화제에서 그랑프리를 받았고, 한국 영화를 세계에 널리 알린 대표적인 작품 중 하나가 되었습니다.</p>
+                <p class="mb-6">스포일러는 하지 않겠습니다. 하지만 마지막에 밝혀지는 진실을 보고 나면 잠시 정신을 가다듬을 시간이 필요할지도 모릅니다. 거의 <b class="highlight">공황 발작이</b> 올 것 같은 충격일 수도 있고요.</p>
+                <p class="mb-6">어떤 영화인지 아시겠어요?</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+    function skipAudio(seconds) {
+        const player = document.getElementById('player');
+        if (player.src) {
+            player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+        }
+    }
+
+    function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+    let _quizOriginals = new Map();
+
+    function toggleQuiz() {
+        const btn = document.getElementById('quizBtn');
+        const isQuiz = btn.innerText.includes("Quiz");
+        const targets = document.querySelectorAll('.quiz-target');
+        const cells = document.querySelectorAll('.mystery-cell');
+
+        if (isQuiz) {
+            btn.innerText = "Study Mode 📖";
+            cells.forEach(c => c.classList.add('quiz-hidden'));
+            targets.forEach(t => {
+                const ans = t.dataset.ans; const kor = t.dataset.kor;
+                _quizOriginals.set(t, t.innerHTML);
+                t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+            });
+        } else {
+            btn.innerText = "Quiz Mode 👻";
+            cells.forEach(c => c.classList.remove('quiz-hidden'));
+            targets.forEach(t => {
+                if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+            });
+            _quizOriginals.clear();
+        }
+    }
+
+    function checkQuiz(i, a) {
+        if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+            i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+            confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+            checkAllSolved();
+        } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+    }
+
+    function checkAllSolved() {
+        const inputs = document.querySelectorAll('.quiz-input');
+        if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+            var duration = 3 * 1000; var end = Date.now() + duration;
+            (function frame() {
+                confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                if (Date.now() < end) requestAnimationFrame(frame);
+            }());
+        }
+    }
+
+    document.getElementById('player').src = "922715.m4a";
+</script>
+</body>
+</html>

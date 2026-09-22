@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | A Mystery on the Most Dangerous Border</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🪖</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">A Mystery on the Most Dangerous Border</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">too graphic</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">너무 적나라한 / 폭력 묘사가 너무 직접적인</td></tr>
+                <tr><td class="p-4"><b class="text-white">summary</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">요약 / 줄거리 요약</td></tr>
+                <tr><td class="p-4"><b class="text-white">censor</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">검열하다 / 부적절한 내용을 삭제·가리다</td></tr>
+                <tr><td class="p-4"><b class="text-white">curb your enthusiasm</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">너무 기대하지 마 / 흥분을 좀 가라앉혀</td></tr>
+                <tr><td class="p-4"><b class="text-white">oppress</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">억압하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">slick</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">세련된 / 매끄럽게 잘 만든</td></tr>
+                <tr><td class="p-4"><b class="text-white">get goosebumps</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">소름이 돋다</td></tr>
+                <tr><td class="p-4"><b class="text-white">hair stood up on the back on my neck</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">목덜미의 털이 곤두섰다 / 소름이 쫙 돋았다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">curb your enthusiasm</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">직역하면 “열정을 억제하다.” 너무 들뜨거나 기대하는 사람에게 “너무 기대하지 마”라는 식으로 말할 수 있어요. TV 프로그램 제목으로도 유명한 표현입니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">slick</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">사람에게 쓰면 능숙하고 세련됐지만 약간 계산적인 느낌도 날 수 있어요. 영화에 쓰면 보통 영상이나 연출이 아주 매끄럽고 세련됐다는 뜻입니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">get goosebumps</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">무섭거나 감동적이거나 흥분될 때 피부에 소름이 돋는 것을 말합니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">the hair on the back of my neck stood up</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">원래 채팅 표현보다 이 형태가 자연스러워요. 아주 무섭거나 불길해서 “목덜미가 쭈뼛했다”는 뜻입니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">If you're in the mood for a classic Korean mystery with a strong emotional story, you should check this one out. It was released in 2000, and it begins with a deadly shooting inside the Joint Security Area at Panmunjom. Two North Korean soldiers are dead, and a wounded South Korean soldier is found near the military dividing line.</p>
+                <p class="mb-6">Here's the basic <b class="highlight quiz-target" data-ans="summary" data-kor="줄거리 요약">summary</b>: North Korea and South Korea give completely different explanations for what happened. To investigate, the Neutral Nations Supervisory Commission sends a Swiss Army major of Korean heritage. But the surviving soldiers aren't eager to talk, and the physical evidence doesn't quite match their stories.</p>
+                <p class="mb-6">If that sounds like a <b class="highlight quiz-target" data-ans="slick" data-kor="세련된">slick</b> military thriller about uncovering an enemy conspiracy, <b class="highlight quiz-target" data-ans="curb your enthusiasm" data-kor="너무 기대하지 마">curb your enthusiasm</b>. The movie gradually becomes something much more human.</p>
+                <p class="mb-6">As the investigator digs deeper, she discovers that the soldiers involved in the shooting had a secret history. A South Korean soldier had previously stepped on a land mine after becoming separated from his unit. Two North Korean soldiers found him and saved his life. That encounter eventually developed into a forbidden friendship across the border.</p>
+                <p class="mb-6">That's what makes the film so touching. The soldiers live inside a political system that demands that they see one another as enemies, but privately they joke, talk and spend time together. Their friendship doesn't magically remove the political reality around them. They know exactly how dangerous it is.</p>
+                <p class="mb-6">I wouldn't describe the movie as <b class="highlight quiz-target" data-ans="too graphic" data-kor="너무 적나라한">too graphic</b>, although the central shooting is violent and the story becomes tragic. The tension comes more from knowing that something terrible happened and slowly discovering why. I wouldn't want to <b class="highlight quiz-target" data-ans="censor" data-kor="검열하다">censor</b> those darker elements from a recommendation, because they're essential to the movie's impact.</p>
+                <p class="mb-6">The film also made me think about what happens when governments, borders and military systems <b class="highlight quiz-target" data-ans="oppress" data-kor="억압하다">oppress</b> ordinary human relationships. It doesn't turn that idea into a simple speech. Instead, the consequences emerge through the characters.</p>
+                <p class="mb-6">There are moments when you might <b class="highlight quiz-target" data-ans="get goosebumps" data-kor="소름이 돋다">get goosebumps</b>, especially once earlier scenes take on a different meaning. By the end, the tension can make the <b class="highlight quiz-target" data-ans="hair stood up on the back on my neck" data-kor="목덜미의 털이 곤두섰다">hair on the back of your neck stand up</b>. The final image is especially powerful and really stuck with me.</p>
+                <p class="mb-6">If you like mysteries that slowly reveal an emotional story underneath, I can't recommend it enough.</p>
+                <p class="mb-6">Do you know what Korean movie it is?</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">강한 감정적 이야기가 담긴 고전 한국 미스터리 영화를 보고 싶다면 이 작품을 추천합니다. 2000년에 개봉했고, 판문점 공동경비구역에서 벌어진 치명적인 총격 사건으로 시작합니다. 북한군 두 명이 사망하고, 총상을 입은 남한 병사가 군사분계선 근처에서 발견됩니다.</p>
+                <p class="mb-6">기본적인 줄거리를 <b class="highlight">요약하면</b> 이렇습니다. 북한과 남한은 사건에 대해 완전히 다른 설명을 내놓습니다. 진상을 조사하기 위해 중립국감독위원회는 한국계 스위스군 소령을 파견합니다. 하지만 살아남은 병사들은 제대로 이야기하려 하지 않고, 현장의 물리적 증거도 그들의 진술과 정확히 맞지 않습니다.</p>
+                <p class="mb-6">이 이야기가 <b class="highlight">세련되게 만들어진</b> 군사 스릴러이고, 적의 음모를 밝혀내는 내용처럼 들린다면 <b class="highlight">너무 기대하지 마세요</b>. 영화는 점차 훨씬 더 인간적인 이야기로 변합니다.</p>
+                <p class="mb-6">수사관이 사건을 깊이 파고들면서 총격 사건에 연루된 병사들에게 비밀스러운 과거가 있었다는 사실을 발견합니다. 이전에 한 남한 병사가 부대에서 떨어진 뒤 지뢰를 밟은 적이 있었습니다. 그를 발견한 북한 병사 두 명이 목숨을 구해주었고, 그 만남은 결국 국경을 넘은 금지된 우정으로 발전합니다.</p>
+                <p class="mb-6">바로 그 점 때문에 영화가 무척 감동적입니다. 병사들은 서로를 적으로 봐야 하는 정치적·군사적 환경 속에 살고 있지만, 개인적으로는 함께 농담하고 이야기를 나누며 시간을 보냅니다. 그렇다고 그들의 우정이 주변의 정치적 현실을 마법처럼 없애주는 것은 아닙니다. 그들은 자신들이 하는 일이 얼마나 위험한지 정확히 알고 있습니다.</p>
+                <p class="mb-6">중심이 되는 총격 사건은 폭력적이고 이야기는 비극적으로 흘러가지만, 폭력 묘사가 <b class="highlight">지나치게 적나라한</b> 영화라고 하지는 않겠습니다. 긴장감은 오히려 끔찍한 일이 벌어졌다는 사실을 알고 그 이유를 조금씩 알아가는 과정에서 생깁니다. 그리고 그런 어두운 부분은 영화의 핵심이기 때문에 추천하면서 굳이 <b class="highlight">검열해서 빼고</b> 싶지는 않습니다.</p>
+                <p class="mb-6">이 작품은 정부와 국경, 군사 체제가 평범한 사람들의 인간적인 관계를 <b class="highlight">억압할 때</b> 어떤 일이 벌어지는지도 생각하게 합니다. 영화는 그 주제를 단순한 연설로 설명하지 않습니다. 대신 등장인물들이 겪는 결과를 통해 보여줍니다.</p>
+                <p class="mb-6">앞에서 봤던 장면들이 나중에 전혀 다른 의미로 다가오는 순간에는 <b class="highlight">소름이 돋을 수도</b> 있습니다. 마지막으로 갈수록 긴장감 때문에 <b class="highlight">목덜미가 쭈뼛할</b> 정도입니다. 특히 마지막 이미지는 굉장히 강렬하고 오래 기억에 남습니다.</p>
+                <p class="mb-6">천천히 진실을 드러내면서 그 안에서 감정적인 이야기가 펼쳐지는 미스터리를 좋아한다면 정말 추천하고 싶은 작품입니다.</p>
+                <p class="mb-6">어떤 한국 영화인지 아시겠어요?</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "9221200.m4a";
+</script>
+</body>
+</html>

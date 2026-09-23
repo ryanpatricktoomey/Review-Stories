@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+      <title>Review Note | A Prayer for Jeon</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+      <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+      </style>
+</head>
+<body class="p-4 md:p-12">
+      <div class="max-w-4xl mx-auto space-y-8">
+
+          <header class="text-center space-y-4">
+              <div class="flex items-center justify-center gap-4">
+                  <span class="text-5xl">🥞</span>
+                  <h1 class="text-3xl md:text-4xl font-extrabold text-white">A Prayer for Jeon</h1>
+              </div>
+              <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+          </header>
+
+          <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+              <div class="flex items-center justify-between px-2">
+                  <div class="flex items-center gap-3">
+                      <span class="text-xl">🎧</span>
+                      <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                  </div>
+                  <div class="flex gap-2">
+                      <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          <span class="text-lg">↺</span> 5s
+                      </button>
+                      <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          5s <span class="text-lg">↻</span>
+                      </button>
+                  </div>
+              </div>
+              <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+          </div>
+
+          <div class="flex justify-center">
+              <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+          </div>
+
+          <section class="glass rounded-3xl overflow-hidden shadow-xl">
+              <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                  <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+              </div>
+              <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                  <tr><td class="p-4"><b class="text-white">prayers have been answered</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">간절히 바라던 일이 이루어졌다 / 소원이 이루어졌다</td></tr>
+              </tbody></table>
+          </section>
+
+          <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <h3 class="text-amber-400 font-bold text-lg">prayers have been answered</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">문자 그대로는 “기도가 응답받았다”라는 뜻이지만, 일상에서는 꼭 종교적인 의미가 아니라 간절히 원하던 것이 드디어 생겼을 때 과장해서 “내 소원이 이루어졌어!”처럼 쓸 수 있어요. 문맥에 따라 my prayers have been answered처럼 소유격을 붙이는 것이 자연스럽습니다.</p>
+              </div>
+          </section>
+
+          <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+              <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                  <p class="mb-6">The family had just started Chuseok lunch when Grandma placed three huge plates of jeon on the table.</p>
+                  <p class="mb-6">There was zucchini jeon, fish jeon, and donggeurangttaeng, still warm from the pan.</p>
+                  <p class="mb-6">Six-year-old Yuna stared at them.</p>
+                  <p class="mb-6">“Grandma, I don’t want these.”</p>
+                  <p class="mb-6">Grandma froze.</p>
+                  <p class="mb-6">Her chopsticks remained in the air.</p>
+                  <p class="mb-6">“You don’t... want jeon?”</p>
+                  <p class="mb-6">“I—”</p>
+                  <p class="mb-6">Grandma stood up.</p>
+                  <p class="mb-6">“Yuna.”</p>
+                  <p class="mb-6">Everyone became quiet.</p>
+                  <p class="mb-6">And then Grandma began.</p>
+                  <p class="mb-6">“Jeon on the table, still golden and hot,<br><br>You say you don’t want it? I think you forgot<br><br>The hours we spent by the stove in the heat,<br><br>Preparing these beautiful treasures to eat.</p>
+                  <p class="mb-6">First comes the flour, a delicate coat,<br><br>Not too much flour—that point I must note.<br><br>Then into egg, bright yellow and fine,<br><br>Each little piece waits patiently in line.</p>
+                  <p class="mb-6">Then comes the pan with its shimmering oil,<br><br>Where all of our careful preparation can spoil.<br><br>Too cold and it’s greasy, too hot and it burns;<br><br>A perfect jeon waits till the right moment turns.</p>
+                  <p class="mb-6">Listen! That sizzle! That wonderful sound!<br><br>One side becomes golden and then turns around.<br><br>You watch for the edges, you check underneath,<br><br>While wonderful smells drift around you like wreaths.</p>
+                  <p class="mb-6">The zucchini softens but still holds its shape.<br><br>The fish becomes tender beneath its egg cape.<br><br>The meat in the middle is juicy and round.<br><br>Three kinds of happiness! Look what we’ve found!</p>
+                  <p class="mb-6">Nothing says Chuseok like standing all day<br><br>Beside a hot frying pan, cooking away.<br><br>Your clothes smell like oil, your hair smells like food,<br><br>And somehow that smell puts the whole house in the mood.</p>
+                  <p class="mb-6">When I think of Chuseok, I think of this plate.<br><br>We start in the morning. We cook until late.<br><br>One person is frying, one brings the supplies,<br><br>And one steals the fresh ones when nobody spies.</p>
+                  <p class="mb-6">Your father was famous for doing just that.<br><br>He’d enter the kitchen and quietly chat.<br><br>Then one jeon would vanish. Then two. Maybe three.<br><br>He thought we were blind, but your grandmother could see.</p>
+                  <p class="mb-6">The first jeon is special, but let me explain:<br><br>A cold jeon tomorrow can rise once again.<br><br>Put it in a pan and warm it up slow,<br><br>And suddenly—ah!—there’s that beautiful glow.</p>
+                  <p class="mb-6">Some people use microwaves. That may be fast,<br><br>But crisp little edges become things of the past.<br><br>Give jeon a pan and a minute or two.<br><br>Show it respect, and it will respect you.</p>
+                  <p class="mb-6">And then there is soy sauce, waiting nearby,<br><br>With vinegar giving the flavor some bite.<br><br>A gentle small dip—not a bath, understand!<br><br>You don’t drown good jeon with a careless hand.</p>
+                  <p class="mb-6">Jeon really captures our Chuseok for me:<br><br>Too much preparation, then eating with glee.<br><br>You make enough food for an army of ten,<br><br>And somehow by evening you’re frying again.</p>
+                  <p class="mb-6">It wouldn’t be Chuseok without this great plate,<br><br>Still disappearing no matter how much we create.<br><br>And when someone brings fresh jeon straight from the pan,<br><br>My <b class="highlight quiz-target" data-ans="prayers have been answered" data-kor="간절히 바라던 일이 이루어졌다 / 소원이 이루어졌다">prayers have been answered</b>! I’m its greatest fan!</p>
+                  <p class="mb-6">So zucchini, fish, meat—whatever you choose,<br><br>With jeon at the table, nobody can lose.<br><br>Respect every piece, every sizzle, each smell—<br><br>And now, little Yuna, what have you to tell?”</p>
+                  <p class="mb-6">Grandma stopped.</p>
+                  <p class="mb-6">Nobody moved.</p>
+                  <p class="mb-6">Yuna’s father stared at his rice.</p>
+                  <p class="mb-6">Her uncle was still holding a piece of jeon halfway to his mouth.</p>
+                  <p class="mb-6">Yuna looked up at Grandma.</p>
+                  <p class="mb-6">“I like jeon.”</p>
+                  <p class="mb-6">Grandma blinked.</p>
+                  <p class="mb-6">“You just said you didn’t want it.”</p>
+                  <p class="mb-6">“I said I don’t want jeon.”</p>
+                  <p class="mb-6">“Yes!”</p>
+                  <p class="mb-6">Yuna pointed toward the kitchen.</p>
+                  <p class="mb-6">“I want the hot jeon. Grandpa said there’s more coming.”</p>
+                  <p class="mb-6">Everyone turned.</p>
+                  <p class="mb-6">Grandpa appeared from the kitchen holding a frying pan.</p>
+                  <p class="mb-6">“Fresh batch.”</p>
+                  <p class="mb-6">Yuna jumped out of her chair.</p>
+                  <p class="mb-6">Grandma stared at her.</p>
+                  <p class="mb-6">Then she looked at the steaming jeon.</p>
+                  <p class="mb-6">“Move over.”</p>
+              </div>
+              <hr class="border-white/10">
+              <div class="text-slate-400 italic leading-relaxed space-y-6">
+                  <p class="mb-6">가족들이 막 추석 점심을 먹기 시작했을 때, 할머니가 커다란 전 접시 세 개를 식탁 위에 올려놓았다.</p>
+                  <p class="mb-6">애호박전, 생선전, 동그랑땡이 있었고 아직 프라이팬의 온기가 남아 있었다.</p>
+                  <p class="mb-6">여섯 살 유나는 전을 빤히 바라봤다.</p>
+                  <p class="mb-6">“할머니, 나 전 안 먹을래요.”</p>
+                  <p class="mb-6">할머니가 얼어붙었다.</p>
+                  <p class="mb-6">젓가락은 공중에 그대로 멈춰 있었다.</p>
+                  <p class="mb-6">“전을... 안 먹겠다고?”</p>
+                  <p class="mb-6">“저는—”</p>
+                  <p class="mb-6">할머니가 일어났다.</p>
+                  <p class="mb-6">“유나야.”</p>
+                  <p class="mb-6">모두가 조용해졌다.</p>
+                  <p class="mb-6">그리고 할머니가 시작했다.</p>
+                  <p class="mb-6">“식탁 위의 전아, 아직 노릇하고 뜨거운 전아,<br><br>네가 이걸 싫다고? 뭔가 잊은 모양이구나.<br><br>뜨거운 불 앞에서 우리가 보낸 그 시간,<br><br>이 아름다운 음식들을 먹기 위해 준비한 시간을.</p>
+                  <p class="mb-6">먼저 밀가루를 얇고 곱게 입혀야 하지.<br><br>너무 많이 묻히면 안 돼. 이건 꼭 말해야겠구나.<br><br>그다음 노랗고 고운 달걀물 속으로,<br><br>작은 재료들이 차례차례 자기 순서를 기다리지.</p>
+                  <p class="mb-6">그다음은 기름이 반짝이는 프라이팬,<br><br>우리의 모든 정성이 망가질 수도 있는 곳.<br><br>너무 차가우면 기름지고, 너무 뜨거우면 타 버려.<br><br>완벽한 전은 딱 맞는 순간을 기다리는 법이지.</p>
+                  <p class="mb-6">들어 봐! 저 지글지글 소리! 얼마나 멋진 소리냐!<br><br>한쪽이 노릇해지면 뒤집어 주고,<br><br>가장자리를 살피고 밑면도 확인하는 동안<br><br>맛있는 냄새가 사방으로 퍼져 나가지.</p>
+                  <p class="mb-6">애호박은 부드러워지면서도 모양을 유지하고,<br><br>생선은 달걀옷 아래에서 촉촉해지지.<br><br>동그랑땡 속 고기는 육즙 가득하고 동그랗고.<br><br>세 종류의 행복이라니! 이 얼마나 훌륭하냐!</p>
+                  <p class="mb-6">하루 종일 뜨거운 프라이팬 옆에 서서<br><br>계속 전을 부치는 것만큼 추석다운 것도 없지.<br><br>옷에서도 기름 냄새, 머리에서도 음식 냄새가 나는데,<br><br>이상하게도 그 냄새가 온 집을 명절 분위기로 만들어.</p>
+                  <p class="mb-6">내가 추석을 생각하면 이 전 접시가 떠오른단다.<br><br>아침부터 시작해서 늦게까지 부치지.<br><br>한 사람은 전을 부치고, 한 사람은 재료를 가져오고,<br><br>또 한 사람은 아무도 안 볼 때 갓 부친 전을 훔쳐 먹고.</p>
+                  <p class="mb-6">네 아빠가 그걸로 아주 유명했단다.<br><br>부엌에 들어와 조용히 이야기를 시작하지.<br><br>그러면 전 하나가 사라지고, 둘, 어쩌면 셋까지.<br><br>우리가 모르는 줄 알았겠지만 네 할머니 눈에는 다 보였어.</p>
+                  <p class="mb-6">첫날 갓 부친 전은 특별하지만 이것도 알아 두렴.<br><br>다음 날 차가워진 전도 다시 살아날 수 있단다.<br><br>프라이팬에 넣고 천천히 데워 봐.<br><br>그러면 갑자기—아!—그 아름다운 빛깔이 돌아오지.</p>
+                  <p class="mb-6">전자레인지를 쓰는 사람들도 있어. 빠르긴 하지.<br><br>하지만 바삭한 가장자리는 영영 사라지고 만단다.<br><br>전에게 프라이팬과 1~2분의 시간을 줘.<br><br>전을 존중하면 전도 너를 존중할 테니.</p>
+                  <p class="mb-6">그리고 옆에는 간장이 기다리고 있지.<br><br>식초가 살짝 새콤한 맛을 더해 주고.<br><br>살짝 찍어 먹는 거야. 목욕시키는 게 아니란다!<br><br>훌륭한 전을 아무렇게나 간장에 빠뜨리는 게 아니야.</p>
+                  <p class="mb-6">전은 내게 추석의 모습을 정말 잘 담아낸단다.<br><br>엄청나게 준비하고, 그다음 신나게 먹는 것.<br><br>열 명의 군대가 먹을 만큼 음식을 만들어 놓고도,<br><br>어째서인지 저녁이 되면 또 전을 부치고 있지.</p>
+                  <p class="mb-6">이 훌륭한 전 접시가 없다면 추석이라고 할 수 없어.<br><br>아무리 많이 만들어도 계속 사라지는 전.<br><br>누군가 프라이팬에서 갓 부친 전을 가져오는 순간,<br><br><b class="highlight">내 소원이 이루어진 거야</b>! 나는 전의 열렬한 팬이니까!</p>
+                  <p class="mb-6">애호박이든 생선이든 고기든 무엇을 고르든,<br><br>식탁에 전이 있다면 누구도 손해 볼 일이 없어.<br><br>한 조각 한 조각, 지글거리는 소리 하나하나, 그 냄새까지 존중하렴.<br><br>자, 유나야. 이제 뭐라고 말하겠니?”</p>
+                  <p class="mb-6">할머니가 멈췄다.</p>
+                  <p class="mb-6">아무도 움직이지 않았다.</p>
+                  <p class="mb-6">유나의 아빠는 자기 밥만 바라봤다.</p>
+                  <p class="mb-6">삼촌은 전 한 조각을 입으로 가져가던 자세 그대로 멈춰 있었다.</p>
+                  <p class="mb-6">유나는 할머니를 올려다봤다.</p>
+                  <p class="mb-6">“저 전 좋아해요.”</p>
+                  <p class="mb-6">할머니가 눈을 깜빡였다.</p>
+                  <p class="mb-6">“방금 안 먹는다고 했잖니.”</p>
+                  <p class="mb-6">“전 안 먹는다고 했어요.”</p>
+                  <p class="mb-6">“그러니까!”</p>
+                  <p class="mb-6">유나가 부엌 쪽을 가리켰다.</p>
+                  <p class="mb-6">“저는 뜨거운 전 먹고 싶어요. 할아버지가 더 나온다고 했어요.”</p>
+                  <p class="mb-6">모두가 고개를 돌렸다.</p>
+                  <p class="mb-6">할아버지가 프라이팬을 들고 부엌에서 나타났다.</p>
+                  <p class="mb-6">“새로 부쳤다.”</p>
+                  <p class="mb-6">유나는 의자에서 벌떡 일어났다.</p>
+                  <p class="mb-6">할머니는 유나를 바라봤다.</p>
+                  <p class="mb-6">그러고는 김이 모락모락 나는 전을 쳐다봤다.</p>
+                  <p class="mb-6">“자리 좀 비켜 봐.”</p>
+              </div>
+          </section>
+
+      </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "923845.m4a";
+</script>
+  </body>
+  </html>

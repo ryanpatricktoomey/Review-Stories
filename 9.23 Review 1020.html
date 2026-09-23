@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+      <title>Review Note | In Praise of Japchae</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+      <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+      </style>
+</head>
+<body class="p-4 md:p-12">
+      <div class="max-w-4xl mx-auto space-y-8">
+
+          <header class="text-center space-y-4">
+              <div class="flex items-center justify-center gap-4">
+                  <span class="text-5xl">🍜</span>
+                  <h1 class="text-3xl md:text-4xl font-extrabold text-white">In Praise of Japchae</h1>
+              </div>
+              <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+          </header>
+
+          <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+              <div class="flex items-center justify-between px-2">
+                  <div class="flex items-center gap-3">
+                      <span class="text-xl">🎧</span>
+                      <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                  </div>
+                  <div class="flex gap-2">
+                      <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          <span class="text-lg">↺</span> 5s
+                      </button>
+                      <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          5s <span class="text-lg">↻</span>
+                      </button>
+                  </div>
+              </div>
+              <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+          </div>
+
+          <div class="flex justify-center">
+              <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+          </div>
+
+          <section class="glass rounded-3xl overflow-hidden shadow-xl">
+              <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                  <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+              </div>
+              <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                  <tr><td class="p-4"><b class="text-white">spending money</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">자유롭게 쓸 수 있는 돈 / 여윳돈</td></tr>
+                  <tr><td class="p-4"><b class="text-white">pocket money</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">용돈</td></tr>
+                  <tr><td class="p-4"><b class="text-white">devoted daughter</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">헌신적인 딸 / 부모를 극진히 챙기는 딸</td></tr>
+                  <tr><td class="p-4"><b class="text-white">cannon</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">대포</td></tr>
+                  <tr><td class="p-4"><b class="text-white">practical</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">실용적인 / 현실적인</td></tr>
+                  <tr><td class="p-4"><b class="text-white">voice is changing</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">변성기가 오고 있다 / 목소리가 변하고 있다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">mustn't</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">~하면 안 된다 / ~해서는 안 된다</td></tr>
+              </tbody></table>
+          </section>
+
+          <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <h3 class="text-amber-400 font-bold text-lg">spending money / pocket money</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">둘 다 개인적으로 쓸 수 있는 돈을 뜻할 수 있지만, pocket money는 특히 부모가 아이에게 주는 “용돈”으로 자주 써요. spending money는 필요한 비용을 제외하고 자유롭게 쓸 수 있는 돈이라는 뜻으로도 많이 씁니다.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <h3 class="text-amber-400 font-bold text-lg">devoted daughter</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">부모를 정성스럽게 돌보고 챙기는 딸이라는 뜻이에요. devoted에는 오랫동안 애정과 정성을 쏟는다는 느낌이 있습니다.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <h3 class="text-amber-400 font-bold text-lg">voice is changing</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">성장하면서 변성기를 겪고 있다는 뜻으로 자연스럽게 쓸 수 있어요. 실제 문장에서는 His voice is changing처럼 주어를 넣습니다.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <h3 class="text-amber-400 font-bold text-lg">mustn't</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">must not의 축약형이에요. “안 해도 된다”가 아니라 <b>“절대로 하면 안 된다”</b>라는 강한 금지의 의미입니다.</p>
+              </div>
+          </section>
+
+          <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+              <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                  <p class="mb-6">The family had just sat down for Chuseok lunch.</p>
+                  <p class="mb-6">Aunt Mira carried in an enormous bowl of japchae and placed it proudly in the center of the table. The noodles were glossy with sesame oil, and strips of carrot, spinach, mushroom, and beef were mixed through them.</p>
+                  <p class="mb-6">Grandma immediately picked up the serving chopsticks.</p>
+                  <p class="mb-6">“Jun, japchae?”</p>
+                  <p class="mb-6">“No japchae for me, please.”</p>
+                  <p class="mb-6">Mira froze.</p>
+                  <p class="mb-6">Her thirteen-year-old son was looking down at his plate as if nothing had happened.</p>
+                  <p class="mb-6">“No japchae?”</p>
+                  <p class="mb-6">Jun looked up. His <b class="highlight quiz-target" data-ans="voice was changing" data-kor="변성기가 오고 있다">voice was changing</b>, so his answer came out unexpectedly deep.</p>
+                  <p class="mb-6">“No, I—”</p>
+                  <p class="mb-6">Mira stood.</p>
+                  <p class="mb-6">Usually, Mira was extremely <b class="highlight quiz-target" data-ans="practical" data-kor="실용적인 / 현실적인">practical</b>. She was also a <b class="highlight quiz-target" data-ans="devoted daughter" data-kor="헌신적인 딸 / 부모를 극진히 챙기는 딸">devoted daughter</b> who came early every Chuseok to help Grandma cook. She was not known for emotional speeches.</p>
+                  <p class="mb-6">But this was japchae.</p>
+                  <p class="mb-6">She raised one hand.</p>
+                  <p class="mb-6">“Japchae, dear japchae, you shining delight,<br><br>Your noodles are glossy, your vegetables bright.<br><br>You wait in your bowl with a beautiful glow,<br><br>Yet someone at Chuseok has dared to say no.</p>
+                  <p class="mb-6">Look at those noodles, so slippery and clear,<br><br>The pride of the table whenever you’re near.<br><br>Sweet potato noodles, both bouncy and strong,<br><br>Not mushy, not broken, not cooked for too long.</p>
+                  <p class="mb-6">First come the carrots, cut narrow and neat,<br><br>Then onions cooked slowly till tender and sweet.<br><br>The spinach brings green and the mushrooms bring brown,<br><br>Each has its purpose; don’t turn any down.</p>
+                  <p class="mb-6">The beef must be tender and sliced very thin,<br><br>So almost each mouthful has something within.<br><br>Then soy sauce arrives with its salty-sweet taste,<br><br>And sesame oil <b class="highlight quiz-target" data-ans="mustn't" data-kor="~하면 안 된다 / ~해서는 안 된다">mustn't</b> be added in haste.</p>
+                  <p class="mb-6">That smell hits your nose and announces the day:<br><br>‘The japchae is ready! Come right away!’<br><br>If we owned a <b class="highlight quiz-target" data-ans="cannon" data-kor="대포">cannon</b>, I’d fire it with pride:<br><br>‘THE JAPCHAE IS READY!’ to people outside.</p>
+                  <p class="mb-6">Nothing says Chuseok like noodles piled high,<br><br>A mountain that somehow will soon say goodbye.<br><br>You make enough japchae for twenty or more,<br><br>Then somehow by dinner they’re asking for more.</p>
+                  <p class="mb-6">When I think of Chuseok, I think of this bowl,<br><br>Of noodles so long they escape your control.<br><br>You lift up your chopsticks; you think you’re all set,<br><br>But half of your portion is down there yet.</p>
+                  <p class="mb-6">One noodle hangs stubbornly over your chin.<br><br>You pull it and somehow three more noodles begin.<br><br>A carrot falls off and returns to your plate.<br><br>You try to look graceful. It’s already too late.</p>
+                  <p class="mb-6">But that is the beauty! That’s part of the fun!<br><br>You cannot eat japchae one noodle by one.<br><br>You gather a bundle, you lift it up high,<br><br>And hope that your shirt will stay clean and dry.</p>
+                  <p class="mb-6">Your father loved japchae when he was your age.<br><br>He ate it so quickly, it filled me with rage.<br><br>He’d finish one plate and then casually say,<br><br>‘Is anyone eating that bowl anyway?’</p>
+                  <p class="mb-6">Back then, he received a little <b class="highlight quiz-target" data-ans="pocket money" data-kor="용돈">pocket money</b>,<br><br>But japchae could make him forget about money.<br><br>And now when we travel with <b class="highlight quiz-target" data-ans="spending money" data-kor="자유롭게 쓸 수 있는 돈 / 여윳돈">spending money</b> to spare,<br><br>He’ll still choose good japchae if somebody says, ‘Share?’</p>
+                  <p class="mb-6">Japchae really captures our holiday spread:<br><br>The colors, the work, and a family well fed.<br><br>Each part is prepared on its own with great care,<br><br>Then everything meets in one glorious affair.</p>
+                  <p class="mb-6">The mushrooms are cooked and the spinach is pressed,<br><br>The carrots are fried till their flavor is best.<br><br>So many small jobs for one bowl at the end—<br><br>A bowl we can pass to a child, parent, friend.</p>
+                  <p class="mb-6">And you <b class="highlight quiz-target" data-ans="mustn't" data-kor="~하면 안 된다 / ~해서는 안 된다">mustn't</b> forget what this bowl represents:<br><br>The chopping, the frying, the time that was spent.<br><br>It wouldn’t be Chuseok without this great sight—<br><br>Those beautiful noodles all shining in light.</p>
+                  <p class="mb-6">So honor each mushroom! Respect every strand!<br><br>Let spinach and carrots go proudly hand in hand!<br><br>And never reject what took hours to prepare—<br><br>This glorious japchae deserves loving care!”</p>
+                  <p class="mb-6">Mira stopped.</p>
+                  <p class="mb-6">Nobody spoke.</p>
+                  <p class="mb-6">Grandpa was holding his spoon in midair.</p>
+                  <p class="mb-6">Jun stared at his mother.</p>
+                  <p class="mb-6">Finally, he said, “Mom, I love japchae.”</p>
+                  <p class="mb-6">Mira frowned.</p>
+                  <p class="mb-6">“You just said you didn’t want any.”</p>
+                  <p class="mb-6">“I don’t.”</p>
+                  <p class="mb-6">Mira’s eyes widened.</p>
+                  <p class="mb-6">Jun pointed toward the kitchen.</p>
+                  <p class="mb-6">“Grandma gave me two bowls while you were cooking.”</p>
+                  <p class="mb-6">Everyone turned to Grandma.</p>
+                  <p class="mb-6">Grandma shrugged.</p>
+                  <p class="mb-6">“He looked hungry.”</p>
+                  <p class="mb-6">Jun leaned back and rubbed his stomach.</p>
+                  <p class="mb-6">“I’m completely full.”</p>
+                  <p class="mb-6">Mira slowly sat down.</p>
+                  <p class="mb-6">“Oh.”</p>
+                  <p class="mb-6">Grandma reached for the serving chopsticks.</p>
+                  <p class="mb-6">“Then I’ll give you just a little.”</p>
+                  <p class="mb-6">“Grandma, no.”</p>
+              </div>
+              <hr class="border-white/10">
+              <div class="text-slate-400 italic leading-relaxed space-y-6">
+                  <p class="mb-6">가족들은 막 추석 점심을 먹으려고 자리에 앉았다.</p>
+                  <p class="mb-6">미라 이모가 엄청나게 큰 잡채 그릇을 들고 와 자랑스럽게 식탁 한가운데 놓았다. 당면에는 참기름 윤기가 흘렀고, 당근과 시금치, 버섯, 소고기가 골고루 섞여 있었다.</p>
+                  <p class="mb-6">할머니는 곧바로 집게용 젓가락을 들었다.</p>
+                  <p class="mb-6">“준아, 잡채 먹을래?”</p>
+                  <p class="mb-6">“전 잡채 괜찮아요.”</p>
+                  <p class="mb-6">미라가 얼어붙었다.</p>
+                  <p class="mb-6">열세 살 아들은 아무 일도 없었다는 듯 자기 접시를 내려다보고 있었다.</p>
+                  <p class="mb-6">“잡채를 안 먹겠다고?”</p>
+                  <p class="mb-6">준이 고개를 들었다. <b class="highlight">변성기가 오고 있어서</b> 대답이 예상보다 훨씬 낮은 목소리로 나왔다.</p>
+                  <p class="mb-6">“아니, 그게—”</p>
+                  <p class="mb-6">미라가 자리에서 일어났다.</p>
+                  <p class="mb-6">평소 미라는 지극히 <b class="highlight">실용적인</b> 사람이었다. 또한 매년 추석이면 일찍 와서 할머니의 요리를 돕는 <b class="highlight">헌신적인 딸</b>이기도 했다. 감정적인 연설을 하는 사람은 아니었다.</p>
+                  <p class="mb-6">하지만 이건 잡채였다.</p>
+                  <p class="mb-6">미라가 한 손을 들었다.</p>
+                  <p class="mb-6">“잡채야, 사랑하는 잡채야, 반짝이는 기쁨아,<br><br>네 면은 윤기가 흐르고 채소는 환하게 빛나는구나.<br><br>아름다운 빛을 내며 그릇에서 기다리는데,<br><br>추석날 누군가 감히 싫다고 말하는구나.</p>
+                  <p class="mb-6">저 면을 보아라, 미끄럽고 투명한 모습을.<br><br>네가 있는 식탁이라면 언제나 자랑스럽지.<br><br>고구마 당면은 쫄깃하면서도 튼튼하고,<br><br>흐물거리지도, 끊어지지도, 지나치게 익지도 않았지.</p>
+                  <p class="mb-6">먼저 가늘고 반듯하게 썬 당근이 들어가고,<br><br>그다음 양파를 부드럽고 달콤해질 때까지 익히지.<br><br>시금치는 초록빛을, 버섯은 갈색빛을 더하고,<br><br>모든 재료에는 역할이 있으니 어느 것도 무시하면 안 돼.</p>
+                  <p class="mb-6">소고기는 부드러워야 하고 아주 얇게 썰어야 하지.<br><br>그래야 거의 모든 한입에 조금씩 들어가니까.<br><br>그다음 짭짤하고 달콤한 간장이 등장하고,<br><br>참기름은 절대 성급하게 넣으면 <b class="highlight">안 된다</b>.</p>
+                  <p class="mb-6">그 냄새가 코에 닿는 순간 오늘이 어떤 날인지 알려 주지.<br><br>‘잡채 다 됐다! 어서 와!’<br><br>우리에게 <b class="highlight">대포</b>가 있다면 자랑스럽게 쏘아 올릴 거야.<br><br>‘잡채 완성!’이라고 밖에 있는 사람들에게 알리면서!</p>
+                  <p class="mb-6">산처럼 높이 쌓인 면만큼 추석다운 것도 없지.<br><br>그런데 그 산은 어떻게 된 일인지 금세 사라져 버려.<br><br>스무 명 넘게 먹을 만큼 잡채를 만들어도<br><br>저녁이면 어떻게 된 일인지 또 더 없냐고 묻는다니까.</p>
+                  <p class="mb-6">내가 추석을 생각하면 이 그릇이 떠오른단다.<br><br>통제가 안 될 만큼 길게 이어지는 당면.<br><br>젓가락으로 들어 올리며 이제 됐다고 생각하지만,<br><br>아직 절반은 그릇 안에 남아 있지.</p>
+                  <p class="mb-6">당면 한 가닥이 턱에 끈질기게 매달리고,<br><br>그걸 당기면 어떻게 된 일인지 세 가닥이 더 따라오지.<br><br>당근 하나가 떨어져 다시 접시로 돌아가고,<br><br>우아하게 먹어 보려 하지만 이미 늦었어.</p>
+                  <p class="mb-6">하지만 바로 그게 아름다움이야! 그것도 재미의 일부지!<br><br>잡채는 당면 한 가닥씩 먹는 음식이 아니야.<br><br>한 묶음을 집어 높이 들어 올린 다음,<br><br>그저 옷에 안 떨어지기를 바라는 거지.</p>
+                  <p class="mb-6">네 아빠도 네 나이 때 잡채를 아주 좋아했단다.<br><br>너무 빨리 먹어서 내가 화가 날 정도였어.<br><br>한 접시를 다 먹고는 아무렇지도 않게 말했지.<br><br>‘저 그릇 아무도 안 먹는 거죠?’</p>
+                  <p class="mb-6">그때 네 아빠는 조금씩 <b class="highlight">용돈</b>을 받았지만,<br><br>잡채 앞에서는 돈도 잊어버렸지.<br><br>그리고 지금도 여행 가서 쓸 <b class="highlight">여윳돈</b>이 있어도,<br><br>누군가 맛있는 잡채를 나눠 먹자고 하면 여전히 잡채를 고르지.</p>
+                  <p class="mb-6">잡채는 우리 명절의 모습을 정말 잘 담아낸단다.<br><br>다채로운 색, 많은 수고, 그리고 배부르게 먹은 가족들.<br><br>각각의 재료를 따로 정성스럽게 준비하고,<br><br>마지막에는 모두 하나의 멋진 음식으로 만나지.</p>
+                  <p class="mb-6">버섯은 따로 익히고 시금치는 물기를 짜고,<br><br>당근은 가장 맛있는 상태가 될 때까지 볶아야 해.<br><br>한 그릇을 만들기 위해 이렇게 많은 작은 일을 하고,<br><br>마지막에는 그 한 그릇을 아이에게, 부모에게, 친구에게 건네지.</p>
+                  <p class="mb-6">그리고 이 잡채가 무엇을 의미하는지 절대 잊으면 <b class="highlight">안 돼</b>.<br><br>썰고, 볶고, 시간을 들인 모든 과정 말이야.<br><br>이 멋진 모습이 없다면 추석이라고 할 수 없지.<br><br>빛을 받아 반짝이는 저 아름다운 당면 말이다.</p>
+                  <p class="mb-6">그러니 버섯 하나하나를 존중해라! 당면 한 가닥 한 가닥을 소중히 여겨라!<br><br>시금치와 당근이 당당하게 함께하도록 하라!<br><br>그리고 몇 시간이나 걸려 만든 음식을 절대 거절하지 마라.<br><br>이 영광스러운 잡채는 사랑받을 자격이 있으니까!”</p>
+                  <p class="mb-6">미라가 멈췄다.</p>
+                  <p class="mb-6">아무도 말하지 않았다.</p>
+                  <p class="mb-6">할아버지는 숟가락을 공중에 든 채 멈춰 있었다.</p>
+                  <p class="mb-6">준은 엄마를 바라봤다.</p>
+                  <p class="mb-6">마침내 준이 말했다.</p>
+                  <p class="mb-6">“엄마, 나 잡채 좋아해.”</p>
+                  <p class="mb-6">미라가 인상을 찌푸렸다.</p>
+                  <p class="mb-6">“방금 안 먹는다고 했잖아.”</p>
+                  <p class="mb-6">“지금은 안 먹을 거야.”</p>
+                  <p class="mb-6">미라의 눈이 커졌다.</p>
+                  <p class="mb-6">준이 부엌을 가리켰다.</p>
+                  <p class="mb-6">“엄마 요리하는 동안 할머니가 두 그릇이나 줬어.”</p>
+                  <p class="mb-6">모두가 할머니를 바라봤다.</p>
+                  <p class="mb-6">할머니가 어깨를 으쓱했다.</p>
+                  <p class="mb-6">“배고파 보이길래.”</p>
+                  <p class="mb-6">준은 의자에 기대며 배를 문질렀다.</p>
+                  <p class="mb-6">“나 완전 배불러.”</p>
+                  <p class="mb-6">미라는 천천히 자리에 앉았다.</p>
+                  <p class="mb-6">“아.”</p>
+                  <p class="mb-6">할머니가 다시 집게용 젓가락을 들었다.</p>
+                  <p class="mb-6">“그럼 조금만 더 줄게.”</p>
+                  <p class="mb-6">“할머니, 됐어요.”</p>
+              </div>
+          </section>
+
+      </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "9231020.m4a";
+</script>
+  </body>
+  </html>

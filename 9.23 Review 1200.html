@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+      <title>Review Note | An Ode to Tang-Guk</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+      <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+      </style>
+</head>
+<body class="p-4 md:p-12">
+      <div class="max-w-4xl mx-auto space-y-8">
+
+          <header class="text-center space-y-4">
+              <div class="flex items-center justify-center gap-4">
+                  <span class="text-5xl">🍲</span>
+                  <h1 class="text-3xl md:text-4xl font-extrabold text-white">An Ode to Tang-Guk</h1>
+              </div>
+              <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+          </header>
+
+          <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+              <div class="flex items-center justify-between px-2">
+                  <div class="flex items-center gap-3">
+                      <span class="text-xl">🎧</span>
+                      <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                  </div>
+                  <div class="flex gap-2">
+                      <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          <span class="text-lg">↺</span> 5s
+                      </button>
+                      <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          5s <span class="text-lg">↻</span>
+                      </button>
+                  </div>
+              </div>
+              <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+          </div>
+
+          <div class="flex justify-center">
+              <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+          </div>
+
+          <section class="glass rounded-3xl overflow-hidden shadow-xl">
+              <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                  <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+              </div>
+              <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                  <tr><td class="p-4"><b class="text-white">gave me a massage</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">나를 마사지해 줬다 / 안마해 줬다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">simplified</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">단순화했다 / 간소화했다</td></tr>
+              </tbody></table>
+          </section>
+
+          <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <h3 class="text-amber-400 font-bold text-lg">gave me a massage</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">give someone a massage는 “누구를 마사지해 주다 / 안마해 주다”라는 자연스러운 표현이에요. My daughter gave me a massage처럼 사용할 수 있습니다.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <h3 class="text-amber-400 font-bold text-lg">simplified</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">복잡한 방법이나 과정을 더 간단하게 만들었다는 뜻이에요. 레시피에서는 조리 과정이나 재료를 줄였을 때 자연스럽게 사용할 수 있습니다.</p>
+              </div>
+          </section>
+
+          <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+              <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                  <p class="mb-6">The family had just sat down for Chuseok lunch when Grandpa brought in a large pot of tang-guk.</p>
+                  <p class="mb-6">He filled a bowl and placed it in front of his grandson, Minjun.</p>
+                  <p class="mb-6">Minjun took a spoonful.</p>
+                  <p class="mb-6">He stopped chewing.</p>
+                  <p class="mb-6">Then he looked down into the bowl.</p>
+                  <p class="mb-6">“Grandpa, I can’t eat this.”</p>
+                  <p class="mb-6">Grandpa froze.</p>
+                  <p class="mb-6">“You can’t eat my tang-guk?”</p>
+                  <p class="mb-6">“No, there’s—”</p>
+                  <p class="mb-6">Grandpa stood up.</p>
+                  <p class="mb-6">Minjun’s mother closed her eyes.</p>
+                  <p class="mb-6">“Dad, maybe let him finish—”</p>
+                  <p class="mb-6">But Grandpa had already begun.</p>
+                  <p class="mb-6">“Tang-guk, dear tang-guk, so humble and clear,<br><br>You quietly tell us that Chuseok is here.<br><br>No mountains of sugar, no bright fancy glaze,<br><br>You earn our respect in much quieter ways.</p>
+                  <p class="mb-6">The radish turns tender but still holds its shape,<br><br>The tofu sits softly with no need to escape.<br><br>The beef gives the broth its deep, comforting taste,<br><br>And nothing inside you is added in haste.</p>
+                  <p class="mb-6">First beef in the pot with a little sesame oil,<br><br>Then radish joins in as we carefully boil.<br><br>Add water and simmer; let everything blend,<br><br>For good soup needs patience from start until end.</p>
+                  <p class="mb-6">My mother once made it a much longer way.<br><br>She started preparing before break of day.<br><br>I later <b class="highlight quiz-target" data-ans="simplified" data-kor="단순화했다 / 간소화했다">simplified</b> some steps that she knew,<br><br>But kept what was important and carried it through.</p>
+                  <p class="mb-6">The broth should be gentle, not heavy or loud.<br><br>Tang-guk has no reason to shout to the crowd.<br><br>It sits by the jeon and the galbi with pride,<br><br>A calm little bowl with tradition inside.</p>
+                  <p class="mb-6">Nothing says Chuseok like steam rising slow,<br><br>With pieces of radish appearing below.<br><br>You lift up your spoon and you blow once or twice,<br><br>Then beef, broth, and tofu arrive with the rice.</p>
+                  <p class="mb-6">And tofu! Dear tofu! So simple, so white,<br><br>Cut evenly, carefully, every piece right.<br><br>Too small and it breaks; far too large and it’s strange.<br><br>A proper-sized cube needs no reason to change.</p>
+                  <p class="mb-6">The radish is different: soft but still there.<br><br>It carries the broth like it knows how to care.<br><br>It starts hard and plain, but after some time,<br><br>It drinks in the flavor and turns out sublime.</p>
+                  <p class="mb-6">When I think of Chuseok, this soup comes to mind,<br><br>Not flashy or sweet, but familiar and kind.<br><br>You may chase after songpyeon, galbi, and jeon,<br><br>But after those dishes, the soup carries on.</p>
+                  <p class="mb-6">And do you know what making this soup does to me?<br><br>I stand at the counter as stiff as a tree!<br><br>Last year when my shoulders were aching with pain,<br><br>Your grandmother <b class="highlight quiz-target" data-ans="gave me a massage" data-kor="나를 마사지해 줬다 / 안마해 줬다">gave me a massage</b> once again.</p>
+                  <p class="mb-6">Then back to the kitchen! The soup couldn’t wait!<br><br>The family was coming! We couldn’t be late!<br><br>Because that is Chuseok: you cook and prepare,<br><br>Then somehow twelve hungry relations appear.</p>
+                  <p class="mb-6">It wouldn’t be Chuseok without this warm bowl,<br><br>The broth and the radish completing the whole.<br><br>So don’t tell your grandpa you ‘can’t eat’ this soup!<br><br>I’ve worked since this morning to feed this whole group!</p>
+                  <p class="mb-6">Respect every tofu cube! Treasure the beef!<br><br>Let each spoon of broth bring your stomach relief!<br><br>And honor the radish, so tender and true—<br><br>This beautiful tang-guk was prepared here for you!”</p>
+                  <p class="mb-6">Grandpa stopped.</p>
+                  <p class="mb-6">The entire table was silent.</p>
+                  <p class="mb-6">Minjun was still staring into his bowl.</p>
+                  <p class="mb-6">Grandpa folded his arms.</p>
+                  <p class="mb-6">“Well?”</p>
+                  <p class="mb-6">Minjun slowly lifted his spoon.</p>
+                  <p class="mb-6">A long black hair was hanging from it.</p>
+                  <p class="mb-6">“I was trying to tell you there’s a hair in my soup.”</p>
+                  <p class="mb-6">Everyone looked at the hair.</p>
+                  <p class="mb-6">Then everyone looked at Grandpa.</p>
+                  <p class="mb-6">Grandpa touched the three remaining hairs on top of his head.</p>
+                  <p class="mb-6">“That is clearly not mine.”</p>
+                  <p class="mb-6">Grandma narrowed her eyes.</p>
+                  <p class="mb-6">“Why is everyone looking at me?”</p>
+                  <p class="mb-6">Minjun quietly pushed the bowl away.</p>
+                  <p class="mb-6">Grandpa picked it up.</p>
+                  <p class="mb-6">“I’ll get you a new one.”</p>
+                  <p class="mb-6">“Thanks.”</p>
+                  <p class="mb-6">Grandpa headed toward the kitchen.</p>
+                  <p class="mb-6">Minjun called after him.</p>
+                  <p class="mb-6">“Grandpa?”</p>
+                  <p class="mb-6">“Yes?”</p>
+                  <p class="mb-6">“The soup is actually really good.”</p>
+                  <p class="mb-6">Grandpa nodded.</p>
+                  <p class="mb-6">“I know.”</p>
+              </div>
+              <hr class="border-white/10">
+              <div class="text-slate-400 italic leading-relaxed space-y-6">
+                  <p class="mb-6">가족들이 막 추석 점심을 먹으려고 자리에 앉았을 때, 할아버지가 커다란 탕국 냄비를 들고 들어왔다.</p>
+                  <p class="mb-6">할아버지는 한 그릇을 떠서 손자 민준 앞에 놓았다.</p>
+                  <p class="mb-6">민준이 한 숟갈을 먹었다.</p>
+                  <p class="mb-6">씹던 것을 멈췄다.</p>
+                  <p class="mb-6">그리고 그릇 안을 내려다봤다.</p>
+                  <p class="mb-6">“할아버지, 저 이거 못 먹겠어요.”</p>
+                  <p class="mb-6">할아버지가 얼어붙었다.</p>
+                  <p class="mb-6">“내 탕국을 못 먹겠다고?”</p>
+                  <p class="mb-6">“아니, 여기—”</p>
+                  <p class="mb-6">할아버지가 자리에서 일어났다.</p>
+                  <p class="mb-6">민준의 엄마가 눈을 감았다.</p>
+                  <p class="mb-6">“아빠, 얘 말 좀 끝까지—”</p>
+                  <p class="mb-6">하지만 할아버지는 이미 시작했다.</p>
+                  <p class="mb-6">“탕국아, 사랑하는 탕국아, 소박하고 맑은 국아,<br><br>넌 조용히 우리에게 추석이 왔다고 알려 주지.<br><br>설탕을 산처럼 쌓지도 않고 화려한 윤기도 없지만,<br><br>훨씬 조용한 방식으로 우리의 존중을 얻는구나.</p>
+                  <p class="mb-6">무는 부드러워지지만 여전히 모양을 유지하고,<br><br>두부는 도망칠 필요도 없이 부드럽게 자리 잡고 있지.<br><br>소고기는 국물에 깊고 편안한 맛을 더하고,<br><br>어떤 재료도 서둘러 넣지 않아.</p>
+                  <p class="mb-6">먼저 소고기를 참기름 조금과 함께 냄비에 넣고,<br><br>그다음 무를 넣어 조심스럽게 끓이지.<br><br>물을 붓고 천천히 끓여 모든 맛이 어우러지게 해.<br><br>좋은 국에는 처음부터 끝까지 인내가 필요하니까.</p>
+                  <p class="mb-6">내 어머니는 훨씬 복잡한 방식으로 만드셨단다.<br><br>동이 트기도 전에 준비를 시작하셨지.<br><br>나중에 나는 그분이 알려 주신 과정 중 일부를 <b class="highlight">간소화했지만</b>,<br><br>중요한 것은 그대로 지켜 이어 왔어.</p>
+                  <p class="mb-6">국물은 부드러워야 해. 무겁거나 요란하면 안 되지.<br><br>탕국은 사람들에게 소리칠 이유가 없어.<br><br>전과 갈비 옆에서 당당히 자리를 지키며,<br><br>전통을 품은 차분한 한 그릇으로 앉아 있지.</p>
+                  <p class="mb-6">천천히 올라오는 김만큼 추석다운 것도 없어.<br><br>그 아래로 무 조각들이 보이지.<br><br>숟가락을 들어 한두 번 후후 불면,<br><br>밥과 함께 소고기와 국물과 두부가 찾아오지.</p>
+                  <p class="mb-6">그리고 두부! 사랑하는 두부야! 소박하고 하얀 두부!<br><br>모든 조각을 조심스럽고 일정하게 잘라야 하지.<br><br>너무 작으면 부서지고, 너무 크면 이상해.<br><br>알맞은 크기의 두부는 바꿀 이유가 없어.</p>
+                  <p class="mb-6">무는 또 달라. 부드러우면서도 존재감이 있지.<br><br>마치 자신이 무엇을 해야 하는지 아는 것처럼 국물을 머금어.<br><br>처음에는 단단하고 평범하지만 시간이 지나면,<br><br>국물의 맛을 흡수해 훌륭하게 변하지.</p>
+                  <p class="mb-6">내가 추석을 생각하면 이 국이 떠오른단다.<br><br>화려하지도 달지도 않지만 익숙하고 정겹지.<br><br>너희는 송편과 갈비와 전부터 찾아다니겠지만,<br><br>그 음식들을 먹은 뒤에도 탕국은 계속 곁에 있지.</p>
+                  <p class="mb-6">그리고 이 국을 만들면 내 몸이 어떻게 되는지 아니?<br><br>나무처럼 뻣뻣하게 조리대 앞에 서 있게 돼!<br><br>작년에는 어깨가 너무 아팠을 때,<br><br>네 할머니가 <b class="highlight">안마를 해 줬단다</b>.</p>
+                  <p class="mb-6">그러고는 다시 부엌으로 갔지! 국은 기다려 주지 않으니까!<br><br>가족들이 오고 있었고 늦을 수 없었어!<br><br>그게 바로 추석이니까. 요리하고 준비하다 보면,<br><br>어떻게 된 일인지 배고픈 친척 열두 명이 나타나지.</p>
+                  <p class="mb-6">이 따뜻한 국 한 그릇이 없다면 추석이라고 할 수 없어.<br><br>국물과 무가 전체 상차림을 완성하지.<br><br>그러니 할아버지에게 이 국을 ‘못 먹겠다’고 하지 마라!<br><br>이 많은 가족을 먹이려고 아침부터 일했단 말이다!</p>
+                  <p class="mb-6">두부 한 조각 한 조각을 존중해라! 소고기를 소중히 여겨라!<br><br>국물 한 숟갈 한 숟갈이 네 배를 편안하게 해 주도록 하라!<br><br>그리고 부드럽고 한결같은 무를 존경해라.<br><br>이 아름다운 탕국은 바로 너를 위해 준비한 거란다!”</p>
+                  <p class="mb-6">할아버지가 멈췄다.</p>
+                  <p class="mb-6">식탁 전체가 조용해졌다.</p>
+                  <p class="mb-6">민준은 여전히 자기 그릇 안을 바라보고 있었다.</p>
+                  <p class="mb-6">할아버지가 팔짱을 꼈다.</p>
+                  <p class="mb-6">“그래서?”</p>
+                  <p class="mb-6">민준이 천천히 숟가락을 들어 올렸다.</p>
+                  <p class="mb-6">긴 검은 머리카락 한 올이 숟가락에 매달려 있었다.</p>
+                  <p class="mb-6">“국에 머리카락이 있다고 말씀드리려고 했어요.”</p>
+                  <p class="mb-6">모두가 머리카락을 바라봤다.</p>
+                  <p class="mb-6">그리고 모두가 할아버지를 바라봤다.</p>
+                  <p class="mb-6">할아버지는 머리 위에 남은 세 가닥의 머리카락을 만졌다.</p>
+                  <p class="mb-6">“저건 분명 내 머리카락이 아니다.”</p>
+                  <p class="mb-6">할머니가 눈을 가늘게 떴다.</p>
+                  <p class="mb-6">“왜 다들 나를 보는 거야?”</p>
+                  <p class="mb-6">민준은 조용히 그릇을 밀어 놓았다.</p>
+                  <p class="mb-6">할아버지가 그릇을 집었다.</p>
+                  <p class="mb-6">“새로 떠다 줄게.”</p>
+                  <p class="mb-6">“고마워요.”</p>
+                  <p class="mb-6">할아버지가 부엌으로 향했다.</p>
+                  <p class="mb-6">민준이 뒤에서 불렀다.</p>
+                  <p class="mb-6">“할아버지?”</p>
+                  <p class="mb-6">“왜?”</p>
+                  <p class="mb-6">“국은 진짜 맛있어요.”</p>
+                  <p class="mb-6">할아버지가 고개를 끄덕였다.</p>
+                  <p class="mb-6">“알아.”</p>
+              </div>
+          </section>
+
+      </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "9231200.m4a";
+</script>
+  </body>
+  </html>

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | His New Diet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🍳</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">His New Diet</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">mold</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">곰팡이</td></tr>
+                <tr><td class="p-4"><b class="text-white">make it more often</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그걸 더 자주 만들다</td></tr>
+                <tr><td class="p-4"><b class="text-white">carbs</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">탄수화물</td></tr>
+                <tr><td class="p-4"><b class="text-white">bloated</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">속이 더부룩한 / 배가 빵빵하게 부른</td></tr>
+                <tr><td class="p-4"><b class="text-white">pancreas</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">췌장</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                <h3 class="font-bold text-teal-400 text-lg">make it more often</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">앞에서 언급한 음식 등을 it으로 받아 “그걸 더 자주 만들다”라는 뜻이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                <h3 class="font-bold text-teal-400 text-lg">carbs</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">carbohydrates의 일상적인 줄임말이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                <h3 class="font-bold text-teal-400 text-lg">bloated</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">많이 먹거나 소화가 잘 안 돼 배가 팽팽하고 불편한 상태예요. 단순히 full보다 불편한 느낌이 강합니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">When Kevin announced that he was going to start cooking for himself, his mother was thrilled.</p>
+                <p class="mb-6">At twenty-six, he still lived at home, and she was tired of planning every meal for him.</p>
+                <p class="mb-6">“I found a guy online who does meal prep,” Kevin said. “He cooks everything on Sunday and eats it all week.”</p>
+                <p class="mb-6">“That sounds reasonable.”</p>
+                <p class="mb-6">Kevin opened the refrigerator and started taking out chicken, rice, eggs, and vegetables.</p>
+                <p class="mb-6">His mother looked at the amount of food on the counter.</p>
+                <p class="mb-6">“How many meals are you making?”</p>
+                <p class="mb-6">“Twenty-one.”</p>
+                <p class="mb-6">She paused. “For the entire week?”</p>
+                <p class="mb-6">“Breakfast, lunch, and dinner.”</p>
+                <p class="mb-6">“Kevin, maybe start with three days. See what works first.”</p>
+                <p class="mb-6">He shook his head. “That defeats the purpose.”</p>
+                <p class="mb-6">She warned him that some foods wouldn’t stay fresh all week.</p>
+                <p class="mb-6">“I know how a refrigerator works, Mom.”</p>
+                <p class="mb-6">That sentence stayed with her.</p>
+                <p class="mb-6">On Monday, Kevin was delighted.</p>
+                <p class="mb-6">“This is so convenient. I should <b class="highlight quiz-target" data-ans="make it more often" data-kor="그걸 더 자주 만들다">make it more often</b>.”</p>
+                <p class="mb-6">On Tuesday, he complained that every meal had too many <b class="highlight quiz-target" data-ans="carbs" data-kor="탄수화물">carbs</b>.</p>
+                <p class="mb-6">His mother suggested changing the portions.</p>
+                <p class="mb-6">“No, I already calculated everything.”</p>
+                <p class="mb-6">On Wednesday, Kevin came into the living room holding his stomach.</p>
+                <p class="mb-6">“I’m so <b class="highlight quiz-target" data-ans="bloated" data-kor="속이 더부룩한">bloated</b>.”</p>
+                <p class="mb-6">“Maybe you don’t need to finish every container.”</p>
+                <p class="mb-6">“I paid for the food. I’m eating it.”</p>
+                <p class="mb-6">His mother said nothing.</p>
+                <p class="mb-6">Thursday morning, Kevin discovered that the eggs had become watery.</p>
+                <p class="mb-6">“Are these okay?”</p>
+                <p class="mb-6">“I don’t know,” his mother said. “You’re the meal-prep expert.”</p>
+                <p class="mb-6">He frowned at her.</p>
+                <p class="mb-6">That evening, he ate one anyway.</p>
+                <p class="mb-6">By Friday, the refrigerator smelled strange.</p>
+                <p class="mb-6">His mother opened it, saw moisture inside several containers, and closed it again.</p>
+                <p class="mb-6">Not my problem, she told herself.</p>
+                <p class="mb-6">Kevin wanted independence. She was giving it to him.</p>
+                <p class="mb-6">Saturday morning, Kevin shouted from the kitchen.</p>
+                <p class="mb-6">“Mom!”</p>
+                <p class="mb-6">She walked in.</p>
+                <p class="mb-6">Kevin was holding a container of rice.</p>
+                <p class="mb-6">There was <b class="highlight quiz-target" data-ans="mold" data-kor="곰팡이">mold</b> inside.</p>
+                <p class="mb-6">“I think the refrigerator isn’t cold enough.”</p>
+                <p class="mb-6">His mother stared at him.</p>
+                <p class="mb-6">“What?”</p>
+                <p class="mb-6">“Maybe something’s wrong with it.”</p>
+                <p class="mb-6">“The refrigerator.”</p>
+                <p class="mb-6">“Yeah.”</p>
+                <p class="mb-6">“The refrigerator that has kept everyone else’s food perfectly fine all week.”</p>
+                <p class="mb-6">Kevin looked annoyed. “Well, how was I supposed to know this would happen?”</p>
+                <p class="mb-6">She felt something break inside her.</p>
+                <p class="mb-6">“I TOLD YOU!”</p>
+                <p class="mb-6">Kevin stepped back.</p>
+                <p class="mb-6">“I told you not to prepare seven days of food when you had never done this before! I told you some of it wouldn’t last! You told me you knew how a refrigerator worked!”</p>
+                <p class="mb-6">“Okay—”</p>
+                <p class="mb-6">“No! All week I listened to you complain about the portions, the rice, your stomach, the eggs—and I said nothing because you wanted to do it yourself!”</p>
+                <p class="mb-6">Kevin looked at the moldy container.</p>
+                <p class="mb-6">“So…you were right.”</p>
+                <p class="mb-6">“Yes!”</p>
+                <p class="mb-6">“You really enjoyed saying that.”</p>
+                <p class="mb-6">“I’ve been waiting six days.”</p>
+                <p class="mb-6">Kevin threw the container away.</p>
+                <p class="mb-6">“Next week, I’m making three days.”</p>
+                <p class="mb-6">His mother nodded.</p>
+                <p class="mb-6">“Good.”</p>
+                <p class="mb-6">He opened the refrigerator again.</p>
+                <p class="mb-6">“Do you think the chicken is still okay?”</p>
+                <p class="mb-6">She stood up.</p>
+                <p class="mb-6">“I’m leaving.”</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">케빈이 이제부터 자기 음식은 직접 해 먹겠다고 선언했을 때, 어머니는 아주 기뻤다.</p>
+                <p class="mb-6">스물여섯 살인 케빈은 아직 집에서 살고 있었고, 어머니는 매번 그의 식사까지 계획하는 데 지쳐 있었다.</p>
+                <p class="mb-6">“인터넷에서 밀프렙 하는 사람을 찾았어요. 일요일에 일주일 치를 전부 만들어 놓고 일주일 내내 먹는 거예요.”</p>
+                <p class="mb-6">“괜찮은 방법 같은데.”</p>
+                <p class="mb-6">케빈은 냉장고를 열고 닭고기, 쌀, 달걀, 채소를 꺼내기 시작했다.</p>
+                <p class="mb-6">어머니는 조리대 위에 쌓이는 엄청난 양의 음식을 바라봤다.</p>
+                <p class="mb-6">“몇 끼 만드는 거야?”</p>
+                <p class="mb-6">“스물한 끼요.”</p>
+                <p class="mb-6">어머니는 잠시 멈췄다. “일주일 치 전부?”</p>
+                <p class="mb-6">“아침, 점심, 저녁이요.”</p>
+                <p class="mb-6">“케빈, 일단 3일 치만 해보는 게 어때? 해보고 어떤지 보는 거지.”</p>
+                <p class="mb-6">케빈은 고개를 저었다. “그러면 하는 의미가 없죠.”</p>
+                <p class="mb-6">어머니는 어떤 음식들은 냉장고에 넣어도 일주일 내내 신선하게 유지되지 않을 거라고 경고했다.</p>
+                <p class="mb-6">“엄마, 저도 냉장고가 어떻게 작동하는지는 알아요.”</p>
+                <p class="mb-6">그 말은 어머니의 머릿속에 남았다.</p>
+                <p class="mb-6">월요일, 케빈은 아주 만족스러워했다.</p>
+                <p class="mb-6">“이거 정말 편하네. 앞으로 <b class="highlight">더 자주 만들어야겠어요</b>.”</p>
+                <p class="mb-6">화요일에는 모든 음식에 <b class="highlight">탄수화물이</b> 너무 많다고 불평했다.</p>
+                <p class="mb-6">어머니는 양을 좀 바꿔보라고 했다.</p>
+                <p class="mb-6">“싫어요. 이미 전부 계산했어요.”</p>
+                <p class="mb-6">수요일, 케빈은 배를 잡은 채 거실로 들어왔다.</p>
+                <p class="mb-6">“배가 너무 <b class="highlight">더부룩해요</b>.”</p>
+                <p class="mb-6">“그럼 매번 한 통을 다 먹지 않아도 되잖아.”</p>
+                <p class="mb-6">“돈 주고 산 음식인데 먹어야죠.”</p>
+                <p class="mb-6">어머니는 아무 말도 하지 않았다.</p>
+                <p class="mb-6">목요일 아침, 케빈은 달걀에서 물이 생긴 걸 발견했다.</p>
+                <p class="mb-6">“이거 괜찮은 건가?”</p>
+                <p class="mb-6">“모르겠네.” 어머니가 말했다. “밀프렙 전문가는 너잖아.”</p>
+                <p class="mb-6">케빈은 못마땅한 표정으로 어머니를 바라봤다.</p>
+                <p class="mb-6">그날 저녁 그는 결국 그 달걀 하나를 먹었다.</p>
+                <p class="mb-6">금요일이 되자 냉장고에서 이상한 냄새가 났다.</p>
+                <p class="mb-6">어머니는 문을 열어 몇몇 용기 안에 물기가 차 있는 것을 보고 다시 문을 닫았다.</p>
+                <p class="mb-6">내 문제 아니야. 그녀는 스스로에게 말했다.</p>
+                <p class="mb-6">케빈은 독립하고 싶어 했다. 어머니는 그대로 해주고 있었다.</p>
+                <p class="mb-6">토요일 아침, 부엌에서 케빈이 소리쳤다.</p>
+                <p class="mb-6">“엄마!”</p>
+                <p class="mb-6">어머니가 부엌으로 들어갔다.</p>
+                <p class="mb-6">케빈은 밥이 든 용기를 들고 있었다.</p>
+                <p class="mb-6">안에는 <b class="highlight">곰팡이가</b> 피어 있었다.</p>
+                <p class="mb-6">“냉장고가 충분히 차갑지 않은 것 같아요.”</p>
+                <p class="mb-6">어머니는 아들을 빤히 바라봤다.</p>
+                <p class="mb-6">“뭐?”</p>
+                <p class="mb-6">“냉장고에 문제가 있는지도 모르겠어요.”</p>
+                <p class="mb-6">“냉장고.”</p>
+                <p class="mb-6">“네.”</p>
+                <p class="mb-6">“이번 주 내내 다른 사람 음식은 아무 문제 없이 보관한 바로 그 냉장고?”</p>
+                <p class="mb-6">케빈은 짜증스러운 표정을 지었다. “아니, 이런 일이 생길 줄 제가 어떻게 알았겠어요?”</p>
+                <p class="mb-6">어머니 안에서 무언가가 끊어졌다.</p>
+                <p class="mb-6">“내가 말했잖아!”</p>
+                <p class="mb-6">케빈이 한 걸음 뒤로 물러났다.</p>
+                <p class="mb-6">“한 번도 해본 적 없으면서 7일 치를 한꺼번에 만들지 말라고 했잖아! 어떤 음식은 그렇게 오래 못 간다고 했잖아! 그런데 넌 냉장고가 어떻게 작동하는지 안다고 했지!”</p>
+                <p class="mb-6">“알았어요—”</p>
+                <p class="mb-6">“아니! 일주일 내내 네가 양이 어떻고, 밥이 어떻고, 배가 어떻고, 달걀이 어떻고 불평하는 걸 들으면서도 아무 말 안 했어. 네가 혼자 해보고 싶다고 했으니까!”</p>
+                <p class="mb-6">케빈은 곰팡이가 핀 용기를 바라봤다.</p>
+                <p class="mb-6">“그러니까… 엄마 말이 맞았네요.”</p>
+                <p class="mb-6">“그래!”</p>
+                <p class="mb-6">“그 말 하는 거 엄청 즐거워 보이는데요.”</p>
+                <p class="mb-6">“6일을 기다렸거든.”</p>
+                <p class="mb-6">케빈은 용기를 쓰레기통에 버렸다.</p>
+                <p class="mb-6">“다음 주에는 3일 치만 할게요.”</p>
+                <p class="mb-6">어머니가 고개를 끄덕였다.</p>
+                <p class="mb-6">“좋아.”</p>
+                <p class="mb-6">케빈이 냉장고를 다시 열었다.</p>
+                <p class="mb-6">“그런데 이 닭고기는 아직 괜찮을까요?”</p>
+                <p class="mb-6">어머니는 자리에서 일어났다.</p>
+                <p class="mb-6">“나 나갈래.”</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+    function skipAudio(seconds) {
+        const player = document.getElementById('player');
+        if (player.src) {
+            player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+        }
+    }
+
+    function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+    let _quizOriginals = new Map();
+
+    function toggleQuiz() {
+        const btn = document.getElementById('quizBtn');
+        const isQuiz = btn.innerText.includes("Quiz");
+        const targets = document.querySelectorAll('.quiz-target');
+        const cells = document.querySelectorAll('.mystery-cell');
+
+        if (isQuiz) {
+            btn.innerText = "Study Mode 📖";
+            cells.forEach(c => c.classList.add('quiz-hidden'));
+            targets.forEach(t => {
+                const ans = t.dataset.ans; const kor = t.dataset.kor;
+                _quizOriginals.set(t, t.innerHTML);
+                t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+            });
+        } else {
+            btn.innerText = "Quiz Mode 👻";
+            cells.forEach(c => c.classList.remove('quiz-hidden'));
+            targets.forEach(t => {
+                if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+            });
+            _quizOriginals.clear();
+        }
+    }
+
+    function checkQuiz(i, a) {
+        if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+            i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+            confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+            checkAllSolved();
+        } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+    }
+
+    function checkAllSolved() {
+        const inputs = document.querySelectorAll('.quiz-input');
+        if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+            var duration = 3 * 1000; var end = Date.now() + duration;
+            (function frame() {
+                confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                if (Date.now() < end) requestAnimationFrame(frame);
+            }());
+        }
+    }
+
+    document.getElementById('player').src = "928845.m4a";
+</script>
+</body>
+</html>

@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | No Comments</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🚙</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">No Comments</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">air out the house</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">집 안을 환기시키다</td></tr>
+                <tr><td class="p-4"><b class="text-white">mosquitoes</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">모기들</td></tr>
+                <tr><td class="p-4"><b class="text-white">drain my knee</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">무릎에 찬 물을 빼다</td></tr>
+                <tr><td class="p-4"><b class="text-white">knee brace</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">무릎 보호대</td></tr>
+                <tr><td class="p-4"><b class="text-white">backseat driver</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">옆에서 운전에 계속 참견하는 사람</td></tr>
+                <tr><td class="p-4"><b class="text-white">distracted</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">주의가 산만해진 / 집중이 흐트러진</td></tr>
+                <tr><td class="p-4"><b class="text-white">got dizzy</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">어지러워졌다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                <h3 class="font-bold text-teal-400 text-lg">air out the house</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">창문이나 문을 열어 답답한 공기나 냄새를 빼고 환기시키는 것을 말해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                <h3 class="font-bold text-teal-400 text-lg">drain my knee</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">무릎 관절에 찬 액체를 의료적으로 빼는 것을 뜻해요. I need to have my knee drained라고도 자연스럽게 말할 수 있어요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                <h3 class="font-bold text-teal-400 text-lg">backseat driver</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">실제 좌석 위치와 상관없이 운전자에게 계속 속도나 방향 등을 지적하는 사람을 뜻해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                <h3 class="font-bold text-teal-400 text-lg">got dizzy</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">갑자기 어지러운 상태가 되었다는 뜻이에요. I was dizzy가 상태라면 I got dizzy는 그 상태로 변한 순간에 초점이 있습니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">After knee surgery, Laura wasn’t supposed to drive for several weeks. She wore a <b class="highlight quiz-target" data-ans="knee brace" data-kor="무릎 보호대">knee brace</b>, and that morning her son Jake was taking her to a follow-up appointment.</p>
+                <p class="mb-6">“Thank you for driving,” she said as she got into the passenger seat.</p>
+                <p class="mb-6">“You’re welcome. But I have one condition.”</p>
+                <p class="mb-6">“What?”</p>
+                <p class="mb-6">“No commentary.”</p>
+                <p class="mb-6">Laura frowned.</p>
+                <p class="mb-6">“You’re a <b class="highlight quiz-target" data-ans="backseat driver" data-kor="옆에서 운전에 계속 참견하는 사람">backseat driver</b>, Mom. You tell me when to brake, when to change lanes, when someone is crossing the street—”</p>
+                <p class="mb-6">“Sometimes you need to know those things.”</p>
+                <p class="mb-6">“That. Exactly that.”</p>
+                <p class="mb-6">Laura sighed. “Fine. No commentary.”</p>
+                <p class="mb-6">They left.</p>
+                <p class="mb-6">For several minutes, Laura kept her promise.</p>
+                <p class="mb-6">Then Jake’s phone buzzed in the cup holder.</p>
+                <p class="mb-6">He looked down at it.</p>
+                <p class="mb-6">Laura noticed but stayed silent.</p>
+                <p class="mb-6">The phone buzzed again.</p>
+                <p class="mb-6">Jake glanced down.</p>
+                <p class="mb-6">Laura looked straight ahead.</p>
+                <p class="mb-6">A few minutes later, Jake reached for his coffee. While trying to put it back, he missed the cup holder.</p>
+                <p class="mb-6">Coffee spilled onto his jeans.</p>
+                <p class="mb-6">“Oh, come on!”</p>
+                <p class="mb-6">He looked down and tried to wipe it with one hand.</p>
+                <p class="mb-6">The car began moving toward the edge of the lane.</p>
+                <p class="mb-6">Laura grabbed the door handle.</p>
+                <p class="mb-6">“Jake.”</p>
+                <p class="mb-6">“I’ve got it.”</p>
+                <p class="mb-6">“You’re <b class="highlight quiz-target" data-ans="distracted" data-kor="집중이 흐트러진">distracted</b>.”</p>
+                <p class="mb-6">“I said I’ve got it.”</p>
+                <p class="mb-6">Laura stopped talking.</p>
+                <p class="mb-6">She reminded herself that Jake was an adult. She didn’t need to correct everything he did.</p>
+                <p class="mb-6">At the next light, Jake cleaned up the coffee.</p>
+                <p class="mb-6">“See? Everything’s fine.”</p>
+                <p class="mb-6">Laura stared through the windshield.</p>
+                <p class="mb-6">Then the light turned green.</p>
+                <p class="mb-6">Jake started driving.</p>
+                <p class="mb-6">His phone buzzed.</p>
+                <p class="mb-6">He looked down.</p>
+                <p class="mb-6">The car ahead suddenly stopped.</p>
+                <p class="mb-6">“Jake!”</p>
+                <p class="mb-6">He slammed on the brakes.</p>
+                <p class="mb-6">Laura’s body jerked forward against the seat belt.</p>
+                <p class="mb-6">For a moment, everything seemed to move around her.</p>
+                <p class="mb-6">“Mom?”</p>
+                <p class="mb-6">She closed her eyes.</p>
+                <p class="mb-6">“I <b class="highlight quiz-target" data-ans="got dizzy" data-kor="어지러워졌다">got dizzy</b>.”</p>
+                <p class="mb-6">Jake immediately pulled into a parking lot.</p>
+                <p class="mb-6">“Are you okay?”</p>
+                <p class="mb-6">“I think so.”</p>
+                <p class="mb-6">“Did you hurt your knee?”</p>
+                <p class="mb-6">Laura carefully moved her leg. “No.”</p>
+                <p class="mb-6">Jake sat silently for a moment.</p>
+                <p class="mb-6">Then he picked up his phone and switched it off.</p>
+                <p class="mb-6">“I guess I shouldn’t have been looking at this.”</p>
+                <p class="mb-6">Laura said nothing.</p>
+                <p class="mb-6">Jake looked at her.</p>
+                <p class="mb-6">“What?”</p>
+                <p class="mb-6">“Nothing.”</p>
+                <p class="mb-6">“You’re doing the face.”</p>
+                <p class="mb-6">“What face?”</p>
+                <p class="mb-6">“The face you make when you were right.”</p>
+                <p class="mb-6">Laura turned toward the window.</p>
+                <p class="mb-6">Jake sighed. “Fine. You warned me about checking my phone while driving.”</p>
+                <p class="mb-6">Still nothing.</p>
+                <p class="mb-6">“And you were right.”</p>
+                <p class="mb-6">Laura took a deep breath.</p>
+                <p class="mb-6">She had promised not to comment. She genuinely wanted to respect her adult son.</p>
+                <p class="mb-6">Then Jake added, “But you did yell my name, so technically you were still being a backseat driver.”</p>
+                <p class="mb-6">Laura snapped her head toward him.</p>
+                <p class="mb-6">“Oh, absolutely not. I told you not to look at your phone! You said I was distracting you, and then you nearly drove into another car because you were looking at a text!”</p>
+                <p class="mb-6">Jake laughed. “There it is.”</p>
+                <p class="mb-6">“I told you so!”</p>
+                <p class="mb-6">“I knew you couldn’t hold it in.”</p>
+                <p class="mb-6">Laura folded her arms.</p>
+                <p class="mb-6">“Drive.”</p>
+                <p class="mb-6">Jake put both hands on the steering wheel.</p>
+                <p class="mb-6">“Yes, ma’am.”</p>
+                <p class="mb-6">“Eyes on the road.”</p>
+                <p class="mb-6">“Mom.”</p>
+                <p class="mb-6">“Sorry.”</p>
+                <p class="mb-6">She lasted almost thirty seconds.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">무릎 수술을 받은 뒤 로라는 몇 주 동안 운전을 하면 안 됐다. 그녀는 <b class="highlight">무릎 보호대를</b> 착용하고 있었고, 그날 아침에는 아들 제이크가 후속 진료를 받으러 병원까지 데려다주기로 했다.</p>
+                <p class="mb-6">“운전해 줘서 고마워.” 로라는 조수석에 타며 말했다.</p>
+                <p class="mb-6">“천만에요. 그런데 조건이 하나 있어요.”</p>
+                <p class="mb-6">“뭔데?”</p>
+                <p class="mb-6">“운전에 참견하지 않기.”</p>
+                <p class="mb-6">로라는 인상을 찌푸렸다.</p>
+                <p class="mb-6">“엄마는 완전 <b class="highlight">옆에서 운전에 참견하는 사람이에요</b>. 브레이크 밟으라 하고, 차선 바꾸라 하고, 누가 길을 건너고 있다고 알려주고—”</p>
+                <p class="mb-6">“가끔은 그런 걸 알려줘야 하니까 그렇지.”</p>
+                <p class="mb-6">“바로 그거요. 지금 그거.”</p>
+                <p class="mb-6">로라는 한숨을 쉬었다. “알았어. 아무 말도 안 할게.”</p>
+                <p class="mb-6">둘은 출발했다.</p>
+                <p class="mb-6">몇 분 동안 로라는 약속을 지켰다.</p>
+                <p class="mb-6">그러다 컵홀더에 있던 제이크의 휴대폰이 울렸다.</p>
+                <p class="mb-6">제이크가 화면을 내려다봤다.</p>
+                <p class="mb-6">로라는 봤지만 아무 말도 하지 않았다.</p>
+                <p class="mb-6">휴대폰이 다시 울렸다.</p>
+                <p class="mb-6">제이크가 또 아래를 흘끗 봤다.</p>
+                <p class="mb-6">로라는 정면만 바라봤다.</p>
+                <p class="mb-6">몇 분 뒤 제이크가 커피를 집었다. 다시 컵홀더에 넣으려다가 제대로 놓지 못했다.</p>
+                <p class="mb-6">커피가 청바지 위로 쏟아졌다.</p>
+                <p class="mb-6">“아, 진짜!”</p>
+                <p class="mb-6">그는 아래를 내려다보며 한 손으로 커피를 닦으려고 했다.</p>
+                <p class="mb-6">차가 차선 가장자리로 조금씩 움직이기 시작했다.</p>
+                <p class="mb-6">로라는 문 손잡이를 꽉 잡았다.</p>
+                <p class="mb-6">“제이크.”</p>
+                <p class="mb-6">“알아서 하고 있어요.”</p>
+                <p class="mb-6">“지금 <b class="highlight">집중이 흐트러졌잖아</b>.”</p>
+                <p class="mb-6">“알아서 한다니까요.”</p>
+                <p class="mb-6">로라는 입을 다물었다.</p>
+                <p class="mb-6">제이크도 성인이었다. 그가 하는 모든 행동을 일일이 고쳐줄 필요는 없다고 스스로에게 말했다.</p>
+                <p class="mb-6">다음 신호에서 제이크는 커피를 닦았다.</p>
+                <p class="mb-6">“거봐요. 아무 문제 없잖아요.”</p>
+                <p class="mb-6">로라는 앞만 바라봤다.</p>
+                <p class="mb-6">신호가 초록불로 바뀌었다.</p>
+                <p class="mb-6">제이크는 다시 출발했다.</p>
+                <p class="mb-6">휴대폰이 울렸다.</p>
+                <p class="mb-6">그가 아래를 내려다봤다.</p>
+                <p class="mb-6">앞차가 갑자기 멈췄다.</p>
+                <p class="mb-6">“제이크!”</p>
+                <p class="mb-6">그가 급브레이크를 밟았다.</p>
+                <p class="mb-6">로라의 몸이 안전벨트에 걸리며 앞으로 확 쏠렸다.</p>
+                <p class="mb-6">잠시 주변이 움직이는 것처럼 느껴졌다.</p>
+                <p class="mb-6">“엄마?”</p>
+                <p class="mb-6">로라는 눈을 감았다.</p>
+                <p class="mb-6">“<b class="highlight">어지러워졌어</b>.”</p>
+                <p class="mb-6">제이크는 즉시 주차장으로 들어갔다.</p>
+                <p class="mb-6">“괜찮아요?”</p>
+                <p class="mb-6">“그런 것 같아.”</p>
+                <p class="mb-6">“무릎은 안 다쳤어요?”</p>
+                <p class="mb-6">로라는 조심스럽게 다리를 움직였다. “응.”</p>
+                <p class="mb-6">제이크는 잠시 말없이 앉아 있었다.</p>
+                <p class="mb-6">그러더니 휴대폰을 집어 전원을 껐다.</p>
+                <p class="mb-6">“운전하면서 이걸 보면 안 됐던 것 같네요.”</p>
+                <p class="mb-6">로라는 아무 말도 하지 않았다.</p>
+                <p class="mb-6">제이크가 그녀를 바라봤다.</p>
+                <p class="mb-6">“왜요?”</p>
+                <p class="mb-6">“아무것도 아니야.”</p>
+                <p class="mb-6">“그 표정 하고 있잖아요.”</p>
+                <p class="mb-6">“무슨 표정?”</p>
+                <p class="mb-6">“엄마가 맞았을 때 짓는 표정.”</p>
+                <p class="mb-6">로라는 창밖으로 고개를 돌렸다.</p>
+                <p class="mb-6">제이크가 한숨을 쉬었다. “알았어요. 엄마가 운전하면서 휴대폰 보지 말라고 경고했죠.”</p>
+                <p class="mb-6">여전히 로라는 아무 말도 하지 않았다.</p>
+                <p class="mb-6">“그리고 엄마 말이 맞았어요.”</p>
+                <p class="mb-6">로라는 깊게 숨을 들이마셨다.</p>
+                <p class="mb-6">운전에 참견하지 않겠다고 약속했다. 성인이 된 아들을 정말 존중해 주고 싶었다.</p>
+                <p class="mb-6">그러자 제이크가 덧붙였다.</p>
+                <p class="mb-6">“그런데 엄마도 제 이름을 소리쳤으니까 엄밀히 말하면 여전히 운전에 참견한 거예요.”</p>
+                <p class="mb-6">로라는 고개를 홱 돌렸다.</p>
+                <p class="mb-6">“그건 아니지! 내가 휴대폰 보지 말라고 했잖아! 나 때문에 집중이 안 된다고 해놓고 문자 보다가 앞차를 들이받을 뻔했잖아!”</p>
+                <p class="mb-6">제이크가 웃었다. “나왔다.”</p>
+                <p class="mb-6">“내가 뭐랬어!”</p>
+                <p class="mb-6">“엄마가 결국 못 참을 줄 알았어요.”</p>
+                <p class="mb-6">로라는 팔짱을 꼈다.</p>
+                <p class="mb-6">“운전해.”</p>
+                <p class="mb-6">제이크는 두 손을 운전대 위에 올렸다.</p>
+                <p class="mb-6">“네, 어머니.”</p>
+                <p class="mb-6">“앞에 보고.”</p>
+                <p class="mb-6">“엄마.”</p>
+                <p class="mb-6">“미안.”</p>
+                <p class="mb-6">그녀는 거의 30초 동안 참았다.</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+    function skipAudio(seconds) {
+        const player = document.getElementById('player');
+        if (player.src) {
+            player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+        }
+    }
+
+    function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+    let _quizOriginals = new Map();
+
+    function toggleQuiz() {
+        const btn = document.getElementById('quizBtn');
+        const isQuiz = btn.innerText.includes("Quiz");
+        const targets = document.querySelectorAll('.quiz-target');
+        const cells = document.querySelectorAll('.mystery-cell');
+
+        if (isQuiz) {
+            btn.innerText = "Study Mode 📖";
+            cells.forEach(c => c.classList.add('quiz-hidden'));
+            targets.forEach(t => {
+                const ans = t.dataset.ans; const kor = t.dataset.kor;
+                _quizOriginals.set(t, t.innerHTML);
+                t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+            });
+        } else {
+            btn.innerText = "Quiz Mode 👻";
+            cells.forEach(c => c.classList.remove('quiz-hidden'));
+            targets.forEach(t => {
+                if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+            });
+            _quizOriginals.clear();
+        }
+    }
+
+    function checkQuiz(i, a) {
+        if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+            i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+            confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+            checkAllSolved();
+        } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+    }
+
+    function checkAllSolved() {
+        const inputs = document.querySelectorAll('.quiz-input');
+        if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+            var duration = 3 * 1000; var end = Date.now() + duration;
+            (function frame() {
+                confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                if (Date.now() < end) requestAnimationFrame(frame);
+            }());
+        }
+    }
+
+    document.getElementById('player').src = "9281200.m4a";
+</script>
+</body>
+</html>

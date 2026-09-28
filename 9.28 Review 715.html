@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | Just Let Him Cook</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🍝</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">Just Let Him Cook</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">I told her she shouldn't</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">나는 그녀에게 그러지 않는 게 좋겠다고 말했다</td></tr>
+                <tr><td class="p-4"><b class="text-white">make huge portions</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">엄청 많은 양을 만들다 / 1인분 양을 아주 크게 만들다</td></tr>
+                <tr><td class="p-4"><b class="text-white">laidback</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">느긋한 / 여유로운 / 별일에 크게 신경 쓰지 않는</td></tr>
+                <tr><td class="p-4"><b class="text-white">chill</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">느긋한 / 편안한 / 쿨한</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                <h3 class="font-bold text-teal-400 text-lg">I told her she shouldn't</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">뒤에 행동이 이어지는 구조예요. 상황에 따라 I told him he shouldn’t buy it처럼 사람과 행동을 자연스럽게 바꿔 사용할 수 있어요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                <h3 class="font-bold text-teal-400 text-lg">make huge portions</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">음식을 필요 이상으로 많이 만들거나, 한 사람에게 주는 양을 아주 크게 만든다는 뜻이에요. 문맥에 따라 make such huge portions처럼 쓰는 것도 자연스러워요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                <h3 class="font-bold text-teal-400 text-lg">laidback</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">작은 문제에 쉽게 스트레스받지 않는 느긋한 성격을 말해요. 보통 긍정적인 뉘앙스가 있습니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                <h3 class="font-bold text-teal-400 text-lg">chill</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">사람에게 쓰면 laid-back과 비슷하게 편하고 느긋하다는 뜻이에요. 매우 일상적인 표현입니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Mina’s husband, Eric, had recently complained that she never let him do anything by himself.</p>
+                <p class="mb-6">“You always check what I’m doing,” he said. “Just trust me.”</p>
+                <p class="mb-6">So when Eric offered to cook dinner for six friends, Mina decided to be hands off.</p>
+                <p class="mb-6">There was only one problem. Eric always cooked as if he were feeding thirty people.</p>
+                <p class="mb-6">“Don’t <b class="highlight quiz-target" data-ans="make huge portions" data-kor="엄청 많은 양을 만들다">make huge portions</b>,” she warned him. “We don’t need four bags of pasta for eight people.”</p>
+                <p class="mb-6">Eric laughed. He was usually very <b class="highlight quiz-target" data-ans="laidback" data-kor="느긋한">laidback</b> about these things.</p>
+                <p class="mb-6">“Relax. I’m <b class="highlight quiz-target" data-ans="chill" data-kor="느긋한">chill</b>. You’re the one worrying.”</p>
+                <p class="mb-6">“I’m not worried. I’m warning you.”</p>
+                <p class="mb-6">He opened the fourth bag of pasta.</p>
+                <p class="mb-6">Mina stared at it.</p>
+                <p class="mb-6">Then she walked away.</p>
+                <p class="mb-6">An hour later, their guests arrived. The dining table was completely covered with food. There were three enormous bowls of pasta, two trays of garlic bread, and enough salad for a small wedding.</p>
+                <p class="mb-6">“Wow,” one guest said. “Are more people coming?”</p>
+                <p class="mb-6">“No,” Mina said.</p>
+                <p class="mb-6">Eric gave her a look.</p>
+                <p class="mb-6">She decided to bite her tongue.</p>
+                <p class="mb-6">After dinner, almost two full bowls of pasta remained. Eric tried putting the leftovers into containers, but they filled the refrigerator.</p>
+                <p class="mb-6">“Could you move some things around?” he asked.</p>
+                <p class="mb-6">Mina wanted to say something. She didn’t.</p>
+                <p class="mb-6">The next morning, Eric opened the refrigerator and a container of pasta fell onto the floor.</p>
+                <p class="mb-6">“Seriously?”</p>
+                <p class="mb-6">Mina looked away.</p>
+                <p class="mb-6">That evening, he served leftover pasta for dinner.</p>
+                <p class="mb-6">On Tuesday, they had pasta again.</p>
+                <p class="mb-6">By Wednesday, even Eric was tired of it.</p>
+                <p class="mb-6">“We can’t eat this forever,” he complained.</p>
+                <p class="mb-6">Mina nodded silently.</p>
+                <p class="mb-6">Eric looked at the remaining containers. “Why did I make so much?”</p>
+                <p class="mb-6">Mina pressed her lips together.</p>
+                <p class="mb-6">He continued. “Someone should’ve stopped me.”</p>
+                <p class="mb-6">She turned toward him.</p>
+                <p class="mb-6">“Someone?”</p>
+                <p class="mb-6">“Yeah. You could’ve said something.”</p>
+                <p class="mb-6">That did it.</p>
+                <p class="mb-6">“I DID!” Mina shouted. “<b class="highlight quiz-target" data-ans="I told you you shouldn't" data-kor="내가 당신한테 그러지 않는 게 좋겠다고 했잖아">I told you you shouldn't</b> make that much! I specifically warned you about the portions!”</p>
+                <p class="mb-6">Eric froze.</p>
+                <p class="mb-6">“I was trying to let you handle it yourself! For three days, I’ve been trying not to say anything!”</p>
+                <p class="mb-6">“All right, all right.”</p>
+                <p class="mb-6">“No. I have been eating your pasta since Sunday. I’ve earned this.” She pointed at the refrigerator. “I told you so!”</p>
+                <p class="mb-6">Eric sighed. “Okay. You were right all along.”</p>
+                <p class="mb-6">Mina smiled with satisfaction.</p>
+                <p class="mb-6">“And please don’t rub it in.”</p>
+                <p class="mb-6">“I’ll try.”</p>
+                <p class="mb-6">Eric looked at her suspiciously.</p>
+                <p class="mb-6">She picked up another container of pasta.</p>
+                <p class="mb-6">“But I’m making no promises.”</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">미나의 남편 에릭은 최근 아내가 자기가 혼자서 뭘 하게 두지 않는다고 불평했다.</p>
+                <p class="mb-6">“당신은 내가 뭘 하는지 항상 확인하잖아. 그냥 날 좀 믿어.”</p>
+                <p class="mb-6">그래서 에릭이 친구 여섯 명을 초대해 저녁을 직접 만들겠다고 했을 때, 미나는 간섭하지 않기로 했다.</p>
+                <p class="mb-6">문제가 하나 있었다. 에릭은 항상 서른 명을 먹일 것처럼 요리를 했다.</p>
+                <p class="mb-6">“<b class="highlight">엄청 많은 양을 만들지</b> 마.” 미나가 경고했다. “여덟 명 먹는데 파스타 네 봉지는 필요 없어.”</p>
+                <p class="mb-6">에릭은 웃었다. 그는 원래 이런 일에는 꽤 <b class="highlight">느긋한</b> 편이었다.</p>
+                <p class="mb-6">“긴장 풀어. 난 <b class="highlight">아무렇지도 않아</b>. 걱정하는 건 당신이잖아.”</p>
+                <p class="mb-6">“걱정하는 게 아니라 경고하는 거야.”</p>
+                <p class="mb-6">그는 네 번째 파스타 봉지를 뜯었다.</p>
+                <p class="mb-6">미나는 그것을 빤히 바라봤다.</p>
+                <p class="mb-6">그리고 그냥 자리를 떠났다.</p>
+                <p class="mb-6">한 시간 뒤 손님들이 도착했다. 식탁은 음식으로 완전히 뒤덮여 있었다. 거대한 파스타 그릇 세 개, 마늘빵 두 쟁반, 그리고 작은 결혼식에 내놓아도 될 만큼 많은 샐러드가 있었다.</p>
+                <p class="mb-6">“와, 사람들 더 오는 거야?” 한 손님이 물었다.</p>
+                <p class="mb-6">“아니요.” 미나가 대답했다.</p>
+                <p class="mb-6">에릭이 미나를 쳐다봤다.</p>
+                <p class="mb-6">미나는 하고 싶은 말을 꾹 참기로 했다.</p>
+                <p class="mb-6">저녁 식사가 끝난 뒤에도 파스타가 거의 두 그릇이나 그대로 남았다. 에릭은 남은 음식을 용기에 담기 시작했지만, 냉장고가 가득 차 버렸다.</p>
+                <p class="mb-6">“안에 있는 것들 좀 옮겨줄래?”</p>
+                <p class="mb-6">미나는 한마디 하고 싶었다. 하지만 참았다.</p>
+                <p class="mb-6">다음 날 아침, 에릭이 냉장고를 열자 파스타가 든 용기 하나가 바닥으로 떨어졌다.</p>
+                <p class="mb-6">“진짜?”</p>
+                <p class="mb-6">미나는 고개를 돌렸다.</p>
+                <p class="mb-6">그날 저녁에도 남은 파스타를 먹었다.</p>
+                <p class="mb-6">화요일에도 파스타였다.</p>
+                <p class="mb-6">수요일이 되자 에릭조차 질려 버렸다.</p>
+                <p class="mb-6">“이걸 영원히 먹을 수는 없잖아.” 그가 불평했다.</p>
+                <p class="mb-6">미나는 말없이 고개만 끄덕였다.</p>
+                <p class="mb-6">에릭은 아직도 남아 있는 용기들을 바라봤다.</p>
+                <p class="mb-6">“내가 왜 이렇게 많이 만들었지?”</p>
+                <p class="mb-6">미나는 입술을 꾹 다물었다.</p>
+                <p class="mb-6">그가 계속 말했다.</p>
+                <p class="mb-6">“누가 좀 말렸어야 했는데.”</p>
+                <p class="mb-6">미나는 그를 돌아봤다.</p>
+                <p class="mb-6">“누가?”</p>
+                <p class="mb-6">“응. 당신이 뭐라고 말해줄 수도 있었잖아.”</p>
+                <p class="mb-6">그 말에 미나의 인내심이 끝났다.</p>
+                <p class="mb-6">“내가 했잖아!” 미나가 소리쳤다. “<b class="highlight">내가 당신한테 그렇게 많이 만들면 안 된다고</b> 했잖아! 양 너무 많이 하지 말라고 분명히 경고했어!”</p>
+                <p class="mb-6">에릭은 그대로 굳었다.</p>
+                <p class="mb-6">“당신이 알아서 하게 두려고 했어! 3일 동안 아무 말도 안 하려고 얼마나 참았는데!”</p>
+                <p class="mb-6">“알았어, 알았어.”</p>
+                <p class="mb-6">“아니. 난 일요일부터 당신 파스타를 먹고 있어. 이 정도 말할 자격은 있어.” 미나는 냉장고를 가리켰다. “내가 뭐랬어!”</p>
+                <p class="mb-6">에릭은 한숨을 쉬었다.</p>
+                <p class="mb-6">“알았어. 처음부터 당신 말이 맞았어.”</p>
+                <p class="mb-6">미나는 만족스럽게 미소 지었다.</p>
+                <p class="mb-6">“그리고 이제 그만 약 올려.”</p>
+                <p class="mb-6">“노력해 볼게.”</p>
+                <p class="mb-6">에릭이 의심스러운 눈으로 그녀를 바라봤다.</p>
+                <p class="mb-6">미나는 파스타 용기 하나를 더 집어 들었다.</p>
+                <p class="mb-6">“하지만 장담은 못 해.”</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+    function skipAudio(seconds) {
+        const player = document.getElementById('player');
+        if (player.src) {
+            player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+        }
+    }
+
+    function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+    let _quizOriginals = new Map();
+
+    function toggleQuiz() {
+        const btn = document.getElementById('quizBtn');
+        const isQuiz = btn.innerText.includes("Quiz");
+        const targets = document.querySelectorAll('.quiz-target');
+        const cells = document.querySelectorAll('.mystery-cell');
+
+        if (isQuiz) {
+            btn.innerText = "Study Mode 📖";
+            cells.forEach(c => c.classList.add('quiz-hidden'));
+            targets.forEach(t => {
+                const ans = t.dataset.ans; const kor = t.dataset.kor;
+                _quizOriginals.set(t, t.innerHTML);
+                t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+            });
+        } else {
+            btn.innerText = "Quiz Mode 👻";
+            cells.forEach(c => c.classList.remove('quiz-hidden'));
+            targets.forEach(t => {
+                if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+            });
+            _quizOriginals.clear();
+        }
+    }
+
+    function checkQuiz(i, a) {
+        if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+            i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+            confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+            checkAllSolved();
+        } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+    }
+
+    function checkAllSolved() {
+        const inputs = document.querySelectorAll('.quiz-input');
+        if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+            var duration = 3 * 1000; var end = Date.now() + duration;
+            (function frame() {
+                confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                if (Date.now() < end) requestAnimationFrame(frame);
+            }());
+        }
+    }
+
+    document.getElementById('player').src = "928715.m4a";
+</script>
+</body>
+</html>

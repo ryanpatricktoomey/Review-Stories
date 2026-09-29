@@ -1,0 +1,24 @@
+name: Fix Wordbank Script Across All Files
+on: workflow_dispatch
+
+jobs:
+  fix-scripts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Remove chat.js tag if present
+        run: |
+          find . -type f -name "*.html" -exec sed -i '/<script src="chat.js"><\/script>/d' {} +
+
+      - name: Safely add wordbank-utils.js ONLY if missing
+        run: |
+          find . -type f -name "*.html" -exec grep -L "wordbank-utils.js" {} + | while read -r file; do
+            sed -i 's/<\/body>/  <script src="wordbank-utils.js"><\/script>\n<\/body>/' "$file"
+          done
+
+      - name: Commit and push changes
+        uses: stefanprodan/git-commit-action@v5
+        with:
+          commit_message: "Automated fix: Standardize wordbank-utils.js and remove chat.js"

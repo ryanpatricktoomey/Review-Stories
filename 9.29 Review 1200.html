@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+      <title>Review Note | Please Explain How This Is My Problem</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+      <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+      </style>
+</head>
+<body class="p-4 md:p-12">
+      <div class="max-w-4xl mx-auto space-y-8">
+
+          <header class="text-center space-y-4">
+              <div class="flex items-center justify-center gap-4">
+                  <span class="text-5xl">📦</span>
+                  <h1 class="text-3xl md:text-4xl font-extrabold text-white">Please Explain How This Is My Problem</h1>
+              </div>
+              <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+          </header>
+
+          <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+              <div class="flex items-center justify-between px-2">
+                  <div class="flex items-center gap-3">
+                      <span class="text-xl">🎧</span>
+                      <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                  </div>
+                  <div class="flex gap-2">
+                      <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          <span class="text-lg">↺</span> 5s
+                      </button>
+                      <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          5s <span class="text-lg">↻</span>
+                      </button>
+                  </div>
+              </div>
+              <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+          </div>
+
+          <div class="flex justify-center">
+              <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+          </div>
+
+          <section class="glass rounded-3xl overflow-hidden shadow-xl">
+              <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                  <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+              </div>
+              <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                  <tr><td class="p-4"><b class="text-white">lose my appetite</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">입맛이 떨어지다 / 식욕이 사라지다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">haggle</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">흥정하다 / 가격을 깎다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">sticker price</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">표시 가격 / 정가</td></tr>
+                  <tr><td class="p-4"><b class="text-white">pack</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">짐을 싸다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">unpack</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">짐을 풀다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">don't know what to say</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">무슨 말을 해야 할지 모르겠다 / 할 말을 잃었다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">couldn't get upset</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">화를 낼 수가 없었다 / 화가 나지 않았다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">so cheap</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">너무 싸다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">so much cheaper</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">훨씬 더 싸다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">cost an arm and a leg</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">엄청나게 비싸다 / 큰돈이 들다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">reasonable</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">합리적인 / 가격이 적당한</td></tr>
+                  <tr><td class="p-4"><b class="text-white">telecom</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">통신 / 통신 회사·업계</td></tr>
+                  <tr><td class="p-4"><b class="text-white">so-so</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그저 그렇다 / 그냥 보통이다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">alright</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">괜찮은 / 나쁘지 않은</td></tr>
+              </tbody></table>
+          </section>
+
+          <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <div class="font-bold text-teal-400">sticker price</div>
+                  <div class="text-sm text-slate-300">상품에 붙어 있는 공식 표시 가격이에요. 특히 자동차처럼 가격 협상이 가능한 상품에서 자주 사용해요.</div>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <div class="font-bold text-teal-400">cost an arm and a leg</div>
+                  <div class="text-sm text-slate-300">실제로 팔과 다리를 내놓는다는 뜻이 아니라, “엄청나게 비싸다”라는 아주 흔한 과장 표현이에요.</div>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <div class="font-bold text-teal-400">couldn't get upset</div>
+                  <div class="text-sm text-slate-300">문맥에 따라 의미가 달라져요. 보통 화를 내고 싶어도 상황상 화를 낼 수 없었거나, 상대를 탓하기 어려웠다는 느낌으로 쓸 수 있어요.</div>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <div class="font-bold text-teal-400">so-so</div>
+                  <div class="text-sm text-slate-300">좋지도 나쁘지도 않은 “그저 그런” 상태예요. 일상 회화에서는 It was so-so처럼 자연스럽게 쓸 수 있어요.</div>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <div class="font-bold text-teal-400">alright</div>
+                  <div class="text-sm text-slate-300">문맥에 따라 “괜찮다, 나쁘지 않다, 문제없다” 등 여러 의미로 쓰여요. The service was alright라면 아주 좋다는 뜻보다는 “그럭저럭 괜찮았다”에 가까워요.</div>
+              </div>
+          </section>
+
+          <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+              <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                  <p class="mb-6">Let me tell you about the moving company that made me <b class="highlight quiz-target" data-ans="lose my appetite" data-kor="입맛이 떨어지다">lose my appetite</b> for an entire day.</p>
+                  <p class="mb-6">I was moving apartments, and because I had a ridiculous amount of stuff, I decided to hire professionals. I called around, compared prices, and found a company that was <b class="highlight quiz-target" data-ans="so much cheaper" data-kor="훨씬 더 싸다">so much cheaper</b> than everyone else.</p>
+                  <p class="mb-6">That should have been my first warning.</p>
+                  <p class="mb-6">Their website showed a <b class="highlight quiz-target" data-ans="sticker price" data-kor="표시 가격">sticker price</b> of $300 for a basic move. I even called to confirm it because I didn’t want to <b class="highlight quiz-target" data-ans="haggle" data-kor="흥정하다">haggle</b> with movers while all my furniture was sitting on the street.</p>
+                  <p class="mb-6">“Three hundred?” I asked.</p>
+                  <p class="mb-6">“Approximately.”</p>
+                  <p class="mb-6">Approximately.</p>
+                  <p class="mb-6">Remember that word.</p>
+                  <p class="mb-6">The movers arrived an hour late. Fine. I had already started to <b class="highlight quiz-target" data-ans="pack" data-kor="짐을 싸다">pack</b> the last few boxes myself.</p>
+                  <p class="mb-6">One guy walked into my apartment, looked around, and said, “You have a lot of stuff.”</p>
+                  <p class="mb-6">Yes. That is why I hired movers.</p>
+                  <p class="mb-6">Then they started adding fees.</p>
+                  <p class="mb-6">Stairs fee. Large-item fee. Parking fee. Extra-box fee.</p>
+                  <p class="mb-6">Suddenly $300 became $650.</p>
+                  <p class="mb-6">I complained, but the guy said, “Still <b class="highlight quiz-target" data-ans="reasonable" data-kor="합리적인">reasonable</b>.”</p>
+                  <p class="mb-6">Reasonable?!</p>
+                  <p class="mb-6">I chose you because you were <b class="highlight quiz-target" data-ans="so cheap" data-kor="너무 싸다">so cheap</b>!</p>
+                  <p class="mb-6">But everything was already packed, my lease ended that day, and I had no choice. A different company would probably <b class="highlight quiz-target" data-ans="cost an arm and a leg" data-kor="엄청나게 비싸다">cost an arm and a leg</b> if I called them that morning.</p>
+                  <p class="mb-6">So I agreed.</p>
+                  <p class="mb-6">Big mistake.</p>
+                  <p class="mb-6">When we reached my new apartment, one mover opened the truck.</p>
+                  <p class="mb-6">My TV was lying flat underneath three boxes.</p>
+                  <p class="mb-6">I just stared at it.</p>
+                  <p class="mb-6">He stared at it too.</p>
+                  <p class="mb-6">Then he said, “Should be <b class="highlight quiz-target" data-ans="alright" data-kor="괜찮은">alright</b>.”</p>
+                  <p class="mb-6">Should be?!</p>
+                  <p class="mb-6">We carried it upstairs.</p>
+                  <p class="mb-6">Cracked screen.</p>
+                  <p class="mb-6">I honestly <b class="highlight quiz-target" data-ans="don't know what to say" data-kor="무슨 말을 해야 할지 모르겠다">don't know what to say</b>.</p>
+                  <p class="mb-6">Then I found a broken lamp.</p>
+                  <p class="mb-6">Then a damaged table.</p>
+                  <p class="mb-6">Then a box marked KITCHEN that was wet for some reason.</p>
+                  <p class="mb-6">By the time I started to <b class="highlight quiz-target" data-ans="unpack" data-kor="짐을 풀다">unpack</b>, I was furious.</p>
+                  <p class="mb-6">I called their office and asked for a refund.</p>
+                  <p class="mb-6">The woman said the service had been completed.</p>
+                  <p class="mb-6">Completed? You broke my stuff!</p>
+                  <p class="mb-6">She transferred me to another department. That department transferred me back. For the next forty minutes, I experienced what I can only describe as <b class="highlight quiz-target" data-ans="telecom" data-kor="통신">telecom</b> torture.</p>
+                  <p class="mb-6">Finally, a manager answered.</p>
+                  <p class="mb-6">“How would you rate the move overall?” he asked.</p>
+                  <p class="mb-6">I actually laughed.</p>
+                  <p class="mb-6">“<b class="highlight quiz-target" data-ans="so-so" data-kor="그저 그렇다">so-so</b>,” I said. “Except for the broken TV, broken lamp, damaged table, surprise fees, and the fact that nobody will take responsibility.”</p>
+                  <p class="mb-6">He offered me $25.</p>
+                  <p class="mb-6">Twenty-five dollars.</p>
+                  <p class="mb-6">At that point, I almost <b class="highlight quiz-target" data-ans="couldn't get upset" data-kor="화를 낼 수가 없었다">couldn't get upset</b> anymore. I had passed anger. I was just amazed.</p>
+                  <p class="mb-6">I asked for a proper refund.</p>
+                  <p class="mb-6">He refused.</p>
+                  <p class="mb-6">I asked them to pay for the TV.</p>
+                  <p class="mb-6">He refused.</p>
+                  <p class="mb-6">I asked what exactly the $25 was supposed to fix.</p>
+                  <p class="mb-6">Silence.</p>
+                  <p class="mb-6">So there I was, surrounded by boxes in my new apartment, $350 poorer than expected, staring at a broken television.</p>
+                  <p class="mb-6">And that was their final offer.</p>
+                  <p class="mb-6">Twenty-five dollars.</p>
+                  <p class="mb-6">I spent more than that ordering dinner because I was too angry to cook.</p>
+              </div>
+              <hr class="border-white/10">
+              <div class="text-slate-400 italic leading-relaxed space-y-6">
+                  <p class="mb-6">하루 종일 <b class="highlight">입맛을 완전히 잃게</b> 만든 이삿짐센터 이야기를 해드릴게요.</p>
+                  <p class="mb-6">이사를 하는데 짐이 말도 안 되게 많아서 전문가에게 맡기기로 했습니다. 여러 업체에 전화해서 가격을 비교해봤는데 다른 곳보다 <b class="highlight">훨씬 더 싼</b> 업체를 발견했어요.</p>
+                  <p class="mb-6">그때부터 의심했어야 했습니다.</p>
+                  <p class="mb-6">웹사이트에는 기본 이사의 <b class="highlight">표시 가격</b>이 300달러라고 나와 있었어요. 가구를 길거리에 다 내놓은 상태에서 이삿짐센터 직원들과 가격을 <b class="highlight">흥정하고</b> 싶지 않았기 때문에 전화해서 확인까지 했습니다.</p>
+                  <p class="mb-6">“300달러 맞죠?”</p>
+                  <p class="mb-6">“대략 그렇습니다.”</p>
+                  <p class="mb-6">대략.</p>
+                  <p class="mb-6">이 단어 기억해두세요.</p>
+                  <p class="mb-6">직원들은 한 시간 늦게 도착했습니다. 좋아요. 저는 이미 마지막 상자 몇 개를 직접 <b class="highlight">싸고</b> 있었으니까요.</p>
+                  <p class="mb-6">직원 한 명이 집에 들어와 둘러보더니 말했습니다.</p>
+                  <p class="mb-6">“짐이 많으시네요.”</p>
+                  <p class="mb-6">네. 그래서 이삿짐센터를 불렀다고요.</p>
+                  <p class="mb-6">그런데 그때부터 추가 요금이 붙기 시작했어요.</p>
+                  <p class="mb-6">계단 이용료. 대형 물품 요금. 주차 요금. 추가 박스 요금.</p>
+                  <p class="mb-6">갑자기 300달러가 650달러가 됐습니다.</p>
+                  <p class="mb-6">제가 항의하자 직원이 말했어요.</p>
+                  <p class="mb-6">“그래도 <b class="highlight">합리적인</b> 가격이에요.”</p>
+                  <p class="mb-6">합리적이라고요?!</p>
+                  <p class="mb-6">당신들이 <b class="highlight">너무 싸서</b> 선택한 거라고요!</p>
+                  <p class="mb-6">하지만 이미 모든 짐을 싸놓은 상태였고 그날 임대 계약도 끝났기 때문에 선택의 여지가 없었습니다. 그날 아침에 다른 업체를 부르면 아마 <b class="highlight">엄청난 돈이 들었을</b> 테니까요.</p>
+                  <p class="mb-6">그래서 동의했습니다.</p>
+                  <p class="mb-6">큰 실수였죠.</p>
+                  <p class="mb-6">새 아파트에 도착해서 직원 한 명이 트럭 문을 열었습니다.</p>
+                  <p class="mb-6">제 TV가 상자 세 개 밑에 평평하게 깔려 있었어요.</p>
+                  <p class="mb-6">저는 그냥 쳐다봤습니다.</p>
+                  <p class="mb-6">그 직원도 쳐다봤어요.</p>
+                  <p class="mb-6">그러더니 이러더군요.</p>
+                  <p class="mb-6">“아마 <b class="highlight">괜찮을</b> 거예요.”</p>
+                  <p class="mb-6">아마요?!</p>
+                  <p class="mb-6">위층으로 옮겨서 확인했습니다.</p>
+                  <p class="mb-6">화면이 깨져 있었어요.</p>
+                  <p class="mb-6">진짜 <b class="highlight">무슨 말을 해야 할지 모르겠더라고요</b>.</p>
+                  <p class="mb-6">그러고 나서 깨진 스탠드를 발견했습니다.</p>
+                  <p class="mb-6">그다음에는 손상된 테이블.</p>
+                  <p class="mb-6">그러고는 ‘주방’이라고 적힌 상자가 무슨 이유에서인지 젖어 있었어요.</p>
+                  <p class="mb-6">짐을 <b class="highlight">풀기</b> 시작할 때쯤에는 완전히 화가 나 있었습니다.</p>
+                  <p class="mb-6">업체에 전화해서 환불을 요구했어요.</p>
+                  <p class="mb-6">직원은 서비스가 완료됐다고 했습니다.</p>
+                  <p class="mb-6">완료요? 제 물건을 망가뜨렸잖아요!</p>
+                  <p class="mb-6">다른 부서로 연결해줬습니다. 그 부서에서는 다시 원래 부서로 연결했습니다. 그 후 40분 동안 제가 경험한 것은 <b class="highlight">통신</b> 지옥이라고밖에 표현할 수 없어요.</p>
+                  <p class="mb-6">마침내 매니저가 전화를 받았습니다.</p>
+                  <p class="mb-6">“전반적으로 이번 이사 서비스는 어떠셨나요?”</p>
+                  <p class="mb-6">저는 실제로 웃었습니다.</p>
+                  <p class="mb-6">“<b class="highlight">그저 그랬어요</b>. TV가 깨지고, 스탠드가 망가지고, 테이블이 손상되고, 예상하지 못한 추가 요금이 붙고, 아무도 책임지지 않는다는 것만 빼면요.”</p>
+                  <p class="mb-6">그 사람이 25달러를 보상해주겠다고 했습니다.</p>
+                  <p class="mb-6">25달러요.</p>
+                  <p class="mb-6">그쯤 되니 거의 <b class="highlight">화조차 낼 수가 없었어요</b>. 분노의 단계를 넘어섰습니다. 그냥 기가 막혔어요.</p>
+                  <p class="mb-6">제대로 환불해 달라고 했습니다.</p>
+                  <p class="mb-6">거절했습니다.</p>
+                  <p class="mb-6">TV 값을 보상해 달라고 했습니다.</p>
+                  <p class="mb-6">거절했습니다.</p>
+                  <p class="mb-6">그래서 25달러로 대체 뭘 해결하라는 거냐고 물었습니다.</p>
+                  <p class="mb-6">침묵.</p>
+                  <p class="mb-6">결국 저는 새 아파트에서 상자들에 둘러싸인 채, 예상보다 350달러를 더 쓰고, 깨진 TV를 바라보고 있었습니다.</p>
+                  <p class="mb-6">그리고 그게 그들의 최종 제안이었어요.</p>
+                  <p class="mb-6">25달러.</p>
+                  <p class="mb-6">저는 너무 화가 나서 요리할 기분도 아니었기 때문에 저녁 배달시키는 데 그것보다 더 많은 돈을 썼습니다.</p>
+              </div>
+          </section>
+
+      </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "9291200.m4a";
+</script>
+      <script src="wordbank-utils.js"></script>
+  </body>
+  </html>

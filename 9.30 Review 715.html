@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | Seven Minutes Each</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+      :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+      body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+      .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+      .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+      input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+      input:focus::placeholder { opacity: 0 !important; }
+      .mystery-cell { transition: color 0.3s; }
+      .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+      .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+      .highlight { color: var(--teal); font-weight: 700; }
+      .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+      audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">⏱️</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">Seven Minutes Each</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <!-- IMPORTANT: Format EVERY row EXACTLY like this: -->
+                <!-- <tr><td class="p-4"><b class="text-white">ENGLISH</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">KOREAN</td></tr> -->
+                
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">이번 이야기에는 채팅 표현이 없습니다.</section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">I almost left before the speed dating even started.</p>
+                <p class="mb-6">There were twelve tables, twelve women, and seven minutes for each conversation. I reminded myself that I was there because my friends said I was too picky.</p>
+                <p class="mb-6">The first woman, Rachel, seemed friendly until I mentioned that I worked from home.</p>
+                <p class="mb-6">“Oh, I could never do that,” she said. “I'd feel like I wasn't doing a real job.”</p>
+                <p class="mb-6">She laughed.</p>
+                <p class="mb-6">I laughed too, but mostly because I didn't know what else to do.</p>
+                <p class="mb-6">The bell saved us.</p>
+                <p class="mb-6">My second date, Emma, was much easier to talk to. We both liked hiking, and we had even traveled to some of the same places.</p>
+                <p class="mb-6">Then she started talking about her roommate.</p>
+                <p class="mb-6">“She cries about everything,” Emma said. “It's exhausting.”</p>
+                <p class="mb-6">“Maybe she's having a difficult time.”</p>
+                <p class="mb-6">Emma shrugged. “Some people just love attention.”</p>
+                <p class="mb-6">Something about the way she said it rubbed me the wrong way.</p>
+                <p class="mb-6">The third woman barely looked at me. She spent the first two minutes checking messages on her phone.</p>
+                <p class="mb-6">“Sorry,” she said. “My friends keep texting me.”</p>
+                <p class="mb-6">“No problem.”</p>
+                <p class="mb-6">Thirty seconds later, she checked it again.</p>
+                <p class="mb-6">By the fifth round, I was beginning to understand why my friends called me picky.</p>
+                <p class="mb-6">One woman was so competitive that she turned every topic into a comparison. Another interrupted me every time I tried to answer a question. One complained about the restaurant, the music, the event, and finally the chair she was sitting on.</p>
+                <p class="mb-6">I tried to give everyone a fair chance, but I could feel myself becoming more judgmental with every bell.</p>
+                <p class="mb-6">Then I met Laura.</p>
+                <p class="mb-6">For the first few minutes, she seemed perfect. She was confident, funny, and easygoing.</p>
+                <p class="mb-6">Then she asked what kind of music I liked.</p>
+                <p class="mb-6">“Mostly older rock.”</p>
+                <p class="mb-6">She made a face. “Seriously?”</p>
+                <p class="mb-6">There it was.</p>
+                <p class="mb-6">I was already mentally checking out when she started laughing.</p>
+                <p class="mb-6">“Sorry,” she said. “That sounded incredibly judgmental.”</p>
+                <p class="mb-6">“At least you noticed.”</p>
+                <p class="mb-6">“My brother says I take my music opinions way too seriously.”</p>
+                <p class="mb-6">That made me laugh.</p>
+                <p class="mb-6">The bell rang before our conversation really got going.</p>
+                <p class="mb-6">The final woman sat down across from me and immediately knocked over her water.</p>
+                <p class="mb-6">“Oh, great,” she said. “Excellent start.”</p>
+                <p class="mb-6">I handed her some napkins.</p>
+                <p class="mb-6">“Don't worry. I've had worse starts tonight.”</p>
+                <p class="mb-6">“Really?”</p>
+                <p class="mb-6">“Much worse.”</p>
+                <p class="mb-6">Her name was Sophie. She didn't seem interested in impressing me. When she didn't know something, she just said so. When I made a bad joke, she told me it was bad—and then laughed anyway.</p>
+                <p class="mb-6">At some point, I realized I was completely relaxed.</p>
+                <p class="mb-6">“So,” she said, “what kind of person are you hoping to meet?”</p>
+                <p class="mb-6">Normally, I had a long answer to that question.</p>
+                <p class="mb-6">I looked at her.</p>
+                <p class="mb-6">“Someone I don't have to work so hard to talk to.”</p>
+                <p class="mb-6">She smiled. “That's a surprisingly low standard.”</p>
+                <p class="mb-6">“You haven't seen my evening.”</p>
+                <p class="mb-6">The bell rang.</p>
+                <p class="mb-6">Everyone around us started changing tables.</p>
+                <p class="mb-6">Sophie stood up, then hesitated.</p>
+                <p class="mb-6">“I'm supposed to move now.”</p>
+                <p class="mb-6">“I know.”</p>
+                <p class="mb-6">“But I think that was the last round.”</p>
+                <p class="mb-6">I looked around.</p>
+                <p class="mb-6">She was right.</p>
+                <p class="mb-6">For once, I was disappointed that the bell had rung.</p>
+                <p class="mb-6">“Do you want to keep talking?” I asked.</p>
+                <p class="mb-6">She sat back down.</p>
+                <p class="mb-6">“Sure. But your next joke needs to be better.”</p>
+                <p class="mb-6">I smiled.</p>
+                <p class="mb-6">Seven minutes earlier, she had been a stranger.</p>
+                <p class="mb-6">Now I didn't want the conversation to end.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">나는 스피드 데이팅이 시작하기도 전에 거의 집에 갈 뻔했다.</p>
+                <p class="mb-6">테이블은 열두 개, 만날 여성도 열두 명, 대화 시간은 한 명당 7분이었다. 나는 친구들이 내가 너무 까다롭다고 해서 여기 왔다는 사실을 스스로에게 상기시켰다.</p>
+                <p class="mb-6">첫 번째 여성인 레이철은 내가 재택근무를 한다고 말하기 전까지는 친절해 보였다.</p>
+                <p class="mb-6">“아, 전 절대 그렇게 못 해요.” 그녀가 말했다. “진짜 일을 안 하는 기분일 것 같아요.”</p>
+                <p class="mb-6">그녀는 웃었다.</p>
+                <p class="mb-6">나도 웃었지만, 사실 뭐라고 해야 할지 몰라서 웃은 것에 가까웠다.</p>
+                <p class="mb-6">다행히 벨이 울렸다.</p>
+                <p class="mb-6">두 번째 상대인 엠마와는 훨씬 대화하기 편했다. 우리 둘 다 등산을 좋아했고, 심지어 여행했던 장소 중 겹치는 곳도 있었다.</p>
+                <p class="mb-6">그러다 그녀가 룸메이트 이야기를 시작했다.</p>
+                <p class="mb-6">“걔는 모든 일에 울어요.” 엠마가 말했다. “진짜 피곤해요.”</p>
+                <p class="mb-6">“힘든 일이 있는 건 아닐까요?”</p>
+                <p class="mb-6">엠마는 어깨를 으쓱했다.</p>
+                <p class="mb-6">“그냥 관심받는 걸 좋아하는 사람들도 있잖아요.”</p>
+                <p class="mb-6">그 말을 하는 방식이 왠지 나를 거슬리게 했다.</p>
+                <p class="mb-6">세 번째 여성은 나를 거의 쳐다보지도 않았다. 처음 2분 동안 휴대폰으로 메시지를 확인했다.</p>
+                <p class="mb-6">“미안해요. 친구들이 계속 문자를 보내네요.”</p>
+                <p class="mb-6">“괜찮아요.”</p>
+                <p class="mb-6">30초 뒤, 그녀는 또 휴대폰을 확인했다.</p>
+                <p class="mb-6">다섯 번째 라운드쯤 되자 친구들이 왜 나를 까다롭다고 하는지 조금씩 이해되기 시작했다.</p>
+                <p class="mb-6">한 여성은 경쟁심이 너무 강해서 무슨 주제가 나오든 비교로 바꿔 버렸다. 다른 여성은 내가 질문에 대답하려고 할 때마다 말을 끊었다. 또 한 명은 식당, 음악, 행사에 대해 불평하더니 마지막에는 자신이 앉아 있는 의자까지 불평했다.</p>
+                <p class="mb-6">모두에게 공평하게 기회를 주려고 했지만, 벨이 울릴 때마다 내가 점점 더 사람을 쉽게 판단하고 있다는 게 느껴졌다.</p>
+                <p class="mb-6">그러다 로라를 만났다.</p>
+                <p class="mb-6">처음 몇 분 동안 그녀는 완벽해 보였다. 자신감 있고, 재미있고, 느긋했다.</p>
+                <p class="mb-6">그러다 내가 어떤 음악을 좋아하는지 물었다.</p>
+                <p class="mb-6">“주로 옛날 록 음악이요.”</p>
+                <p class="mb-6">그녀가 얼굴을 찌푸렸다.</p>
+                <p class="mb-6">“진짜요?”</p>
+                <p class="mb-6">나왔다.</p>
+                <p class="mb-6">나는 이미 마음속으로 대화를 포기하고 있었는데, 그녀가 갑자기 웃기 시작했다.</p>
+                <p class="mb-6">“미안해요.” 그녀가 말했다. “방금 엄청 남을 쉽게 판단하는 사람처럼 말했네요.”</p>
+                <p class="mb-6">“적어도 본인이 알아차리긴 했네요.”</p>
+                <p class="mb-6">“제 동생도 제가 음악 취향을 너무 심각하게 생각한다고 해요.”</p>
+                <p class="mb-6">그 말에 나는 웃었다.</p>
+                <p class="mb-6">대화가 제대로 시작되려는 순간 벨이 울렸다.</p>
+                <p class="mb-6">마지막 여성이 내 맞은편에 앉자마자 물을 엎질렀다.</p>
+                <p class="mb-6">“아, 좋네요.” 그녀가 말했다. “아주 훌륭한 시작이에요.”</p>
+                <p class="mb-6">나는 그녀에게 냅킨을 건넸다.</p>
+                <p class="mb-6">“걱정하지 마세요. 오늘 이것보다 훨씬 안 좋은 시작도 겪었으니까요.”</p>
+                <p class="mb-6">“정말요?”</p>
+                <p class="mb-6">“훨씬 심했어요.”</p>
+                <p class="mb-6">그녀의 이름은 소피였다. 그녀는 나에게 잘 보이려고 애쓰는 것 같지 않았다. 모르는 게 있으면 그냥 모른다고 했다. 내가 썰렁한 농담을 하자 농담이 별로라고 솔직하게 말하고는 그래도 웃었다.</p>
+                <p class="mb-6">어느 순간, 나는 내가 완전히 편해졌다는 걸 깨달았다.</p>
+                <p class="mb-6">“그래서,” 그녀가 말했다. “어떤 사람을 만나고 싶어요?”</p>
+                <p class="mb-6">평소라면 그 질문에 할 말이 아주 많았다.</p>
+                <p class="mb-6">나는 그녀를 바라봤다.</p>
+                <p class="mb-6">“대화하려고 그렇게까지 애쓰지 않아도 되는 사람이요.”</p>
+                <p class="mb-6">그녀가 웃었다.</p>
+                <p class="mb-6">“기준이 놀라울 정도로 낮네요.”</p>
+                <p class="mb-6">“오늘 제가 어떤 저녁을 보냈는지 모르셔서 그래요.”</p>
+                <p class="mb-6">벨이 울렸다.</p>
+                <p class="mb-6">주변 사람들은 모두 자리를 바꾸기 시작했다.</p>
+                <p class="mb-6">소피도 일어났다가 잠시 멈췄다.</p>
+                <p class="mb-6">“저 이제 이동해야 하는 거죠?”</p>
+                <p class="mb-6">“그렇죠.”</p>
+                <p class="mb-6">“근데 방금이 마지막 라운드였던 것 같은데요.”</p>
+                <p class="mb-6">나는 주변을 둘러봤다.</p>
+                <p class="mb-6">그녀 말이 맞았다.</p>
+                <p class="mb-6">그날 처음으로 벨이 울린 게 아쉬웠다.</p>
+                <p class="mb-6">“계속 이야기할래요?” 내가 물었다.</p>
+                <p class="mb-6">그녀는 다시 자리에 앉았다.</p>
+                <p class="mb-6">“좋아요. 대신 다음 농담은 좀 더 웃겨야 해요.”</p>
+                <p class="mb-6">나는 미소를 지었다.</p>
+                <p class="mb-6">7분 전만 해도 그녀는 낯선 사람이었다.</p>
+                <p class="mb-6">이제 나는 대화가 끝나지 않았으면 했다.</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "930715.m4a";
+</script>
+      <script src="wordbank-utils.js"></script>
+  </body>
+  </html>

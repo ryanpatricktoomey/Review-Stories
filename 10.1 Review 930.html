@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | My Jecheon</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🌿</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">My Jecheon</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">I'm ready</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">준비됐어요</td></tr>
+                <tr><td class="p-4"><b class="text-white">I'm used to it</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">익숙해요</td></tr>
+                <tr><td class="p-4"><b class="text-white">familiar</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">익숙한 / 낯익은</td></tr>
+                <tr><td class="p-4"><b class="text-white">know it like the back of my hand</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">아주 훤히 알다</td></tr>
+                <tr><td class="p-4"><b class="text-white">photo booth</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">포토 부스</td></tr>
+                <tr><td class="p-4"><b class="text-white">operates</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">운영하다 / 운행하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">well-designed</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">잘 설계된</td></tr>
+                <tr><td class="p-4"><b class="text-white">well-planned</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">계획이 잘 된</td></tr>
+                <tr><td class="p-4"><b class="text-white">I'm in charge of</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">제가 ~을 담당하고 있어요</td></tr>
+                <tr><td class="p-4"><b class="text-white">responsible for</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">~을 담당하는 / 책임이 있는</td></tr>
+                <tr><td class="p-4"><b class="text-white">surrounded by</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">~에 둘러싸인</td></tr>
+                <tr><td class="p-4"><b class="text-white">sensitive to the heat</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">더위를 많이 타는 / 더위에 민감한</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl space-y-2 border-l-4 border-teal-500">
+                <h3 class="text-amber-400 font-bold">know it like the back of my hand</h3>
+                <p class="text-slate-300 text-sm">어떤 장소를 구석구석 아주 잘 안다는 뜻.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2 border-l-4 border-teal-500">
+                <h3 class="text-amber-400 font-bold">in charge of / responsible for</h3>
+                <p class="text-slate-300 text-sm">둘 다 담당한다는 의미지만, in charge of는 관리하는 역할, responsible for는 맡은 업무나 결과에 대한 책임을 강조할 수 있음.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">I’m from Jecheon in North Chungcheong Province, and <b class="highlight quiz-target" data-ans="I'm ready" data-kor="준비됐어요">I’m ready</b> to defend it against anyone who says, “Isn’t that just somewhere you pass through on the train?”</p>
+                <p class="mb-6">First of all: rude.</p>
+                <p class="mb-6">Second: the trains are actually part of the point.</p>
+                <p class="mb-6">Jecheon Station is connected to the Jungang, Chungbuk, and Taebaek railway lines, so transportation has long been important to the city. Jecheon Tour I grew up hearing trains, so <b class="highlight quiz-target" data-ans="I'm used to it" data-kor="익숙해요">I’m used to it</b>. There is something comforting about arriving at Jecheon Station and immediately knowing where you are.</p>
+                <p class="mb-6">I <b class="highlight quiz-target" data-ans="know the city like the back of my hand" data-kor="아주 훤히 알다">know the city like the back of my hand</b>. The streets around the station feel <b class="highlight quiz-target" data-ans="familiar" data-kor="익숙한 / 낯익은">familiar</b> even after I’ve been away.</p>
+                <p class="mb-6">But Jecheon is not just railways.</p>
+                <p class="mb-6">It is <b class="highlight quiz-target" data-ans="surrounded by" data-kor="~에 둘러싸인">surrounded by</b> mountains, and the wider area includes Cheongpungho Lake, trails, and places such as Uirimji. When Chungju Dam was completed in 1985, cultural properties from areas that would be submerged were moved to what is now the Cheongpung Cultural Heritage Complex. Jecheon Tour</p>
+                <p class="mb-6">Then there are the medicinal herbs.</p>
+                <p class="mb-6">Jecheon’s location helped it develop one of Korea’s major medicinal-herb markets. Around sixty kinds of medicinal materials are traded there, and the city has built a whole identity around traditional medicine and wellness. Jecheon Tour</p>
+                <p class="mb-6">When friends visit, <b class="highlight quiz-target" data-ans="I'm in charge of" data-kor="제가 ~을 담당하고 있어요">I’m in charge of</b> food and <b class="highlight quiz-target" data-ans="responsible for" data-kor="~을 담당하는 / 책임이 있는">responsible for</b> making sure nobody spends the entire day taking pictures at a <b class="highlight quiz-target" data-ans="photo booth" data-kor="포토 부스">photo booth</b> and then claims they “saw Jecheon.”</p>
+                <p class="mb-6">I have standards.</p>
+                <p class="mb-6">The city also <b class="highlight quiz-target" data-ans="operates" data-kor="운영하다 / 운행하다">operates</b> tourist taxis for visitors who want to reach attractions outside the center without a car. That makes sense because Jecheon’s best places are spread out rather than packed into one downtown neighborhood. Jecheon Tour</p>
+                <p class="mb-6">Is everything perfectly <b class="highlight quiz-target" data-ans="well-designed" data-kor="잘 설계된">well-designed</b> and <b class="highlight quiz-target" data-ans="well-planned" data-kor="계획이 잘 된">well-planned</b>? Of course not. It’s a real city.</p>
+                <p class="mb-6">But I like its shape: station, markets, mountains, lake.</p>
+                <p class="mb-6">If you’re <b class="highlight quiz-target" data-ans="sensitive to the heat" data-kor="더위를 많이 타는 / 더위에 민감한">sensitive to the heat</b>, I’d rather bring you in autumn anyway. The air gets cooler, the mountains change color, and hot food suddenly makes much more sense.</p>
+                <p class="mb-6">That’s the Jecheon I like showing people.</p>
+                <p class="mb-6">Not a place you pass through.</p>
+                <p class="mb-6">A place where you get off.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">저는 충청북도 제천 출신이고, “제천은 그냥 기차 타고 지나가는 곳 아니야?”라고 말하는 사람이 있다면 저는 언제든 맞설 <b class="highlight">준비가 되어 있습니다</b>.</p>
+                <p class="mb-6">첫째, 무례합니다.</p>
+                <p class="mb-6">둘째, 사실 기차가 중요한 부분이기는 합니다.</p>
+                <p class="mb-6">제천역에는 중앙선, 충북선, 태백선이 연결되어 있어서 오래전부터 교통이 중요한 도시였습니다. 저는 기차 소리를 들으며 자라서 이제는 <b class="highlight">익숙합니다</b>. 제천역에 도착해서 바로 ‘아, 집에 왔구나’ 하고 느끼는 데는 묘한 편안함이 있습니다.</p>
+                <p class="mb-6">저는 이 도시를 <b class="highlight">손바닥 보듯 훤히 압니다</b>. 오랫동안 떠나 있어도 역 주변의 거리는 여전히 <b class="highlight">익숙합니다</b>.</p>
+                <p class="mb-6">하지만 제천이 철도만 있는 도시는 아닙니다.</p>
+                <p class="mb-6">제천은 산<b class="highlight">에 둘러싸여</b> 있고, 주변에는 청풍호와 여러 산책로, 의림지 같은 곳이 있습니다. 1985년 충주댐이 완공될 당시 물에 잠길 지역의 문화재들을 보존하기 위해 현재의 청풍문화유산단지가 조성되었습니다.</p>
+                <p class="mb-6">그리고 약초가 있습니다.</p>
+                <p class="mb-6">제천의 지리적 위치는 한국의 주요 약초 시장 중 하나가 발전하는 데 도움이 되었습니다. 이곳에서는 약 60종의 약재가 유통되며, 제천은 한방과 웰니스 문화를 도시의 중요한 정체성으로 발전시켜 왔습니다.</p>
+                <p class="mb-6">친구들이 놀러 오면 음식은 <b class="highlight">제가 담당하고</b>, 아무도 하루 종일 <b class="highlight">포토 부스</b>에서 사진만 찍은 뒤 “제천 구경했다”고 주장하지 못하게 하는 것도 <b class="highlight">제 책임입니다</b>.</p>
+                <p class="mb-6">저에게도 기준이 있습니다.</p>
+                <p class="mb-6">제천시는 차 없이 외곽 관광지를 방문하려는 사람들을 위한 관광택시도 <b class="highlight">운영합니다</b>. 제천의 좋은 장소들은 한 도심 지역에 몰려 있는 것이 아니라 여러 지역에 흩어져 있기 때문에 꽤 합리적인 방식입니다.</p>
+                <p class="mb-6">모든 것이 완벽하게 <b class="highlight">디자인이 잘되어</b> 있고, <b class="highlight">계획적으로</b> 만들어져 있느냐고요? 당연히 아닙니다. 실제 사람들이 사는 도시니까요.</p>
+                <p class="mb-6">하지만 저는 제천의 구성이 좋습니다. 역, 시장, 산, 호수.</p>
+                <p class="mb-6"><b class="highlight">더위에 민감한</b> 사람이라면 어차피 저는 가을에 데려가고 싶습니다. 공기가 시원해지고, 산의 색이 변하고, 뜨거운 음식이 갑자기 훨씬 맛있게 느껴지는 계절이니까요.</p>
+                <p class="mb-6">그게 제가 사람들에게 보여주고 싶은 제천입니다.</p>
+                <p class="mb-6">그냥 지나가는 곳이 아닙니다.</p>
+                <p class="mb-6">기차에서 내려야 하는 곳입니다.</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "101930.m4a";
+</script>
+      <script src="wordbank-utils.js"></script>
+  </body>
+  </html>

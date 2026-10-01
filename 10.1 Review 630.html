@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | Yesan Is Having a Moment</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🍎</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">Yesan Is Having a Moment</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">people in ...</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">…에 사는 사람들</td></tr>
+                <tr><td class="p-4"><b class="text-white">Now that I think about it...</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">생각해 보니… / 그러고 보니…</td></tr>
+                <tr><td class="p-4"><b class="text-white">Looking back...</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">돌이켜 보면…</td></tr>
+                <tr><td class="p-4"><b class="text-white">monthly allowance</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">매달 받는 용돈</td></tr>
+                <tr><td class="p-4"><b class="text-white">brain drain</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">인재 유출</td></tr>
+                <tr><td class="p-4"><b class="text-white">brewery</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">양조장</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl space-y-2 border-l-4 border-teal-500">
+                <h3 class="text-amber-400 font-bold">Now that I think about it...</h3>
+                <p class="text-slate-300 text-sm">이야기하다가 갑자기 관련된 사실이 떠올랐을 때 “생각해 보니”라는 뜻으로 사용.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2 border-l-4 border-teal-500">
+                <h3 class="text-amber-400 font-bold">Looking back...</h3>
+                <p class="text-slate-300 text-sm">과거를 현재 시점에서 되돌아보며 평가할 때 쓰는 “돌이켜 보면.”</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2 border-l-4 border-teal-500">
+                <h3 class="text-amber-400 font-bold">brain drain</h3>
+                <p class="text-slate-300 text-sm">젊은 인재나 전문 인력이 더 좋은 기회를 찾아 다른 지역으로 빠져나가는 현상.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">I’m from Yesan, in South Chungcheong Province. Most Koreans know the name, but I wouldn’t expect a foreign visitor to have it high on their travel list.</p>
+                <p class="mb-6">That’s fine with me. I’ve been defending Yesan my whole life.</p>
+                <p class="mb-6">When I was a teenager, my friends complained that nothing happened there. We talked about Seoul as if it were another planet where everyone had an exciting job and stayed out until 2 a.m. I spent most of my <b class="highlight quiz-target" data-ans="monthly allowance" data-kor="매달 받는 용돈">monthly allowance</b> at the market or eating with friends, and I was convinced I would leave as soon as I could.</p>
+                <p class="mb-6">Yesan has always had agriculture behind it. The area is particularly known for apples, and its traditional market has long sold local agricultural and livestock products. VISITKOREA - Imagine Your Korea</p>
+                <p class="mb-6">But the funny thing is that the market became much more famous after I grew up.</p>
+                <p class="mb-6">A major renovation project involving local merchants and restaurateur Paik Jong-won transformed Yesan Market into a popular food destination. These days, visitors line up for food, apple desserts, and other local products. There is even a <b class="highlight quiz-target" data-ans="brewery" data-kor="양조장">brewery</b> in the market selling makgeolli, along with locally themed drinks such as apple beer. VISITKOREA - Imagine Your Korea</p>
+                <p class="mb-6"><b class="highlight quiz-target" data-ans="Now that I think about it" data-kor="생각해 보니… / 그러고 보니…">Now that I think about it</b>, this is exactly what we used to say the town needed: a reason for young people to stay and a reason for outsiders to visit.</p>
+                <p class="mb-6">Small towns often worry about young residents leaving for bigger cities—the kind of <b class="highlight quiz-target" data-ans="brain drain" data-kor="인재 유출">brain drain</b> my friends and I were basically planning to contribute to.</p>
+                <p class="mb-6">And then our boring old market became cool without asking our permission.</p>
+                <p class="mb-6"><b class="highlight quiz-target" data-ans="People in" data-kor="…에 사는 사람들">People in</b> Yesan can now complain about tourists taking all the seats. I find that extremely satisfying.</p>
+                <p class="mb-6"><b class="highlight quiz-target" data-ans="Looking back" data-kor="돌이켜 보면…">Looking back</b>, I think I was too impatient with my hometown. I only saw what it didn’t have. I didn’t understand the value of the farms, the market, or the fact that people knew the shop owners by name.</p>
+                <p class="mb-6">I still wouldn’t tell you Yesan is the most exciting place in Korea.</p>
+                <p class="mb-6">We have some pride. We don’t need to lie.</p>
+                <p class="mb-6">But if you visit, eat something at the market, try something made with local apples, and then tell me there’s nothing happening in Yesan.</p>
+                <p class="mb-6">I dare you.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">저는 충청남도 예산 출신입니다. 한국 사람이라면 대부분 이름 정도는 알겠지만, 외국인 여행객이 꼭 가보고 싶은 여행지 목록 상단에 예산을 올려놓을 거라고는 생각하지 않습니다.</p>
+                <p class="mb-6">그래도 괜찮습니다. 저는 평생 예산을 변호하면서 살아왔으니까요.</p>
+                <p class="mb-6">십 대 때 친구들은 예산에는 아무 일도 일어나지 않는다고 불평했습니다. 우리는 마치 서울이 모두가 멋진 직업을 가지고 새벽 2시까지 놀 수 있는 다른 행성인 것처럼 이야기했습니다. 저는 <b class="highlight">매달 받는 용돈</b> 대부분을 시장이나 친구들과 먹는 데 썼고, 기회만 생기면 이곳을 떠나겠다고 생각했습니다.</p>
+                <p class="mb-6">예산은 원래 농업과 깊은 관련이 있는 지역입니다. 특히 사과로 잘 알려져 있고, 전통시장에서는 오랫동안 지역 농축산물을 판매해 왔습니다.</p>
+                <p class="mb-6">그런데 재미있는 건 제가 어른이 된 뒤 시장이 훨씬 유명해졌다는 겁니다.</p>
+                <p class="mb-6">지역 상인들과 외식사업가 백종원이 함께한 대규모 활성화 사업을 통해 예산시장은 인기 있는 먹거리 명소가 되었습니다. 요즘에는 사람들이 음식과 사과 디저트, 지역 상품을 먹고 사기 위해 줄을 섭니다. 시장 안에는 막걸리를 파는 <b class="highlight">양조장</b>도 있고, 사과 맥주처럼 지역색을 살린 술도 있습니다.</p>
+                <p class="mb-6"><b class="highlight">생각해 보니</b>, 이게 바로 어렸을 때 우리가 이 동네에 필요하다고 말했던 것입니다. 젊은 사람들이 남을 이유, 그리고 외지 사람들이 찾아올 이유 말입니다.</p>
+                <p class="mb-6">작은 지역들은 젊은 사람들이 대도시로 떠나는 것을 걱정하곤 합니다. 저와 제 친구들도 사실상 그런 <b class="highlight">인재 유출</b>에 동참할 계획이었던 셈이죠.</p>
+                <p class="mb-6">그런데 우리가 지루하다고 생각했던 옛 시장이 우리 허락도 없이 멋진 곳이 되어버렸습니다.</p>
+                <p class="mb-6">이제 <b class="highlight">예산에 사는 사람들</b>은 관광객들이 자리를 다 차지한다고 불평할 수도 있습니다. 저는 그게 굉장히 만족스럽습니다.</p>
+                <p class="mb-6"><b class="highlight">돌이켜 보면</b>, 저는 고향에 너무 성급하게 실망했던 것 같습니다. 없는 것만 봤거든요. 농장이나 시장, 가게 주인을 이름으로 알고 지내는 것의 가치를 이해하지 못했습니다.</p>
+                <p class="mb-6">그래도 예산이 한국에서 가장 신나는 곳이라고 말하지는 않겠습니다.</p>
+                <p class="mb-6">우리에게도 자존심이 있지, 거짓말까지 할 필요는 없으니까요.</p>
+                <p class="mb-6">하지만 예산에 와서 시장 음식을 먹고, 지역 사과로 만든 것도 맛본 다음, 예산에는 아무 일도 일어나지 않는다고 저한테 말해 보세요.</p>
+                <p class="mb-6">어디 한번 해보시죠.</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "101630.m4a";
+</script>
+      <script src="wordbank-utils.js"></script>
+  </body>
+  </html>

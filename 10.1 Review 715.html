@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | My Town Kept a King</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">👑</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">My Town Kept a King</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">scratchy throat</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">목이 칼칼함 / 목이 따끔거림</td></tr>
+                <tr><td class="p-4"><b class="text-white">new development</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">신규 개발 지역 / 새로 개발된 곳</td></tr>
+                <tr><td class="p-4"><b class="text-white">suburb</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">교외 / 외곽 주거 지역</td></tr>
+                <tr><td class="p-4"><b class="text-white">imprisoned</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">투옥된 / 갇힌</td></tr>
+                <tr><td class="p-4"><b class="text-white">all grown up</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">다 자란 / 어느새 어른이 된</td></tr>
+                <tr><td class="p-4"><b class="text-white">cheap accommodations</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">저렴한 숙소</td></tr>
+                <tr><td class="p-4"><b class="text-white">somehow</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">어떻게 된 일인지 / 어쩐지</td></tr>
+                <tr><td class="p-4"><b class="text-white">citizenship test</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">시민권 시험</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl space-y-2 border-l-4 border-teal-500">
+                <h3 class="text-amber-400 font-bold">all grown up</h3>
+                <p class="text-slate-300 text-sm">예전에 어렸던 사람이 이제 완전히 성장한 모습을 볼 때 “어느새 다 컸다”는 느낌으로 사용.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2 border-l-4 border-teal-500">
+                <h3 class="text-amber-400 font-bold">somehow</h3>
+                <p class="text-slate-300 text-sm">어떻게 그런 결과가 나왔는지 정확히 설명하기 어렵거나 중요하지 않을 때 “어쩌다 보니 / 어떻게 된 일인지.”</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">I’m from Yeongwol, in Gangwon Province. If you like mountains, rivers, and towns where the night actually gets dark, I have a strong case for my hometown.</p>
+                <p class="mb-6">Yeongwol is surrounded by beautiful mountain scenery, and the Donggang River is famous for activities such as rafting. The area also has a coal-mining past; a tourism center now helps visitors explore the former mining region and its history. VISITKOREA - Imagine Your Korea</p>
+                <p class="mb-6">But the story every local kid learns is about King Danjong.</p>
+                <p class="mb-6">Danjong became king of Joseon as a boy. After losing the throne, he was exiled to Yeongwol, where he was effectively <b class="highlight quiz-target" data-ans="imprisoned" data-kor="투옥된 / 갇힌">imprisoned</b> by geography as well as politics. Cheongnyeongpo, his place of exile, is surrounded by water and mountains, and his tomb, Jangneung, is also in Yeongwol. VISITKOREA - Imagine Your Korea</p>
+                <p class="mb-6">Imagine growing up with that in your backyard.</p>
+                <p class="mb-6">When I was a child, I didn’t appreciate it. Old tomb? King from hundreds of years ago? Fine. Can we get ice cream now?</p>
+                <p class="mb-6">Then I moved away and got <b class="highlight quiz-target" data-ans="all grown up" data-kor="다 자란 / 어느새 어른이 된">all grown up</b>, and <b class="highlight quiz-target" data-ans="somehow" data-kor="어떻게 된 일인지 / 어쩐지">somehow</b> I became the person who tells everyone, “Actually, did you know the sixth king of Joseon was exiled to my hometown?”</p>
+                <p class="mb-6">Give me ten more years and I’ll probably start carrying brochures.</p>
+                <p class="mb-6">Yeongwol isn’t a <b class="highlight quiz-target" data-ans="suburb" data-kor="교외 / 외곽 주거 지역">suburb</b> of some giant city. That’s part of its appeal. You come for the river, the mountains, the history, and a slower pace. If you want <b class="highlight quiz-target" data-ans="cheap accommodations" data-kor="저렴한 숙소">cheap accommodations</b>, you can look around the town and surrounding countryside rather than expecting rows of luxury hotels.</p>
+                <p class="mb-6">I also recommend coming prepared for the weather. Mountain air is wonderful until you wake up with a <b class="highlight quiz-target" data-ans="scratchy throat" data-kor="목이 칼칼함 / 목이 따끔거림">scratchy throat</b> and discover that your Seoul jacket was not the powerful piece of outdoor equipment you imagined.</p>
+                <p class="mb-6">There has been <b class="highlight quiz-target" data-ans="new development" data-kor="신규 개발 지역 / 새로 개발된 곳">new development</b>, of course. Tourism facilities have been created, and the old mining region has found new uses. But Yeongwol still feels like Yeongwol.</p>
+                <p class="mb-6">I once helped a Canadian friend study for his Korean <b class="highlight quiz-target" data-ans="citizenship test" data-kor="시민권 시험">citizenship test</b>. He knew more Korean history dates than I did.</p>
+                <p class="mb-6">That was embarrassing.</p>
+                <p class="mb-6">So I took him to Yeongwol.</p>
+                <p class="mb-6">Facts are one thing. Standing beside the river where a young king spent his exile is different.</p>
+                <p class="mb-6">That’s what I’m proud of. My hometown doesn’t just have history written on signs.</p>
+                <p class="mb-6">You can stand inside it.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">저는 강원도 영월 출신입니다. 산과 강, 그리고 밤이 되면 정말 어두워지는 동네를 좋아한다면 제 고향을 추천할 이유가 충분합니다.</p>
+                <p class="mb-6">영월은 아름다운 산악 풍경으로 둘러싸여 있고, 동강에서는 래프팅 같은 활동도 유명합니다. 과거에는 탄광 지역이기도 했으며, 현재는 관광센터 등을 통해 옛 탄광 지역과 그 역사를 살펴볼 수 있습니다.</p>
+                <p class="mb-6">하지만 영월에서 자란 아이들이라면 누구나 배우는 이야기는 단종에 관한 것입니다.</p>
+                <p class="mb-6">단종은 어린 나이에 조선의 왕이 되었습니다. 왕위를 잃은 뒤 영월로 유배되었고, 정치적인 이유뿐 아니라 지형적으로도 사실상 <b class="highlight">갇힌</b> 생활을 했습니다. 유배지였던 청령포는 물과 산으로 둘러싸여 있으며, 단종의 무덤인 장릉 역시 영월에 있습니다.</p>
+                <p class="mb-6">그런 역사를 바로 옆에 두고 자란다고 생각해 보세요.</p>
+                <p class="mb-6">어렸을 때 저는 그 가치를 몰랐습니다. 오래된 무덤? 수백 년 전 왕? 알겠는데, 이제 아이스크림 먹으러 가면 안 돼?</p>
+                <p class="mb-6">그러다가 고향을 떠나 <b class="highlight">다 큰 어른이 되고</b> 나니, <b class="highlight">어쩌다 보니</b> 사람들에게 “그런데 조선의 여섯 번째 왕이 우리 고향으로 유배된 거 알아?”라고 설명하는 사람이 되어 있었습니다.</p>
+                <p class="mb-6">10년만 더 지나면 관광 안내 책자를 들고 다닐지도 모르겠습니다.</p>
+                <p class="mb-6">영월은 거대한 도시의 <b class="highlight">교외 지역</b>이 아닙니다. 저는 그 점도 영월의 매력이라고 생각합니다. 강과 산, 역사, 그리고 느린 생활을 경험하러 오는 곳이죠. <b class="highlight">저렴한 숙소</b>를 찾는다면 고급 호텔이 줄지어 있을 거라고 기대하기보다는 읍내와 주변 지역을 찾아보는 편이 좋습니다.</p>
+                <p class="mb-6">날씨에 대비하는 것도 추천합니다. 산의 공기는 정말 좋지만, 아침에 <b class="highlight">목이 칼칼한</b> 상태로 일어나서 서울에서 입던 재킷이 생각만큼 대단한 야외 장비가 아니었다는 걸 깨달을 수도 있으니까요.</p>
+                <p class="mb-6">물론 <b class="highlight">새로운 개발</b>도 이루어졌습니다. 관광 시설이 생겼고 옛 탄광 지역도 새로운 용도로 활용되고 있습니다. 그래도 영월은 여전히 영월답습니다.</p>
+                <p class="mb-6">예전에 캐나다인 친구가 한국 <b class="highlight">시민권 시험</b>을 준비하는 걸 도와준 적이 있습니다. 그런데 그 친구가 저보다 한국사 연도를 더 잘 외우고 있었습니다.</p>
+                <p class="mb-6">좀 창피했습니다.</p>
+                <p class="mb-6">그래서 그 친구를 영월에 데려갔습니다.</p>
+                <p class="mb-6">역사적 사실을 외우는 것과, 어린 왕이 유배 생활을 했던 강가에 직접 서보는 것은 다릅니다.</p>
+                <p class="mb-6">그게 제가 고향을 자랑스러워하는 이유입니다. 제 고향에는 역사가 안내판에만 적혀 있는 게 아닙니다.</p>
+                <p class="mb-6">그 역사 속에 직접 서볼 수 있습니다.</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "101715.m4a";
+</script>
+      <script src="wordbank-utils.js"></script>
+  </body>
+  </html>

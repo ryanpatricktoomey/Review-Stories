@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | I Stopped Using Fabric Softener, and My Towels Have Never Been Better</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🧺</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">I Stopped Using Fabric Softener, and My Towels Have Never Been Better</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">portable</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">휴대용의, 가지고 다닐 수 있는</td></tr>
+                <tr><td class="p-4"><b class="text-white">travel size</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">여행용 크기, 휴대하기 좋은 작은 사이즈</td></tr>
+                <tr><td class="p-4"><b class="text-white">this past spring</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">지난봄에, 바로 지난 봄에</td></tr>
+                <tr><td class="p-4"><b class="text-white">electronics</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">전자제품, 전자기기</td></tr>
+                <tr><td class="p-4"><b class="text-white">do a load of towels</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">수건을 한 번 세탁하다, 수건 한 세탁기 분량을 돌리다</td></tr>
+                <tr><td class="p-4"><b class="text-white">removes odor</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">냄새를 제거하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">threads</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">실, 옷감이나 수건을 이루는 가느다란 섬유</td></tr>
+                <tr><td class="p-4"><b class="text-white">can't absorb water</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">물을 흡수하지 못하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">washing machine</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">세탁기</td></tr>
+                <tr><td class="p-4"><b class="text-white">stretched</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">늘어난, 잡아당겨져서 늘어진</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold text-lg mb-2">portable / travel size</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">portable은 쉽게 들고 이동할 수 있다는 뜻이고, travel size는 여행용으로 작게 만들어진 제품의 크기를 말해요. 휴대용이라고 해서 반드시 여행용 크기인 것은 아니에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold text-lg mb-2">this past spring</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">가장 최근에 지나간 봄을 가리켜요. last spring과 비슷하지만 최근의 특정 계절을 조금 더 강조하는 느낌이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold text-lg mb-2">do a load of towels</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">a load는 세탁기 한 번에 돌리는 빨랫감의 양이에요. do a load of laundry도 아주 흔한 표현이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold text-lg mb-2">removes odor</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">제품 설명에서 자주 쓰는 표현으로, 단순히 향으로 냄새를 덮는 것이 아니라 냄새를 제거한다는 뜻이에요. odor는 주로 불쾌한 냄새를 가리켜요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold text-lg mb-2">threads</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">천을 구성하는 실을 뜻해요. 문맥에 따라 인터넷 게시글의 댓글 대화나 온라인 토론을 의미하기도 해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold text-lg mb-2">can't absorb water</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">absorb는 액체 등을 빨아들여 흡수한다는 뜻이에요. 수건의 흡수력을 설명할 때 absorbent라는 형용사도 자주 사용해요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">★★★★★ — A five-star review of wool dryer balls</p>
+                <p class="mb-6">I never thought I'd write an enthusiastic review about six balls of wool, but here we are.</p>
+                <p class="mb-6"><b class="highlight quiz-target" data-ans="This past spring" data-kor="지난봄에">This past spring</b>, I stayed at my sister's house for a week. After taking a shower, I noticed something strange about her towels. They were incredibly soft, but they also dried my skin almost instantly.</p>
+                <p class="mb-6">My towels at home were the complete opposite. They felt soft when I touched them, but they <b class="highlight quiz-target" data-ans="couldn't absorb water" data-kor="물을 흡수하지 못했다">couldn't absorb water</b> properly. I practically had to rub myself dry.</p>
+                <p class="mb-6">"What's your secret?" I asked.</p>
+                <p class="mb-6">"Wool dryer balls," she said.</p>
+                <p class="mb-6">I thought she was joking.</p>
+                <p class="mb-6">She opened her dryer and showed me six little wool balls. Apparently, they bounce around with your clothes, helping separate the laundry as it tumbles.</p>
+                <p class="mb-6">She also told me something I hadn't known: using too much fabric softener can leave a coating on towel fibers, reducing their absorbency over time.</p>
+                <p class="mb-6">I immediately remembered how much softener I'd been pouring into my <b class="highlight quiz-target" data-ans="washing machine" data-kor="세탁기">washing machine</b>.</p>
+                <p class="mb-6">When I got home, I ordered a set of wool dryer balls. They cost about $20, and unlike most household <b class="highlight quiz-target" data-ans="electronics" data-kor="가전제품">electronics</b>, they don't need batteries, charging, or complicated instructions.</p>
+                <p class="mb-6">I was skeptical at first, but I figured they were worth trying.</p>
+                <p class="mb-6">The first thing I did was <b class="highlight quiz-target" data-ans="do a load of towels" data-kor="수건을 한 번 세탁하다">do a load of towels</b>. I skipped the fabric softener, washed them with detergent, and put the dryer balls in with them.</p>
+                <p class="mb-6">The results weren't dramatic after one wash. But after several laundry cycles, my towels started feeling noticeably different.</p>
+                <p class="mb-6">They were fluffy without that slippery feeling I'd gotten used to. More importantly, they actually absorbed water!</p>
+                <p class="mb-6">I also noticed that my T-shirts weren't getting tangled together as much. The dryer balls helped keep the clothes moving, although they didn't prevent every wrinkle.</p>
+                <p class="mb-6">Then I started experimenting.</p>
+                <p class="mb-6">I bought a <b class="highlight quiz-target" data-ans="travel-size" data-kor="여행용 크기">travel-size</b> container to carry a couple of dryer balls when visiting my parents, who have a dryer. The balls themselves are surprisingly <b class="highlight quiz-target" data-ans="portable" data-kor="휴대용의">portable</b>, although they're obviously not much use without a machine.</p>
+                <p class="mb-6">My sister had also recommended using a laundry sanitizer occasionally for stubborn smells. That product <b class="highlight quiz-target" data-ans="removes odor" data-kor="냄새를 제거하다">removes odor</b> when used correctly, while the dryer balls mainly help with drying and separating clothes. They're different tools for different jobs.</p>
+                <p class="mb-6">The biggest improvement has been my towels. The <b class="highlight quiz-target" data-ans="threads" data-kor="실">threads</b> don't feel coated anymore, and even my oldest towels seem more absorbent.</p>
+                <p class="mb-6">I did accidentally leave a wool sweater in the dryer once, and it came out slightly shrunken. I tried gently reshaping it while damp, but it never fully <b class="highlight quiz-target" data-ans="stretched" data-kor="늘어난">stretched</b> back to its original size.</p>
+                <p class="mb-6">That was my mistake, not the dryer balls' fault.</p>
+                <p class="mb-6">Now I check clothing labels before drying anything.</p>
+                <p class="mb-6">I've been using the same six wool balls for months, and they're still in excellent condition.</p>
+                <p class="mb-6">I don't have to keep buying fabric softener, my towels work better, and laundry feels a little simpler.</p>
+                <p class="mb-6">It's such a small change, but it's made a surprisingly big difference.</p>
+                <p class="mb-6">I genuinely wish I'd discovered these things sooner.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">★★★★★ — 울 드라이어 볼 별 다섯 개 후기</p>
+                <p class="mb-6">양모로 만든 공 여섯 개에 대해 이렇게 열정적인 후기를 쓰게 될 줄은 몰랐는데, 지금 제가 그러고 있네요.</p>
+                <p class="mb-6"><b class="highlight">지난봄</b>, 언니 집에서 일주일 동안 지냈어요. 샤워를 마치고 수건을 쓰다가 이상한 점을 발견했어요. 수건이 정말 부드러운데 물기도 거의 즉시 닦이는 거예요.</p>
+                <p class="mb-6">우리 집 수건은 완전히 반대였어요. 만져 보면 부드러웠지만 <b class="highlight">물을 제대로 흡수하지 못했거든요</b>. 몸을 말리려면 수건으로 거의 문질러야 할 정도였어요.</p>
+                <p class="mb-6">"비결이 뭐야?"라고 물었어요.</p>
+                <p class="mb-6">"울 드라이어 볼."</p>
+                <p class="mb-6">언니가 농담하는 줄 알았어요.</p>
+                <p class="mb-6">언니는 건조기를 열어 작은 양모 공 여섯 개를 보여줬어요. 이 공들이 빨래와 함께 건조기 안에서 튀어 오르면서 옷들이 서로 떨어지도록 도와준다는 거예요.</p>
+                <p class="mb-6">그리고 제가 몰랐던 사실도 알려줬어요. 섬유유연제를 너무 많이 사용하면 수건 섬유에 코팅 같은 잔여물이 남아서 시간이 지날수록 흡수력이 떨어질 수 있다는 거였어요.</p>
+                <p class="mb-6">그 말을 듣자 제가 <b class="highlight">세탁기</b>에 섬유유연제를 얼마나 많이 붓곤 했는지 바로 떠올랐어요.</p>
+                <p class="mb-6">집에 돌아오자마자 울 드라이어 볼 한 세트를 주문했어요. 가격은 약 20달러였고, 대부분의 <b class="highlight">가전제품</b>과 달리 배터리나 충전도 필요 없고 복잡한 사용 설명서도 없었어요.</p>
+                <p class="mb-6">처음에는 반신반의했지만 한번 써볼 만하다고 생각했어요.</p>
+                <p class="mb-6">가장 먼저 <b class="highlight">수건을 한 번 세탁했어요</b>. 섬유유연제는 넣지 않고 세제로만 세탁한 다음, 수건과 함께 드라이어 볼을 건조기에 넣었어요.</p>
+                <p class="mb-6">한 번 세탁했다고 극적인 변화가 생긴 건 아니었어요. 하지만 몇 번 더 세탁하고 건조하자 수건의 촉감이 확실히 달라지기 시작했어요.</p>
+                <p class="mb-6">예전에 익숙했던 미끌미끌한 느낌 없이 폭신했어요. 무엇보다 실제로 물을 잘 흡수했어요!</p>
+                <p class="mb-6">티셔츠들이 서로 엉키는 일도 줄어든 것 같았어요. 드라이어 볼이 옷들이 계속 움직이도록 도와줬지만, 모든 주름을 막아 주는 건 아니었어요.</p>
+                <p class="mb-6">그러다가 여러 가지 방법을 시도해 보기 시작했어요.</p>
+                <p class="mb-6">부모님 댁에 갈 때 드라이어 볼 두 개 정도를 가져가려고 작은 <b class="highlight">여행용</b> 용기도 샀어요. 생각보다 <b class="highlight">휴대하기</b> 편하더라고요. 물론 건조기가 없으면 별 쓸모가 없지만요.</p>
+                <p class="mb-6">언니는 잘 없어지지 않는 냄새를 없애기 위해 가끔 세탁용 살균제를 사용하는 것도 추천했어요. 그 제품은 올바르게 사용하면 <b class="highlight">냄새를 제거해 주지만</b>, 드라이어 볼은 주로 건조와 빨랫감 분리에 도움을 줘요. 서로 용도가 다른 제품인 거죠.</p>
+                <p class="mb-6">가장 큰 변화는 수건에서 나타났어요. 수건을 이루는 <b class="highlight">실</b>에 더 이상 코팅된 듯한 느낌이 없었고, 가장 오래된 수건조차 흡수력이 좋아진 것 같았어요.</p>
+                <p class="mb-6">한 번은 실수로 울 스웨터를 건조기에 넣어 버렸는데, 약간 줄어들었어요. 젖어 있을 때 조심스럽게 모양을 잡아 <b class="highlight">늘려 봤지만</b> 원래 크기로 완전히 돌아오지는 않았어요.</p>
+                <p class="mb-6">그건 드라이어 볼의 잘못이 아니라 제 실수였죠.</p>
+                <p class="mb-6">이제는 무엇이든 건조기에 넣기 전에 의류 관리 라벨을 확인해요.</p>
+                <p class="mb-6">같은 울 드라이어 볼 여섯 개를 몇 달째 사용하고 있는데 아직도 상태가 아주 좋아요.</p>
+                <p class="mb-6">섬유유연제를 계속 살 필요도 없고, 수건도 더 잘 마르고, 빨래하는 과정도 조금 더 간단해졌어요.</p>
+                <p class="mb-6">정말 작은 변화인데 생각보다 큰 차이를 만들어 줬어요.</p>
+                <p class="mb-6">진작 알았으면 얼마나 좋았을까 싶어요.</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+    function skipAudio(seconds) {
+        const player = document.getElementById('player');
+        if (player.src) {
+            player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+        }
+    }
+
+    function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+    let _quizOriginals = new Map();
+
+    function toggleQuiz() {
+        const btn = document.getElementById('quizBtn');
+        const isQuiz = btn.innerText.includes("Quiz");
+        const targets = document.querySelectorAll('.quiz-target');
+        const cells = document.querySelectorAll('.mystery-cell');
+
+        if (isQuiz) {
+            btn.innerText = "Study Mode 📖";
+            cells.forEach(c => c.classList.add('quiz-hidden'));
+            targets.forEach(t => {
+                const ans = t.dataset.ans; const kor = t.dataset.kor;
+                _quizOriginals.set(t, t.innerHTML);
+                t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+            });
+        } else {
+            btn.innerText = "Quiz Mode 👻";
+            cells.forEach(c => c.classList.remove('quiz-hidden'));
+            targets.forEach(t => {
+                if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+            });
+            _quizOriginals.clear();
+        }
+    }
+
+    function checkQuiz(i, a) {
+        if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+            i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+            confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+            checkAllSolved();
+        } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+    }
+
+    function checkAllSolved() {
+        const inputs = document.querySelectorAll('.quiz-input');
+        if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+            var duration = 3 * 1000; var end = Date.now() + duration;
+            (function frame() {
+                confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                if (Date.now() < end) requestAnimationFrame(frame);
+            }());
+        }
+    }
+
+    document.getElementById('player').src = "10121020.m4a";
+</script>
+    <script src="wordbank-utils.js"></script>
+</body>
+</html>

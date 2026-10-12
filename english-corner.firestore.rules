@@ -25,6 +25,33 @@ service cloud.firestore {
         && (!('emoji' in request.resource.data) || (request.resource.data.emoji is string && request.resource.data.emoji in ["😀","😎","🥳","😂","😊","😇","🤩","😍","🤓","😴","😺","🐱","🐶","🐻","🐼","🐰","🦊","🐸","🐯","🦁","🐨","🐧","🐢","🐝","🦋","🐳","🐙","🦄","🌸","🌻","🌷","🌹","🌈","⭐","🌙","☀️","🔥","💎","💖","🍀","🍎","🍓","🍑","🍒","🍋","🍕","🍩","🍪","☕","🍵","🎨","🎵","🎸","🎮","⚽","🏀","🚀","✈️","📚","💡"]));
       allow delete: if signedIn() && request.auth.uid == uid;
     }
+    match /notifications/{recipientUid}/items/{notificationId} {
+      allow read: if signedIn() && request.auth.uid == recipientUid;
+      allow update: if signedIn() && request.auth.uid == recipientUid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['read'])
+        && request.resource.data.read == true;
+      allow delete: if signedIn() && request.auth.uid == recipientUid;
+      allow create: if signedIn()
+        && request.resource.data.keys().hasAll(['activityId','responseUid','replyId','sourceReplyId','senderUid','nickname','emoji','text','read','createdAt'])
+        && request.resource.data.keys().hasOnly(['activityId','responseUid','replyId','sourceReplyId','senderUid','nickname','emoji','text','read','createdAt'])
+        && request.resource.data.replyId == notificationId
+        && request.resource.data.senderUid == request.auth.uid
+        && recipientUid != request.auth.uid
+        && request.resource.data.activityId is string
+        && request.resource.data.responseUid is string
+        && request.resource.data.sourceReplyId is string
+        && request.resource.data.read == false
+        && request.resource.data.createdAt == request.time
+        && request.resource.data.nickname == get(/databases/$(database)/documents/publicProfiles/$(request.auth.uid)).data.nickname
+        && request.resource.data.emoji is string
+        && request.resource.data.text is string
+        && request.resource.data.text.size() <= 500
+        && getAfter(/databases/$(database)/documents/activities/$(request.resource.data.activityId)/responses/$(request.resource.data.responseUid)/replies/$(notificationId)).data.uid == request.auth.uid
+        && getAfter(/databases/$(database)/documents/activities/$(request.resource.data.activityId)/responses/$(request.resource.data.responseUid)/replies/$(notificationId)).data.text == request.resource.data.text
+        && ( (request.resource.data.sourceReplyId == 'owner' && request.resource.data.responseUid == recipientUid)
+          || (request.resource.data.sourceReplyId != 'owner'
+            && get(/databases/$(database)/documents/activities/$(request.resource.data.activityId)/responses/$(request.resource.data.responseUid)/replies/$(request.resource.data.sourceReplyId)).data.uid == recipientUid));
+    }
     match /activities/{activityId} {
       allow read: if resource.data.published == true || admin();
       allow create, update, delete: if admin();

@@ -57,7 +57,7 @@
         .top-actions { display:flex; flex-wrap:nowrap; gap:10px; margin-bottom:25px; width:100%; }
         .top-action { display:flex; flex:1 1 0; min-width:0; align-items:center; justify-content:center; text-align:center; padding:12px 6px; border-radius:16px; text-decoration:none; font-weight:700; font-size:clamp(0.77rem,3.4vw,1rem); line-height:1.25; white-space:nowrap; }
         .wordbank-action { background:var(--accent); color:var(--bg); }
-        .profile-action { background:#334155; color:var(--text); border:1px solid #64748b; }
+        .profile-action { background:#334155; color:var(--text); border:1px solid #64748b; }.bell-action{position:relative;display:flex;flex:0 0 45px;width:45px;height:45px;align-items:center;justify-content:center;align-self:center;border-radius:50%;background:#334155;border:1px solid #64748b;color:white;text-decoration:none;font-size:1.3rem}.bell-count{position:absolute;right:-5px;top:-7px;background:#ef4444;color:white;border-radius:20px;padding:1px 5px;font:700 11px system-ui;min-width:18px;text-align:center}.bell-count:empty{display:none}
     </style>
 </head>
 <body>
@@ -68,11 +68,11 @@
     
     <div class="top-actions">
         <a class="top-action wordbank-action" href="wordbank.html">💾 My Word Bank</a>
-        <a class="top-action profile-action" href="english-corner-profile.html">👤 Manage Profile</a>
+        <a class="top-action profile-action" href="english-corner-profile.html">👤 Manage Profile</a><a class="bell-action" href="english-corner-notifications.html" aria-label="Notifications" title="Notifications">🔔<span class="bell-count" id="bell-count"></span></a>
     </div>
 
                                                                                                                                                             
-    <section aria-label="The English Corner" style="margin:0 0 22px;">
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script><script>(function(){const config={apiKey:"AIzaSyAdBI_1FG1JnY-NAopcx6YnApNq7l7OcKA",authDomain:"review-stories-f251f.firebaseapp.com",projectId:"review-stories-f251f",appId:"1:974755614972:web:3e21c5c7ccdfa5f9824779"};if(!firebase.apps.length)firebase.initializeApp(config);let off;firebase.auth().onAuthStateChanged(u=>{if(off)off();document.getElementById("bell-count").textContent="";if(!u)return;off=firebase.firestore().collection("notifications").doc(u.uid).collection("items").where("read","==",false).limit(100).onSnapshot(s=>{document.getElementById("bell-count").textContent=s.empty?"":(s.size===100?"99+":s.size)},()=>{})})})();</script><section aria-label="The English Corner" style="margin:0 0 22px;">
       <iframe id="english-corner-embed" src="english-corner.html?embed=1" title="The English Corner: today's English activity" style="width:100%;height:210px;border:0;border-radius:14px;background:#0f172a;display:block;" loading="eager"></iframe>
       <a href="english-corner.html?archive=1" style="display:block;text-align:right;color:#7dd3fc;font-size:0.85rem;margin-top:4px;text-decoration:none;">English Corner Archive →</a>
     </section>

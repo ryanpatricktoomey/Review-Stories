@@ -69,7 +69,7 @@
             <div class="glass rounded-full p-1 flex w-full max-w-md mt-6">
                 <button onclick="switchTab('list')" id="tab-list" class="tab-btn active flex-1 py-2 px-4 rounded-full font-bold text-sm transition-colors">List</button>
                 <button onclick="switchTab('flash')" id="tab-flash" class="tab-btn flex-1 py-2 px-4 rounded-full font-bold text-sm transition-colors text-slate-300 hover:text-white">Cards</button>
-                <button onclick="switchTab('quiz')" id="tab-quiz" class="tab-btn flex-1 py-2 px-4 rounded-full font-bold text-sm transition-colors text-slate-300 hover:text-white">Quiz</button>
+                <button onclick="switchTab('quiz')" id="tab-quiz" class="tab-btn flex-1 py-2 px-4 rounded-full font-bold text-sm transition-colors text-slate-300 hover:text-white">⚡ Rush</button>
             </div>
         </header>
 
@@ -125,22 +125,43 @@
             </div>
         </section>
 
-        <!-- MODE 3: QUIZ -->
-        <section id="view-quiz" class="hidden glass rounded-3xl p-6 md:p-10 shadow-2xl max-w-2xl mx-auto">
-            <div class="flex justify-between items-center mb-8 border-b border-white/10 pb-4">
-                <h2 class="text-xl font-bold text-amber-400">Quiz Mode</h2>
-                <div class="bg-slate-900 px-4 py-2 rounded-xl border border-white/10">
-                    <span class="text-sm text-slate-400 uppercase tracking-widest font-bold">Score:</span>
-                    <span class="text-lg font-black text-teal-400 ml-2" id="quiz-score">0</span>
+        <!-- MODE 3: WORD RUSH -->
+        <section id="view-quiz" class="hidden glass rounded-3xl p-5 md:p-10 shadow-2xl max-w-2xl mx-auto space-y-5">
+            <div class="flex items-center justify-between gap-3">
+                <div><h2 class="text-2xl font-black text-amber-400">⚡ Word Rush</h2><p class="text-xs text-slate-400">Survive. Beat your personal best.</p></div>
+                <div class="text-right"><div class="text-xs text-slate-400">SCORE</div><div id="rush-score" class="text-2xl font-black text-teal-400">0</div></div>
+            </div>
+            <div class="flex justify-between items-center gap-2">
+                <div id="rush-hearts" class="text-xl" aria-label="Hearts">❤️❤️❤️</div>
+                <div class="text-amber-400 font-bold text-sm" id="rush-combo">🔥 0 combo</div>
+            </div>
+            <div class="bg-slate-900/70 rounded-xl p-3 space-y-2">
+                <div class="flex justify-between text-xs text-slate-300"><span id="rush-progress-label">🎁 Next heart</span><span id="rush-progress-count">0 / 10 correct</span></div>
+                <div class="h-2 bg-slate-700 rounded-full overflow-hidden"><div id="rush-progress-bar" class="h-full bg-teal-500 transition-all" style="width:0%"></div></div>
+                <div class="text-xs text-slate-400">🏆 Best score: <span id="rush-best">0</span> · Longest combo: <span id="rush-best-combo">0</span></div>
+            </div>
+            <div id="rush-playing" class="space-y-4">
+                <div class="bg-slate-900/70 rounded-2xl p-6 text-center space-y-3">
+                    <p class="text-xs tracking-widest font-bold text-slate-400">TYPE THE SAVED ENGLISH</p>
+                    <h3 id="rush-prompt" class="text-2xl md:text-3xl font-extrabold text-white break-words">뜻</h3>
+                    <p id="rush-length" class="text-xs text-slate-400"></p>
+                </div>
+                <form id="rush-form" onsubmit="submitRush(event)" class="space-y-3">
+                    <input id="rush-answer" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Type the English word or expression…" class="w-full bg-slate-900 border border-slate-600 rounded-xl p-4 text-white text-lg focus:outline-none focus:border-teal-400" required>
+                    <button id="rush-submit" type="submit" class="w-full bg-teal-500 text-slate-900 font-black rounded-xl py-3">Check Answer ✓</button>
+                </form>
+                <div id="rush-feedback" class="hidden rounded-xl p-4 bg-slate-800 text-center font-bold"></div>
+                <button id="rush-next" onclick="advanceRush()" class="hidden w-full bg-teal-500 text-slate-900 font-black rounded-xl py-3">Next Word ➡️</button>
+                <div id="rush-actions" class="flex gap-2">
+                    <button onclick="hintRush()" id="rush-hint" class="flex-1 bg-slate-700 rounded-xl py-3 font-bold text-sm">💡 Hint (−50 pts)</button>
+                    <button onclick="skipRush()" class="flex-1 bg-slate-700 rounded-xl py-3 font-bold text-sm">⏭️ Skip (−1 ❤️)</button>
                 </div>
             </div>
-            <div class="text-center mb-10">
-                <p class="text-slate-400 mb-2">What does this mean?</p>
-                <h3 class="text-4xl font-extrabold text-white" id="quiz-word">Word</h3>
-            </div>
-            <div class="grid grid-cols-1 gap-3" id="quiz-options"></div>
-            <div class="mt-8 text-center hidden" id="quiz-next-container">
-                <button onclick="nextQuiz()" class="bg-teal-500 hover:bg-teal-400 text-slate-900 px-8 py-3 rounded-xl font-black w-full shadow-lg active:scale-95 transition-all">Next Question ➡️</button>
+            <div id="rush-gameover" class="hidden text-center space-y-4 py-5">
+                <div class="text-5xl">🏆</div><h3 class="text-3xl font-black">Game Over!</h3>
+                <p id="rush-final" class="text-lg text-slate-300"></p>
+                <p id="rush-record" class="font-black text-amber-400"></p>
+                <button onclick="startQuiz()" class="w-full bg-teal-500 text-slate-900 font-black rounded-xl py-3">🔄 Play Again</button>
             </div>
         </section>
     </div>
@@ -161,8 +182,8 @@
         let wordBank = [];
         let currentTab = 'list';
         let cardIndex = 0;
-        let quizScore = 0;
-        let currentQuizWord = null;
+        let rush = null;
+        let rushBest = {score:0,combo:0};
         let mediaRecorder;
         let audioChunks = [];
         let globalAudioStream = null;
@@ -235,10 +256,7 @@
         // --- TAB LOGIC ---
         function switchTab(tab) {
             if (wordBank.length === 0 && tab !== 'list') return;
-            if (tab === 'quiz' && wordBank.length < 4) {
-                alert("You need at least 4 words in your Word Bank to play the quiz!");
-                return;
-            }
+            if (tab === 'quiz' && wordBank.length < 1) return;
             ['list', 'flash', 'quiz'].forEach(t => {
                 document.getElementById(`tab-${t}`).classList.remove('active', 'text-slate-300');
                 document.getElementById(`tab-${t}`).classList.add('text-slate-300');

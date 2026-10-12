@@ -34,7 +34,7 @@ if(new URLSearchParams(location.search).get('embed')==='1'){
   setTimeout(reportHeight,100);
 }
 const isEmbed=new URLSearchParams(location.search).get('embed')==='1',isArchive=new URLSearchParams(location.search).get('archive')==='1';
-if(isEmbed){$('account').classList.add('hidden');$('profile-card').classList.add('hidden');$('corner-intro').classList.add('hidden');$('activity-section').style.margin='0';$('activity-section').style.padding='14px';$('activity-heading').style.fontSize='1.05rem'}
+if(isEmbed){document.querySelector('main.wrap > h1').classList.add('hidden');$('account').classList.add('hidden');$('profile-card').classList.add('hidden');$('corner-intro').classList.add('hidden');$('activity-section').style.margin='0';$('activity-section').style.padding='14px';$('activity-heading').style.fontSize='1.05rem'}
 if(isArchive)$('activity-heading').textContent='English Corner Archive';
 let user=null,profile=null,stopActivities=null,stopResponses=[];
 function showProfile(){ if(isEmbed)return; $('profile-card').classList.remove('hidden');$('close-profile').classList.toggle('hidden',!profile); }

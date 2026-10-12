@@ -210,6 +210,7 @@
         }
 
         function signOut() {
+            clearRushTimers();
             auth.signOut();
         }
 
@@ -269,6 +270,7 @@
             document.getElementById(`tab-${tab}`).classList.add('active');
             document.getElementById(`tab-${tab}`).classList.remove('text-slate-300');
             document.getElementById(`view-${tab}`).classList.remove('hidden');
+            if(currentTab==='quiz' && tab!=='quiz')clearRushTimers();
             currentTab = tab;
             if (tab === 'flash') initFlashcards();
             if (tab === 'quiz') startQuiz();
@@ -377,6 +379,20 @@
         }
 
         // --- MODE 3: WORD RUSH ---
+        let rushClock=null, rushAdvance=null;
+        const RUSH_SECONDS=25;
+        function clearRushTimers(){clearInterval(rushClock);clearTimeout(rushAdvance);rushClock=null;rushAdvance=null;}
+        function runRushClock(){
+            clearInterval(rushClock);
+            rush.deadline=Date.now()+RUSH_SECONDS*1000;
+            rushClock=setInterval(()=>{
+                if(!rush || rush.answered || currentTab!=='quiz'){clearInterval(rushClock);return;}
+                const remaining=Math.max(0,rush.deadline-Date.now());
+                rushEl('rush-time').textContent='⏱️ '+Math.ceil(remaining/1000)+'s';
+                rushEl('rush-timer-bar').style.width=(remaining/(RUSH_SECONDS*1000)*100)+'%';
+                if(remaining<=0){clearInterval(rushClock);rush.answered=true;rush.hearts--;rush.combo=0;showRushResult('⏰ Time up! Answer: '+rush.current.en+' · −1 ❤️',false);}
+            },100);
+        }
         const rushEl = id => document.getElementById(id);
         const rushNormalize = value => String(value || '').toLowerCase().replace(/[’‘]/g, "'").replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, ' ').trim();
         const rushShuffle = items => {
@@ -386,6 +402,7 @@
         };
         function startQuiz() {
             if (!wordBank.length) return;
+            clearRushTimers();
             rush = {score:0,hearts:3,correct:0,combo:0,longest:0,deck:[],current:null,answered:false,hinted:false};
             rushEl('rush-gameover').classList.add('hidden');
             rushEl('rush-playing').classList.remove('hidden');
@@ -402,20 +419,26 @@
             rushEl('rush-answer').disabled=false;
             rushEl('rush-answer').classList.remove('border-red-500','border-teal-400');
             rushEl('rush-form').classList.remove('hidden');
+            rushEl('rush-submit').classList.remove('hidden');
             rushEl('rush-feedback').classList.add('hidden');
-            rushEl('rush-next').classList.add('hidden');
+
             rushEl('rush-actions').classList.remove('hidden');
             rushEl('rush-hint').disabled=false;
             rushEl('rush-hint').textContent='💡 Hint (−50 pts)';
             rushEl('rush-length').textContent='';
             updateRushUI();
-            rushEl('rush-answer').focus({preventScroll:true});
+            rushEl('rush-time').textContent='⏱️ '+RUSH_SECONDS+'s';
+            rushEl('rush-timer-bar').style.width='100%';
+            runRushClock();
+            if(!('ontouchstart' in window))rushEl('rush-answer').focus({preventScroll:true});
+            else if(document.activeElement===rushEl('rush-answer'))rushEl('rush-prompt-box').scrollIntoView({block:'start',behavior:'instant'});
         }
         function updateRushUI() {
             if (!rush) return;
             rushEl('rush-score').textContent=rush.score.toLocaleString();
             rushEl('rush-hearts').textContent='❤️'.repeat(rush.hearts)+'♡'.repeat(5-rush.hearts);
             rushEl('rush-combo').textContent='🔥 '+rush.combo+' combo';
+            rushEl('rush-live-score').textContent=rush.score.toLocaleString()+' pts · '+'❤️'.repeat(rush.hearts);
             rushEl('rush-progress-count').textContent=(rush.correct%10)+' / 10 correct';
             rushEl('rush-progress-bar').style.width=((rush.correct%10)*10)+'%';
             rushEl('rush-best').textContent=(rushBest.score||0).toLocaleString();
@@ -428,6 +451,7 @@
             if (!typed.trim()) return;
             const correct=rushNormalize(typed)===rushNormalize(rush.current.en);
             rush.answered=true;
+            clearInterval(rushClock);
             let message;
             if (correct) {
                 rush.correct++;rush.combo++;
@@ -447,14 +471,14 @@
             showRushResult(message,correct);
         }
         function showRushResult(message,correct) {
+            clearInterval(rushClock);
             rushEl('rush-feedback').textContent=message;
             rushEl('rush-feedback').classList.remove('hidden');
             rushEl('rush-feedback').classList.toggle('text-teal-300',correct);
             rushEl('rush-feedback').classList.toggle('text-red-300',!correct);
-            rushEl('rush-form').classList.add('hidden');
+            rushEl('rush-submit').classList.add('hidden');
             rushEl('rush-actions').classList.add('hidden');
-            rushEl('rush-next').textContent=rush.hearts<=0?'See Results 🏆':'Next Word ➡️';
-            rushEl('rush-next').classList.remove('hidden');
+            rushAdvance=setTimeout(()=>{if(currentTab==='quiz')advanceRush();},rush.hearts<=0?2200:correct?950:1900);
             updateRushUI();
         }
         function hintRush() {
@@ -476,6 +500,7 @@
         }
         async function finishRush() {
             if (!rush) return;
+            clearRushTimers();
             rushEl('rush-playing').classList.add('hidden');
             rushEl('rush-gameover').classList.remove('hidden');
             rushEl('rush-final').textContent=rush.score.toLocaleString()+' points · '+rush.correct+' correct · '+rush.longest+' longest combo';

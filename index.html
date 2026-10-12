@@ -45,7 +45,7 @@
         <a href="wordbank.html" style="background: var(--accent); color: var(--bg); padding: 12px 24px; border-radius: 20px; text-decoration: none; font-weight: bold; font-size: 1.1rem; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); transition: transform 0.2s;">
             <span>💾</span> My Word Bank
         </a>
-        <button type="button" id="manage-profile-button" style="background:#334155;color:#f8fafc;padding:12px 18px;border-radius:20px;border:1px solid #64748b;font-weight:700;font-size:0.95rem;cursor:pointer;margin-left:8px;">👤 Manage Profile</button>
+        <a href="english-corner-profile.html" style="display:inline-flex;align-items:center;background:#334155;color:#f8fafc;padding:12px 18px;border-radius:20px;border:1px solid #64748b;font-weight:700;font-size:0.95rem;text-decoration:none;margin-left:8px;">👤 Manage Profile</a>
         
     </div>
 
@@ -61,11 +61,6 @@
         if (frame && event.source === frame.contentWindow && Number.isFinite(event.data.height)) {
           frame.style.height = Math.max(140, Math.min(12000, event.data.height)) + 'px';
         }
-      });
-      document.getElementById('manage-profile-button').addEventListener('click', function() {
-        const frame = document.getElementById('english-corner-embed');
-        frame.contentWindow.postMessage({type:'english-corner-manage-profile'},window.location.origin);
-        frame.scrollIntoView({behavior:'smooth',block:'start'});
       });
     </script>
 <div class="date-section">

@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Manage Profile · The English Corner</title>
 <style>
-*{box-sizing:border-box}body{margin:0;padding:22px;background:#0f172a;color:#f8fafc;font:16px/1.55 system-ui,-apple-system,sans-serif}.wrap{max-width:480px;margin:0 auto}a{color:#38bdf8;text-decoration:none}.card{background:#1e293b;border:1px solid #334155;border-radius:18px;padding:24px;margin-top:24px}h1{font-size:1.55rem;margin:20px 0 8px}h2{font-size:1.15rem}p{color:#a7b6cb}label{display:block;margin:14px 0 5px}input,select,button{font:inherit;border-radius:10px;padding:12px}input,select{width:100%;background:#0f172a;border:1px solid #64748b;color:#fff}button{background:#14b8a6;color:#082f30;border:0;font-weight:700;cursor:pointer}button.secondary{background:#334155;color:#fff}.hidden{display:none!important}.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}#status{color:#fbbf24;min-height:22px}
+*{box-sizing:border-box}body{margin:0;padding:22px;background:#0f172a;color:#f8fafc;font:16px/1.55 system-ui,-apple-system,sans-serif}.wrap{max-width:480px;margin:0 auto}a{color:#38bdf8;text-decoration:none}.card{background:#1e293b;border:1px solid #334155;border-radius:18px;padding:24px;margin-top:24px}h1{font-size:1.55rem;margin:20px 0 8px}h2{font-size:1.15rem}p{color:#a7b6cb}label{display:block;margin:14px 0 5px}input,select,button{font:inherit;border-radius:10px;padding:12px}input,select{width:100%;background:#0f172a;border:1px solid #64748b;color:#fff}button{background:#14b8a6;color:#082f30;border:0;font-weight:700;cursor:pointer}button.secondary{background:#334155;color:#fff}.hidden{display:none!important}.emoji-grid{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:3px;margin:10px 0}.emoji-grid button{padding:4px 0;font-size:1.25rem;background:#334155;border:2px solid transparent;min-width:0}.emoji-grid button.selected{border-color:#5eead4;background:#115e59}.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}#status{color:#fbbf24;min-height:22px}
 </style></head><body><main class="wrap">
 <a href="index.html">← Back to Review Stories</a><h1>👤 Manage Profile</h1>
 <p>Choose how your name appears in The English Corner.</p>
@@ -10,7 +10,7 @@
 <section class="card"><div id="signedout" class="hidden"><p>Sign in with Google to set up or edit your profile.</p><button id="signin">Sign in with Google</button></div>
 <div id="signedin" class="hidden"><form id="form"><h2 id="heading">What should we call you?</h2><label for="nickname">Nickname</label><input id="nickname" maxlength="30" minlength="2" required placeholder="e.g. Sophia">
 <label for="classTime">Class time</label><select id="classTime" required><option value="">Choose your class</option><option>06:30</option><option>07:15</option><option>08:45</option><option>09:30</option><option>10:20</option><option>12:00</option></select>
-<div class="actions"><button type="submit">Save my profile</button><button type="button" class="secondary" id="signout">Sign out</button></div></form></div></section>
+<label>Choose your emoji <span id="emoji-selected">😊</span></label><div id="emoji-grid" class="emoji-grid" role="group" aria-label="Choose profile emoji"></div><div class="actions"><button type="submit">Save my profile</button><button type="button" class="secondary" id="signout">Sign out</button></div></form></div></section>
 </main>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
@@ -20,7 +20,7 @@
 const config={apiKey:"AIzaSyAdBI_1FG1JnY-NAopcx6YnApNq7l7OcKA",authDomain:"review-stories-f251f.firebaseapp.com",projectId:"review-stories-f251f",storageBucket:"review-stories-f251f.firebasestorage.app",messagingSenderId:"974755614972",appId:"1:974755614972:web:3e21c5c7ccdfa5f9824779"};
 if(!firebase.apps.length)firebase.initializeApp(config);
 const auth=firebase.auth(),db=firebase.firestore(),$=id=>document.getElementById(id);
-let user=null;
+let user=null,selectedEmoji='😊';const emojis=["😀","😎","🥳","😂","😊","😇","🤩","😍","🤓","😴","😺","🐱","🐶","🐻","🐼","🐰","🦊","🐸","🐯","🦁","🐨","🐧","🐢","🐝","🦋","🐳","🐙","🦄","🌸","🌻","🌷","🌹","🌈","⭐","🌙","☀️","🔥","💎","💖","🍀","🍎","🍓","🍑","🍒","🍋","🍕","🍩","🍪","☕","🍵","🎨","🎵","🎸","🎮","⚽","🏀","🚀","✈️","📚","💡"];const emojiGrid=$('emoji-grid');function selectEmoji(v){selectedEmoji=v;$('emoji-selected').textContent=v;Array.from(emojiGrid.children).forEach(b=>{b.classList.toggle('selected',b.textContent===v);b.setAttribute('aria-pressed',String(b.textContent===v))})}emojis.forEach(v=>{const b=document.createElement('button');b.type='button';b.textContent=v;b.setAttribute('aria-label','Choose '+v);b.onclick=()=>selectEmoji(v);emojiGrid.append(b)});selectEmoji(selectedEmoji);
 $('signin').onclick=()=>auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(e=>$('status').textContent=e.message);
 $('signout').onclick=()=>auth.signOut().catch(e=>$('status').textContent=e.message);
 auth.onAuthStateChanged(async u=>{
@@ -28,15 +28,15 @@ auth.onAuthStateChanged(async u=>{
  $('status').textContent='';
  if(!u)return;
  try{const doc=await db.collection('publicProfiles').doc(u.uid).get();if(auth.currentUser?.uid!==u.uid)return;
- if(doc.exists){$('nickname').value=doc.data().nickname||'';$('classTime').value=doc.data().classTime||'';$('heading').textContent='Edit your profile'}
- else{$('nickname').value='';$('classTime').value='';$('heading').textContent='What should we call you?'}
+ if(doc.exists){$('nickname').value=doc.data().nickname||'';$('classTime').value=doc.data().classTime||'';selectEmoji(doc.data().emoji||'😊');$('heading').textContent='Edit your profile'}
+ else{selectEmoji('😊');$('nickname').value='';$('classTime').value='';$('heading').textContent='What should we call you?'}
  }catch(e){$('status').textContent='Unable to load profile: '+e.message}
 });
 $('form').onsubmit=async e=>{
  e.preventDefault();if(!user)return;
  const nickname=$('nickname').value.trim(),classTime=$('classTime').value;
  if(nickname.length<2||nickname.length>30||!['06:30','07:15','08:45','09:30','10:20','12:00'].includes(classTime)){ $('status').textContent='Enter a nickname (2–30 characters) and select a class.';return}
- try{await db.collection('publicProfiles').doc(user.uid).set({nickname,classTime});location.href='index.html'}
+ try{await db.collection('publicProfiles').doc(user.uid).set({nickname,classTime,emoji:selectedEmoji});location.href='index.html'}
  catch(err){$('status').textContent='Could not save: '+err.message}
 };
 })();

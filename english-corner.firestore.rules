@@ -32,11 +32,12 @@ service cloud.firestore {
         && request.resource.data.read == true;
       allow delete: if signedIn() && request.auth.uid == recipientUid;
       allow create: if signedIn()
-        && request.resource.data.keys().hasAll(['activityId','responseUid','replyId','sourceReplyId','senderUid','nickname','emoji','text','read','createdAt'])
-        && request.resource.data.keys().hasOnly(['activityId','responseUid','replyId','sourceReplyId','senderUid','nickname','emoji','text','read','createdAt'])
+        && request.resource.data.keys().hasAll(['activityId','responseUid','replyId','sourceReplyId','senderUid','nickname','emoji','text','read','createdAt','collectionName'])
+        && request.resource.data.keys().hasOnly(['activityId','responseUid','replyId','sourceReplyId','senderUid','nickname','emoji','text','read','createdAt','collectionName'])
         && request.resource.data.replyId == notificationId
         && request.resource.data.senderUid == request.auth.uid
         && recipientUid != request.auth.uid
+        && request.resource.data.collectionName in ['responses','comments']
         && request.resource.data.activityId is string
         && request.resource.data.responseUid is string
         && request.resource.data.sourceReplyId is string
@@ -46,21 +47,21 @@ service cloud.firestore {
         && request.resource.data.emoji is string
         && request.resource.data.text is string
         && request.resource.data.text.size() <= 500
-        && getAfter(/databases/$(database)/documents/activities/$(request.resource.data.activityId)/responses/$(request.resource.data.responseUid)/replies/$(notificationId)).data.uid == request.auth.uid
-        && getAfter(/databases/$(database)/documents/activities/$(request.resource.data.activityId)/responses/$(request.resource.data.responseUid)/replies/$(notificationId)).data.text == request.resource.data.text
-        && ( (request.resource.data.sourceReplyId == 'owner' && getAfter(/databases/$(database)/documents/activities/$(request.resource.data.activityId)/responses/$(request.resource.data.responseUid)).data.uid == recipientUid)
+        && getAfter(/databases/$(database)/documents/activities/$(request.resource.data.activityId)/$(request.resource.data.collectionName)/$(request.resource.data.responseUid)/replies/$(notificationId)).data.uid == request.auth.uid
+        && getAfter(/databases/$(database)/documents/activities/$(request.resource.data.activityId)/$(request.resource.data.collectionName)/$(request.resource.data.responseUid)/replies/$(notificationId)).data.text == request.resource.data.text
+        && ( (request.resource.data.sourceReplyId == 'owner' && getAfter(/databases/$(database)/documents/activities/$(request.resource.data.activityId)/$(request.resource.data.collectionName)/$(request.resource.data.responseUid)).data.uid == recipientUid)
           || (request.resource.data.sourceReplyId != 'owner'
-            && get(/databases/$(database)/documents/activities/$(request.resource.data.activityId)/responses/$(request.resource.data.responseUid)/replies/$(request.resource.data.sourceReplyId)).data.uid == recipientUid));
+            && get(/databases/$(database)/documents/activities/$(request.resource.data.activityId)/$(request.resource.data.collectionName)/$(request.resource.data.responseUid)/replies/$(request.resource.data.sourceReplyId)).data.uid == recipientUid));
     }
     match /activities/{activityId} {
       allow read: if resource.data.published == true || admin();
       allow create, update, delete: if admin();
-      match /responses/{responseId} {
-        allow read: if get(/databases/$(database)/documents/activities/$(activityId)).data.published == true || admin();
-        allow create, update: if signedIn()
+      match /{collectionName}/{responseId} {
+        allow read: if collectionName in ['responses','comments'] && (get(/databases/$(database)/documents/activities/$(activityId)).data.published == true || admin());
+        allow create, update: if collectionName in ['responses','comments'] && signedIn()
           && get(/databases/$(database)/documents/activities/$(activityId)).data.published == true
-          && ((get(/databases/$(database)/documents/activities/$(activityId)).data.type in ['poll','quiz'] && responseId == request.auth.uid)
-            || (!(get(/databases/$(database)/documents/activities/$(activityId)).data.type in ['poll','quiz']) && request.method == 'create'))
+          && ((collectionName == 'responses' && get(/databases/$(database)/documents/activities/$(activityId)).data.type in ['poll','quiz'] && responseId == request.auth.uid)
+            || ((collectionName == 'comments' && get(/databases/$(database)/documents/activities/$(activityId)).data.type in ['poll','quiz'] || collectionName == 'responses' && !(get(/databases/$(database)/documents/activities/$(activityId)).data.type in ['poll','quiz'])) && request.method == 'create'))
           && request.resource.data.keys().hasOnly(['uid','text','nickname','classTime','emoji','updatedAt'])
           && request.resource.data.keys().hasAll(['uid','text','nickname','classTime','updatedAt'])
           && request.resource.data.uid == request.auth.uid
@@ -71,10 +72,10 @@ service cloud.firestore {
           && request.resource.data.classTime == get(/databases/$(database)/documents/publicProfiles/$(request.auth.uid)).data.classTime
           && (!('emoji' in request.resource.data) || request.resource.data.emoji == get(/databases/$(database)/documents/publicProfiles/$(request.auth.uid)).data.get('emoji','😊'))
           && request.resource.data.updatedAt == request.time;
-        allow delete: if admin() || (signedIn() && request.auth.uid == resource.data.uid);
+        allow delete: if collectionName in ['responses','comments'] && (admin() || (signedIn() && request.auth.uid == resource.data.uid));
         match /replies/{replyId} {
-          allow read: if get(/databases/$(database)/documents/activities/$(activityId)).data.published == true || admin();
-          allow create: if signedIn()
+          allow read: if collectionName in ['responses','comments'] && (get(/databases/$(database)/documents/activities/$(activityId)).data.published == true || admin());
+          allow create: if collectionName in ['responses','comments'] && signedIn()
             && get(/databases/$(database)/documents/activities/$(activityId)).data.published == true
             && exists(/databases/$(database)/documents/publicProfiles/$(request.auth.uid))
             && request.resource.data.keys().hasOnly(['uid','text','nickname','classTime','emoji','createdAt'])
@@ -88,7 +89,7 @@ service cloud.firestore {
             && (!('emoji' in request.resource.data) || request.resource.data.emoji == get(/databases/$(database)/documents/publicProfiles/$(request.auth.uid)).data.get('emoji','😊'))
             && request.resource.data.createdAt == request.time;
           allow update: if false;
-          allow delete: if admin() || (signedIn() && request.auth.uid == resource.data.uid);
+          allow delete: if collectionName in ['responses','comments'] && (admin() || (signedIn() && request.auth.uid == resource.data.uid));
         }
       }
     }

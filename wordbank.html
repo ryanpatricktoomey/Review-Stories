@@ -26,6 +26,7 @@
         .flashcard { width: 100%; min-height: 250px; background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border: 2px solid rgba(20, 184, 166, 0.3); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; text-align: center; border-radius: 1.5rem; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5); cursor: pointer; transition: transform 0.2s; }
         .flashcard:active { transform: scale(0.98); }
         .tab-btn.active { background: var(--teal); color: #0f172a; }
+        @media (max-width: 640px) { #view-quiz { padding: 12px; } #view-quiz:focus-within .rush-top { display:none; } #rush-playing { display:flex; flex-direction:column; gap:8px; } #rush-playing > div, #rush-form { margin:0; } #rush-prompt-box { padding:12px; } #rush-prompt { font-size:1.35rem; line-height:1.5; } #rush-answer { font-size:16px; padding:12px; } #rush-actions button { padding:8px; } #rush-prompt-box { position:sticky; top:0; z-index:10; } }
     </style>
 </head>
 <body class="p-4 md:p-8">
@@ -127,7 +128,7 @@
 
         <!-- MODE 3: WORD RUSH -->
         <section id="view-quiz" class="hidden glass rounded-3xl p-5 md:p-10 shadow-2xl max-w-2xl mx-auto space-y-5">
-            <div class="flex items-center justify-between gap-3">
+            <div class="rush-top flex items-center justify-between gap-3">
                 <div><h2 class="text-2xl font-black text-amber-400">⚡ Word Rush</h2><p class="text-xs text-slate-400">Survive. Beat your personal best.</p></div>
                 <div class="text-right"><div class="text-xs text-slate-400">SCORE</div><div id="rush-score" class="text-2xl font-black text-teal-400">0</div></div>
             </div>
@@ -135,23 +136,23 @@
                 <div id="rush-hearts" class="text-xl" aria-label="Hearts">❤️❤️❤️</div>
                 <div class="text-amber-400 font-bold text-sm" id="rush-combo">🔥 0 combo</div>
             </div>
-            <div class="bg-slate-900/70 rounded-xl p-3 space-y-2">
+            <div class="rush-top bg-slate-900/70 rounded-xl p-3 space-y-2">
                 <div class="flex justify-between text-xs text-slate-300"><span id="rush-progress-label">🎁 Next heart</span><span id="rush-progress-count">0 / 10 correct</span></div>
                 <div class="h-2 bg-slate-700 rounded-full overflow-hidden"><div id="rush-progress-bar" class="h-full bg-teal-500 transition-all" style="width:0%"></div></div>
                 <div class="text-xs text-slate-400">🏆 Best score: <span id="rush-best">0</span> · Longest combo: <span id="rush-best-combo">0</span></div>
             </div>
             <div id="rush-playing" class="space-y-4">
-                <div class="bg-slate-900/70 rounded-2xl p-6 text-center space-y-3">
+                <div id="rush-prompt-box" class="bg-slate-900/95 rounded-2xl p-6 text-center space-y-2">
                     <p class="text-xs tracking-widest font-bold text-slate-400">TYPE THE SAVED ENGLISH</p>
                     <h3 id="rush-prompt" class="text-2xl md:text-3xl font-extrabold text-white break-words">뜻</h3>
-                    <p id="rush-length" class="text-xs text-slate-400"></p>
+                    <p id="rush-length" class="text-xs text-slate-400"></p><div class="flex items-center justify-between text-xs font-bold"><span id="rush-time">⏱️ 25s</span><span id="rush-live-score" class="text-teal-400">0 pts · ❤️❤️❤️</span></div><div class="h-1.5 rounded-full bg-slate-700 overflow-hidden"><div id="rush-timer-bar" class="h-full bg-amber-400 transition-[width] duration-100" style="width:100%"></div></div>
                 </div>
                 <form id="rush-form" onsubmit="submitRush(event)" class="space-y-3">
                     <input id="rush-answer" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Type the English word or expression…" class="w-full bg-slate-900 border border-slate-600 rounded-xl p-4 text-white text-lg focus:outline-none focus:border-teal-400" required>
                     <button id="rush-submit" type="submit" class="w-full bg-teal-500 text-slate-900 font-black rounded-xl py-3">Check Answer ✓</button>
                 </form>
-                <div id="rush-feedback" class="hidden rounded-xl p-4 bg-slate-800 text-center font-bold"></div>
-                <button id="rush-next" onclick="advanceRush()" class="hidden w-full bg-teal-500 text-slate-900 font-black rounded-xl py-3">Next Word ➡️</button>
+                <div id="rush-feedback" role="status" aria-live="polite" class="hidden rounded-xl p-3 bg-slate-800 text-center font-bold text-sm"></div>
+                
                 <div id="rush-actions" class="flex gap-2">
                     <button onclick="hintRush()" id="rush-hint" class="flex-1 bg-slate-700 rounded-xl py-3 font-bold text-sm">💡 Hint (−50 pts)</button>
                     <button onclick="skipRush()" class="flex-1 bg-slate-700 rounded-xl py-3 font-bold text-sm">⏭️ Skip (−1 ❤️)</button>

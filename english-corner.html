@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>☕ The English Corner</title>
+<style>
+:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;padding:20px;background:#0f172a;color:#f8fafc;font:16px/1.55 system-ui,-apple-system,sans-serif}.wrap{max-width:680px;margin:auto}a{color:#38bdf8}.card{background:#1e293b;border:1px solid #334155;border-radius:18px;padding:20px;margin:18px 0}h1{margin:12px 0}h2{margin:0 0 12px;font-size:1.2rem}.muted{color:#a7b6cb}.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}input,select,textarea,button{font:inherit;border-radius:10px;padding:10px}input,select,textarea{width:100%;background:#0f172a;border:1px solid #64748b;color:white}textarea{min-height:85px}button{background:#14b8a6;color:#082f30;border:0;font-weight:700;cursor:pointer}button.secondary{background:#334155;color:white}button:disabled{opacity:.55;cursor:not-allowed}.hidden{display:none!important}.reply{border-top:1px solid #475569;padding:12px 0;white-space:pre-wrap;overflow-wrap:anywhere}.reply strong{color:#5eead4}.meta{font-size:.82rem;color:#a7b6cb}label{display:block;margin:10px 0 5px}#status{min-height:24px;color:#fbbf24}.small{font-size:.88rem}
+</style></head><body><main class="wrap">
+<a href="index.html">← Review Stories</a><h1>☕ The English Corner</h1>
+<p class="muted">A little English practice, together. Read freely; sign in to join the conversation.</p>
+<div id="status" role="status"></div>
+<section id="account" class="card"><div class="row"><span id="account-label">Checking sign-in…</span><button id="signin" class="hidden">Sign in with Google</button><button id="signout" class="secondary hidden">Sign out</button></div></section>
+<section id="profile-card" class="card hidden"><h2>What should we call you?</h2><p class="muted small">Choose a nickname and class time. Only these are shown publicly, not your Google email.</p>
+<form id="profile-form"><label for="nickname">Nickname</label><input id="nickname" maxlength="30" required placeholder="e.g. Sophia">
+<label for="class-time">Class time</label><select id="class-time" required><option value="">Choose your class</option><option>06:30</option><option>07:15</option><option>08:45</option><option>09:30</option><option>10:20</option><option>12:00</option></select><p><button type="submit">Save my profile</button></p></form></section>
+<section id="admin-card" class="card hidden"><h2>Teacher desk · Publish a question</h2><form id="activity-form"><label for="question">Question</label><textarea id="question" maxlength="300" required></textarea><label for="hint">Optional prompt / example</label><textarea id="hint" maxlength="500"></textarea><button type="submit">Publish today's question</button></form></section>
+<section class="card"><h2>Daily activities</h2><div id="activities"><p class="muted">Loading activities…</p></div></section>
+</main>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+(()=>{
+'use strict';
+const config={apiKey:"AIzaSyAdBI_1FG1JnY-NAopcx6YnApNq7l7OcKA",authDomain:"review-stories-f251f.firebaseapp.com",projectId:"review-stories-f251f",storageBucket:"review-stories-f251f.firebasestorage.app",messagingSenderId:"974755614972",appId:"1:974755614972:web:3e21c5c7ccdfa5f9824779"};
+const ADMIN_UID="VWok43w84cbFLVdn7zB9NeTTVbG2";
+if(!firebase.apps.length)firebase.initializeApp(config);
+const auth=firebase.auth(),db=firebase.firestore(),$=id=>document.getElementById(id);
+let user=null,profile=null,stopActivities=null,stopResponses=[];
+function status(s){$('status').textContent=s}
+function el(tag,cls,text){const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n}
+function clearSubs(){if(stopActivities){stopActivities();stopActivities=null}stopResponses.forEach(f=>f());stopResponses=[]}
+$('signin').onclick=()=>auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(e=>status(e.message));
+$('signout').onclick=()=>auth.signOut().catch(e=>status(e.message));
+auth.onAuthStateChanged(async u=>{
+user=u;profile=null;clearSubs();$('signin').classList.toggle('hidden',!!u);$('signout').classList.toggle('hidden',!u);$('account-label').textContent=u?'Signed in with Google':'Browsing as a visitor';
+$('admin-card').classList.toggle('hidden',!u||u.uid!==ADMIN_UID);$('profile-card').classList.add('hidden');
+if(u){try{const snap=await db.collection('publicProfiles').doc(u.uid).get();if(auth.currentUser?.uid!==u.uid)return;if(snap.exists){profile=snap.data();$('nickname').value=profile.nickname||'';$('class-time').value=profile.classTime||''} $('profile-card').classList.remove('hidden')}catch(e){status('Profile unavailable: '+e.message)}}
+listenActivities();
+});
+$('profile-form').onsubmit=async e=>{e.preventDefault();if(!user)return;const nickname=$('nickname').value.trim(),classTime=$('class-time').value;if(nickname.length<2||nickname.length>30||!['06:30','07:15','08:45','09:30','10:20','12:00'].includes(classTime)){status('Enter a nickname (2–30 characters) and select a class.');return}try{await db.collection('publicProfiles').doc(user.uid).set({nickname,classTime});profile={nickname,classTime};status('Profile saved!');listenActivities()}catch(err){status('Could not save profile: '+err.message)}};
+$('activity-form').onsubmit=async e=>{e.preventDefault();if(!user||user.uid!==ADMIN_UID)return;const question=$('question').value.trim(),hint=$('hint').value.trim();if(!question)return;const date=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());try{await db.collection('activities').doc(date).set({question,hint,date,published:true,createdBy:user.uid,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});status('Published for '+date);$('question').value='';$('hint').value=''}catch(err){status('Publish failed: '+err.message)}};
+function listenActivities(){clearSubs();$('activities').replaceChildren(el('p','muted','Loading activities…'));stopActivities=db.collection('activities').where('published','==',true).orderBy('date','desc').limit(30).onSnapshot(snap=>{stopResponses.forEach(f=>f());stopResponses=[];$('activities').replaceChildren();if(snap.empty){$('activities').append(el('p','muted','No activities yet. Check back soon!'));return}snap.docs.forEach(d=>renderActivity(d))},e=>{status('Could not load activities: '+e.message);$('activities').replaceChildren(el('p','muted','Activities unavailable.'))})}
+function renderActivity(doc){const data=doc.data(),box=el('article','card'),head=el('h2','',data.question||'Question'),date=el('div','meta',data.date||doc.id);box.append(date,head);if(data.hint)box.append(el('p','muted',data.hint));const replies=el('div');box.append(replies);const form=el('form');if(user&&profile){const label=el('label','','Your answer');const input=el('textarea');input.maxLength=500;input.required=true;input.placeholder='Share your answer in English…';const submit=el('button','','Post answer');form.append(label,input,submit);form.onsubmit=async e=>{e.preventDefault();const text=input.value.trim();if(!text||!user||!profile)return;submit.disabled=true;try{await db.collection('activities').doc(doc.id).collection('responses').doc(user.uid).set({uid:user.uid,text,nickname:profile.nickname,classTime:profile.classTime,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});input.value='';status('Answer saved!')}catch(err){status('Could not post: '+err.message)}finally{submit.disabled=false}}}else{form.append(el('p','muted small',user?'Save your nickname and class time above to participate.':'Sign in with Google to answer.'))}box.append(form);$('activities').append(box);
+const stop=db.collection('activities').doc(doc.id).collection('responses').orderBy('updatedAt','desc').limit(100).onSnapshot(s=>{replies.replaceChildren(el('p','meta',s.size+' participant'+(s.size===1?'':'s')));s.forEach(item=>{const r=item.data(),row=el('div','reply'),who=el('strong','',((r.nickname||'Student')+' · '+(r.classTime||''))),message=el('div','',r.text||'');row.append(who,message);if(user&&user.uid===r.uid){const del=el('button','secondary small','Delete my answer');del.onclick=async()=>{if(!confirm('Delete your answer?'))return;try{await item.ref.delete()}catch(err){status(err.message)}};row.append(del)}replies.append(row)})},e=>{replies.replaceChildren(el('p','muted','Responses unavailable: '+e.message))});stopResponses.push(stop)}
+})();
+</script></body></html>

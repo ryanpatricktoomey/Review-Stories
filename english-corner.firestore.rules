@@ -41,6 +41,23 @@ service cloud.firestore {
           && request.resource.data.classTime == get(/databases/$(database)/documents/publicProfiles/$(uid)).data.classTime
           && request.resource.data.updatedAt == request.time;
         allow delete: if admin() || (signedIn() && request.auth.uid == uid);
+        match /replies/{replyId} {
+          allow read: if get(/databases/$(database)/documents/activities/$(activityId)).data.published == true || admin();
+          allow create: if signedIn()
+            && get(/databases/$(database)/documents/activities/$(activityId)).data.published == true
+            && exists(/databases/$(database)/documents/publicProfiles/$(request.auth.uid))
+            && request.resource.data.keys().hasOnly(['uid','text','nickname','classTime','createdAt'])
+            && request.resource.data.keys().hasAll(['uid','text','nickname','classTime','createdAt'])
+            && request.resource.data.uid == request.auth.uid
+            && request.resource.data.text is string
+            && request.resource.data.text.size() >= 1
+            && request.resource.data.text.size() <= 500
+            && request.resource.data.nickname == get(/databases/$(database)/documents/publicProfiles/$(request.auth.uid)).data.nickname
+            && request.resource.data.classTime == get(/databases/$(database)/documents/publicProfiles/$(request.auth.uid)).data.classTime
+            && request.resource.data.createdAt == request.time;
+          allow update: if false;
+          allow delete: if admin() || (signedIn() && request.auth.uid == resource.data.uid);
+        }
       }
     }
   }

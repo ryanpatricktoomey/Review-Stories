@@ -2,10 +2,19 @@
 <html lang="en">
 <head>
     <script>
-        // Force external browser if opened inside KakaoTalk
-        if (navigator.userAgent.match(/KAKAOTALK/i)) {
-            location.href = 'kakaotalk://web/openExternal?url=' + encodeURIComponent(location.href);
-        }
+      // KakaoTalk's in-app browser can interfere with Google sign-in.
+      // Try opening externally; offer a visible Chrome button if blocked.
+      if (/KAKAOTALK/i.test(navigator.userAgent)) {
+        const url = location.href;
+        const external = 'kakaotalk://web/openExternal?url=' + encodeURIComponent(url);
+        window.addEventListener('DOMContentLoaded', function () {
+          const notice = document.createElement('div');
+          notice.style.cssText = 'position:sticky;top:0;z-index:9999;background:#fef3c7;color:#78350f;padding:12px;text-align:center;border-radius:12px;margin:0 auto 14px;max-width:500px;font:600 14px/1.5 system-ui';
+          notice.innerHTML = 'For Google sign-in, please open this page in Chrome. <a style="display:inline-block;margin-left:6px;color:#78350f;text-decoration:underline;font-weight:800" href="' + external + '">Open in browser ↗</a>';
+          document.body.prepend(notice);
+        });
+        location.href = external;
+      }
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">

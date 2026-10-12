@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | I Let an App Choose My Clothes for a Month</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">👔</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">I Let an App Choose My Clothes for a Month</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">non-negotiable</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">절대 양보할 수 없는, 반드시 지켜야 하는</td></tr>
+                <tr><td class="p-4"><b class="text-white">a hassle</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">번거로운 일, 귀찮고 성가신 일</td></tr>
+                <tr><td class="p-4"><b class="text-white">I'm too lazy today</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">오늘은 너무 귀찮아서 하기 싫어</td></tr>
+                <tr><td class="p-4"><b class="text-white">I don't feel like it</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그럴 기분이 아니야, 별로 하고 싶지 않아</td></tr>
+                <tr><td class="p-4"><b class="text-white">fickle</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">변덕스러운, 마음이나 취향이 자주 바뀌는</td></tr>
+                <tr><td class="p-4"><b class="text-white">it's worth the money</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">돈을 들일 만한 가치가 있어, 돈값을 해</td></tr>
+                <tr><td class="p-4"><b class="text-white">you get what you pay for</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">돈 낸 만큼의 품질을 얻는 법이야, 싼 게 비지떡이야</td></tr>
+                <tr><td class="p-4"><b class="text-white">dress your age</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">나이에 맞게 옷을 입다</td></tr>
+                <tr><td class="p-4"><b class="text-white">look professional</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">전문적이고 단정해 보이다</td></tr>
+                <tr><td class="p-4"><b class="text-white">lump sum</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">목돈, 한꺼번에 지급하는 금액</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold text-lg mb-2">non-negotiable</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">협상의 여지가 없다는 뜻에서 나아가, 절대 포기하거나 타협할 수 없는 조건이나 원칙을 말할 때도 써요. Comfort is non-negotiable for me.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold text-lg mb-2">a hassle</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">단순히 어렵다는 뜻이 아니라 여러 단계를 거쳐야 하거나 시간과 노력이 들어서 귀찮다는 느낌이에요. Returning clothes is such a hassle.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold text-lg mb-2">I don't feel like it</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">할 수 없는 게 아니라 지금 하고 싶은 마음이 없다는 뜻이에요. 뒤에 동사가 오면 feel like + -ing 형태를 사용해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold text-lg mb-2">fickle</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">취향, 관심, 감정 등이 쉽게 바뀌는 사람을 묘사할 때 써요. I'm fickle when it comes to fashion.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold text-lg mb-2">you get what you pay for</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">가격과 품질이 어느 정도 비례한다는 뜻이에요. 저렴한 제품의 품질이 실망스러울 때도, 비싼 제품의 품질이 훌륭할 때도 사용할 수 있어요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold text-lg mb-2">dress your age</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">나이에 어울리는 옷을 입으라는 뜻이지만, 상대방의 옷차림을 비판하거나 나이에 따른 고정관념을 강요하는 말로 들릴 수도 있어요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold text-lg mb-2">lump sum</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">돈을 여러 번 나누어 내는 installments와 반대로, 큰 금액을 한꺼번에 지급하는 것을 뜻해요. pay in a lump sum이라고 자주 말해요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">★★★★★ — A five-star review of an AI wardrobe app</p>
+                <p class="mb-6">I used to spend twenty minutes every morning staring at my closet, trying to decide what to wear.</p>
+                <p class="mb-6">The ridiculous thing was that I had plenty of clothes. I just couldn't figure out which ones looked good together.</p>
+                <p class="mb-6">Some mornings, I'd think, "<b class="highlight quiz-target" data-ans="I'm too lazy today" data-kor="오늘은 너무 귀찮아">I'm too lazy today</b>," and put on the same jeans and sweater. Other mornings, I'd try five different outfits before giving up.</p>
+                <p class="mb-6">My girlfriend said I was incredibly <b class="highlight quiz-target" data-ans="fickle" data-kor="변덕스러운">fickle</b> about clothes. She wasn't wrong.</p>
+                <p class="mb-6">Then I discovered AI wardrobe apps. You take pictures of your clothes, upload them, and the app suggests outfits based on what you already own. Some can even consider the weather and the occasion.</p>
+                <p class="mb-6">At first, I thought photographing everything in my closet would be <b class="highlight quiz-target" data-ans="a hassle" data-kor="번거로운 일">a hassle</b>. But I was so tired of wasting time every morning that I finally gave it a try.</p>
+                <p class="mb-6">It took me nearly two hours to photograph my clothes and organize everything in the app.</p>
+                <p class="mb-6">I almost quit halfway through.</p>
+                <p class="mb-6">But the next morning, something wonderful happened.</p>
+                <p class="mb-6">I opened the app, selected "office," and got several outfit suggestions. I chose one, got dressed, and left the house in less than ten minutes.</p>
+                <p class="mb-6">Even better, a coworker complimented my outfit.</p>
+                <p class="mb-6">That had never happened before.</p>
+                <p class="mb-6">Since then, checking the app has become a <b class="highlight quiz-target" data-ans="non-negotiable" data-kor="절대 빼놓을 수 없는">non-negotiable</b> part of my morning routine.</p>
+                <p class="mb-6">What surprised me most was how many clothes I'd forgotten about. The app suggested combinations I would never have considered, including a jacket I'd been planning to donate.</p>
+                <p class="mb-6">It also changed the way I shop.</p>
+                <p class="mb-6">I used to buy random clothes whenever something caught my attention. Now I check whether a new item will work with what I already own.</p>
+                <p class="mb-6">Last month, I nearly spent $300 on a jacket. But after checking the app, I realized I already had two similar ones.</p>
+                <p class="mb-6">Instead of spending that <b class="highlight quiz-target" data-ans="lump sum" data-kor="목돈">lump sum</b> on something unnecessary, I kept my money.</p>
+                <p class="mb-6">The app isn't perfect. Sometimes it suggests combinations that look strange, and I still make the final decision. But I love how much easier it makes getting dressed.</p>
+                <p class="mb-6">The premium subscription costs money, but for me, <b class="highlight quiz-target" data-ans="it's worth the money" data-kor="돈값을 해">it's worth the money</b>.</p>
+                <p class="mb-6">My father always says, "<b class="highlight quiz-target" data-ans="You get what you pay for" data-kor="돈 낸 만큼의 품질을 얻는 법이다">You get what you pay for</b>," although in this case, I'm actually buying fewer clothes.</p>
+                <p class="mb-6">He also tells me to "<b class="highlight quiz-target" data-ans="dress your age" data-kor="나이에 맞게 옷을 입다">dress your age</b>," which I usually ignore.</p>
+                <p class="mb-6">I'm forty-two. I don't want to dress like I'm sixty.</p>
+                <p class="mb-6">I just want to <b class="highlight quiz-target" data-ans="look professional" data-kor="전문적이고 단정해 보이다">look professional</b> at work without spending half my morning thinking about clothes.</p>
+                <p class="mb-6">And on weekends, when I don't <b class="highlight quiz-target" data-ans="feel like" data-kor="그럴 기분이 아닌">feel like</b> putting together an outfit, the app gives me a few casual options in seconds.</p>
+                <p class="mb-6">It's genuinely changed the way I get dressed, shop, and think about my wardrobe.</p>
+                <p class="mb-6">I wish I'd discovered it years ago.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">★★★★★ — AI 옷장 관리 앱 별 다섯 개 후기</p>
+                <p class="mb-6">저는 예전에 매일 아침 옷장 앞에서 20분씩 서서 뭘 입을지 고민하곤 했어요.</p>
+                <p class="mb-6">웃긴 건 옷이 부족한 것도 아니었다는 거예요. 옷은 충분히 많았는데 어떤 옷끼리 잘 어울리는지 도무지 모르겠더라고요.</p>
+                <p class="mb-6">어떤 아침에는 "<b class="highlight">오늘은 너무 귀찮아</b>"라고 생각하면서 늘 입던 청바지와 스웨터를 입었어요. 또 어떤 날에는 옷을 다섯 벌이나 갈아입어 본 뒤 결국 포기했죠.</p>
+                <p class="mb-6">여자친구는 제가 옷에 관해서 정말 <b class="highlight">변덕스럽다</b>고 했어요. 틀린 말은 아니었죠.</p>
+                <p class="mb-6">그러다가 AI 옷장 관리 앱을 알게 됐어요. 가지고 있는 옷을 사진으로 찍어 업로드하면 앱이 그 옷들을 활용해서 코디를 추천해 주는 거예요. 어떤 앱은 날씨나 상황까지 고려해 주더라고요.</p>
+                <p class="mb-6">처음에는 옷장에 있는 모든 옷을 사진으로 찍는 게 너무 <b class="highlight">번거로울</b> 것 같았어요. 하지만 매일 아침 시간을 낭비하는 데 지쳐서 결국 한번 사용해 보기로 했어요.</p>
+                <p class="mb-6">옷을 촬영하고 앱에 정리하는 데 거의 두 시간이 걸렸어요.</p>
+                <p class="mb-6">중간에 포기할 뻔했죠.</p>
+                <p class="mb-6">그런데 다음 날 아침, 정말 멋진 일이 일어났어요.</p>
+                <p class="mb-6">앱을 열고 '사무실'을 선택했더니 여러 가지 코디를 추천해 주더라고요. 그중 하나를 골라 입고 10분도 안 돼서 집을 나섰어요.</p>
+                <p class="mb-6">더 놀라운 건 직장 동료가 제 옷차림을 칭찬했다는 거예요.</p>
+                <p class="mb-6">그런 일은 전에는 한 번도 없었거든요.</p>
+                <p class="mb-6">그 이후로 아침마다 앱을 확인하는 건 <b class="highlight">절대 빼놓을 수 없는</b> 일과가 됐어요.</p>
+                <p class="mb-6">가장 놀라웠던 건 제가 잊고 지내던 옷이 얼마나 많았는지 알게 됐다는 거예요. 앱은 제가 생각도 못 했던 조합들을 추천해 줬는데, 그중에는 기부하려고 했던 재킷도 있었어요.</p>
+                <p class="mb-6">쇼핑하는 방식도 바뀌었어요.</p>
+                <p class="mb-6">예전에는 눈에 들어오는 옷이 있으면 충동적으로 사곤 했어요. 이제는 새로운 옷이 이미 가지고 있는 옷들과 잘 어울릴지 먼저 확인해요.</p>
+                <p class="mb-6">지난달에는 재킷 하나에 거의 300달러를 쓸 뻔했어요. 그런데 앱을 확인해 보니 이미 비슷한 재킷이 두 벌이나 있더라고요.</p>
+                <p class="mb-6">불필요한 물건에 그 <b class="highlight">목돈</b>을 쓰는 대신 돈을 아낄 수 있었죠.</p>
+                <p class="mb-6">물론 앱이 완벽한 건 아니에요. 가끔 이상한 조합을 추천하기도 하고, 최종 결정은 여전히 제가 해야 해요. 하지만 옷 입는 일이 훨씬 쉬워졌다는 점이 정말 마음에 들어요.</p>
+                <p class="mb-6">프리미엄 구독료가 들긴 하지만, 저한테는 충분히 <b class="highlight">돈값을 해요</b>.</p>
+                <p class="mb-6">아버지는 늘 "<b class="highlight">돈 낸 만큼의 품질을 얻는 법이다</b>"라고 말씀하시는데, 이번 경우에는 오히려 옷을 덜 사게 됐네요.</p>
+                <p class="mb-6">아버지는 또 <b class="highlight">나이에 맞게 옷을 입으라고</b> 하시는데, 그 말은 보통 무시해요.</p>
+                <p class="mb-6">저는 마흔두 살이에요. 예순 살처럼 입고 싶지는 않거든요.</p>
+                <p class="mb-6">그냥 아침 시간을 절반이나 옷 고민에 쓰지 않으면서도 직장에서 단정하고 <b class="highlight">전문적으로 보이고</b> 싶을 뿐이에요.</p>
+                <p class="mb-6">주말에도 코디를 고민하고 <b class="highlight">싶지 않을</b> 때면 앱이 몇 초 만에 편하게 입을 만한 옷차림을 몇 가지 추천해 줘요.</p>
+                <p class="mb-6">이 앱은 제가 옷을 입고, 쇼핑하고, 옷장을 바라보는 방식을 정말로 바꿔 놓았어요.</p>
+                <p class="mb-6">몇 년 전에 알았으면 얼마나 좋았을까 싶어요.</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+    function skipAudio(seconds) {
+        const player = document.getElementById('player');
+        if (player.src) {
+            player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+        }
+    }
+
+    function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+    let _quizOriginals = new Map();
+
+    function toggleQuiz() {
+        const btn = document.getElementById('quizBtn');
+        const isQuiz = btn.innerText.includes("Quiz");
+        const targets = document.querySelectorAll('.quiz-target');
+        const cells = document.querySelectorAll('.mystery-cell');
+
+        if (isQuiz) {
+            btn.innerText = "Study Mode 📖";
+            cells.forEach(c => c.classList.add('quiz-hidden'));
+            targets.forEach(t => {
+                const ans = t.dataset.ans; const kor = t.dataset.kor;
+                _quizOriginals.set(t, t.innerHTML);
+                t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+            });
+        } else {
+            btn.innerText = "Quiz Mode 👻";
+            cells.forEach(c => c.classList.remove('quiz-hidden'));
+            targets.forEach(t => {
+                if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+            });
+            _quizOriginals.clear();
+        }
+    }
+
+    function checkQuiz(i, a) {
+        if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+            i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+            confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+            checkAllSolved();
+        } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+    }
+
+    function checkAllSolved() {
+        const inputs = document.querySelectorAll('.quiz-input');
+        if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+            var duration = 3 * 1000; var end = Date.now() + duration;
+            (function frame() {
+                confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                if (Date.now() < end) requestAnimationFrame(frame);
+            }());
+        }
+    }
+
+    document.getElementById('player').src = "1012930.m4a";
+</script>
+    <script src="wordbank-utils.js"></script>
+</body>
+</html>

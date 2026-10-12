@@ -33,6 +33,10 @@
         }
         .lesson-link:active { background: #334155; transform: scale(0.98); }
 
+        .top-actions { display:flex; flex-wrap:nowrap; gap:10px; margin-bottom:25px; width:100%; }
+        .top-action { display:flex; flex:1 1 0; min-width:0; align-items:center; justify-content:center; text-align:center; padding:12px 6px; border-radius:16px; text-decoration:none; font-weight:700; font-size:clamp(0.77rem,3.4vw,1rem); line-height:1.25; white-space:nowrap; }
+        .wordbank-action { background:var(--accent); color:var(--bg); }
+        .profile-action { background:#334155; color:var(--text); border:1px solid #64748b; }
     </style>
 </head>
 <body>
@@ -41,12 +45,9 @@
 
     <h1>☕ The English Corner</h1>
     
-    <div style="text-align: center; margin-bottom: 30px;">
-        <a href="wordbank.html" style="background: var(--accent); color: var(--bg); padding: 12px 24px; border-radius: 20px; text-decoration: none; font-weight: bold; font-size: 1.1rem; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); transition: transform 0.2s;">
-            <span>💾</span> My Word Bank
-        </a>
-        <a href="english-corner-profile.html" style="display:inline-flex;align-items:center;background:#334155;color:#f8fafc;padding:12px 18px;border-radius:20px;border:1px solid #64748b;font-weight:700;font-size:0.95rem;text-decoration:none;margin-left:8px;">👤 Manage Profile</a>
-        
+    <div class="top-actions">
+        <a class="top-action wordbank-action" href="wordbank.html">💾 My Word Bank</a>
+        <a class="top-action profile-action" href="english-corner-profile.html">👤 Manage Profile</a>
     </div>
 
                                                                                                                                                             

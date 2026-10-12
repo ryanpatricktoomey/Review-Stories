@@ -16,12 +16,13 @@ service cloud.firestore {
     match /publicProfiles/{uid} {
       allow read: if true;
       allow create, update: if signedIn() && request.auth.uid == uid
-        && request.resource.data.keys().hasOnly(['nickname','classTime'])
+        && request.resource.data.keys().hasOnly(['nickname','classTime','emoji'])
         && request.resource.data.keys().hasAll(['nickname','classTime'])
         && request.resource.data.nickname is string
         && request.resource.data.nickname.size() >= 2
         && request.resource.data.nickname.size() <= 30
-        && validClass(request.resource.data.classTime);
+        && validClass(request.resource.data.classTime)
+        && (!('emoji' in request.resource.data) || (request.resource.data.emoji is string && request.resource.data.emoji in ["😀","😎","🥳","😂","😊","😇","🤩","😍","🤓","😴","😺","🐱","🐶","🐻","🐼","🐰","🦊","🐸","🐯","🦁","🐨","🐧","🐢","🐝","🦋","🐳","🐙","🦄","🌸","🌻","🌷","🌹","🌈","⭐","🌙","☀️","🔥","💎","💖","🍀","🍎","🍓","🍑","🍒","🍋","🍕","🍩","🍪","☕","🍵","🎨","🎵","🎸","🎮","⚽","🏀","🚀","✈️","📚","💡"]));
       allow delete: if signedIn() && request.auth.uid == uid;
     }
     match /activities/{activityId} {
@@ -31,7 +32,7 @@ service cloud.firestore {
         allow read: if get(/databases/$(database)/documents/activities/$(activityId)).data.published == true || admin();
         allow create, update: if signedIn() && request.auth.uid == uid
           && get(/databases/$(database)/documents/activities/$(activityId)).data.published == true
-          && request.resource.data.keys().hasOnly(['uid','text','nickname','classTime','updatedAt'])
+          && request.resource.data.keys().hasOnly(['uid','text','nickname','classTime','emoji','updatedAt'])
           && request.resource.data.keys().hasAll(['uid','text','nickname','classTime','updatedAt'])
           && request.resource.data.uid == uid
           && request.resource.data.text is string
@@ -39,6 +40,7 @@ service cloud.firestore {
           && request.resource.data.text.size() <= 500
           && request.resource.data.nickname == get(/databases/$(database)/documents/publicProfiles/$(uid)).data.nickname
           && request.resource.data.classTime == get(/databases/$(database)/documents/publicProfiles/$(uid)).data.classTime
+          && (!('emoji' in request.resource.data) || request.resource.data.emoji == get(/databases/$(database)/documents/publicProfiles/$(uid)).data.get('emoji','😊'))
           && request.resource.data.updatedAt == request.time;
         allow delete: if admin() || (signedIn() && request.auth.uid == uid);
         match /replies/{replyId} {
@@ -46,7 +48,7 @@ service cloud.firestore {
           allow create: if signedIn()
             && get(/databases/$(database)/documents/activities/$(activityId)).data.published == true
             && exists(/databases/$(database)/documents/publicProfiles/$(request.auth.uid))
-            && request.resource.data.keys().hasOnly(['uid','text','nickname','classTime','createdAt'])
+            && request.resource.data.keys().hasOnly(['uid','text','nickname','classTime','emoji','createdAt'])
             && request.resource.data.keys().hasAll(['uid','text','nickname','classTime','createdAt'])
             && request.resource.data.uid == request.auth.uid
             && request.resource.data.text is string
@@ -54,6 +56,7 @@ service cloud.firestore {
             && request.resource.data.text.size() <= 500
             && request.resource.data.nickname == get(/databases/$(database)/documents/publicProfiles/$(request.auth.uid)).data.nickname
             && request.resource.data.classTime == get(/databases/$(database)/documents/publicProfiles/$(request.auth.uid)).data.classTime
+            && (!('emoji' in request.resource.data) || request.resource.data.emoji == get(/databases/$(database)/documents/publicProfiles/$(request.auth.uid)).data.get('emoji','😊'))
             && request.resource.data.createdAt == request.time;
           allow update: if false;
           allow delete: if admin() || (signedIn() && request.auth.uid == resource.data.uid);

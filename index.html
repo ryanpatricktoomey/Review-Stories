@@ -38,19 +38,6 @@
 <body>
 
 <div class="container">
-    <section aria-label="The English Corner" style="margin:0 0 25px;">
-      <iframe id="english-corner-embed" src="english-corner.html?embed=1" title="The English Corner: today's English question and student responses" style="width:100%;height:680px;border:0;border-radius:18px;background:#0f172a;display:block;" loading="eager"></iframe>
-      <a href="english-corner.html" style="display:block;text-align:center;color:#7dd3fc;font-size:0.88rem;margin-top:7px;">Open The English Corner full page ↗</a>
-    </section>
-    <script>
-      window.addEventListener('message', function(event) {
-        if (event.origin !== window.location.origin || !event.data || event.data.type !== 'english-corner-height') return;
-        const frame = document.getElementById('english-corner-embed');
-        if (frame && event.source === frame.contentWindow && Number.isFinite(event.data.height)) {
-          frame.style.height = Math.max(300, Math.min(12000, event.data.height)) + 'px';
-        }
-      });
-    </script>
 
     <h1>📚 Review Stories </h1>
     
@@ -58,10 +45,30 @@
         <a href="wordbank.html" style="background: var(--accent); color: var(--bg); padding: 12px 24px; border-radius: 20px; text-decoration: none; font-weight: bold; font-size: 1.1rem; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); transition: transform 0.2s;">
             <span>💾</span> My Word Bank
         </a>
+        <button type="button" id="manage-profile-button" style="background:#334155;color:#f8fafc;padding:12px 18px;border-radius:20px;border:1px solid #64748b;font-weight:700;font-size:0.95rem;cursor:pointer;margin-left:8px;">👤 Manage Profile</button>
         
     </div>
 
-                                                                                                                                                            <div class="date-section">
+                                                                                                                                                            
+    <section aria-label="The English Corner" style="margin:0 0 22px;">
+      <iframe id="english-corner-embed" src="english-corner.html?embed=1" title="The English Corner: today's English activity" style="width:100%;height:210px;border:0;border-radius:14px;background:#0f172a;display:block;" loading="eager"></iframe>
+      <a href="english-corner.html?archive=1" style="display:block;text-align:right;color:#7dd3fc;font-size:0.85rem;margin-top:4px;text-decoration:none;">English Corner Archive →</a>
+    </section>
+    <script>
+      window.addEventListener('message', function(event) {
+        if (event.origin !== window.location.origin || !event.data || event.data.type !== 'english-corner-height') return;
+        const frame = document.getElementById('english-corner-embed');
+        if (frame && event.source === frame.contentWindow && Number.isFinite(event.data.height)) {
+          frame.style.height = Math.max(140, Math.min(12000, event.data.height)) + 'px';
+        }
+      });
+      document.getElementById('manage-profile-button').addEventListener('click', function() {
+        const frame = document.getElementById('english-corner-embed');
+        frame.contentWindow.postMessage({type:'english-corner-manage-profile'},window.location.origin);
+        frame.scrollIntoView({behavior:'smooth',block:'start'});
+      });
+    </script>
+<div class="date-section">
     <span class="date-header">October 12</span>
     <a class="lesson-link" href="10.12%20Review%20630.html">⏰ 6:30 AM Class</a>
     <a class="lesson-link" href="10.12%20Review%20715.html">⏰ 7:15 AM Class</a>

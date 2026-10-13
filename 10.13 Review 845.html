@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+      <title>Review Note | I Collect Dead Animals from Highways</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+      <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+      </style>
+</head>
+<body class="p-4 md:p-12">
+      <div class="max-w-4xl mx-auto space-y-8">
+
+          <header class="text-center space-y-4">
+              <div class="flex items-center justify-center gap-4">
+                  <span class="text-5xl">🦨</span>
+                  <h1 class="text-3xl md:text-4xl font-extrabold text-white">I Collect Dead Animals from Highways</h1>
+              </div>
+              <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+          </header>
+
+          <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+              <div class="flex items-center justify-between px-2">
+                  <div class="flex items-center gap-3">
+                      <span class="text-xl">🎧</span>
+                      <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                  </div>
+                  <div class="flex gap-2">
+                      <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          <span class="text-lg">↺</span> 5s
+                      </button>
+                      <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          5s <span class="text-lg">↻</span>
+                      </button>
+                  </div>
+              </div>
+              <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+          </div>
+
+          <div class="flex justify-center">
+              <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+          </div>
+
+          <section class="glass rounded-3xl overflow-hidden shadow-xl">
+              <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                  <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+              </div>
+              <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                  <tr><td class="p-4"><b class="text-white">push up the schedule</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">일정을 앞당기다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">push back the schedule</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">일정을 뒤로 미루다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">crash</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">충돌하다 / 사고가 나다 / 갑자기 쓰러져 잠들다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">on the side of the road</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">길가에 / 도로 옆에</td></tr>
+                  <tr><td class="p-4"><b class="text-white">on the shoulder of the road</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">도로 갓길에</td></tr>
+                  <tr><td class="p-4"><b class="text-white">drop my daughter off</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">딸을 데려다주다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">sales</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">판매 / 매출 / 영업</td></tr>
+                  <tr><td class="p-4"><b class="text-white">Have a good day</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">좋은 하루 보내세요</td></tr>
+              </tbody></table>
+          </section>
+
+          <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="glass rounded-2xl p-5 border-l-4 border-teal-500 space-y-2">
+                  <h3 class="text-teal-400 font-bold">push up the schedule</h3>
+                  <p class="text-sm text-slate-300">일정을 앞당긴다는 뜻이지만, 영어에서는 move the appointment up이나 move the schedule forward가 더 자연스러울 때가 많아요. push up은 특정 일정을 앞당길 때 쓸 수 있어요.</p>
+              </div>
+              <div class="glass rounded-2xl p-5 border-l-4 border-teal-500 space-y-2">
+                  <h3 class="text-teal-400 font-bold">push back the schedule</h3>
+                  <p class="text-sm text-slate-300">계획된 일을 나중으로 미루는 표현이에요. The meeting got pushed back은 '회의가 뒤로 밀렸어요'라는 뜻이에요.</p>
+              </div>
+              <div class="glass rounded-2xl p-5 border-l-4 border-teal-500 space-y-2">
+                  <h3 class="text-teal-400 font-bold">crash</h3>
+                  <p class="text-sm text-slate-300">교통사고뿐 아니라 컴퓨터가 멈추거나, 너무 피곤해서 갑자기 잠드는 상황에도 사용할 수 있어요.</p>
+              </div>
+              <div class="glass rounded-2xl p-5 border-l-4 border-teal-500 space-y-2">
+                  <h3 class="text-teal-400 font-bold">on the side of the road / on the shoulder of the road</h3>
+                  <p class="text-sm text-slate-300">첫 번째는 일반적으로 길가를 뜻하고, 두 번째는 자동차가 비상시에 정차할 수 있는 도로의 갓길을 구체적으로 가리켜요.</p>
+              </div>
+              <div class="glass rounded-2xl p-5 border-l-4 border-teal-500 space-y-2">
+                  <h3 class="text-teal-400 font-bold">drop my daughter off</h3>
+                  <p class="text-sm text-slate-300">딸을 특정 장소에 차로 데려다주고 내려준다는 뜻이에요. drop someone off는 일상에서 매우 자주 쓰이는 구동사예요.</p>
+              </div>
+          </section>
+
+          <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+              <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                  <p class="mb-6">I collect dead animals from highways.</p>
+                  <p class="mb-6">That's my job. When a deer gets hit by a truck or a raccoon dies on the road, someone has to remove it.</p>
+                  <p class="mb-6">That someone is usually me.</p>
+                  <p class="mb-6">My mornings start at five thirty. I make coffee, <b class="highlight quiz-target" data-ans="drop my daughter off" data-kor="딸을 데려다주다">drop my daughter off</b> at her grandmother's house, and drive to the maintenance depot.</p>
+                  <p class="mb-6">By six thirty, I'm checking a list of reported animal remains. Deer, raccoons, foxes, and occasionally something much bigger.</p>
+                  <p class="mb-6">People imagine I spend my day driving around looking for dead animals. Actually, most of my work comes from calls by police officers, road crews, or drivers.</p>
+                  <p class="mb-6">This morning, my supervisor calls.</p>
+                  <p class="mb-6">"We've got a deer on Highway 40. Can you handle it?"</p>
+                  <p class="mb-6">"Sure."</p>
+                  <p class="mb-6">"And we've <b class="highlight quiz-target" data-ans="pushed up the schedule" data-kor="일정을 앞당기다">pushed up the schedule</b> for the next pickup. The contractor wants that one done before noon."</p>
+                  <p class="mb-6">"Of course they do."</p>
+                  <p class="mb-6">I arrive and find the deer <b class="highlight quiz-target" data-ans="on the shoulder of the road" data-kor="도로 갓길에">on the shoulder of the road</b>. It's much larger than I expected.</p>
+                  <p class="mb-6">Moving a dead deer isn't easy. They're heavy, awkward to lift, and sometimes badly damaged. I use protective equipment and lifting tools, but the work is still physically draining.</p>
+                  <p class="mb-6">Just as I finish, another call comes in.</p>
+                  <p class="mb-6">"There's been a <b class="highlight quiz-target" data-ans="crash" data-kor="사고가 나다">crash</b> near Exit 12. We need you to check for animal remains."</p>
+                  <p class="mb-6">When I arrive, I discover that a driver hit a large wild boar. The vehicle has already been removed, but the animal is still <b class="highlight quiz-target" data-ans="on the side of the road" data-kor="길가에">on the side of the road</b>.</p>
+                  <p class="mb-6">The boar is enormous.</p>
+                  <p class="mb-6">I call my supervisor.</p>
+                  <p class="mb-6">"I'm going to need help with this one."</p>
+                  <p class="mb-6">"Can you manage it alone?"</p>
+                  <p class="mb-6">"Not unless you've invented a way to make a dead boar weigh less."</p>
+                  <p class="mb-6">He sends another worker, and we <b class="highlight quiz-target" data-ans="push back the schedule" data-kor="일정을 뒤로 미루다">push back the schedule</b> for the afternoon pickups.</p>
+                  <p class="mb-6">While we wait, a driver slows down and opens his window.</p>
+                  <p class="mb-6">"Hey, do you sell those animals?"</p>
+                  <p class="mb-6">I stare at him.</p>
+                  <p class="mb-6">"Sell them?"</p>
+                  <p class="mb-6">"Yeah. For meat."</p>
+                  <p class="mb-6">"No, sir."</p>
+                  <p class="mb-6">He looks disappointed and drives away.</p>
+                  <p class="mb-6">Believe it or not, people sometimes ask questions like that.</p>
+                  <p class="mb-6">By lunchtime, my truck smells terrible, my back hurts, and I've barely managed to eat half a sandwich.</p>
+                  <p class="mb-6">Some people assume we make money from selling the animals, but <b class="highlight quiz-target" data-ans="sales" data-kor="판매">sales</b> aren't part of my job. We're paid to remove them, and disposal has to follow local rules.</p>
+                  <p class="mb-6">At three thirty, I return to the depot, clean the truck, and change my clothes.</p>
+                  <p class="mb-6">As I'm leaving, my supervisor smiles.</p>
+                  <p class="mb-6">"<b class="highlight quiz-target" data-ans="Have a good day" data-kor="좋은 하루 보내세요">Have a good day</b>!"</p>
+                  <p class="mb-6">I look at my filthy boots.</p>
+                  <p class="mb-6">"Little late for that."</p>
+                  <p class="mb-6">Still, the work matters. Leaving animal remains on busy roads can create additional hazards.</p>
+                  <p class="mb-6">But after eight hours of lifting dead animals, I'm always happy to go home.</p>
+                  <p class="mb-6">So, what do you think? Would you like to try my job for a day?</p>
+              </div>
+              <hr class="border-white/10">
+              <div class="text-slate-400 italic leading-relaxed space-y-6">
+                  <p class="mb-6">저는 고속도로에서 죽은 동물들을 수거해요.</p>
+                  <p class="mb-6">그게 제 직업이에요. 사슴이 트럭에 치이거나 너구리가 도로에서 죽으면 누군가는 그 사체를 치워야 하거든요.</p>
+                  <p class="mb-6">그 누군가가 보통 저예요.</p>
+                  <p class="mb-6">제 아침은 5시 반에 시작돼요. 커피를 만들고, <b class="highlight">딸을 할머니 댁에 데려다준 뒤</b> 도로 관리 작업장으로 출근해요.</p>
+                  <p class="mb-6">6시 반쯤이면 신고된 동물 사체 목록을 확인하고 있어요. 사슴, 너구리, 여우, 그리고 가끔은 훨씬 큰 동물도 있죠.</p>
+                  <p class="mb-6">사람들은 제가 하루 종일 차를 몰고 다니면서 죽은 동물을 찾아다닌다고 생각해요. 하지만 실제로는 경찰관, 도로 관리 직원, 운전자들이 신고한 내용을 바탕으로 일하는 경우가 대부분이에요.</p>
+                  <p class="mb-6">오늘 아침에는 상사에게 전화가 왔어요.</p>
+                  <p class="mb-6">"40번 고속도로에 사슴 한 마리가 있어. 처리할 수 있겠어?"</p>
+                  <p class="mb-6">"네."</p>
+                  <p class="mb-6">"그리고 다음 수거 <b class="highlight">일정이 앞당겨졌어</b>. 계약업체에서 정오 전까지 처리해 달래."</p>
+                  <p class="mb-6">"그럴 줄 알았죠."</p>
+                  <p class="mb-6">현장에 도착하니 사슴이 <b class="highlight">도로 갓길에</b> 누워 있어요. 생각보다 훨씬 커요.</p>
+                  <p class="mb-6">죽은 사슴을 옮기는 건 쉬운 일이 아니에요. 무겁고, 들어 올리기도 불편하고, 때로는 사체가 심하게 훼손돼 있거든요. 보호 장비와 운반 도구를 사용하지만 여전히 체력적으로 힘든 일이에요.</p>
+                  <p class="mb-6">작업을 막 끝냈을 때 전화가 또 와요.</p>
+                  <p class="mb-6">"12번 출구 근처에서 <b class="highlight">사고가 났어</b>. 동물 사체가 있는지 확인해 줘."</p>
+                  <p class="mb-6">현장에 도착해 보니 운전자가 커다란 멧돼지를 친 거였어요. 차량은 이미 견인됐지만 멧돼지는 여전히 <b class="highlight">길가에</b> 남아 있었어요.</p>
+                  <p class="mb-6">멧돼지가 엄청나게 커요.</p>
+                  <p class="mb-6">저는 상사에게 전화해요.</p>
+                  <p class="mb-6">"이건 도움이 좀 필요할 것 같은데요."</p>
+                  <p class="mb-6">"혼자 처리할 수 없어?"</p>
+                  <p class="mb-6">"죽은 멧돼지 무게를 줄이는 방법이라도 발명하셨다면 모를까요."</p>
+                  <p class="mb-6">상사는 다른 직원을 보내주고, 저희는 오후 수거 <b class="highlight">일정을 뒤로 미뤄요</b>.</p>
+                  <p class="mb-6">기다리고 있는데 한 운전자가 속도를 줄이고 창문을 내려요.</p>
+                  <p class="mb-6">"저기요, 그 동물들 판매도 하나요?"</p>
+                  <p class="mb-6">저는 그 사람을 쳐다봐요.</p>
+                  <p class="mb-6">"판매요?"</p>
+                  <p class="mb-6">"네. 고기로요."</p>
+                  <p class="mb-6">"아니요, 손님."</p>
+                  <p class="mb-6">그는 실망한 표정으로 차를 몰고 떠나요.</p>
+                  <p class="mb-6">믿기 어렵겠지만 가끔 저런 질문을 하는 사람들이 있어요.</p>
+                  <p class="mb-6">점심시간이 되자 트럭에서는 끔찍한 냄새가 나고, 허리는 아프고, 샌드위치는 반도 겨우 먹었어요.</p>
+                  <p class="mb-6">어떤 사람들은 저희가 수거한 동물을 팔아서 돈을 번다고 생각하지만, <b class="highlight">판매는</b> 제 업무에 포함되지 않아요. 저희는 사체를 수거하는 대가로 돈을 받고, 처리할 때는 지역 규정을 따라야 해요.</p>
+                  <p class="mb-6">오후 3시 반, 작업장으로 돌아와 트럭을 청소하고 옷을 갈아입어요.</p>
+                  <p class="mb-6">퇴근하려는데 상사가 웃으며 말해요.</p>
+                  <p class="mb-6">"<b class="highlight">좋은 하루 보내</b>!"</p>
+                  <p class="mb-6">저는 더러워진 작업화를 내려다봐요.</p>
+                  <p class="mb-6">"그 말 하기엔 좀 늦었는데요."</p>
+                  <p class="mb-6">그래도 중요한 일이에요. 교통량이 많은 도로에 동물 사체를 방치하면 추가적인 위험이 생길 수 있으니까요.</p>
+                  <p class="mb-6">하지만 여덟 시간 동안 죽은 동물들을 들어 옮기고 나면 언제나 집에 가는 게 반가워요.</p>
+                  <p class="mb-6">자, 어떻게 생각하세요? 제 일을 하루 동안 체험해 보고 싶으신가요?</p>
+              </div>
+          </section>
+
+      </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "1013845.m4a";
+</script>
+      <script src="wordbank-utils.js"></script>
+  </body>
+  </html>

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+      <title>Review Note | My Job Is to Collect Bull Semen</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+      <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+      </style>
+</head>
+<body class="p-4 md:p-12">
+      <div class="max-w-4xl mx-auto space-y-8">
+
+          <header class="text-center space-y-4">
+              <div class="flex items-center justify-center gap-4">
+                  <span class="text-5xl">🐄</span>
+                  <h1 class="text-3xl md:text-4xl font-extrabold text-white">My Job Is to Collect Bull Semen</h1>
+              </div>
+              <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+          </header>
+
+          <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+              <div class="flex items-center justify-between px-2">
+                  <div class="flex items-center gap-3">
+                      <span class="text-xl">🎧</span>
+                      <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                  </div>
+                  <div class="flex gap-2">
+                      <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          <span class="text-lg">↺</span> 5s
+                      </button>
+                      <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          5s <span class="text-lg">↻</span>
+                      </button>
+                  </div>
+              </div>
+              <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+          </div>
+
+          <div class="flex justify-center">
+              <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+          </div>
+
+          <section class="glass rounded-3xl overflow-hidden shadow-xl">
+              <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                  <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+              </div>
+              <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                  <tr><td class="p-4"><b class="text-white">ritual</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">의식처럼 반복하는 습관 / 의례</td></tr>
+                  <tr><td class="p-4"><b class="text-white">a hassle</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">번거로운 일 / 귀찮은 일</td></tr>
+                  <tr><td class="p-4"><b class="text-white">I feel better now</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">이제 마음이 좀 편해졌어요 / 기분이 나아졌어요</td></tr>
+                  <tr><td class="p-4"><b class="text-white">that's comforting to hear</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그 말을 들으니 마음이 놓이네요</td></tr>
+                  <tr><td class="p-4"><b class="text-white">comfort me</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">나를 위로해 주다 / 안심시켜 주다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">we're in the same boat</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">우리도 같은 처지예요 / 우리도 상황이 똑같아요</td></tr>
+              </tbody></table>
+          </section>
+
+          <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="glass rounded-2xl p-5 border-l-4 border-teal-500 space-y-2">
+                  <h3 class="text-teal-400 font-bold">ritual</h3>
+                  <p class="text-sm text-slate-300">종교적인 의식뿐 아니라 매일 정해진 순서대로 하는 개인적인 습관을 뜻하기도 해요. my morning ritual은 '매일 아침 꼭 하는 일'이라는 뜻이에요.</p>
+              </div>
+              <div class="glass rounded-2xl p-5 border-l-4 border-teal-500 space-y-2">
+                  <h3 class="text-teal-400 font-bold">a hassle</h3>
+                  <p class="text-sm text-slate-300">복잡하거나 귀찮아서 하기 싫은 일을 말해요. It's such a hassle은 '정말 번거로워요'라는 뜻이에요.</p>
+              </div>
+              <div class="glass rounded-2xl p-5 border-l-4 border-teal-500 space-y-2">
+                  <h3 class="text-teal-400 font-bold">that's comforting to hear</h3>
+                  <p class="text-sm text-slate-300">상대방의 말을 듣고 걱정이 줄어들거나 안심이 될 때 쓰는 자연스러운 반응이에요.</p>
+              </div>
+              <div class="glass rounded-2xl p-5 border-l-4 border-teal-500 space-y-2">
+                  <h3 class="text-teal-400 font-bold">comfort me</h3>
+                  <p class="text-sm text-slate-300">누군가 나를 위로하거나 안심시켜 준다는 뜻이에요. That doesn't comfort me라고 하면 '그 말은 전혀 위로가 안 되는데요'라는 의미가 돼요.</p>
+              </div>
+              <div class="glass rounded-2xl p-5 border-l-4 border-teal-500 space-y-2">
+                  <h3 class="text-teal-400 font-bold">we're in the same boat</h3>
+                  <p class="text-sm text-slate-300">서로 비슷하게 어려운 상황에 처해 있다는 관용 표현이에요. 반드시 완전히 똑같은 상황일 필요는 없어요.</p>
+              </div>
+          </section>
+
+          <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+              <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                  <p class="mb-6">I work at a cattle breeding center. When people ask what I do, I usually tell them I help farmers produce better calves.</p>
+                  <p class="mb-6">That sounds respectable, doesn't it?</p>
+                  <p class="mb-6">Then they ask what I actually do all day.</p>
+                  <p class="mb-6">"I collect semen from bulls."</p>
+                  <p class="mb-6">That's usually when the conversation stops.</p>
+                  <p class="mb-6">My mornings start at six. We work with breeding bulls that can weigh over a thousand kilograms. These aren't animals you can casually push around.</p>
+                  <p class="mb-6">Before collecting anything, we check the animals and prepare the equipment. We use a device called an artificial vagina, which is designed to collect semen safely when a bull mounts another animal or a specially prepared dummy.</p>
+                  <p class="mb-6">My morning <b class="highlight quiz-target" data-ans="ritual" data-kor="의식처럼 반복하는 습관">ritual</b> includes checking the equipment, preparing the collection area, and making sure everything is ready.</p>
+                  <p class="mb-6">One morning, we had a new employee named Daniel.</p>
+                  <p class="mb-6">"Is that the bull?" he asked, looking at an enormous black animal.</p>
+                  <p class="mb-6">"Yes. His name is Max."</p>
+                  <p class="mb-6">"He looks angry."</p>
+                  <p class="mb-6">"That's just his face."</p>
+                  <p class="mb-6">Daniel didn't laugh.</p>
+                  <p class="mb-6">We brought Max into the collection area, but he wasn't interested in cooperating.</p>
+                  <p class="mb-6">Sometimes bulls simply refuse to perform. You can't explain deadlines to a bull, and you certainly can't force a one-ton animal to hurry up.</p>
+                  <p class="mb-6">It's <b class="highlight quiz-target" data-ans="a hassle" data-kor="번거로운 일">a hassle</b> when that happens because the whole schedule can fall behind.</p>
+                  <p class="mb-6">After several unsuccessful attempts, Daniel looked exhausted.</p>
+                  <p class="mb-6">"Does this happen often?"</p>
+                  <p class="mb-6">"Sometimes. Every bull is different."</p>
+                  <p class="mb-6">"Well, <b class="highlight quiz-target" data-ans="I feel better now" data-kor="이제 마음이 좀 편해졌어요">I feel better now</b>. I thought I was doing something wrong."</p>
+                  <p class="mb-6">"No, you're fine."</p>
+                  <p class="mb-6">"<b class="highlight quiz-target" data-ans="That's comforting to hear" data-kor="그 말을 들으니 마음이 놓이네요">That's comforting to hear</b>."</p>
+                  <p class="mb-6">Eventually, Max cooperated, and we collected a sample.</p>
+                  <p class="mb-6">But the job wasn't finished.</p>
+                  <p class="mb-6">I took the sample to our laboratory, where we examined sperm movement and quality under a microscope. Suitable samples can be diluted, packaged into small straws, and frozen in liquid nitrogen for storage.</p>
+                  <p class="mb-6">Daniel watched me working.</p>
+                  <p class="mb-6">"So basically, you spend your mornings dealing with stubborn bulls and your afternoons looking at sperm?"</p>
+                  <p class="mb-6">"Pretty much."</p>
+                  <p class="mb-6">"Does your family know what you do?"</p>
+                  <p class="mb-6">"Of course."</p>
+                  <p class="mb-6">"Do they think it's weird?"</p>
+                  <p class="mb-6">"My wife says at least I'm not the one giving birth."</p>
+                  <p class="mb-6">Daniel stared at me.</p>
+                  <p class="mb-6">"That doesn't exactly <b class="highlight quiz-target" data-ans="comfort me" data-kor="나를 위로해 주다">comfort me</b>."</p>
+                  <p class="mb-6">By the end of the day, he was completely drained.</p>
+                  <p class="mb-6">"I don't think I could handle doing this every day," he admitted.</p>
+                  <p class="mb-6">"Don't worry. <b class="highlight quiz-target" data-ans="We're in the same boat" data-kor="우리도 같은 처지예요">We're in the same boat</b> when we're starting out. I was nervous too."</p>
+                  <p class="mb-6">He looked toward Max's enclosure.</p>
+                  <p class="mb-6">"Does it get easier?"</p>
+                  <p class="mb-6">"You get more experienced. The bulls still do whatever they want."</p>
+                  <p class="mb-6">I enjoy the science behind my work, and helping farmers improve their herds is satisfying. But I understand why most people wouldn't want my job.</p>
+                  <p class="mb-6">So, what do you think? Would you like to try my job for a day?</p>
+              </div>
+              <hr class="border-white/10">
+              <div class="text-slate-400 italic leading-relaxed space-y-6">
+                  <p class="mb-6">저는 소 번식 센터에서 일해요. 사람들이 무슨 일을 하느냐고 물으면 보통 농부들이 더 좋은 송아지를 생산할 수 있도록 돕는다고 말해요.</p>
+                  <p class="mb-6">꽤 훌륭한 일처럼 들리죠?</p>
+                  <p class="mb-6">그러면 사람들은 하루 종일 구체적으로 무슨 일을 하느냐고 물어요.</p>
+                  <p class="mb-6">"황소의 정액을 채취해요."</p>
+                  <p class="mb-6">보통 그 말을 들으면 대화가 끊겨요.</p>
+                  <p class="mb-6">제 아침은 6시에 시작돼요. 저희가 다루는 번식용 황소들은 몸무게가 1,000킬로그램이 넘기도 해요. 마음대로 밀거나 움직일 수 있는 동물들이 아니죠.</p>
+                  <p class="mb-6">채취 작업을 시작하기 전에 소들의 상태를 확인하고 장비를 준비해요. 저희는 '인공질'이라는 장치를 사용하는데, 황소가 다른 소나 특별히 준비된 모형에 올라탔을 때 정액을 안전하게 채취하도록 설계된 장비예요.</p>
+                  <p class="mb-6">제 아침 <b class="highlight">일과</b>에는 장비를 점검하고, 채취 장소를 준비하고, 모든 것이 제대로 갖춰졌는지 확인하는 일이 포함돼요.</p>
+                  <p class="mb-6">어느 날 아침, 대니얼이라는 신입 직원이 왔어요.</p>
+                  <p class="mb-6">"저게 그 황소예요?" 대니얼이 거대한 검은 소를 보며 물었어요.</p>
+                  <p class="mb-6">"네. 이름은 맥스예요."</p>
+                  <p class="mb-6">"화가 난 것 같은데요."</p>
+                  <p class="mb-6">"원래 저렇게 생겼어요."</p>
+                  <p class="mb-6">대니얼은 웃지 않았어요.</p>
+                  <p class="mb-6">저희는 맥스를 채취 장소로 데려왔지만, 맥스는 전혀 협조할 생각이 없어 보였어요.</p>
+                  <p class="mb-6">황소들은 가끔 아예 교미 행동을 하지 않으려고 해요. 황소에게 마감 시간을 설명할 수도 없고, 1톤짜리 동물에게 서두르라고 강요할 수도 없죠.</p>
+                  <p class="mb-6">이럴 때는 전체 일정이 밀릴 수 있어서 <b class="highlight">정말 번거로워요</b>.</p>
+                  <p class="mb-6">몇 차례 시도했지만 잘되지 않자 대니얼은 완전히 지친 표정이었어요.</p>
+                  <p class="mb-6">"이런 일이 자주 있어요?"</p>
+                  <p class="mb-6">"가끔요. 황소마다 다르거든요."</p>
+                  <p class="mb-6">"아, <b class="highlight">이제 좀 마음이 놓이네요</b>. 제가 뭘 잘못하고 있는 줄 알았어요."</p>
+                  <p class="mb-6">"아니에요. 잘하고 있어요."</p>
+                  <p class="mb-6">"<b class="highlight">그 말을 들으니 안심이 되네요</b>."</p>
+                  <p class="mb-6">결국 맥스가 협조해 줬고, 저희는 샘플을 채취할 수 있었어요.</p>
+                  <p class="mb-6">하지만 일이 끝난 건 아니었어요.</p>
+                  <p class="mb-6">저는 샘플을 실험실로 가져가 현미경으로 정자의 움직임과 품질을 검사했어요. 적합한 샘플은 희석한 뒤 작은 빨대 모양의 용기에 담아 액체질소로 냉동 보관할 수 있어요.</p>
+                  <p class="mb-6">대니얼이 제가 일하는 모습을 지켜봤어요.</p>
+                  <p class="mb-6">"그러니까 쉽게 말하면, 오전에는 고집 센 황소들을 상대하고 오후에는 정자를 들여다보는 거네요?"</p>
+                  <p class="mb-6">"거의 그렇죠."</p>
+                  <p class="mb-6">"가족들도 무슨 일 하시는지 알아요?"</p>
+                  <p class="mb-6">"당연하죠."</p>
+                  <p class="mb-6">"이상하다고 생각하지 않아요?"</p>
+                  <p class="mb-6">"아내는 적어도 제가 직접 새끼를 낳는 건 아니지 않냐고 하던데요."</p>
+                  <p class="mb-6">대니얼은 저를 빤히 쳐다봤어요.</p>
+                  <p class="mb-6">"그 말은 <b class="highlight">별로 위로가 안 되는데요</b>."</p>
+                  <p class="mb-6">하루가 끝날 무렵 대니얼은 완전히 녹초가 됐어요.</p>
+                  <p class="mb-6">"저는 이 일을 매일 할 자신이 없어요." 대니얼이 인정했어요.</p>
+                  <p class="mb-6">"걱정하지 마세요. 처음에는 <b class="highlight">다 비슷한 처지예요</b>. 저도 긴장했거든요."</p>
+                  <p class="mb-6">대니얼은 맥스가 있는 우리 쪽을 바라봤어요.</p>
+                  <p class="mb-6">"시간이 지나면 좀 쉬워지나요?"</p>
+                  <p class="mb-6">"경험은 쌓이죠. 하지만 황소들은 여전히 자기 마음대로 해요."</p>
+                  <p class="mb-6">저는 이 일에 담긴 과학적인 부분이 좋고, 농부들이 더 좋은 소를 기를 수 있도록 돕는 것도 보람 있어요. 하지만 대부분의 사람들이 제 일을 하고 싶어 하지 않는 이유도 충분히 이해해요.</p>
+                  <p class="mb-6">자, 어떻게 생각하세요? 제 일을 하루 동안 체험해 보고 싶으신가요?</p>
+              </div>
+          </section>
+
+      </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "1013715.m4a";
+</script>
+      <script src="wordbank-utils.js"></script>
+  </body>
+  </html>

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+      <title>Review Note | I Clean Apartments Where People Have Died Alone</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+      <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+      </style>
+</head>
+<body class="p-4 md:p-12">
+      <div class="max-w-4xl mx-auto space-y-8">
+
+          <header class="text-center space-y-4">
+              <div class="flex items-center justify-center gap-4">
+                  <span class="text-5xl">🧹</span>
+                  <h1 class="text-3xl md:text-4xl font-extrabold text-white">I Clean Apartments Where People Have Died Alone</h1>
+              </div>
+              <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+          </header>
+
+          <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+              <div class="flex items-center justify-between px-2">
+                  <div class="flex items-center gap-3">
+                      <span class="text-xl">🎧</span>
+                      <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                  </div>
+                  <div class="flex gap-2">
+                      <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          <span class="text-lg">↺</span> 5s
+                      </button>
+                      <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          5s <span class="text-lg">↻</span>
+                      </button>
+                  </div>
+              </div>
+              <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+          </div>
+
+          <div class="flex justify-center">
+              <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+          </div>
+
+          <section class="glass rounded-3xl overflow-hidden shadow-xl">
+              <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                  <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+              </div>
+              <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                  <tr><td class="p-4"><b class="text-white">work on autopilot</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">별생각 없이 습관적으로 일하다 / 자동적으로 일하다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">training my replacement</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">내 후임자를 교육하는 중</td></tr>
+                  <tr><td class="p-4"><b class="text-white">we charge for that</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그건 별도로 비용을 받아요</td></tr>
+                  <tr><td class="p-4"><b class="text-white">accurate</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">정확한</td></tr>
+                  <tr><td class="p-4"><b class="text-white">up to date</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">최신 정보로 갱신된 / 최신 상태인</td></tr>
+                  <tr><td class="p-4"><b class="text-white">aging society</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">고령화 사회</td></tr>
+                  <tr><td class="p-4"><b class="text-white">birth rate</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">출생률</td></tr>
+                  <tr><td class="p-4"><b class="text-white">weekly ritual</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">매주 반복하는 일 / 주간 의식처럼 하는 습관</td></tr>
+              </tbody></table>
+          </section>
+
+          <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="glass rounded-2xl p-5 border-l-4 border-teal-500 space-y-2">
+                  <h3 class="text-teal-400 font-bold">work on autopilot</h3>
+                  <p class="text-sm text-slate-300">너무 익숙해져서 깊이 생각하지 않고 거의 자동적으로 일을 처리한다는 뜻이에요. 비행기의 자동 조종 장치에서 나온 표현이에요.</p>
+              </div>
+              <div class="glass rounded-2xl p-5 border-l-4 border-teal-500 space-y-2">
+                  <h3 class="text-teal-400 font-bold">training my replacement</h3>
+                  <p class="text-sm text-slate-300">자신의 자리를 이어받을 후임자를 교육한다는 뜻이에요. 퇴사, 은퇴, 부서 이동 등을 앞둔 상황에서 사용할 수 있어요.</p>
+              </div>
+              <div class="glass rounded-2xl p-5 border-l-4 border-teal-500 space-y-2">
+                  <h3 class="text-teal-400 font-bold">we charge for that</h3>
+                  <p class="text-sm text-slate-300">어떤 서비스나 작업에 별도의 요금을 부과한다는 뜻이에요. charge someone for something 형태로 자주 사용해요.</p>
+              </div>
+              <div class="glass rounded-2xl p-5 border-l-4 border-teal-500 space-y-2">
+                  <h3 class="text-teal-400 font-bold">up to date</h3>
+                  <p class="text-sm text-slate-300">정보나 기록이 가장 최근 상황까지 반영된 상태를 말해요. keep records up to date는 '기록을 최신 상태로 유지하다'라는 뜻이에요.</p>
+              </div>
+              <div class="glass rounded-2xl p-5 border-l-4 border-teal-500 space-y-2">
+                  <h3 class="text-teal-400 font-bold">aging society / birth rate</h3>
+                  <p class="text-sm text-slate-300">각각 고령 인구의 비중이 커지는 사회와 일정 기간의 인구 대비 출생 수준을 뜻해요. 출생률이 낮아지는 현상과 고령화는 관련이 있지만 동일한 개념은 아니에요.</p>
+              </div>
+              <div class="glass rounded-2xl p-5 border-l-4 border-teal-500 space-y-2">
+                  <h3 class="text-teal-400 font-bold">weekly ritual</h3>
+                  <p class="text-sm text-slate-300">종교적 의식이 아니라 매주 정해진 방식으로 반복하는 일이나 습관을 뜻할 수도 있어요.</p>
+              </div>
+          </section>
+
+          <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+              <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                  <p class="mb-6">I clean apartments after people have died alone.</p>
+                  <p class="mb-6">Not immediately after they die. Sometimes nobody discovers them for days or even weeks.</p>
+                  <p class="mb-6">By the time I arrive, the body has usually been removed. Unfortunately, that doesn't mean the apartment is ready to clean.</p>
+                  <p class="mb-6">I've been doing this job for eleven years. I'm pretty used to it, but there's one thing I never get used to: the smell.</p>
+                  <p class="mb-6">My mornings start with a call from our office. Today, we're going to a small apartment where an elderly man was found two weeks after he died.</p>
+                  <p class="mb-6">I'm also <b class="highlight quiz-target" data-ans="training my replacement" data-kor="내 후임자를 교육하는 중">training my replacement</b>, a 26-year-old named Kenji. I'm moving into a management position, and he needs to learn the job.</p>
+                  <p class="mb-6">"Have you eaten breakfast?" I ask him.</p>
+                  <p class="mb-6">"Yes. Why?"</p>
+                  <p class="mb-6">"You might regret that."</p>
+                  <p class="mb-6">When we open the apartment door, Kenji immediately steps backward.</p>
+                  <p class="mb-6">"Oh my God. What is that smell?"</p>
+                  <p class="mb-6">"That's why we're here."</p>
+                  <p class="mb-6">Inside, there are dirty dishes, old newspapers, and food that's been sitting out for weeks. In the bedroom, there's a large stain on the floor.</p>
+                  <p class="mb-6">Kenji points at it.</p>
+                  <p class="mb-6">"What's that?"</p>
+                  <p class="mb-6">"Don't touch it."</p>
+                  <p class="mb-6">We put on protective equipment and begin removing contaminated materials. Some furniture can be cleaned. Other items have to be thrown away.</p>
+                  <p class="mb-6">Kenji looks at the mattress.</p>
+                  <p class="mb-6">"Can we just spray something on it?"</p>
+                  <p class="mb-6">"No. That needs to go."</p>
+                  <p class="mb-6">After two hours, he asks whether I ever <b class="highlight quiz-target" data-ans="work on autopilot" data-kor="자동적으로 일하다">work on autopilot</b>.</p>
+                  <p class="mb-6">"Sometimes, with the routine tasks. But you can't stop paying attention. Every apartment is different."</p>
+                  <p class="mb-6">Our work isn't just about removing unpleasant smells. We have to identify contaminated areas, clean them properly, and make sure our reports are <b class="highlight quiz-target" data-ans="accurate" data-kor="정확한">accurate</b>.</p>
+                  <p class="mb-6">Families sometimes ask us to search for important documents or personal belongings. <b class="highlight quiz-target" data-ans="We charge for that" data-kor="그건 별도로 비용을 받아요">We charge for that</b> when it's a separate service, but we explain the costs beforehand.</p>
+                  <p class="mb-6">At lunchtime, Kenji opens his lunchbox, looks at his food, and closes it.</p>
+                  <p class="mb-6">"Not hungry?" I ask.</p>
+                  <p class="mb-6">"Not anymore."</p>
+                  <p class="mb-6">While we eat outside, he asks why this kind of work seems increasingly necessary.</p>
+                  <p class="mb-6">"Japan has an <b class="highlight quiz-target" data-ans="aging society" data-kor="고령화 사회">aging society</b>," I explain. "The <b class="highlight quiz-target" data-ans="birth rate" data-kor="출생률">birth rate</b> is low, more people live alone, and some elderly people have very little contact with others."</p>
+                  <p class="mb-6">We keep our procedures <b class="highlight quiz-target" data-ans="up to date" data-kor="최신 상태인">up to date</b>, but the emotional side of the job never becomes easy.</p>
+                  <p class="mb-6">Before leaving, we find a birthday card on a shelf. It's from the man's daughter, dated three years earlier.</p>
+                  <p class="mb-6">Kenji reads the message quietly.</p>
+                  <p class="mb-6">"Do you think she knew he was living like this?"</p>
+                  <p class="mb-6">"I don't know."</p>
+                  <p class="mb-6">Every Friday, we have a <b class="highlight quiz-target" data-ans="weekly ritual" data-kor="매주 반복하는 일">weekly ritual</b>: we clean our equipment, review difficult cases, and check on the newer employees.</p>
+                  <p class="mb-6">Today, Kenji doesn't say much.</p>
+                  <p class="mb-6">As we drive back, he finally asks, "Do you ever get used to this?"</p>
+                  <p class="mb-6">"Some parts. Not all of it."</p>
+                  <p class="mb-6">He looks out the window.</p>
+                  <p class="mb-6">"I think I understand."</p>
+                  <p class="mb-6">So, what do you think? Would you like to try my job for a day?</p>
+              </div>
+              <hr class="border-white/10">
+              <div class="text-slate-400 italic leading-relaxed space-y-6">
+                  <p class="mb-6">저는 혼자 살다가 세상을 떠난 사람들의 집을 청소해요.</p>
+                  <p class="mb-6">사망 직후에 청소하는 건 아니에요. 어떤 사람들은 죽은 지 며칠, 심지어 몇 주가 지나서야 발견되거든요.</p>
+                  <p class="mb-6">제가 도착할 때쯤이면 보통 시신은 이미 옮겨진 상태예요. 하지만 안타깝게도 그렇다고 집이 바로 청소할 수 있는 상태라는 뜻은 아니에요.</p>
+                  <p class="mb-6">저는 이 일을 11년째 하고 있어요. 이제 꽤 익숙해졌지만, 도저히 익숙해지지 않는 게 하나 있어요. 바로 냄새예요.</p>
+                  <p class="mb-6">제 아침은 사무실에서 걸려 오는 전화로 시작돼요. 오늘은 혼자 살던 노인이 사망한 지 2주 만에 발견된 작은 아파트로 가요.</p>
+                  <p class="mb-6">오늘은 <b class="highlight">제 후임자인 26살 겐지도 교육하고 있어요</b>. 저는 관리직으로 옮길 예정이라 겐지가 일을 배워야 하거든요.</p>
+                  <p class="mb-6">"아침 먹었어요?" 제가 물어요.</p>
+                  <p class="mb-6">"네. 왜요?"</p>
+                  <p class="mb-6">"먹은 걸 후회할 수도 있어서요."</p>
+                  <p class="mb-6">아파트 문을 열자마자 겐지는 뒤로 물러서요.</p>
+                  <p class="mb-6">"세상에. 이게 무슨 냄새예요?"</p>
+                  <p class="mb-6">"그래서 우리가 온 거예요."</p>
+                  <p class="mb-6">집 안에는 더러운 접시와 오래된 신문, 몇 주 동안 방치된 음식이 있어요. 침실 바닥에는 커다란 얼룩이 남아 있어요.</p>
+                  <p class="mb-6">겐지가 그걸 가리켜요.</p>
+                  <p class="mb-6">"저게 뭐예요?"</p>
+                  <p class="mb-6">"만지지 마세요."</p>
+                  <p class="mb-6">저희는 보호 장비를 착용하고 오염된 물건들을 치우기 시작해요. 어떤 가구는 세척해서 사용할 수 있지만, 다른 물건들은 버려야 해요.</p>
+                  <p class="mb-6">겐지가 매트리스를 바라봐요.</p>
+                  <p class="mb-6">"그냥 뭔가 뿌려서 닦으면 안 돼요?"</p>
+                  <p class="mb-6">"안 돼요. 저건 버려야 해요."</p>
+                  <p class="mb-6">두 시간쯤 지나자 겐지가 묻습니다.</p>
+                  <p class="mb-6">"일하다 보면 아무 생각 없이 <b class="highlight">자동으로 하게 될 때도 있어요</b>?"</p>
+                  <p class="mb-6">"반복적인 작업은 가끔 그래요. 하지만 집중을 놓으면 안 돼요. 집마다 상황이 다르거든요."</p>
+                  <p class="mb-6">저희 일은 단순히 불쾌한 냄새를 없애는 게 아니에요. 오염된 부분을 찾아 제대로 청소하고, 보고서도 <b class="highlight">정확하게</b> 작성해야 해요.</p>
+                  <p class="mb-6">가족들이 중요한 서류나 개인 소지품을 찾아 달라고 부탁하는 경우도 있어요. 별도 서비스에 해당하면 <b class="highlight">추가 비용을 받지만</b>, 비용은 미리 설명해 드려요.</p>
+                  <p class="mb-6">점심시간이 되자 겐지가 도시락을 열고 음식을 바라보다가 다시 뚜껑을 닫아요.</p>
+                  <p class="mb-6">"배 안 고파요?" 제가 물어요.</p>
+                  <p class="mb-6">"이제는요."</p>
+                  <p class="mb-6">밖에서 점심을 먹으며 겐지는 왜 이런 일이 점점 더 필요해지는 것 같냐고 물어요.</p>
+                  <p class="mb-6">"일본은 <b class="highlight">고령화 사회</b>잖아요. <b class="highlight">출생률</b>도 낮고, 혼자 사는 사람도 늘고 있어요. 가족이나 주변 사람들과 거의 연락하지 않는 노인들도 있고요."</p>
+                  <p class="mb-6">저희는 작업 절차를 항상 <b class="highlight">최신 상태로</b> 유지하지만, 이 일의 감정적으로 힘든 부분은 결코 쉬워지지 않아요.</p>
+                  <p class="mb-6">떠나기 전에 선반에서 생일 카드를 하나 발견해요. 3년 전에 딸이 보낸 카드예요.</p>
+                  <p class="mb-6">겐지는 카드에 적힌 글을 조용히 읽어요.</p>
+                  <p class="mb-6">"딸은 아버지가 이렇게 살고 있었다는 걸 알았을까요?"</p>
+                  <p class="mb-6">"모르겠어요."</p>
+                  <p class="mb-6">매주 금요일에는 <b class="highlight">정해진 일과가 있어요</b>. 장비를 청소하고, 어려웠던 작업 사례를 검토하고, 신입 직원들의 상태를 확인하는 거예요.</p>
+                  <p class="mb-6">오늘 겐지는 말이 별로 없어요.</p>
+                  <p class="mb-6">돌아오는 차 안에서 겐지가 마침내 물어요.</p>
+                  <p class="mb-6">"이런 일도 익숙해지나요?"</p>
+                  <p class="mb-6">"어떤 부분은요. 하지만 전부는 아니에요."</p>
+                  <p class="mb-6">겐지는 창밖을 바라봐요.</p>
+                  <p class="mb-6">"무슨 뜻인지 알 것 같아요."</p>
+                  <p class="mb-6">자, 어떻게 생각하세요? 제 일을 하루 동안 체험해 보고 싶으신가요?</p>
+              </div>
+          </section>
+
+      </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "1013930.m4a";
+</script>
+      <script src="wordbank-utils.js"></script>
+  </body>
+  </html>

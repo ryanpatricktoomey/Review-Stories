@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+      <title>Review Note | The Missing Idiot</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+      <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+      </style>
+</head>
+<body class="p-4 md:p-12">
+      <div class="max-w-4xl mx-auto space-y-8">
+
+          <header class="text-center space-y-4">
+              <div class="flex items-center justify-center gap-4">
+                  <span class="text-5xl">🛶</span>
+                  <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Missing Idiot</h1>
+              </div>
+              <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+          </header>
+
+          <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+              <div class="flex items-center justify-between px-2">
+                  <div class="flex items-center gap-3">
+                      <span class="text-xl">🎧</span>
+                      <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                  </div>
+                  <div class="flex gap-2">
+                      <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          <span class="text-lg">↺</span> 5s
+                      </button>
+                      <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          5s <span class="text-lg">↻</span>
+                      </button>
+                  </div>
+              </div>
+              <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+          </div>
+
+          <div class="flex justify-center">
+              <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+          </div>
+
+          <section class="glass rounded-3xl overflow-hidden shadow-xl">
+              <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                  <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+              </div>
+              <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                  <tr><td class="p-4"><b class="text-white">lean on</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">~에 기대다 / ~에게 의지하다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">creek</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">개울 / 시냇물</td></tr>
+                  <tr><td class="p-4"><b class="text-white">weed</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">대마초 / 잡초</td></tr>
+                  <tr><td class="p-4"><b class="text-white">marijuana</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">마리화나 / 대마초</td></tr>
+                  <tr><td class="p-4"><b class="text-white">pot</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">대마초(구어체) / 냄비</td></tr>
+                  <tr><td class="p-4"><b class="text-white">close calls</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">아슬아슬하게 위험을 피한 순간들</td></tr>
+                  <tr><td class="p-4"><b class="text-white">pace yourself</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">속도를 조절하다 / 무리하지 않다</td></tr>
+              </tbody></table>
+          </section>
+
+          <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-400">
+                  <h3 class="text-teal-400 font-bold mb-1">lean on</h3>
+                  <p class="text-slate-300 text-sm">물리적으로 기대거나 누군가에게 의지한다는 뜻. 사람에게 압박을 가한다는 의미도 있음.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-400">
+                  <h3 class="text-teal-400 font-bold mb-1">weed / marijuana / pot</h3>
+                  <p class="text-slate-300 text-sm">모두 대마초를 가리킬 수 있음. weed와 pot은 일상적인 비격식 표현.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-400">
+                  <h3 class="text-teal-400 font-bold mb-1">close calls</h3>
+                  <p class="text-slate-300 text-sm">위험한 상황을 간신히 피한 경험들. 단수형은 a close call.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-400">
+                  <h3 class="text-teal-400 font-bold mb-1">pace yourself</h3>
+                  <p class="text-slate-300 text-sm">술을 마시거나 운동할 때 처음부터 무리하지 않고 속도를 조절하다.</p>
+              </div>
+          </section>
+
+          <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+              <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                  <p class="mb-6">Did I ever tell you about the time I accidentally helped the police search for myself?</p>
+                  <p class="mb-6">I was twenty-two, and my friend Mike invited me to his family's cabin for the weekend. There were about fifteen people, a huge cooler of beer, and nobody telling us to behave.</p>
+                  <p class="mb-6">We were supposed to have a few drinks by the fire and go to bed.</p>
+                  <p class="mb-6">Mike told me to <b class="highlight quiz-target" data-ans="pace yourself" data-kor="속도를 조절하다">pace myself</b> because I hadn't eaten dinner.</p>
+                  <p class="mb-6">I ignored him.</p>
+                  <p class="mb-6">Around midnight, some guy pulled out a bag of <b class="highlight quiz-target" data-ans="weed" data-kor="대마초">weed</b>. I don't smoke <b class="highlight quiz-target" data-ans="marijuana" data-kor="마리화나">marijuana</b>, so I passed. But Mike started telling this ridiculous story about accidentally eating his uncle's <b class="highlight quiz-target" data-ans="pot" data-kor="대마초">pot</b> brownies.</p>
+                  <p class="mb-6">I laughed so hard I fell off my chair.</p>
+                  <p class="mb-6">Then I decided I needed some fresh air.</p>
+                  <p class="mb-6">Behind the cabin, there was a little <b class="highlight quiz-target" data-ans="creek" data-kor="개울">creek</b>, and somebody had tied a canoe to a tree.</p>
+                  <p class="mb-6">Now, I have no idea why, but taking that canoe for a ride seemed like a fantastic idea.</p>
+                  <p class="mb-6">I climbed in, untied it, and pushed off.</p>
+                  <p class="mb-6">About thirty seconds later, I realized I didn't have a paddle.</p>
+                  <p class="mb-6">And the current was getting faster.</p>
+                  <p class="mb-6">I tried to <b class="highlight quiz-target" data-ans="lean on" data-kor="~에 기대다">lean on</b> a branch to stop myself.</p>
+                  <p class="mb-6">It snapped.</p>
+                  <p class="mb-6">So there I was, floating down a creek in the middle of the night, holding half a tree branch.</p>
+                  <p class="mb-6">I remember passing a campsite and hearing someone yell, “Where's your paddle?”</p>
+                  <p class="mb-6">I yelled back, “Long story!”</p>
+                  <p class="mb-6">Eventually, the canoe got stuck between some rocks. I managed to climb out and walk up to a road.</p>
+                  <p class="mb-6">I'd had a few <b class="highlight quiz-target" data-ans="close calls" data-kor="아슬아슬하게 위험을 피한 순간들">close calls</b> with rocks along the way, but somehow I wasn't hurt.</p>
+                  <p class="mb-6">Then I saw flashing blue lights.</p>
+                  <p class="mb-6">Two police officers were standing beside a patrol car.</p>
+                  <p class="mb-6">I walked over.</p>
+                  <p class="mb-6">“Hey, what's going on?”</p>
+                  <p class="mb-6">“We're looking for a missing man. He disappeared from a cabin about two hours ago.”</p>
+                  <p class="mb-6">“Oh, wow. Need some help?”</p>
+                  <p class="mb-6">One officer looked at my wet clothes.</p>
+                  <p class="mb-6">“What's your name?”</p>
+                  <p class="mb-6">I told him.</p>
+                  <p class="mb-6">He slowly picked up his radio.</p>
+                  <p class="mb-6">“We found him.”</p>
+                  <p class="mb-6">Turns out, Mike had called the police because he thought I'd drowned.</p>
+                  <p class="mb-6">The officer drove me back to the cabin. Mike was standing outside looking absolutely furious.</p>
+                  <p class="mb-6">But here's the worst part.</p>
+                  <p class="mb-6">The canoe belonged to the officer who'd found me.</p>
+                  <p class="mb-6">He'd left it tied up near his family's property.</p>
+                  <p class="mb-6">He was supposed to go fishing at six that morning.</p>
+                  <p class="mb-6">Instead, he'd spent half the night looking for the drunk idiot who'd taken his boat.</p>
+                  <p class="mb-6">He made me help carry it back.</p>
+                  <p class="mb-6">And Mike took pictures of the whole thing.</p>
+                  <p class="mb-6">To this day, whenever someone asks Mike how we met, he says, “Oh, I know him from a police investigation.”</p>
+              </div>
+              <hr class="border-white/10">
+              <div class="text-slate-400 italic leading-relaxed space-y-6">
+                  <p class="mb-6">내가 경찰이 나를 찾는 수색 작업을 도와주려고 했던 이야기 해준 적 있나?</p>
+                  <p class="mb-6">내가 스물두 살 때 친구 마이크가 주말에 자기 가족 별장으로 놀러 오라고 했어. 한 열다섯 명 정도 모였고, 맥주가 가득 든 커다란 아이스박스도 있었지. 우리한테 얌전히 행동하라고 할 사람은 아무도 없었어.</p>
+                  <p class="mb-6">원래는 모닥불 옆에서 술 몇 잔 마시고 잠자리에 들 생각이었어.</p>
+                  <p class="mb-6">마이크가 저녁도 안 먹었으니까 술 마시는 <b class="highlight">속도 좀 조절하라고</b> 했거든.</p>
+                  <p class="mb-6">난 무시했지.</p>
+                  <p class="mb-6">자정쯤 어떤 남자가 <b class="highlight">대마초</b> 봉지를 꺼냈어. 난 <b class="highlight">대마초</b>를 안 피우니까 거절했지. 그런데 마이크가 예전에 삼촌의 <b class="highlight">대마초</b> 브라우니를 모르고 먹었던 황당한 이야기를 하기 시작한 거야.</p>
+                  <p class="mb-6">너무 웃겨서 의자에서 떨어질 정도였어.</p>
+                  <p class="mb-6">그러다가 바람 좀 쐬어야겠다고 생각했지.</p>
+                  <p class="mb-6">별장 뒤에 작은 <b class="highlight">개울</b>이 있었는데 누군가 카누를 나무에 묶어 놨더라고.</p>
+                  <p class="mb-6">왜 그랬는지는 정말 모르겠는데, 그 순간에는 그 카누를 타고 돌아다니는 게 정말 좋은 생각처럼 느껴졌어.</p>
+                  <p class="mb-6">카누에 올라타서 줄을 풀고 물 위로 밀어냈지.</p>
+                  <p class="mb-6">30초쯤 지나서야 노가 없다는 사실을 깨달았어.</p>
+                  <p class="mb-6">게다가 물살은 점점 빨라지고 있었고.</p>
+                  <p class="mb-6">멈춰 보려고 나뭇가지에 <b class="highlight">몸을 기댔어</b>.</p>
+                  <p class="mb-6">그런데 가지가 부러졌지.</p>
+                  <p class="mb-6">그래서 한밤중에 부러진 나뭇가지 반쪽을 들고 개울을 따라 떠내려가고 있었던 거야.</p>
+                  <p class="mb-6">캠핑장 하나를 지나가는데 누군가 소리치는 게 들렸어.</p>
+                  <p class="mb-6">“노는 어디 있어요?”</p>
+                  <p class="mb-6">내가 소리쳤지.</p>
+                  <p class="mb-6">“얘기하자면 길어요!”</p>
+                  <p class="mb-6">결국 카누가 바위 사이에 끼었어. 간신히 빠져나와서 도로 쪽으로 걸어 올라갔지.</p>
+                  <p class="mb-6">그동안 바위에 부딪힐 뻔한 <b class="highlight">아슬아슬한 순간도</b> 몇 번 있었지만 다행히 다치지는 않았어.</p>
+                  <p class="mb-6">그때 파란색 경광등이 보이더라고.</p>
+                  <p class="mb-6">경찰관 두 명이 순찰차 옆에 서 있었어.</p>
+                  <p class="mb-6">난 다가가서 물었지.</p>
+                  <p class="mb-6">“무슨 일이에요?”</p>
+                  <p class="mb-6">“실종된 남성을 찾고 있습니다. 두 시간쯤 전에 별장에서 사라졌어요.”</p>
+                  <p class="mb-6">“와, 큰일이네요. 제가 좀 도와드릴까요?”</p>
+                  <p class="mb-6">경찰관 한 명이 내 젖은 옷을 쳐다봤어.</p>
+                  <p class="mb-6">“이름이 뭐예요?”</p>
+                  <p class="mb-6">내 이름을 말했지.</p>
+                  <p class="mb-6">그 사람이 천천히 무전기를 집어 들더라고.</p>
+                  <p class="mb-6">“찾았습니다.”</p>
+                  <p class="mb-6">알고 보니 마이크가 내가 물에 빠져 죽은 줄 알고 경찰에 신고한 거야.</p>
+                  <p class="mb-6">경찰관이 나를 별장까지 태워다 줬어. 마이크는 밖에서 엄청 화난 표정으로 기다리고 있었지.</p>
+                  <p class="mb-6">그런데 진짜 최악인 건 따로 있었어.</p>
+                  <p class="mb-6">그 카누가 바로 나를 발견한 경찰관 소유였던 거야.</p>
+                  <p class="mb-6">자기 가족 땅 근처에 묶어 놓았던 거지.</p>
+                  <p class="mb-6">그 경찰관은 그날 아침 여섯 시에 낚시하러 갈 예정이었대.</p>
+                  <p class="mb-6">그런데 자기 배를 가져간 술 취한 멍청이를 찾느라 밤의 절반을 보낸 거야.</p>
+                  <p class="mb-6">결국 나한테 카누를 원래 자리로 옮기는 걸 도우라고 했어.</p>
+                  <p class="mb-6">그리고 마이크는 그 모든 장면을 사진으로 찍었지.</p>
+                  <p class="mb-6">지금도 누가 마이크한테 우리 어떻게 아는 사이냐고 물으면 이렇게 말해.</p>
+                  <p class="mb-6">“아, 경찰 수사 때문에 알게 된 사이예요.”</p>
+              </div>
+          </section>
+
+      </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "1014715.m4a";
+</script>
+      <script src="wordbank-utils.js"></script>
+  </body>
+  </html>

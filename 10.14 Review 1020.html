@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+      <title>Review Note | The Human Mattress</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+      <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+      </style>
+</head>
+<body class="p-4 md:p-12">
+      <div class="max-w-4xl mx-auto space-y-8">
+
+          <header class="text-center space-y-4">
+              <div class="flex items-center justify-center gap-4">
+                  <span class="text-5xl">🍺</span>
+                  <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Human Mattress</h1>
+              </div>
+              <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+          </header>
+
+          <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+              <div class="flex items-center justify-between px-2">
+                  <div class="flex items-center gap-3">
+                      <span class="text-xl">🎧</span>
+                      <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                  </div>
+                  <div class="flex gap-2">
+                      <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          <span class="text-lg">↺</span> 5s
+                      </button>
+                      <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          5s <span class="text-lg">↻</span>
+                      </button>
+                  </div>
+              </div>
+              <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+          </div>
+
+          <div class="flex justify-center">
+              <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+          </div>
+
+          <section class="glass rounded-3xl overflow-hidden shadow-xl">
+              <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                  <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+              </div>
+              <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                  <tr><td class="p-4"><b class="text-white">frosh week</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">대학 신입생 환영 주간 / 새내기 주간</td></tr>
+                  <tr><td class="p-4"><b class="text-white">deadweight</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">짐이 되는 사람 / 도움이 안 되는 사람</td></tr>
+                  <tr><td class="p-4"><b class="text-white">draft beer</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">생맥주</td></tr>
+                  <tr><td class="p-4"><b class="text-white">it has good body</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">(맥주 등이) 묵직하고 풍부한 질감이 있다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">drunken</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">술에 취한 / 술김에 벌어진</td></tr>
+                  <tr><td class="p-4"><b class="text-white">drunk</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">술에 취한 / 취객</td></tr>
+              </tbody></table>
+          </section>
+
+          <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-400">
+                  <h3 class="text-teal-400 font-bold mb-1">frosh week</h3>
+                  <p class="text-slate-300 text-sm">특히 캐나다 대학에서 사용하는 신입생 환영 행사 기간. frosh는 신입생을 뜻하는 비격식 표현.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-400">
+                  <h3 class="text-teal-400 font-bold mb-1">deadweight</h3>
+                  <p class="text-slate-300 text-sm">원래는 움직이지 않는 무거운 짐이라는 뜻. 사람에게 쓰면 도움은 안 되고 남에게 부담만 주는 사람을 의미.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-400">
+                  <h3 class="text-teal-400 font-bold mb-1">draft beer</h3>
+                  <p class="text-slate-300 text-sm">병이나 캔이 아닌 맥주 탭에서 따라 주는 생맥주. 영국식 철자는 draught beer.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-400">
+                  <h3 class="text-teal-400 font-bold mb-1">it has good body</h3>
+                  <p class="text-slate-300 text-sm">맥주나 와인의 질감이 적당히 묵직하고 풍부하다는 뜻. 맛이 진하다는 의미와는 조금 다름.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-400">
+                  <h3 class="text-teal-400 font-bold mb-1">drunken / drunk</h3>
+                  <p class="text-slate-300 text-sm">drunk는 사람의 취한 상태를 나타낼 때 자연스럽고, drunken은 주로 명사 앞에서 술에 취한 행동이나 사건을 묘사할 때 사용. 예: a drunken mistake, I was drunk.</p>
+              </div>
+          </section>
+
+          <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+              <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                  <p class="mb-6">Did I ever tell you about the time I got so drunk at university that six guys had to carry me home, and I ended up becoming somebody's mattress?</p>
+                  <p class="mb-6">It was <b class="highlight quiz-target" data-ans="frosh week" data-kor="신입생 환영 주간">frosh week</b>, and I'd just moved into residence. I didn't know anybody, so when a few guys invited me to a pub, I figured it was a good chance to make friends.</p>
+                  <p class="mb-6">The pub had a special on <b class="highlight quiz-target" data-ans="draft beer" data-kor="생맥주">draft beer</b>. Three dollars a pint.</p>
+                  <p class="mb-6">Now, I'd never been much of a beer drinker, but one of the guys, Trevor, acted like he was a professional beer critic.</p>
+                  <p class="mb-6">He took a sip, nodded seriously, and said, “<b class="highlight quiz-target" data-ans="It has good body" data-kor="묵직한 질감이 좋네">It has good body</b>.”</p>
+                  <p class="mb-6">I had no idea what that meant, but I nodded too.</p>
+                  <p class="mb-6">Then I ordered four more.</p>
+                  <p class="mb-6">Looking back, that was my first mistake.</p>
+                  <p class="mb-6">Around midnight, we decided to head back to residence. At least, that's what they told me later.</p>
+                  <p class="mb-6">I was completely <b class="highlight quiz-target" data-ans="drunk" data-kor="취해">drunk</b>.</p>
+                  <p class="mb-6">Apparently, I refused to walk because I was convinced my legs had stopped working.</p>
+                  <p class="mb-6">So the guys tried to carry me.</p>
+                  <p class="mb-6">But I was six feet tall and weighed about ninety kilos.</p>
+                  <p class="mb-6">After ten minutes, Trevor shouted, “This guy's complete <b class="highlight quiz-target" data-ans="deadweight" data-kor="짐짝">deadweight</b>!”</p>
+                  <p class="mb-6">They managed to get me into the residence building, but then they discovered the elevator was broken.</p>
+                  <p class="mb-6">My room was on the fourth floor.</p>
+                  <p class="mb-6">That's when things really went downhill.</p>
+                  <p class="mb-6">They dragged me up two flights of stairs before giving up.</p>
+                  <p class="mb-6">One guy said, “Just leave him here. We'll get him in the morning.”</p>
+                  <p class="mb-6">So they put me on a couch in the second-floor common room.</p>
+                  <p class="mb-6">Now, here's where it gets ridiculous.</p>
+                  <p class="mb-6">At about three in the morning, another student came back from a party. He was so wasted he could barely see straight.</p>
+                  <p class="mb-6">He saw me lying on the couch, decided I was a pile of blankets, and lay down right on top of me.</p>
+                  <p class="mb-6">Neither of us woke up.</p>
+                  <p class="mb-6">The next morning, the residence assistant found two grown men sleeping on top of each other.</p>
+                  <p class="mb-6">She took a picture.</p>
+                  <p class="mb-6">By lunchtime, it was everywhere.</p>
+                  <p class="mb-6">Someone even made a poster that said:</p>
+                  <p class="mb-6">“FROSH WEEK SURVIVAL TIP: NEVER BECOME THE FURNITURE.”</p>
+                  <p class="mb-6">And here's the best part.</p>
+                  <p class="mb-6">The guy who slept on me?</p>
+                  <p class="mb-6">His name was Andrew.</p>
+                  <p class="mb-6">We became best friends.</p>
+                  <p class="mb-6">He still tells people that our friendship started with a <b class="highlight quiz-target" data-ans="drunken" data-kor="술에 취한">drunken</b> one-night stand.</p>
+                  <p class="mb-6">I keep telling him that's not what happened.</p>
+                  <p class="mb-6">He says, “Well, you were pretty comfortable.”</p>
+              </div>
+              <hr class="border-white/10">
+              <div class="text-slate-400 italic leading-relaxed space-y-6">
+                  <p class="mb-6">내가 대학 때 술에 너무 취해서 남자 여섯 명이 나를 집까지 옮겨야 했고, 결국 누군가의 매트리스가 되어 버린 이야기 해준 적 있나?</p>
+                  <p class="mb-6"><b class="highlight">신입생 환영 주간</b>이었고, 난 막 기숙사에 들어온 참이었어. 아는 사람이 아무도 없어서 몇몇 남자애들이 술집에 가자고 했을 때 친구를 사귈 좋은 기회라고 생각했지.</p>
+                  <p class="mb-6">그 술집에서는 <b class="highlight">생맥주</b>를 특별 할인하고 있었어. 한 파인트에 3달러였지.</p>
+                  <p class="mb-6">사실 난 원래 맥주를 즐겨 마시는 편이 아니었는데, 트레버라는 녀석이 무슨 전문 맥주 평론가처럼 굴더라고.</p>
+                  <p class="mb-6">맥주를 한 모금 마시더니 진지하게 고개를 끄덕이며 말했어.</p>
+                  <p class="mb-6">“<b class="highlight">묵직한 질감이 좋네</b>.”</p>
+                  <p class="mb-6">무슨 뜻인지 전혀 몰랐지만 나도 고개를 끄덕였지.</p>
+                  <p class="mb-6">그러고는 네 잔을 더 시켰어.</p>
+                  <p class="mb-6">지금 생각하면 그게 첫 번째 실수였어.</p>
+                  <p class="mb-6">자정쯤 우리는 기숙사로 돌아가기로 했대. 적어도 나중에 애들이 그렇게 말해 줬어.</p>
+                  <p class="mb-6">난 완전히 <b class="highlight">취해</b> 있었거든.</p>
+                  <p class="mb-6">듣자 하니 내가 다리가 작동을 멈췄다고 굳게 믿으면서 걷기를 거부했대.</p>
+                  <p class="mb-6">그래서 애들이 나를 들어 옮기려고 했지.</p>
+                  <p class="mb-6">그런데 난 키가 183센티미터 정도에 몸무게가 90킬로그램쯤 나갔어.</p>
+                  <p class="mb-6">10분쯤 지나자 트레버가 소리쳤대.</p>
+                  <p class="mb-6">“야, 이 자식 완전히 <b class="highlight">짐짝</b>이잖아!”</p>
+                  <p class="mb-6">어떻게든 기숙사 건물 안까지 데려왔는데 엘리베이터가 고장 난 거야.</p>
+                  <p class="mb-6">내 방은 4층이었고.</p>
+                  <p class="mb-6">바로 그때부터 상황이 정말 엉망이 되기 시작했지.</p>
+                  <p class="mb-6">애들은 나를 계단 두 층이나 끌고 올라갔다가 결국 포기했어.</p>
+                  <p class="mb-6">한 녀석이 말했대.</p>
+                  <p class="mb-6">“그냥 여기 두자. 아침에 데리러 오면 되잖아.”</p>
+                  <p class="mb-6">그래서 2층 휴게실 소파에 나를 눕혀 놓았어.</p>
+                  <p class="mb-6">그런데 여기서부터 진짜 황당해져.</p>
+                  <p class="mb-6">새벽 세 시쯤 다른 학생 하나가 파티에서 돌아왔어. 그 녀석도 너무 취해서 앞도 제대로 못 볼 정도였지.</p>
+                  <p class="mb-6">소파에 누워 있는 나를 보더니 담요 더미라고 생각하고 내 위에 그대로 누워 버린 거야.</p>
+                  <p class="mb-6">우리 둘 다 깨지 않았어.</p>
+                  <p class="mb-6">다음 날 아침, 기숙사 사감이 다 큰 남자 둘이 서로 포개져 자고 있는 걸 발견했지.</p>
+                  <p class="mb-6">사진을 찍었어.</p>
+                  <p class="mb-6">점심때쯤에는 그 사진이 온 학교에 퍼졌고.</p>
+                  <p class="mb-6">누군가는 포스터까지 만들었어.</p>
+                  <p class="mb-6">“신입생 환영 주간 생존 수칙: 절대로 가구가 되지 마세요.”</p>
+                  <p class="mb-6">그런데 진짜 웃긴 건 따로 있어.</p>
+                  <p class="mb-6">내 위에서 잤던 그 남자?</p>
+                  <p class="mb-6">이름이 앤드루였어.</p>
+                  <p class="mb-6">우리는 절친이 됐지.</p>
+                  <p class="mb-6">지금도 그 녀석은 우리 우정이 <b class="highlight">술에 취한</b> 하룻밤의 관계에서 시작됐다고 사람들한테 말하고 다녀.</p>
+                  <p class="mb-6">난 계속 그런 일이 아니었다고 설명하지.</p>
+                  <p class="mb-6">그러면 걔가 말해.</p>
+                  <p class="mb-6">“그래도 너 꽤 편하던데?”</p>
+              </div>
+          </section>
+
+      </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "10141020.m4a";
+</script>
+      <script src="wordbank-utils.js"></script>
+  </body>
+  </html>

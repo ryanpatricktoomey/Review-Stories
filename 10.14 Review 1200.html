@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+      <title>Review Note | The Shopping Cart</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+      <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+      </style>
+</head>
+<body class="p-4 md:p-12">
+      <div class="max-w-4xl mx-auto space-y-8">
+
+          <header class="text-center space-y-4">
+              <div class="flex items-center justify-center gap-4">
+                  <span class="text-5xl">🛒</span>
+                  <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Shopping Cart</h1>
+              </div>
+              <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+          </header>
+
+          <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+              <div class="flex items-center justify-between px-2">
+                  <div class="flex items-center gap-3">
+                      <span class="text-xl">🎧</span>
+                      <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                  </div>
+                  <div class="flex gap-2">
+                      <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          <span class="text-lg">↺</span> 5s
+                      </button>
+                      <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          5s <span class="text-lg">↻</span>
+                      </button>
+                  </div>
+              </div>
+              <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+          </div>
+
+          <div class="flex justify-center">
+              <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+          </div>
+
+          <section class="glass rounded-3xl overflow-hidden shadow-xl">
+              <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                  <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+              </div>
+              <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                  <tr><td class="p-4"><b class="text-white">accuse</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">~를 비난하다 / ~에게 혐의를 씌우다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">alcohol</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">술 / 알코올</td></tr>
+                  <tr><td class="p-4"><b class="text-white">get a buzz on</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">술기운이 살짝 돌다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">got a black eye</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">눈 주위에 멍이 들었다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">pull an all nighter</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">밤을 꼬박 새우다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">stay out all night</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">밤새 집에 들어오지 않다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">blackmail</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">약점을 잡아 협박하다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">my parents gave me shit</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">부모님한테 엄청 혼났다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">they were pissed</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">부모님이 몹시 화가 나셨다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">got angry at me</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">나한테 화를 냈다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">punished me</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">나에게 벌을 주었다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">told me off</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">나를 심하게 꾸짖었다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">got in trouble</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">혼났다 / 곤란한 상황에 빠졌다</td></tr>
+              </tbody></table>
+          </section>
+
+          <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-400">
+                  <h3 class="text-teal-400 font-bold mb-1">get a buzz on</h3>
+                  <p class="text-slate-300 text-sm">술기운이 기분 좋게 살짝 오르다. 심하게 취했다는 뜻은 아님.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-400">
+                  <h3 class="text-teal-400 font-bold mb-1">pull an all nighter</h3>
+                  <p class="text-slate-300 text-sm">밤을 꼬박 새우다. 공부뿐 아니라 술을 마시거나 놀면서 밤을 새울 때도 쓸 수 있음. 보통 pull an all-nighter라고 표기.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-400">
+                  <h3 class="text-teal-400 font-bold mb-1">stay out all night</h3>
+                  <p class="text-slate-300 text-sm">밤새 집에 들어오지 않다. 잠을 자지 않았다는 뜻은 아님.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-400">
+                  <h3 class="text-teal-400 font-bold mb-1">got a black eye</h3>
+                  <p class="text-slate-300 text-sm">눈 주변에 멍이 들었다는 뜻. 꼭 주먹에 맞아서 생긴 멍일 필요는 없음.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-400">
+                  <h3 class="text-teal-400 font-bold mb-1">blackmail</h3>
+                  <p class="text-slate-300 text-sm">비밀을 폭로하겠다고 위협하며 돈이나 원하는 행동을 요구하다.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-400">
+                  <h3 class="text-teal-400 font-bold mb-1">my parents gave me shit</h3>
+                  <p class="text-slate-300 text-sm">부모님께 엄청 혼났다는 거친 구어체 표현.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-400">
+                  <h3 class="text-teal-400 font-bold mb-1">they were pissed</h3>
+                  <p class="text-slate-300 text-sm">북미 영어에서는 '몹시 화가 났다'는 뜻.</p>
+              </div>
+          </section>
+
+          <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+              <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                  <p class="mb-6">Did I ever tell you about the time I blacked out drinking and woke up in a shopping cart outside a supermarket?</p>
+                  <p class="mb-6">I was twenty-one, living with my parents after finishing university. My friend Jason had just gotten his first job, so we went out to celebrate.</p>
+                  <p class="mb-6">We planned to <b class="highlight quiz-target" data-ans="pull an all nighter" data-kor="밤을 꼬박 새우다">pull an all nighter</b>, although I only intended to <b class="highlight quiz-target" data-ans="get a buzz on" data-kor="술기운이 살짝 돌다">get a buzz on</b>.</p>
+                  <p class="mb-6">Unfortunately, Jason kept buying shots.</p>
+                  <p class="mb-6">The last thing I remember is telling him, “I think I've had enough <b class="highlight quiz-target" data-ans="alcohol" data-kor="술">alcohol</b>.”</p>
+                  <p class="mb-6">Then nothing.</p>
+                  <p class="mb-6">I woke up at seven in the morning.</p>
+                  <p class="mb-6">I was sitting in a shopping cart outside a supermarket, wearing one shoe.</p>
+                  <p class="mb-6">My left eye hurt. My phone was dead.</p>
+                  <p class="mb-6">A supermarket employee was standing in front of me.</p>
+                  <p class="mb-6">“Are you going to get out of that?”</p>
+                  <p class="mb-6">I looked around.</p>
+                  <p class="mb-6">“Where am I?”</p>
+                  <p class="mb-6">“Outside a supermarket.”</p>
+                  <p class="mb-6">“Right. Why am I in a shopping cart?”</p>
+                  <p class="mb-6">“How would I know?”</p>
+                  <p class="mb-6">I climbed out and found a taxi.</p>
+                  <p class="mb-6">When I got home, my parents were having breakfast.</p>
+                  <p class="mb-6">Mom looked at my face.</p>
+                  <p class="mb-6">“What happened to your eye?”</p>
+                  <p class="mb-6">I went to the bathroom and looked in the mirror.</p>
+                  <p class="mb-6">I'd <b class="highlight quiz-target" data-ans="got a black eye" data-kor="눈 주위에 멍이 들었다">got a black eye</b>.</p>
+                  <p class="mb-6">I called Jason immediately.</p>
+                  <p class="mb-6">“Why did I wake up in a shopping cart?”</p>
+                  <p class="mb-6">He started laughing.</p>
+                  <p class="mb-6">Then he explained.</p>
+                  <p class="mb-6">Apparently, around three in the morning, we'd left the bar and gone looking for food.</p>
+                  <p class="mb-6">We found a twenty-four-hour supermarket.</p>
+                  <p class="mb-6">Outside, there were shopping carts lined up near the entrance.</p>
+                  <p class="mb-6">I was so drunk I could barely stand, so I sat in one.</p>
+                  <p class="mb-6">Jason told me to get out.</p>
+                  <p class="mb-6">Instead, I started shouting, “Push me!”</p>
+                  <p class="mb-6">He refused.</p>
+                  <p class="mb-6">So I tried to push myself along with one foot.</p>
+                  <p class="mb-6">The cart rolled forward, hit a curb, and stopped suddenly.</p>
+                  <p class="mb-6">My face hit the metal handle.</p>
+                  <p class="mb-6">That explained the black eye.</p>
+                  <p class="mb-6">“But why did you leave me there?” I asked.</p>
+                  <p class="mb-6">“I didn't! I went inside to buy water. When I came back, you were asleep. I tried waking you up for twenty minutes.”</p>
+                  <p class="mb-6">“So you just went home?”</p>
+                  <p class="mb-6">“No. I called your dad.”</p>
+                  <p class="mb-6">I froze.</p>
+                  <p class="mb-6">“What?”</p>
+                  <p class="mb-6">“He came to get you. But you woke up when he tried to lift you out and started shouting that he was kidnapping you.”</p>
+                  <p class="mb-6">I stared at the phone.</p>
+                  <p class="mb-6">Jason continued.</p>
+                  <p class="mb-6">“Your dad was furious. He told me to stay with you while he went home to get the car with more space.”</p>
+                  <p class="mb-6">“Why didn't you stay?”</p>
+                  <p class="mb-6">“I did. I was sitting on the bench beside you. You were asleep when I went to get coffee from the machine inside. I came back and you were gone.”</p>
+                  <p class="mb-6">My stomach dropped.</p>
+                  <p class="mb-6">I'd left just before Jason returned.</p>
+                  <p class="mb-6">Then Dad walked into the kitchen.</p>
+                  <p class="mb-6">He looked at me.</p>
+                  <p class="mb-6">“Feeling better?”</p>
+                  <p class="mb-6">“Not really.”</p>
+                  <p class="mb-6">“Good. Get dressed.”</p>
+                  <p class="mb-6">“Why?”</p>
+                  <p class="mb-6">“We're going back to the supermarket.”</p>
+                  <p class="mb-6">“For what?”</p>
+                  <p class="mb-6">“To apologize to the manager. You threw up in one of their carts.”</p>
+                  <p class="mb-6">My mother <b class="highlight quiz-target" data-ans="got angry at me" data-kor="나한테 화를 냈다">got angry at me</b> when she heard that.</p>
+                  <p class="mb-6"><b class="highlight quiz-target" data-ans="my parents gave me shit" data-kor="부모님한테 엄청 혼났다">My parents gave me shit</b> all morning. <b class="highlight quiz-target" data-ans="they were pissed" data-kor="부모님이 몹시 화가 나셨다">They were pissed</b>.</p>
+                  <p class="mb-6">Dad <b class="highlight quiz-target" data-ans="told me off" data-kor="나를 심하게 꾸짖었다">told me off</b> for drinking until I couldn't take care of myself.</p>
+                  <p class="mb-6">I definitely <b class="highlight quiz-target" data-ans="got in trouble" data-kor="혼났다">got in trouble</b>.</p>
+                  <p class="mb-6">But the most embarrassing part came when we arrived at the supermarket.</p>
+                  <p class="mb-6">The employee from earlier recognized me immediately.</p>
+                  <p class="mb-6">“Oh,” he said. “Shopping Cart Guy.”</p>
+                  <p class="mb-6">My dad closed his eyes.</p>
+                  <p class="mb-6">And I knew that nickname was going to stick.</p>
+              </div>
+              <hr class="border-white/10">
+              <div class="text-slate-400 italic leading-relaxed space-y-6">
+                  <p class="mb-6">술을 마시다가 필름이 끊기고 슈퍼마켓 밖 쇼핑카트 안에서 눈을 뜬 이야기 해준 적 있나?</p>
+                  <p class="mb-6">스물한 살 때였고, 대학을 졸업한 뒤 부모님과 함께 살고 있었어. 친구 제이슨이 첫 직장을 구해서 축하하러 술을 마시러 갔지.</p>
+                  <p class="mb-6">우리는 <b class="highlight">밤을 꼬박 새울</b> 계획이었지만, 난 원래 <b class="highlight">살짝 취기가 오를 정도만</b> 마시려고 했어.</p>
+                  <p class="mb-6">그런데 제이슨이 계속 독한 술을 한 잔씩 사더라고.</p>
+                  <p class="mb-6">마지막으로 기억나는 건 제이슨에게 이렇게 말한 거야.</p>
+                  <p class="mb-6">“나 <b class="highlight">술</b> 충분히 마신 것 같아.”</p>
+                  <p class="mb-6">그다음부터는 아무 기억도 없어.</p>
+                  <p class="mb-6">아침 일곱 시에 눈을 떴어.</p>
+                  <p class="mb-6">슈퍼마켓 밖 쇼핑카트 안에 앉아 있었고, 신발은 한 짝만 신고 있었어.</p>
+                  <p class="mb-6">왼쪽 눈이 아팠어. 휴대전화는 배터리가 다 됐고.</p>
+                  <p class="mb-6">슈퍼마켓 직원이 내 앞에 서 있었어.</p>
+                  <p class="mb-6">“거기서 안 나오실 거예요?”</p>
+                  <p class="mb-6">난 주위를 둘러봤어.</p>
+                  <p class="mb-6">“여기가 어디죠?”</p>
+                  <p class="mb-6">“슈퍼마켓 밖이요.”</p>
+                  <p class="mb-6">“아, 네. 그런데 제가 왜 쇼핑카트 안에 있죠?”</p>
+                  <p class="mb-6">“그걸 제가 어떻게 알아요?”</p>
+                  <p class="mb-6">카트에서 내려 택시를 잡았어.</p>
+                  <p class="mb-6">집에 도착하니 부모님이 아침을 드시고 계셨어.</p>
+                  <p class="mb-6">엄마가 내 얼굴을 보셨어.</p>
+                  <p class="mb-6">“눈이 왜 그래?”</p>
+                  <p class="mb-6">화장실에 가서 거울을 봤어.</p>
+                  <p class="mb-6"><b class="highlight">눈 주위에 멍이 들어</b> 있었어.</p>
+                  <p class="mb-6">바로 제이슨에게 전화했지.</p>
+                  <p class="mb-6">“나 왜 쇼핑카트 안에서 깨어난 거야?”</p>
+                  <p class="mb-6">제이슨이 웃기 시작했어.</p>
+                  <p class="mb-6">그러더니 설명해 줬지.</p>
+                  <p class="mb-6">알고 보니 새벽 세 시쯤 우리는 술집에서 나와 먹을 걸 찾으러 다녔대.</p>
+                  <p class="mb-6">그러다가 24시간 슈퍼마켓을 발견한 거야.</p>
+                  <p class="mb-6">밖에는 입구 근처에 쇼핑카트들이 줄지어 있었어.</p>
+                  <p class="mb-6">난 너무 취해서 제대로 서 있지도 못했기 때문에 카트 하나에 앉았대.</p>
+                  <p class="mb-6">제이슨이 나오라고 했어.</p>
+                  <p class="mb-6">그런데 난 오히려 “밀어 줘!”라고 소리쳤다는 거야.</p>
+                  <p class="mb-6">제이슨은 거절했어.</p>
+                  <p class="mb-6">그래서 내가 한쪽 발로 바닥을 밀면서 직접 카트를 움직이려고 했대.</p>
+                  <p class="mb-6">카트가 앞으로 굴러가다가 보도 턱에 부딪혀 갑자기 멈췄어.</p>
+                  <p class="mb-6">그 바람에 내 얼굴이 금속 손잡이에 부딪힌 거야.</p>
+                  <p class="mb-6">눈에 멍이 든 이유가 그거였어.</p>
+                  <p class="mb-6">“그런데 왜 날 거기 두고 갔어?” 내가 물었어.</p>
+                  <p class="mb-6">“안 두고 갔어! 물 사러 안에 들어갔는데 돌아오니까 네가 자고 있었어. 20분 동안 깨우려고 했다고.”</p>
+                  <p class="mb-6">“그래서 그냥 집에 간 거야?”</p>
+                  <p class="mb-6">“아니. 네 아버지한테 전화했어.”</p>
+                  <p class="mb-6">난 얼어붙었어.</p>
+                  <p class="mb-6">“뭐?”</p>
+                  <p class="mb-6">“아버지가 널 데리러 오셨어. 그런데 널 카트에서 꺼내려고 하니까 네가 깨서 납치당한다고 소리를 지르기 시작했어.”</p>
+                  <p class="mb-6">난 휴대전화를 멍하니 바라봤어.</p>
+                  <p class="mb-6">제이슨이 말을 이었어.</p>
+                  <p class="mb-6">“아버지가 엄청 화가 나셨어. 더 넓은 차를 가져오려고 집에 다녀오실 테니 나보고 너랑 같이 있으라고 하셨지.”</p>
+                  <p class="mb-6">“그런데 넌 왜 안 있었어?”</p>
+                  <p class="mb-6">“있었어. 네 옆 벤치에 앉아 있었지. 네가 자고 있어서 안에 있는 자판기에서 커피를 사러 갔는데 돌아오니까 네가 사라진 거야.”</p>
+                  <p class="mb-6">가슴이 철렁했어.</p>
+                  <p class="mb-6">내가 제이슨이 돌아오기 직전에 떠난 거였지.</p>
+                  <p class="mb-6">그때 아빠가 부엌으로 들어오셨어.</p>
+                  <p class="mb-6">아빠가 나를 보셨어.</p>
+                  <p class="mb-6">“좀 괜찮아졌냐?”</p>
+                  <p class="mb-6">“별로요.”</p>
+                  <p class="mb-6">“잘됐네. 옷 입어.”</p>
+                  <p class="mb-6">“왜요?”</p>
+                  <p class="mb-6">“슈퍼마켓에 다시 가야 하니까.”</p>
+                  <p class="mb-6">“뭐 하러요?”</p>
+                  <p class="mb-6">“매니저한테 사과하러. 네가 쇼핑카트에 토했거든.”</p>
+                  <p class="mb-6">그 말을 들은 엄마가 <b class="highlight">나한테 화를 내셨어</b>.</p>
+                  <p class="mb-6">그날 오전 내내 <b class="highlight">부모님께 엄청 혼났어</b>. 두 분 다 <b class="highlight">정말 화가 나셨거든</b>.</p>
+                  <p class="mb-6">아빠는 스스로를 돌보지도 못할 만큼 술을 마셨다며 <b class="highlight">나를 심하게 꾸짖으셨어</b>.</p>
+                  <p class="mb-6">난 정말 제대로 <b class="highlight">혼났지</b>.</p>
+                  <p class="mb-6">하지만 가장 창피한 순간은 슈퍼마켓에 도착했을 때였어.</p>
+                  <p class="mb-6">아까 봤던 직원이 나를 바로 알아봤어.</p>
+                  <p class="mb-6">“아, 쇼핑카트 아저씨네요.”</p>
+                  <p class="mb-6">아빠는 눈을 감으셨어.</p>
+                  <p class="mb-6">그리고 난 그 별명이 오래갈 거라는 걸 직감했지.</p>
+              </div>
+          </section>
+
+      </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "10141200.m4a";
+</script>
+      <script src="wordbank-utils.js"></script>
+  </body>
+  </html>

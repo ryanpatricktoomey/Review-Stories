@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+      <title>Review Note | An Ode to the Person Who Knows Where Everything Is</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+      <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+      </style>
+</head>
+<body class="p-4 md:p-12">
+      <div class="max-w-4xl mx-auto space-y-8">
+
+          <header class="text-center space-y-4">
+              <div class="flex items-center justify-center gap-4">
+                  <span class="text-5xl">🗂️</span>
+                  <h1 class="text-3xl md:text-4xl font-extrabold text-white">An Ode to the Person Who Knows Where Everything Is</h1>
+              </div>
+              <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+          </header>
+
+          <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+              <div class="flex items-center justify-between px-2">
+                  <div class="flex items-center gap-3">
+                      <span class="text-xl">🎧</span>
+                      <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                  </div>
+                  <div class="flex gap-2">
+                      <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          <span class="text-lg">↺</span> 5s
+                      </button>
+                      <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          5s <span class="text-lg">↻</span>
+                      </button>
+                  </div>
+              </div>
+              <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+          </div>
+
+          <div class="flex justify-center">
+              <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+          </div>
+
+          <section class="glass rounded-3xl overflow-hidden shadow-xl">
+              <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                  <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+              </div>
+              <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                  <tr><td class="p-4"><b class="text-white">below average</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">평균 이하인</td></tr>
+                  <tr><td class="p-4"><b class="text-white">work on</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">~을 개선하려고 노력하다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">early adopter</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">신기술이나 신제품을 남보다 먼저 사용하는 사람</td></tr>
+                  <tr><td class="p-4"><b class="text-white">ask where everything is</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">모든 물건이 어디 있는지 물어보다</td></tr>
+              </tbody></table>
+          </section>
+
+          <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <h3 class="text-amber-400 font-bold text-lg">work on</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">부족한 점을 개선하기 위해 노력한다는 뜻이에요. work on keeping things tidy는 물건을 깔끔하게 정리하는 습관을 기르려고 노력한다는 의미예요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <h3 class="text-amber-400 font-bold text-lg">early adopter</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">새로운 기술이나 제품을 남들보다 먼저 써 보는 사람이에요. 꼭 기술 전문가라는 뜻은 아니에요.</p>
+              </div>
+          </section>
+
+          <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+              <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                  <p class="mb-6">You know where the scissors are. You know where we keep the tape. You know which drawer has batteries, and where we put the plates.</p>
+                  <p class="mb-6">You know where the passports are, the charger and the glue. And when we can't find anything, we all come straight to you.</p>
+                  <p class="mb-6">We <b class="highlight quiz-target" data-ans="ask where everything is" data-kor="모든 물건이 어디 있는지 물어보다">ask where everything is</b>, and you just point and say, "Second drawer, behind the cups." And then you're on your way.</p>
+                  <p class="mb-6">You're not an <b class="highlight quiz-target" data-ans="early adopter" data-kor="신기술이나 신제품을 남보다 먼저 사용하는 사람">early adopter</b>, with some expensive app. You don't need clever technology to know where things are at.</p>
+                  <p class="mb-6">You might be <b class="highlight quiz-target" data-ans="below average" data-kor="평균 이하인">below average</b> at remembering someone's name. You might need to <b class="highlight quiz-target" data-ans="work on" data-kor="~을 개선하려고 노력하다">work on</b> keeping your own desk neat someday.</p>
+                  <p class="mb-6">But when we're running late for work, and no one has a clue, you find the keys, the missing bag, and someone's other shoe.</p>
+                  <p class="mb-6">You say, "It's just remembering. It's really not that hard."</p>
+                  <p class="mb-6">But we would spend the whole day looking through the house and yard.</p>
+                  <p class="mb-6">You're the go-to person for the things we can't locate. You save us from frustration, and from always running late.</p>
+                  <p class="mb-6">And though you never think of it as something you do well, there's one important thing we really ought to tell.</p>
+                  <p class="mb-6">A home needs more than furniture, more than a roof and walls. It needs someone who knows just where to look when someone calls.</p>
+                  <p class="mb-6">So give yourself some credit. You make our lives less stressed.</p>
+                  <p class="mb-6">And when we need that roll of tape, you're simply the best.</p>
+              </div>
+              <hr class="border-white/10">
+              <div class="text-slate-400 italic leading-relaxed space-y-6">
+                  <p class="mb-6">당신은 가위가 어디 있는지 알아요. 테이프를 어디에 두는지도 알죠. 건전지가 어느 서랍에 있는지, 접시는 어디에 두는지도 알아요.</p>
+                  <p class="mb-6">여권이 어디 있는지, 충전기와 풀은 어디 있는지도 알아요. 그리고 우리가 무언가를 찾지 못하면 모두 곧장 당신에게 가죠.</p>
+                  <p class="mb-6">우리는 <b class="highlight">모든 물건이 어디 있는지 물어보고</b>, 당신은 그저 손가락으로 가리키며 말해요. "두 번째 서랍, 컵 뒤에 있어." 그러고는 하던 일을 계속하죠.</p>
+                  <p class="mb-6">당신은 비싼 앱을 쓰는 <b class="highlight">얼리어답터</b>도 아니에요. 물건이 어디 있는지 알기 위해 똑똑한 기술이 필요한 것도 아니죠.</p>
+                  <p class="mb-6">사람 이름을 기억하는 건 <b class="highlight">평균보다 못할</b> 수도 있어요. 자기 책상을 깔끔하게 유지하는 건 좀 더 <b class="highlight">노력해야 할지</b>도 모르고요.</p>
+                  <p class="mb-6">하지만 출근 시간이 다가오는데 아무도 뭘 어떻게 해야 할지 모를 때, 당신은 열쇠도, 없어진 가방도, 누군가의 신발 한 짝도 찾아내죠.</p>
+                  <p class="mb-6">당신은 말해요. "그냥 기억하는 것뿐이야. 그렇게 어려운 일도 아닌데."</p>
+                  <p class="mb-6">하지만 우리는 온종일 집 안과 마당을 뒤지고 있을 거예요.</p>
+                  <p class="mb-6">당신은 물건을 찾지 못할 때 모두가 가장 먼저 찾는 사람이에요. 우리의 짜증을 덜어주고, 지각하는 일도 막아주죠.</p>
+                  <p class="mb-6">당신은 이걸 자신이 잘하는 일이라고 생각하지 않지만, 우리가 꼭 해주고 싶은 말이 있어요.</p>
+                  <p class="mb-6">집에는 가구만 필요한 게 아니에요. 지붕과 벽만으로도 충분하지 않죠. 누군가 무언가를 찾을 때 어디를 봐야 하는지 아는 사람도 필요해요.</p>
+                  <p class="mb-6">그러니 자신의 능력을 좀 인정해 주세요. 당신 덕분에 우리의 일상이 훨씬 편안해지니까요.</p>
+                  <p class="mb-6">그리고 그 테이프가 꼭 필요한 순간, 당신은 정말 최고예요.</p>
+              </div>
+          </section>
+
+      </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "1015630.m4a";
+</script>
+      <script src="wordbank-utils.js"></script>
+  </body>
+  </html>

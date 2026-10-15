@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+      <title>Review Note | An Ode to the Person Who Can Pack Anything</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+      <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+      </style>
+</head>
+<body class="p-4 md:p-12">
+      <div class="max-w-4xl mx-auto space-y-8">
+
+          <header class="text-center space-y-4">
+              <div class="flex items-center justify-center gap-4">
+                  <span class="text-5xl">🧳</span>
+                  <h1 class="text-3xl md:text-4xl font-extrabold text-white">An Ode to the Person Who Can Pack Anything</h1>
+              </div>
+              <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+          </header>
+
+          <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+              <div class="flex items-center justify-between px-2">
+                  <div class="flex items-center gap-3">
+                      <span class="text-xl">🎧</span>
+                      <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                  </div>
+                  <div class="flex gap-2">
+                      <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          <span class="text-lg">↺</span> 5s
+                      </button>
+                      <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          5s <span class="text-lg">↻</span>
+                      </button>
+                  </div>
+              </div>
+              <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+          </div>
+
+          <div class="flex justify-center">
+              <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+          </div>
+
+          <section class="glass rounded-3xl overflow-hidden shadow-xl">
+              <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                  <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+              </div>
+              <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                  <tr><td class="p-4"><b class="text-white">have a knack for</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">~에 소질이 있다, ~을 유난히 잘하다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">cram</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">벼락치기로 공부하다, 좁은 공간에 억지로 밀어 넣다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">eyeball it</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">눈대중으로 판단하다, 대충 눈으로 재다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">have a good eye for</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">~을 알아보는 안목이 있다, 보는 눈이 좋다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">have high standards</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">기준이 높다, 눈높이가 높다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">useless</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">쓸모없는, 도움이 안 되는</td></tr>
+                  <tr><td class="p-4"><b class="text-white">come in handy</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">유용하게 쓰이다, 도움이 되다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">get a needle</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">주삿바늘에 찔리다, 주사를 맞다 (문맥에 따라 다름)</td></tr>
+                  <tr><td class="p-4"><b class="text-white">get a shot</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">주사를 맞다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">bullshit artist</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">말로 사람을 속이거나 그럴듯하게 둘러대는 사람</td></tr>
+                  <tr><td class="p-4"><b class="text-white">talk shit</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">헛소리하다, 남을 험담하다 (비속어)</td></tr>
+                  <tr><td class="p-4"><b class="text-white">white lie</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">선의의 거짓말, 상대를 배려하기 위한 작은 거짓말</td></tr>
+                  <tr><td class="p-4"><b class="text-white">bite my tongue</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">하고 싶은 말을 꾹 참다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">beat around the bush</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">핵심을 피하며 빙빙 돌려 말하다</td></tr>
+              </tbody></table>
+          </section>
+
+          <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <h3 class="text-amber-400 font-bold text-lg">have a knack for / have a good eye for</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">knack은 어떤 일을 쉽게 잘하는 소질이고, a good eye for는 좋은 물건이나 작은 차이 등을 알아보는 안목이에요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <h3 class="text-amber-400 font-bold text-lg">cram</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">시험 직전에 벼락치기한다는 뜻 외에도, 물건을 좁은 공간에 꽉 밀어 넣는다는 뜻이 있어요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <h3 class="text-amber-400 font-bold text-lg">eyeball it</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">자나 저울 같은 도구 없이 눈으로 대략 판단하는 거예요. 요리나 길이 측정에서 자주 써요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <h3 class="text-amber-400 font-bold text-lg">come in handy</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">지금 당장은 별로 필요 없어 보여도 특정 상황에서 유용하게 쓰인다는 뜻이에요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <h3 class="text-amber-400 font-bold text-lg">get a needle / get a shot</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">주사를 맞는다는 의미에서는 get a shot이 더 일반적이에요. Get a needle은 문맥에 따라 의미가 달라지며, 주사를 뜻할 때는 get a needle in your arm처럼 표현할 수 있어요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <h3 class="text-amber-400 font-bold text-lg">bullshit artist / talk shit</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">둘 다 거친 구어 표현이에요. Bullshit artist는 거짓말이나 허풍을 그럴듯하게 늘어놓는 사람이고, talk shit은 헛소리하거나 남을 험담하는 뜻으로 쓰여요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <h3 class="text-amber-400 font-bold text-lg">white lie / bite my tongue / beat around the bush</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">각각 상대를 배려한 작은 거짓말, 하고 싶은 말을 참는 것, 핵심을 직접 말하지 않고 빙빙 돌리는 것을 뜻해요.</p>
+              </div>
+          </section>
+
+          <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+              <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                  <p class="mb-6">You know the person who can fit it all inside, who looks at a tiny suitcase and says, "There's room. It's fine."</p>
+                  <p class="mb-6">You <b class="highlight quiz-target" data-ans="have a knack for" data-kor="~에 소질이 있다, ~을 유난히 잘하다">have a knack for</b> packing, for making things fit right. You fold a week's worth of clothing into a bag that's light.</p>
+                  <p class="mb-6">You <b class="highlight quiz-target" data-ans="have a good eye for" data-kor="~을 알아보는 안목이 있다, 보는 눈이 좋다">have a good eye for</b> spaces, you can <b class="highlight quiz-target" data-ans="eyeball it" data-kor="눈대중으로 판단하다, 대충 눈으로 재다">eyeball</b> what will fit. While others push and struggle, you rearrange a bit.</p>
+                  <p class="mb-6">You don't just <b class="highlight quiz-target" data-ans="cram" data-kor="벼락치기로 공부하다, 좁은 공간에 억지로 밀어 넣다">cram</b> things in there, you know what goes where. You leave a little space for gifts, and somehow there's room to spare.</p>
+                  <p class="mb-6">Your friends <b class="highlight quiz-target" data-ans="have high standards" data-kor="기준이 높다, 눈높이가 높다">have high standards</b>. They want to bring it all: three pairs of shoes, a winter coat, and things they'll never use at all.</p>
+                  <p class="mb-6">They say, "This skill is <b class="highlight quiz-target" data-ans="useless" data-kor="쓸모없는, 도움이 안 되는">useless</b>. It's just putting things away."</p>
+                  <p class="mb-6">But when the bags won't close, guess who saves the day?</p>
+                  <p class="mb-6">Your talent <b class="highlight quiz-target" data-ans="come in handy" data-kor="유용하게 쓰이다, 도움이 되다">comes in handy</b> when everyone's in a rush, when someone sits upon their bag and tries to make it shut.</p>
+                  <p class="mb-6">You're usually the one who knows what they should bring, from chargers to a first-aid kit and every little thing.</p>
+                  <p class="mb-6">When someone's scared to <b class="highlight quiz-target" data-ans="get a shot" data-kor="주사를 맞다">get a shot</b>, or <b class="highlight quiz-target" data-ans="get a needle" data-kor="주삿바늘에 찔리다, 주사를 맞다 (문맥에 따라 다름)">get a needle</b> in their arm, you've packed a little snack for them to help them stay calm.</p>
+                  <p class="mb-6">You're not a <b class="highlight quiz-target" data-ans="bullshit artist" data-kor="말로 사람을 속이거나 그럴듯하게 둘러대는 사람">bullshit artist</b>. You don't just <b class="highlight quiz-target" data-ans="talk shit" data-kor="헛소리하다, 남을 험담하다 (비속어)">talk shit</b>. When you say, "It'll all fit," you really mean it.</p>
+                  <p class="mb-6">You might tell a <b class="highlight quiz-target" data-ans="white lie" data-kor="선의의 거짓말, 상대를 배려하기 위한 작은 거짓말">white lie</b> when someone packs too much. You <b class="highlight quiz-target" data-ans="bite my tongue" data-kor="하고 싶은 말을 꾹 참다">bite your tongue</b> and smile instead of making a fuss.</p>
+                  <p class="mb-6">But you don't <b class="highlight quiz-target" data-ans="beat around the bush" data-kor="핵심을 피하며 빙빙 돌려 말하다">beat around the bush</b> when it's time to leave the house.</p>
+                  <p class="mb-6">"Take out those extra shoes," you say. "You won't need them anyhow."</p>
+                  <p class="mb-6">You don't think you're talented. You say, "It's nothing new."</p>
+                  <p class="mb-6">But when the car is full of bags, we know we can count on you.</p>
+                  <p class="mb-6">Some people write great music. Some people paint or sing.</p>
+                  <p class="mb-6">You find a place for everything, and somehow fit everything in.</p>
+                  <p class="mb-6">So give yourself some credit. You make our travels light.</p>
+                  <p class="mb-6">And when we're packing for a trip, we're glad you're on our side.</p>
+              </div>
+              <hr class="border-white/10">
+              <div class="text-slate-400 italic leading-relaxed space-y-6">
+                  <p class="mb-6">그런 사람 있잖아요. 어떤 물건이든 가방에 다 넣을 수 있는 사람. 아주 작은 여행 가방을 보고도 "공간 있어. 괜찮아."라고 말하는 사람.</p>
+                  <p class="mb-6">당신은 짐 싸는 데 <b class="highlight">소질이 있어요</b>. 물건들을 딱 맞게 넣는 재주가 있죠. 일주일 치 옷을 접어서 가벼운 가방 하나에 넣을 수 있어요.</p>
+                  <p class="mb-6">당신은 공간을 보는 <b class="highlight">안목이 좋아요</b>. <b class="highlight">눈대중으로도</b> 무엇이 들어갈지 알아요. 다른 사람들이 억지로 밀어 넣으며 애쓸 때, 당신은 물건의 위치를 조금 바꾸죠.</p>
+                  <p class="mb-6">무조건 <b class="highlight">쑤셔 넣는 게</b> 아니에요. 무엇을 어디에 넣어야 하는지 알고 있죠. 선물을 넣을 공간까지 남겨두고, 어떻게 된 일인지 여유 공간도 생겨요.</p>
+                  <p class="mb-6">당신의 친구들은 <b class="highlight">눈높이가 높아요</b>. 모든 걸 가져가고 싶어 하죠. 신발 세 켤레, 겨울 코트, 그리고 결국 쓰지도 않을 물건들까지요.</p>
+                  <p class="mb-6">친구들은 말해요. "그런 능력이 무슨 <b class="highlight">소용이야</b>? 그냥 물건 넣는 거잖아."</p>
+                  <p class="mb-6">하지만 가방이 닫히지 않을 때, 누가 문제를 해결해 줄까요?</p>
+                  <p class="mb-6">모두가 서두를 때 당신의 재능은 정말 <b class="highlight">유용해져요</b>. 누군가 가방 위에 올라앉아 억지로 지퍼를 닫으려고 할 때도요.</p>
+                  <p class="mb-6">당신은 보통 무엇을 챙겨야 하는지 아는 사람이에요. 충전기부터 구급상자까지, 작은 물건 하나하나 빠뜨리지 않죠.</p>
+                  <p class="mb-6">누군가 <b class="highlight">주사를 맞는 걸</b> 무서워할 때면, 팔에 <b class="highlight">주삿바늘이 들어가는 걸</b> 무서워할 때면, 당신은 그 사람이 진정할 수 있도록 작은 간식까지 챙겨 두었어요.</p>
+                  <p class="mb-6">당신은 <b class="highlight">말만 번지르르한 사람이</b> 아니에요. <b class="highlight">헛소리만 늘어놓지도</b> 않죠. "다 들어갈 거야."라고 말하면 정말 그렇게 될 거라는 뜻이에요.</p>
+                  <p class="mb-6">누군가 짐을 너무 많이 쌌을 때는 작은 <b class="highlight">선의의 거짓말을</b> 할 수도 있어요. 괜히 소란을 피우는 대신 <b class="highlight">하고 싶은 말을 참고</b> 미소를 짓죠.</p>
+                  <p class="mb-6">하지만 집을 나서야 할 시간이 되면 <b class="highlight">빙빙 돌려 말하지</b> 않아요.</p>
+                  <p class="mb-6">"그 신발들은 빼. 어차피 안 신을 거잖아."</p>
+                  <p class="mb-6">당신은 자신에게 재능이 있다고 생각하지 않아요. 그냥 늘 하던 일이라고 말하죠.</p>
+                  <p class="mb-6">하지만 차 안이 가방으로 가득 찼을 때, 우리는 당신을 믿을 수 있다는 걸 알아요.</p>
+                  <p class="mb-6">어떤 사람들은 멋진 음악을 만들고, 어떤 사람들은 그림을 그리거나 노래를 부르죠.</p>
+                  <p class="mb-6">당신은 모든 물건의 자리를 찾아주고, 어떻게든 전부 넣어버려요.</p>
+                  <p class="mb-6">그러니 자신의 능력을 좀 인정해 주세요. 당신 덕분에 우리의 여행 짐이 가벼워지니까요.</p>
+                  <p class="mb-6">그리고 여행을 준비할 때면 당신이 우리 편이라는 사실이 참 든든해요.</p>
+              </div>
+          </section>
+
+      </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "1015930.m4a";
+</script>
+      <script src="wordbank-utils.js"></script>
+  </body>
+  </html>

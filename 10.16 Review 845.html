@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+      <title>Review Note | The Instagram Vacation</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+      <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+      </style>
+</head>
+<body class="p-4 md:p-12">
+      <div class="max-w-4xl mx-auto space-y-8">
+
+          <header class="text-center space-y-4">
+              <div class="flex items-center justify-center gap-4">
+                  <span class="text-5xl">📸</span>
+                  <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Instagram Vacation</h1>
+              </div>
+              <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+          </header>
+
+          <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+              <div class="flex items-center justify-between px-2">
+                  <div class="flex items-center gap-3">
+                      <span class="text-xl">🎧</span>
+                      <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                  </div>
+                  <div class="flex gap-2">
+                      <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          <span class="text-lg">↺</span> 5s
+                      </button>
+                      <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          5s <span class="text-lg">↻</span>
+                      </button>
+                  </div>
+              </div>
+              <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+          </div>
+
+          <div class="flex justify-center">
+              <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+          </div>
+
+          <section class="glass rounded-3xl overflow-hidden shadow-xl">
+              <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                  <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+              </div>
+              <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                  <tr><td class="p-4"><b class="text-white">accomodations</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">숙소, 숙박 시설 (accommodations의 오타)</td></tr>
+                  <tr><td class="p-4"><b class="text-white">local food</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">현지 음식</td></tr>
+                  <tr><td class="p-4"><b class="text-white">adventurous eater</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">낯선 음식도 거리낌 없이 도전하는 사람</td></tr>
+                  <tr><td class="p-4"><b class="text-white">red flag</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">위험 신호, 문제가 있을 것 같다는 경고 신호</td></tr>
+              </tbody></table>
+          </section>
+
+          <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="glass p-5 rounded-2xl border-l-4 border-amber-500"><b class="text-amber-400 block mb-1">adventurous eater</b><p class="text-slate-300 text-sm">익숙하지 않은 음식이나 독특한 재료도 기꺼이 먹어 보는 사람을 뜻해요. 단순히 많이 먹는 사람과는 달라요.</p></div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-amber-500"><b class="text-amber-400 block mb-1">red flag</b><p class="text-slate-300 text-sm">상대방의 행동에서 앞으로 문제가 생길 수 있다는 경고 신호를 뜻해요. <i>That's a red flag.</i>는 “그거 좀 위험 신호인데?”라는 의미예요.</p></div>
+          </section>
+
+          <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+              <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                  <p class="mb-6">When Emma, Rachel, and Lisa planned a trip to Bali, they agreed to spend five days relaxing on the beach, trying <b class="highlight quiz-target" data-ans="local food" data-kor="현지 음식을">local food</b>, and exploring the island.</p>
+                  <p class="mb-6">Emma was especially excited. She had recently started a travel Instagram account and wanted beautiful photos for her followers.</p>
+                  <p class="mb-6">Rachel and Lisa thought that sounded fine.</p>
+                  <p class="mb-6">Until they arrived.</p>
+                  <p class="mb-6">Their first problem was the <b class="highlight quiz-target" data-ans="accommodations" data-kor="숙소였다">accommodations</b>.</p>
+                  <p class="mb-6">Emma had booked a stunning villa with a private pool. Unfortunately, it was also three hours from the beach, had no air conditioning, and was surrounded by construction sites.</p>
+                  <p class="mb-6">“But look at the pool!” Emma said.</p>
+                  <p class="mb-6">“There's no water in it,” Rachel pointed out.</p>
+                  <p class="mb-6">“They're filling it tomorrow.”</p>
+                  <p class="mb-6">Lisa looked around the dusty bedroom.</p>
+                  <p class="mb-6">“That's a <b class="highlight quiz-target" data-ans="red flag" data-kor="위험 신호인데">red flag</b>.”</p>
+                  <p class="mb-6">Emma ignored her.</p>
+                  <p class="mb-6">“The photos are going to be amazing.”</p>
+                  <p class="mb-6">The next morning, Emma woke everyone at 5 a.m.</p>
+                  <p class="mb-6">“We need sunrise photos!”</p>
+                  <p class="mb-6">Rachel reluctantly put on a dress and followed her to the pool.</p>
+                  <p class="mb-6">“Can we get breakfast afterward?” she asked.</p>
+                  <p class="mb-6">“Of course. Just a few pictures first.”</p>
+                  <p class="mb-6">Two hours later, Emma was still taking photos.</p>
+                  <p class="mb-6">“Rachel, smile more naturally.”</p>
+                  <p class="mb-6">“I was smiling naturally an hour ago.”</p>
+                  <p class="mb-6">“Now look surprised!”</p>
+                  <p class="mb-6">“I'm not surprised. I'm hungry.”</p>
+                  <p class="mb-6">At lunchtime, they visited a beautiful restaurant famous for traditional Balinese dishes.</p>
+                  <p class="mb-6">Lisa was an <b class="highlight quiz-target" data-ans="adventurous eater" data-kor="새로운 음식에 도전하는 걸 좋아해서">adventurous eater</b> and couldn't wait to try everything.</p>
+                  <p class="mb-6">But Emma had other plans.</p>
+                  <p class="mb-6">“Don't touch the food!” she shouted as Lisa reached for her plate.</p>
+                  <p class="mb-6">“Why?”</p>
+                  <p class="mb-6">“I haven't photographed it yet.”</p>
+                  <p class="mb-6">Emma spent forty minutes arranging the dishes, moving plates, and taking pictures.</p>
+                  <p class="mb-6">By the time she finished, the food was cold.</p>
+                  <p class="mb-6">“Can we finally eat?” Rachel asked.</p>
+                  <p class="mb-6">“Actually, I don't like spicy food. Can we go somewhere else?”</p>
+                  <p class="mb-6">Lisa stared at her.</p>
+                  <p class="mb-6">“You made us wait forty minutes, and now you don't even want to eat here?”</p>
+                  <p class="mb-6">Emma shrugged.</p>
+                  <p class="mb-6">“The food looks better than it tastes.”</p>
+                  <p class="mb-6">On their third day, Emma announced that they were going to a famous waterfall.</p>
+                  <p class="mb-6">Rachel was relieved.</p>
+                  <p class="mb-6">“Great! We can finally do something fun.”</p>
+                  <p class="mb-6">But when they arrived, Emma refused to let anyone swim.</p>
+                  <p class="mb-6">“The water will ruin our hair.”</p>
+                  <p class="mb-6">Instead, she made them stand on slippery rocks for photographs.</p>
+                  <p class="mb-6">After an hour, Lisa slipped and nearly fell into the water.</p>
+                  <p class="mb-6">“That's it,” Lisa said. “I'm done.”</p>
+                  <p class="mb-6">Emma lowered her camera.</p>
+                  <p class="mb-6">“What?”</p>
+                  <p class="mb-6">“We haven't actually enjoyed a single thing on this trip,” Rachel said. “Everything is about your Instagram.”</p>
+                  <p class="mb-6">“That's not fair! I'm creating memories!”</p>
+                  <p class="mb-6">“No,” Lisa replied. “You're creating content.”</p>
+                  <p class="mb-6">Rachel took out her phone.</p>
+                  <p class="mb-6">“I found a beach hotel. Want to move?”</p>
+                  <p class="mb-6">“Absolutely,” Lisa said.</p>
+                  <p class="mb-6">Emma looked horrified.</p>
+                  <p class="mb-6">“But we have a sunset photo shoot scheduled!”</p>
+                  <p class="mb-6">Rachel picked up her bag.</p>
+                  <p class="mb-6">“You can take pictures of yourself.”</p>
+                  <p class="mb-6">“You're seriously leaving me here?”</p>
+                  <p class="mb-6">Lisa nodded.</p>
+                  <p class="mb-6">“See you at the airport on Friday.”</p>
+                  <p class="mb-6">As Rachel and Lisa walked away, Emma called after them.</p>
+                  <p class="mb-6">“Wait! Can you at least take one picture of me leaving dramatically?”</p>
+                  <p class="mb-6">Neither of them turned around.</p>
+              </div>
+              <hr class="border-white/10">
+              <div class="text-slate-400 italic leading-relaxed space-y-6">
+                  <p class="mb-6">엠마, 레이첼, 리사가 발리 여행을 계획했을 때, 세 사람은 5일 동안 해변에서 쉬고, <b class="highlight">현지 음식을</b> 맛보고, 섬을 구경하기로 했다.</p>
+                  <p class="mb-6">엠마는 특히 신이 나 있었다. 최근 여행 인스타그램 계정을 시작했고, 팔로워들에게 보여 줄 멋진 사진을 찍고 싶었기 때문이다.</p>
+                  <p class="mb-6">레이첼과 리사는 그 정도는 괜찮다고 생각했다.</p>
+                  <p class="mb-6">발리에 도착하기 전까지는.</p>
+                  <p class="mb-6">첫 번째 문제는 <b class="highlight">숙소였다</b>.</p>
+                  <p class="mb-6">엠마는 개인 수영장이 딸린 멋진 빌라를 예약했다. 하지만 그곳은 해변에서 세 시간이나 떨어져 있었고, 에어컨도 없었으며, 주변은 온통 공사장이었다.</p>
+                  <p class="mb-6">“하지만 수영장 좀 봐!” 엠마가 말했다.</p>
+                  <p class="mb-6">“물이 없는데?” 레이첼이 지적했다.</p>
+                  <p class="mb-6">“내일 채운대.”</p>
+                  <p class="mb-6">리사는 먼지가 가득한 침실을 둘러보았다.</p>
+                  <p class="mb-6">“이거 좀 <b class="highlight">위험 신호인데</b>.”</p>
+                  <p class="mb-6">엠마는 무시했다.</p>
+                  <p class="mb-6">“사진은 정말 끝내주게 나올 거야.”</p>
+                  <p class="mb-6">다음 날 아침, 엠마는 새벽 5시에 모두를 깨웠다.</p>
+                  <p class="mb-6">“일출 사진 찍어야 해!”</p>
+                  <p class="mb-6">레이첼은 마지못해 원피스를 입고 수영장으로 따라갔다.</p>
+                  <p class="mb-6">“사진 찍고 아침 먹을 수 있지?” 그녀가 물었다.</p>
+                  <p class="mb-6">“물론이지. 사진 몇 장만 먼저 찍자.”</p>
+                  <p class="mb-6">두 시간이 지난 뒤에도 엠마는 여전히 사진을 찍고 있었다.</p>
+                  <p class="mb-6">“레이첼, 좀 더 자연스럽게 웃어.”</p>
+                  <p class="mb-6">“한 시간 전에는 자연스럽게 웃고 있었거든.”</p>
+                  <p class="mb-6">“이제 놀란 표정!”</p>
+                  <p class="mb-6">“안 놀랐어. 배고파.”</p>
+                  <p class="mb-6">점심시간에 세 사람은 전통 발리 음식으로 유명한 아름다운 식당을 방문했다.</p>
+                  <p class="mb-6">리사는 <b class="highlight">새로운 음식에 도전하는 걸 좋아해서</b> 모든 음식을 맛보고 싶었다.</p>
+                  <p class="mb-6">하지만 엠마에게는 다른 계획이 있었다.</p>
+                  <p class="mb-6">“음식 건드리지 마!” 리사가 접시에 손을 뻗자 엠마가 소리쳤다.</p>
+                  <p class="mb-6">“왜?”</p>
+                  <p class="mb-6">“아직 사진 안 찍었잖아!”</p>
+                  <p class="mb-6">엠마는 40분 동안 음식을 배치하고, 접시를 옮기고, 사진을 찍었다.</p>
+                  <p class="mb-6">그녀가 끝냈을 때 음식은 이미 식어 있었다.</p>
+                  <p class="mb-6">“이제 드디어 먹어도 돼?” 레이첼이 물었다.</p>
+                  <p class="mb-6">“사실 나 매운 음식 별로 안 좋아해. 다른 데 가면 안 될까?”</p>
+                  <p class="mb-6">리사는 엠마를 빤히 쳐다보았다.</p>
+                  <p class="mb-6">“우리를 40분이나 기다리게 해 놓고 이제 와서 여기서 먹기 싫다고?”</p>
+                  <p class="mb-6">엠마는 어깨를 으쓱했다.</p>
+                  <p class="mb-6">“이 음식은 맛보다 사진이 더 좋잖아.”</p>
+                  <p class="mb-6">셋째 날, 엠마는 유명한 폭포에 가겠다고 발표했다.</p>
+                  <p class="mb-6">레이첼은 안도했다.</p>
+                  <p class="mb-6">“좋아! 드디어 재미있는 걸 할 수 있겠네.”</p>
+                  <p class="mb-6">하지만 폭포에 도착하자 엠마는 아무도 수영하지 못하게 했다.</p>
+                  <p class="mb-6">“물에 들어가면 머리 망가지잖아.”</p>
+                  <p class="mb-6">대신 엠마는 친구들을 미끄러운 바위 위에 세워 놓고 사진을 찍었다.</p>
+                  <p class="mb-6">한 시간이 지난 뒤, 리사가 발을 헛디뎌 물에 빠질 뻔했다.</p>
+                  <p class="mb-6">“이제 됐어.” 리사가 말했다. “나 더는 못 하겠어.”</p>
+                  <p class="mb-6">엠마가 카메라를 내렸다.</p>
+                  <p class="mb-6">“뭐?”</p>
+                  <p class="mb-6">“우린 이번 여행에서 제대로 즐긴 게 하나도 없어.” 레이첼이 말했다. “전부 네 인스타그램 때문이잖아.”</p>
+                  <p class="mb-6">“그건 불공평해! 난 추억을 만들고 있는 거라고!”</p>
+                  <p class="mb-6">“아니.” 리사가 대답했다. “넌 콘텐츠를 만들고 있는 거야.”</p>
+                  <p class="mb-6">레이첼이 휴대폰을 꺼냈다.</p>
+                  <p class="mb-6">“해변 근처에 호텔 하나 찾았어. 옮길래?”</p>
+                  <p class="mb-6">“당연하지.” 리사가 말했다.</p>
+                  <p class="mb-6">엠마는 경악한 표정을 지었다.</p>
+                  <p class="mb-6">“하지만 우리 일몰 사진 촬영 일정 있잖아!”</p>
+                  <p class="mb-6">레이첼이 가방을 집어 들었다.</p>
+                  <p class="mb-6">“그럼 혼자 사진 찍어.”</p>
+                  <p class="mb-6">“너희 진짜 나 여기 두고 가는 거야?”</p>
+                  <p class="mb-6">리사가 고개를 끄덕였다.</p>
+                  <p class="mb-6">“금요일에 공항에서 보자.”</p>
+                  <p class="mb-6">레이첼과 리사가 걸어가자 엠마가 뒤에서 소리쳤다.</p>
+                  <p class="mb-6">“잠깐! 적어도 내가 극적으로 떠나는 모습 사진 한 장만 찍어 주면 안 돼?”</p>
+                  <p class="mb-6">두 사람은 뒤돌아보지도 않았다.</p>
+              </div>
+          </section>
+
+      </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "1016845.m4a";
+</script>
+      <script src="wordbank-utils.js"></script>
+  </body>
+  </html>

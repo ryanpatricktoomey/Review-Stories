@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+      <title>Review Note | The Vacation Boot Camp</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+      <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+      </style>
+</head>
+<body class="p-4 md:p-12">
+      <div class="max-w-4xl mx-auto space-y-8">
+
+          <header class="text-center space-y-4">
+              <div class="flex items-center justify-center gap-4">
+                  <span class="text-5xl">🥾</span>
+                  <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Vacation Boot Camp</h1>
+              </div>
+              <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+          </header>
+
+          <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+              <div class="flex items-center justify-between px-2">
+                  <div class="flex items-center gap-3">
+                      <span class="text-xl">🎧</span>
+                      <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                  </div>
+                  <div class="flex gap-2">
+                      <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          <span class="text-lg">↺</span> 5s
+                      </button>
+                      <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          5s <span class="text-lg">↻</span>
+                      </button>
+                  </div>
+              </div>
+              <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+          </div>
+
+          <div class="flex justify-center">
+              <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+          </div>
+
+          <section class="glass rounded-3xl overflow-hidden shadow-xl">
+              <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                  <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+              </div>
+              <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                  <tr><td class="p-4"><b class="text-white">comfortable with silence</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">말없이 함께 있어도 편안한</td></tr>
+                  <tr><td class="p-4"><b class="text-white">iron stomach</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">무엇을 먹어도 탈이 잘 나지 않는 강한 위장</td></tr>
+                  <tr><td class="p-4"><b class="text-white">deserve</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">~을 누릴 자격이 있다, ~을 받을 만하다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">doing something active</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">몸을 움직이는 활동을 하는 것</td></tr>
+                  <tr><td class="p-4"><b class="text-white">that's how I ended up...</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그렇게 해서 결국 내가 ~하게 됐다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">purpose</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">목적, 의도</td></tr>
+                  <tr><td class="p-4"><b class="text-white">build the trip around that</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그것을 중심으로 여행 일정을 짜다</td></tr>
+              </tbody></table>
+          </section>
+
+          <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="glass p-5 rounded-2xl border-l-4 border-amber-500"><b class="text-amber-400 block mb-1">comfortable with silence</b><p class="text-slate-300 text-sm">대화를 계속하지 않아도 어색하지 않고 편안한 상태예요. <i>I'm comfortable with silence.</i>처럼 사용해요.</p></div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-amber-500"><b class="text-amber-400 block mb-1">iron stomach</b><p class="text-slate-300 text-sm">낯설거나 자극적인 음식을 먹어도 배탈이 잘 나지 않는 사람에게 쓰는 비유적인 표현이에요. 보통 have an iron stomach이라고 해요.</p></div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-amber-500"><b class="text-amber-400 block mb-1">that's how I ended up...</b><p class="text-slate-300 text-sm">어떤 일이 어떻게 특정 결과로 이어졌는지 설명할 때 사용해요. <i>That's how I ended up sleeping at the airport.</i>처럼 뒤에 동명사를 연결할 수 있어요.</p></div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-amber-500"><b class="text-amber-400 block mb-1">build the trip around that</b><p class="text-slate-300 text-sm">여행에서 가장 중요한 활동이나 목적을 먼저 정하고, 나머지 일정을 거기에 맞춰 구성한다는 뜻이에요.</p></div>
+          </section>
+
+          <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+              <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                  <p class="mb-6">When Alex, Nina, and Sam booked a week in Thailand, they had different ideas about the perfect vacation.</p>
+                  <p class="mb-6">Nina wanted to relax by the pool. Sam wanted to try street food and explore the night markets. Alex wanted adventure.</p>
+                  <p class="mb-6">They agreed to compromise.</p>
+                  <p class="mb-6">Unfortunately, Alex had no intention of compromising.</p>
+                  <p class="mb-6">On their first morning, Alex woke everyone at 5 a.m.</p>
+                  <p class="mb-6">“Get dressed. We're going hiking.”</p>
+                  <p class="mb-6">Nina sat up in bed.</p>
+                  <p class="mb-6">“Hiking? We just arrived last night!”</p>
+                  <p class="mb-6">“Exactly. We shouldn't waste our first day.”</p>
+                  <p class="mb-6">“I thought we were going to the beach.”</p>
+                  <p class="mb-6">“We can go afterward.”</p>
+                  <p class="mb-6">Six hours later, they were still climbing a mountain in thirty-five-degree heat.</p>
+                  <p class="mb-6">Sam stopped to catch his breath.</p>
+                  <p class="mb-6">“Can we take a break?”</p>
+                  <p class="mb-6">“We've already stopped twice,” Alex complained.</p>
+                  <p class="mb-6">“I'm not training for the Olympics!”</p>
+                  <p class="mb-6">Alex shook his head.</p>
+                  <p class="mb-6">“The whole <b class="highlight quiz-target" data-ans="purpose" data-kor="목적은">purpose</b> of traveling is to challenge yourself.”</p>
+                  <p class="mb-6">“No,” Nina replied. “The <b class="highlight quiz-target" data-ans="purpose" data-kor="목적은">purpose</b> of my vacation is to relax.”</p>
+                  <p class="mb-6">But Alex wasn't listening.</p>
+                  <p class="mb-6">He had already planned the next day around kayaking, rock climbing, and a jungle obstacle course.</p>
+                  <p class="mb-6">“I love <b class="highlight quiz-target" data-ans="doing something active" data-kor="몸을 움직이는 활동을">doing something active</b>,” he explained. “So I thought we could <b class="highlight quiz-target" data-ans="build the trip around that" data-kor="여행 전체를 그런 활동 중심으로 계획하면">build the trip around that</b>.”</p>
+                  <p class="mb-6">“Without asking us?” Sam said.</p>
+                  <p class="mb-6">The next morning, Alex insisted they try a remote jungle restaurant famous for extremely spicy food.</p>
+                  <p class="mb-6">Sam hesitated.</p>
+                  <p class="mb-6">“Are you sure this is safe?”</p>
+                  <p class="mb-6">“Relax. I've got an <b class="highlight quiz-target" data-ans="iron stomach" data-kor="강철 위장이야">iron stomach</b>.”</p>
+                  <p class="mb-6">Two hours later, Alex was desperately searching for a bathroom.</p>
+                  <p class="mb-6">Unfortunately, the restaurant had only one toilet, and it was broken.</p>
+                  <p class="mb-6">“<b class="highlight quiz-target" data-ans="That's how I ended up" data-kor="그래서 결국">That's how I ended up</b> spending three hours behind a tree,” Alex admitted that evening.</p>
+                  <p class="mb-6">Nina and Sam hoped the experience would finally slow him down.</p>
+                  <p class="mb-6">They were wrong.</p>
+                  <p class="mb-6">At breakfast, Alex announced that they were going on a twelve-hour cycling tour.</p>
+                  <p class="mb-6">Nina put down her coffee.</p>
+                  <p class="mb-6">“No.”</p>
+                  <p class="mb-6">Alex looked confused.</p>
+                  <p class="mb-6">“What do you mean, no?”</p>
+                  <p class="mb-6">“I mean we're not going.”</p>
+                  <p class="mb-6">“But I already booked it!”</p>
+                  <p class="mb-6">“Then go by yourself.”</p>
+                  <p class="mb-6">Alex crossed his arms.</p>
+                  <p class="mb-6">“You two are so boring. You just want to sit around doing nothing.”</p>
+                  <p class="mb-6">Sam looked at Nina.</p>
+                  <p class="mb-6">“Are you <b class="highlight quiz-target" data-ans="comfortable with silence" data-kor="조용히 있어도 편한">comfortable with silence</b>?”</p>
+                  <p class="mb-6">“Very.”</p>
+                  <p class="mb-6">“Good. Because I'd love to spend the entire afternoon reading by the pool without anyone telling me to climb something.”</p>
+                  <p class="mb-6">Alex rolled his eyes.</p>
+                  <p class="mb-6">“You're wasting your vacation!”</p>
+                  <p class="mb-6">Nina stood up.</p>
+                  <p class="mb-6">“We worked all year for this trip. We <b class="highlight quiz-target" data-ans="deserve" data-kor="자격이 있다고">deserve</b> to enjoy it.”</p>
+                  <p class="mb-6">“Fine! But don't complain when you miss all the fun.”</p>
+                  <p class="mb-6">Sam opened his phone and booked a different hotel.</p>
+                  <p class="mb-6">“We won't.”</p>
+                  <p class="mb-6">Alex stared at them.</p>
+                  <p class="mb-6">“Wait. You're actually leaving?”</p>
+                  <p class="mb-6">Nina picked up her suitcase.</p>
+                  <p class="mb-6">“Yep. Enjoy your cycling tour.”</p>
+                  <p class="mb-6">“And the rock climbing,” Sam added.</p>
+                  <p class="mb-6">“And whatever else you planned.”</p>
+                  <p class="mb-6">Alex looked genuinely offended.</p>
+                  <p class="mb-6">“So you're just abandoning me?”</p>
+                  <p class="mb-6">Nina smiled.</p>
+                  <p class="mb-6">“See you at the airport on Saturday.”</p>
+                  <p class="mb-6">As they walked out, Alex shouted after them.</p>
+                  <p class="mb-6">“You'll regret missing tomorrow's six-hour survival training!”</p>
+                  <p class="mb-6">Sam stopped for a moment.</p>
+                  <p class="mb-6">“Six hours?”</p>
+                  <p class="mb-6">“Yeah!”</p>
+                  <p class="mb-6">Sam looked at Nina.</p>
+                  <p class="mb-6">“We definitely made the right decision.”</p>
+              </div>
+              <hr class="border-white/10">
+              <div class="text-slate-400 italic leading-relaxed space-y-6">
+                  <p class="mb-6">알렉스, 니나, 샘이 태국에서 일주일간의 휴가를 예약했을 때, 세 사람은 완벽한 휴가에 대해 서로 다른 생각을 가지고 있었다.</p>
+                  <p class="mb-6">니나는 수영장 옆에서 쉬고 싶었다. 샘은 길거리 음식을 먹고 야시장을 구경하고 싶었다. 알렉스는 모험을 원했다.</p>
+                  <p class="mb-6">세 사람은 서로 양보하기로 했다.</p>
+                  <p class="mb-6">하지만 알렉스에게는 양보할 생각이 전혀 없었다.</p>
+                  <p class="mb-6">첫날 아침, 알렉스는 새벽 5시에 모두를 깨웠다.</p>
+                  <p class="mb-6">“옷 입어. 등산 갈 거야.”</p>
+                  <p class="mb-6">니나가 침대에서 몸을 일으켰다.</p>
+                  <p class="mb-6">“등산? 우리 어젯밤에 도착했잖아!”</p>
+                  <p class="mb-6">“그러니까! 첫날을 낭비하면 안 되지.”</p>
+                  <p class="mb-6">“우리 해변에 가기로 한 거 아니었어?”</p>
+                  <p class="mb-6">“그건 나중에 가면 돼.”</p>
+                  <p class="mb-6">여섯 시간이 지난 뒤에도 그들은 35도의 무더위 속에서 여전히 산을 오르고 있었다.</p>
+                  <p class="mb-6">샘이 숨을 고르기 위해 멈췄다.</p>
+                  <p class="mb-6">“우리 좀 쉬면 안 될까?”</p>
+                  <p class="mb-6">“벌써 두 번이나 쉬었잖아.” 알렉스가 불평했다.</p>
+                  <p class="mb-6">“나 올림픽 준비하는 거 아니거든!”</p>
+                  <p class="mb-6">알렉스는 고개를 저었다.</p>
+                  <p class="mb-6">“여행의 <b class="highlight">목적은</b> 자기 자신에게 도전하는 거야.”</p>
+                  <p class="mb-6">“아니.” 니나가 대답했다. “내 휴가의 <b class="highlight">목적은</b> 쉬는 거야.”</p>
+                  <p class="mb-6">하지만 알렉스는 듣고 있지 않았다.</p>
+                  <p class="mb-6">그는 이미 다음 날 일정에 카약, 암벽 등반, 정글 장애물 코스를 넣어 놓았다.</p>
+                  <p class="mb-6">“난 <b class="highlight">몸을 움직이는 활동을</b> 좋아하거든.” 알렉스가 설명했다. “그래서 <b class="highlight">여행 전체를 그런 활동 중심으로 계획하면</b> 좋겠다고 생각했어.”</p>
+                  <p class="mb-6">“우리한테 물어보지도 않고?” 샘이 말했다.</p>
+                  <p class="mb-6">다음 날 아침, 알렉스는 아주 매운 음식으로 유명한 외딴 정글 식당에 가자고 우겼다.</p>
+                  <p class="mb-6">샘은 망설였다.</p>
+                  <p class="mb-6">“여기 정말 괜찮은 곳 맞아?”</p>
+                  <p class="mb-6">“걱정 마. 난 뭘 먹어도 배탈이 안 나는 <b class="highlight">강철 위장이야</b>.”</p>
+                  <p class="mb-6">두 시간 후, 알렉스는 필사적으로 화장실을 찾고 있었다.</p>
+                  <p class="mb-6">불행히도 식당에는 화장실이 하나밖에 없었고, 그마저도 고장 나 있었다.</p>
+                  <p class="mb-6">“<b class="highlight">그래서 결국</b> 나무 뒤에서 세 시간을 보내게 된 거야.” 그날 저녁 알렉스가 털어놓았다.</p>
+                  <p class="mb-6">니나와 샘은 이 경험을 계기로 알렉스가 조금은 속도를 늦추기를 바랐다.</p>
+                  <p class="mb-6">하지만 틀렸다.</p>
+                  <p class="mb-6">아침 식사 자리에서 알렉스는 12시간짜리 자전거 투어를 하겠다고 발표했다.</p>
+                  <p class="mb-6">니나는 커피잔을 내려놓았다.</p>
+                  <p class="mb-6">“싫어.”</p>
+                  <p class="mb-6">알렉스는 어리둥절한 표정을 지었다.</p>
+                  <p class="mb-6">“싫다니 무슨 뜻이야?”</p>
+                  <p class="mb-6">“안 간다는 뜻이야.”</p>
+                  <p class="mb-6">“하지만 이미 예약했는데!”</p>
+                  <p class="mb-6">“그럼 혼자 가.”</p>
+                  <p class="mb-6">알렉스는 팔짱을 꼈다.</p>
+                  <p class="mb-6">“너희 정말 재미없다. 그냥 앉아서 아무것도 안 하고 싶은 거잖아.”</p>
+                  <p class="mb-6">샘이 니나를 바라보았다.</p>
+                  <p class="mb-6">“너 아무 말 없이 <b class="highlight">조용히 있어도 편한</b> 편이야?”</p>
+                  <p class="mb-6">“아주.”</p>
+                  <p class="mb-6">“잘됐다. 난 누가 자꾸 뭘 올라가라고 시키지 않는 곳에서 오후 내내 수영장 옆에 앉아 책이나 읽고 싶거든.”</p>
+                  <p class="mb-6">알렉스는 눈을 굴렸다.</p>
+                  <p class="mb-6">“너희 휴가를 낭비하고 있어!”</p>
+                  <p class="mb-6">니나가 자리에서 일어났다.</p>
+                  <p class="mb-6">“우린 이 여행을 위해 일 년 내내 일했어. 즐길 <b class="highlight">자격이 있다고</b>.”</p>
+                  <p class="mb-6">“좋아! 하지만 재미있는 거 다 놓쳐도 불평하지 마.”</p>
+                  <p class="mb-6">샘은 휴대폰을 열어 다른 호텔을 예약했다.</p>
+                  <p class="mb-6">“그럴 일 없어.”</p>
+                  <p class="mb-6">알렉스는 두 사람을 빤히 쳐다보았다.</p>
+                  <p class="mb-6">“잠깐. 너희 진짜 가는 거야?”</p>
+                  <p class="mb-6">니나가 여행 가방을 집어 들었다.</p>
+                  <p class="mb-6">“응. 자전거 투어 잘 다녀와.”</p>
+                  <p class="mb-6">“암벽 등반도.” 샘이 덧붙였다.</p>
+                  <p class="mb-6">“그리고 네가 계획한 나머지 모든 것도.”</p>
+                  <p class="mb-6">알렉스는 진심으로 기분이 상한 표정이었다.</p>
+                  <p class="mb-6">“그러니까 너희 나를 그냥 버리고 가겠다는 거야?”</p>
+                  <p class="mb-6">니나가 미소를 지었다.</p>
+                  <p class="mb-6">“토요일에 공항에서 보자.”</p>
+                  <p class="mb-6">두 사람이 걸어 나가자 알렉스가 뒤에서 소리쳤다.</p>
+                  <p class="mb-6">“내일 6시간짜리 생존 훈련 놓친 거 후회할걸!”</p>
+                  <p class="mb-6">샘이 잠깐 멈췄다.</p>
+                  <p class="mb-6">“6시간?”</p>
+                  <p class="mb-6">“그래!”</p>
+                  <p class="mb-6">샘이 니나를 바라보았다.</p>
+                  <p class="mb-6">“우리 진짜 잘 결정했다.”</p>
+              </div>
+          </section>
+
+      </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "1016930.m4a";
+</script>
+      <script src="wordbank-utils.js"></script>
+  </body>
+  </html>

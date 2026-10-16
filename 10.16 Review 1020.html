@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+      <title>Review Note | The Hotel Room From Hell</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+      <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+      </style>
+</head>
+<body class="p-4 md:p-12">
+      <div class="max-w-4xl mx-auto space-y-8">
+
+          <header class="text-center space-y-4">
+              <div class="flex items-center justify-center gap-4">
+                  <span class="text-5xl">🏨</span>
+                  <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Hotel Room From Hell</h1>
+              </div>
+              <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+          </header>
+
+          <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+              <div class="flex items-center justify-between px-2">
+                  <div class="flex items-center gap-3">
+                      <span class="text-xl">🎧</span>
+                      <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                  </div>
+                  <div class="flex gap-2">
+                      <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          <span class="text-lg">↺</span> 5s
+                      </button>
+                      <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          5s <span class="text-lg">↻</span>
+                      </button>
+                  </div>
+              </div>
+              <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+          </div>
+
+          <div class="flex justify-center">
+              <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+          </div>
+
+          <section class="glass rounded-3xl overflow-hidden shadow-xl">
+              <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                  <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+              </div>
+              <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                  <tr><td class="p-4"><b class="text-white">coed dorm</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">남녀 혼성 도미토리, 남녀가 함께 사용하는 기숙사형 숙소</td></tr>
+                  <tr><td class="p-4"><b class="text-white">kicked him out</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그를 쫓아냈다, 내보냈다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">accomodations</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">숙소, 숙박 시설 (accommodations의 오타)</td></tr>
+                  <tr><td class="p-4"><b class="text-white">bedsheets</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">침대 시트, 침대 홑이불</td></tr>
+                  <tr><td class="p-4"><b class="text-white">high maintainence</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">요구가 많고 까다로운 (high-maintenance의 오타)</td></tr>
+                  <tr><td class="p-4"><b class="text-white">in detail</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">자세하게, 세세하게</td></tr>
+                  <tr><td class="p-4"><b class="text-white">compromise</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">타협하다, 서로 양보하다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">room temperature</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">실내 온도</td></tr>
+              </tbody></table>
+          </section>
+
+          <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="glass p-5 rounded-2xl border-l-4 border-amber-500"><b class="text-amber-400 block mb-1">coed dorm</b><p class="text-slate-300 text-sm">남녀가 함께 사용하는 도미토리예요. 여행에서는 보통 mixed dorm이라는 표현도 많이 사용해요.</p></div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-amber-500"><b class="text-amber-400 block mb-1">kicked him out</b><p class="text-slate-300 text-sm">누군가를 강제로 내보내거나 쫓아냈다는 뜻이에요. kick someone out of a hotel처럼 사용하며, 물리적으로 발로 찼다는 뜻은 아니에요.</p></div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-amber-500"><b class="text-amber-400 block mb-1">high maintainence</b><p class="text-slate-300 text-sm">올바른 표기는 high-maintenance예요. 편안하게 지내기 위해 요구하는 것이 지나치게 많거나 까다로운 사람을 묘사할 때 사용해요.</p></div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-amber-500"><b class="text-amber-400 block mb-1">compromise</b><p class="text-slate-300 text-sm">서로 조금씩 양보해서 합의점을 찾는 것이에요. 한쪽만 일방적으로 양보하는 것은 진정한 compromise가 아니에요.</p></div>
+          </section>
+
+          <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+              <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                  <p class="mb-6">When three friends, Kevin, Mark, and Jason, booked a trip to Barcelona, they agreed to save money on their <b class="highlight quiz-target" data-ans="accommodations" data-kor="숙박비를">accommodations</b> so they could spend more on food and sightseeing.</p>
+                  <p class="mb-6">Kevin found a cheap hostel with excellent reviews.</p>
+                  <p class="mb-6">But when they arrived, Jason looked horrified.</p>
+                  <p class="mb-6">“Wait. This is a <b class="highlight quiz-target" data-ans="coed dorm" data-kor="남녀 혼성 도미토리야?">coed dorm</b>?”</p>
+                  <p class="mb-6">“Yeah,” Kevin said. “We discussed this.”</p>
+                  <p class="mb-6">“I thought you meant separate rooms for men and women!”</p>
+                  <p class="mb-6">“No. I explained everything <b class="highlight quiz-target" data-ans="in detail" data-kor="자세하게">in detail</b> before we booked.”</p>
+                  <p class="mb-6">Jason stared at the eight beds.</p>
+                  <p class="mb-6">“I can't sleep in a room with strangers.”</p>
+                  <p class="mb-6">Mark sighed.</p>
+                  <p class="mb-6">“Then why did you agree to a hostel?”</p>
+                  <p class="mb-6">“I didn't know it would be like this!”</p>
+                  <p class="mb-6">They eventually paid extra for a private room with three beds.</p>
+                  <p class="mb-6">But that was only the beginning.</p>
+                  <p class="mb-6">Jason immediately complained about the <b class="highlight quiz-target" data-ans="bedsheets" data-kor="침대 시트에">bedsheets</b>.</p>
+                  <p class="mb-6">“These aren't soft enough.”</p>
+                  <p class="mb-6">Then he inspected the bathroom.</p>
+                  <p class="mb-6">“The towels are too small.”</p>
+                  <p class="mb-6">He opened the curtains.</p>
+                  <p class="mb-6">“The view is terrible.”</p>
+                  <p class="mb-6">Kevin sat on his bed.</p>
+                  <p class="mb-6">“Jason, it's a budget hotel. What did you expect?”</p>
+                  <p class="mb-6">“Basic comfort!”</p>
+                  <p class="mb-6">That night, Jason demanded that the <b class="highlight quiz-target" data-ans="room temperature" data-kor="실내 온도를">room temperature</b> be set to 18 degrees.</p>
+                  <p class="mb-6">Mark was freezing.</p>
+                  <p class="mb-6">“Can we make it 23?”</p>
+                  <p class="mb-6">“No. I can't sleep when it's warm.”</p>
+                  <p class="mb-6">“How about 21? Let's <b class="highlight quiz-target" data-ans="compromise" data-kor="양보하자">compromise</b>.”</p>
+                  <p class="mb-6">“Absolutely not.”</p>
+                  <p class="mb-6">Jason also insisted that the lights stay on because he didn't like sleeping in complete darkness.</p>
+                  <p class="mb-6">At 2 a.m., Kevin finally lost his patience.</p>
+                  <p class="mb-6">“Jason, you're incredibly <b class="highlight quiz-target" data-ans="high-maintenance" data-kor="너무 까다롭다">high-maintenance</b>.”</p>
+                  <p class="mb-6">“I'm not high-maintenance. I just know what I need.”</p>
+                  <p class="mb-6">The following morning, Kevin and Mark woke up to find Jason arguing with the hotel manager.</p>
+                  <p class="mb-6">Apparently, Jason had complained about the pillows, the water pressure, and the noise from the street.</p>
+                  <p class="mb-6">When the manager refused to give him a refund, Jason demanded a free upgrade to the hotel's best room.</p>
+                  <p class="mb-6">Then he threatened to leave a terrible review.</p>
+                  <p class="mb-6">The manager had finally had enough.</p>
+                  <p class="mb-6">“He <b class="highlight quiz-target" data-ans="kicked him out" data-kor="쫓아냈다고?">kicked him out</b>?” Mark whispered when Jason returned with his suitcase.</p>
+                  <p class="mb-6">“Apparently, I'm not welcome here anymore,” Jason said angrily.</p>
+                  <p class="mb-6">Kevin stared at him.</p>
+                  <p class="mb-6">“So what are we supposed to do?”</p>
+                  <p class="mb-6">“Find a luxury hotel. And you two can split the cost with me.”</p>
+                  <p class="mb-6">Mark laughed.</p>
+                  <p class="mb-6">Jason looked offended.</p>
+                  <p class="mb-6">“What's so funny?”</p>
+                  <p class="mb-6">“You got yourself thrown out of a perfectly good hotel, and now you expect us to pay for your expensive room?”</p>
+                  <p class="mb-6">“We're traveling together!”</p>
+                  <p class="mb-6">“Not anymore,” Kevin said.</p>
+                  <p class="mb-6">He turned to Mark.</p>
+                  <p class="mb-6">“Want to stay here and enjoy Barcelona?”</p>
+                  <p class="mb-6">“Definitely.”</p>
+                  <p class="mb-6">Jason looked shocked.</p>
+                  <p class="mb-6">“You're abandoning me?”</p>
+                  <p class="mb-6">Kevin picked up his sunglasses.</p>
+                  <p class="mb-6">“You can stay wherever you want. We're keeping our room.”</p>
+                  <p class="mb-6">“But what about me?”</p>
+                  <p class="mb-6">Mark opened the door.</p>
+                  <p class="mb-6">“Find somewhere that meets your standards.”</p>
+                  <p class="mb-6">“And if you can't?”</p>
+                  <p class="mb-6">Kevin shrugged.</p>
+                  <p class="mb-6">“Maybe try the Ritz.”</p>
+                  <p class="mb-6">Jason stared at them.</p>
+                  <p class="mb-6">“You're seriously leaving me?”</p>
+                  <p class="mb-6">Mark nodded.</p>
+                  <p class="mb-6">“See you at the airport on Sunday.”</p>
+                  <p class="mb-6">As they walked toward the elevator, Jason shouted after them.</p>
+                  <p class="mb-6">“Wait! Do you think the Ritz has soft pillows?”</p>
+                  <p class="mb-6">Neither of them answered.</p>
+              </div>
+              <hr class="border-white/10">
+              <div class="text-slate-400 italic leading-relaxed space-y-6">
+                  <p class="mb-6">케빈, 마크, 제이슨 세 친구가 바르셀로나 여행을 예약했을 때, 그들은 음식과 관광에 더 많은 돈을 쓰기 위해 <b class="highlight">숙박비를</b> 아끼기로 했다.</p>
+                  <p class="mb-6">케빈은 후기가 아주 좋은 저렴한 호스텔을 찾았다.</p>
+                  <p class="mb-6">하지만 숙소에 도착하자 제이슨은 경악했다.</p>
+                  <p class="mb-6">“잠깐. 여기 <b class="highlight">남녀 혼성 도미토리야?</b>”</p>
+                  <p class="mb-6">“응.” 케빈이 말했다. “우리 이거 얘기했잖아.”</p>
+                  <p class="mb-6">“난 남녀가 각각 다른 방을 쓴다는 뜻인 줄 알았지!”</p>
+                  <p class="mb-6">“아니. 예약하기 전에 내가 전부 <b class="highlight">자세하게</b> 설명했잖아.”</p>
+                  <p class="mb-6">제이슨은 침대 여덟 개를 바라보았다.</p>
+                  <p class="mb-6">“난 모르는 사람들이랑 같은 방에서 못 자.”</p>
+                  <p class="mb-6">마크가 한숨을 쉬었다.</p>
+                  <p class="mb-6">“그럼 왜 호스텔에 동의했는데?”</p>
+                  <p class="mb-6">“이런 곳인 줄 몰랐으니까!”</p>
+                  <p class="mb-6">결국 세 사람은 돈을 더 내고 침대 세 개가 있는 개인실로 옮겼다.</p>
+                  <p class="mb-6">하지만 그건 시작에 불과했다.</p>
+                  <p class="mb-6">제이슨은 곧바로 <b class="highlight">침대 시트에</b> 불평하기 시작했다.</p>
+                  <p class="mb-6">“이거 너무 까끌까끌해.”</p>
+                  <p class="mb-6">그러고는 화장실을 살펴봤다.</p>
+                  <p class="mb-6">“수건이 너무 작아.”</p>
+                  <p class="mb-6">커튼을 열었다.</p>
+                  <p class="mb-6">“전망도 별로네.”</p>
+                  <p class="mb-6">케빈은 침대에 앉았다.</p>
+                  <p class="mb-6">“제이슨, 여긴 저렴한 호텔이야. 뭘 기대한 거야?”</p>
+                  <p class="mb-6">“기본적인 편안함 정도는 기대했지!”</p>
+                  <p class="mb-6">그날 밤, 제이슨은 <b class="highlight">실내 온도를</b> 18도로 맞춰야 한다고 우겼다.</p>
+                  <p class="mb-6">마크는 추워서 견딜 수가 없었다.</p>
+                  <p class="mb-6">“23도로 하면 안 될까?”</p>
+                  <p class="mb-6">“안 돼. 난 더우면 잠을 못 자.”</p>
+                  <p class="mb-6">“그럼 21도는 어때? 서로 좀 <b class="highlight">양보하자</b>.”</p>
+                  <p class="mb-6">“절대 안 돼.”</p>
+                  <p class="mb-6">제이슨은 완전히 어두우면 잠을 못 잔다며 불도 켜 놓아야 한다고 주장했다.</p>
+                  <p class="mb-6">새벽 2시, 케빈은 결국 참지 못했다.</p>
+                  <p class="mb-6">“제이슨, 너 진짜 <b class="highlight">너무 까다롭다</b>.”</p>
+                  <p class="mb-6">“난 까다로운 게 아니야. 그냥 나한테 뭐가 필요한지 아는 것뿐이야.”</p>
+                  <p class="mb-6">다음 날 아침, 케빈과 마크는 제이슨이 호텔 매니저와 말다툼하는 소리에 잠에서 깼다.</p>
+                  <p class="mb-6">알고 보니 제이슨은 베개, 수압, 거리에서 들리는 소음까지 전부 불평하고 있었다.</p>
+                  <p class="mb-6">매니저가 환불을 거부하자 제이슨은 호텔에서 가장 좋은 방으로 무료 업그레이드를 해 달라고 요구했다.</p>
+                  <p class="mb-6">그러고는 끔찍한 후기를 남기겠다고 협박했다.</p>
+                  <p class="mb-6">매니저도 결국 참을 만큼 참았다.</p>
+                  <p class="mb-6">“매니저가 쟤를 <b class="highlight">쫓아냈다고?</b>” 제이슨이 여행 가방을 들고 돌아오자 마크가 속삭였다.</p>
+                  <p class="mb-6">“이제 여기서 날 받아 주지 않겠대.” 제이슨이 화를 내며 말했다.</p>
+                  <p class="mb-6">케빈은 그를 빤히 쳐다보았다.</p>
+                  <p class="mb-6">“그래서 우리보고 어쩌라는 건데?”</p>
+                  <p class="mb-6">“고급 호텔을 찾아야지. 그리고 너희 둘이 나랑 비용을 나눠 내면 돼.”</p>
+                  <p class="mb-6">마크가 웃음을 터뜨렸다.</p>
+                  <p class="mb-6">제이슨은 기분이 상했다.</p>
+                  <p class="mb-6">“뭐가 웃긴데?”</p>
+                  <p class="mb-6">“네가 멀쩡한 호텔에서 쫓겨나 놓고 이제 우리보고 비싼 방값을 내라고?”</p>
+                  <p class="mb-6">“우리 같이 여행 중이잖아!”</p>
+                  <p class="mb-6">“이제 아니야.” 케빈이 말했다.</p>
+                  <p class="mb-6">그는 마크를 돌아보았다.</p>
+                  <p class="mb-6">“우리 그냥 여기서 지내면서 바르셀로나 즐길까?”</p>
+                  <p class="mb-6">“당연하지.”</p>
+                  <p class="mb-6">제이슨은 충격받은 표정이었다.</p>
+                  <p class="mb-6">“너희 나 버리는 거야?”</p>
+                  <p class="mb-6">케빈은 선글라스를 집어 들었다.</p>
+                  <p class="mb-6">“넌 원하는 데서 자. 우린 우리 방 그대로 쓸 거야.”</p>
+                  <p class="mb-6">“그럼 나는?”</p>
+                  <p class="mb-6">마크가 문을 열었다.</p>
+                  <p class="mb-6">“네 기준에 맞는 곳을 찾아.”</p>
+                  <p class="mb-6">“못 찾으면?”</p>
+                  <p class="mb-6">케빈이 어깨를 으쓱했다.</p>
+                  <p class="mb-6">“리츠 호텔이라도 가 보든가.”</p>
+                  <p class="mb-6">제이슨은 두 사람을 빤히 쳐다보았다.</p>
+                  <p class="mb-6">“너희 진짜 나 두고 가는 거야?”</p>
+                  <p class="mb-6">마크가 고개를 끄덕였다.</p>
+                  <p class="mb-6">“일요일에 공항에서 보자.”</p>
+                  <p class="mb-6">두 사람이 엘리베이터 쪽으로 걸어가자 제이슨이 뒤에서 소리쳤다.</p>
+                  <p class="mb-6">“잠깐! 리츠 호텔은 베개가 푹신할까?”</p>
+                  <p class="mb-6">두 사람은 아무 대답도 하지 않았다.</p>
+              </div>
+          </section>
+
+      </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "10161020.m4a";
+</script>
+      <script src="wordbank-utils.js"></script>
+  </body>
+  </html>

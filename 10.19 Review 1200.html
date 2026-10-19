@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+      <title>Review Note | Viking-Age Iceland — A World Without Personal Space</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+      <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+      </style>
+</head>
+<body class="p-4 md:p-12">
+      <div class="max-w-4xl mx-auto space-y-8">
+
+          <header class="text-center space-y-4">
+              <div class="flex items-center justify-center gap-4">
+                  <span class="text-5xl">🏔️</span>
+                  <h1 class="text-3xl md:text-4xl font-extrabold text-white">Viking-Age Iceland — A World Without Personal Space</h1>
+              </div>
+              <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+          </header>
+
+          <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+              <div class="flex items-center justify-between px-2">
+                  <div class="flex items-center gap-3">
+                      <span class="text-xl">🎧</span>
+                      <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                  </div>
+                  <div class="flex gap-2">
+                      <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          <span class="text-lg">↺</span> 5s
+                      </button>
+                      <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          5s <span class="text-lg">↻</span>
+                      </button>
+                  </div>
+              </div>
+              <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+          </div>
+
+          <div class="flex justify-center">
+              <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+          </div>
+
+          <section class="glass rounded-3xl overflow-hidden shadow-xl">
+              <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                  <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+              </div>
+              <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                  <tr><td class="p-4"><b class="text-white">privacy</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">사생활, 사생활 보호</td></tr>
+                  <tr><td class="p-4"><b class="text-white">relatively clean</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">비교적 깨끗한</td></tr>
+                  <tr><td class="p-4"><b class="text-white">rarely washed</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">거의 씻지 않았던, 좀처럼 세탁하지 않았던</td></tr>
+                  <tr><td class="p-4"><b class="text-white">floss</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">치실, 치실로 이를 닦다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">reading the room</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">분위기를 파악하는 것, 눈치껏 상황을 읽는 것</td></tr>
+                  <tr><td class="p-4"><b class="text-white">timid</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">소심한, 겁이 많은</td></tr>
+                  <tr><td class="p-4"><b class="text-white">passive</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">소극적인, 수동적인</td></tr>
+                  <tr><td class="p-4"><b class="text-white">cheer them on</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그들을 응원하다, 힘을 북돋아 주다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">cheer for them</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그들을 응원하다, 지지하다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">cheer up</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">기운 내다, 기분을 풀어 주다</td></tr>
+              </tbody></table>
+          </section>
+
+          <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="glass p-5 rounded-2xl border border-teal-500/20">
+                  <h3 class="text-teal-400 font-bold mb-2">reading the room</h3>
+                  <p class="text-slate-300 text-sm">사람들의 반응과 분위기를 살펴보고 어떤 말이나 행동이 적절할지 판단하는 것이에요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-teal-500/20">
+                  <h3 class="text-teal-400 font-bold mb-2">timid / passive</h3>
+                  <p class="text-slate-300 text-sm">timid는 자신감이 부족하거나 겁이 많은 성격을, passive는 적극적으로 행동하지 않는 태도를 강조해요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-teal-500/20">
+                  <h3 class="text-teal-400 font-bold mb-2">cheer them on / cheer for them</h3>
+                  <p class="text-slate-300 text-sm">Cheer someone on은 노력하거나 경쟁하는 사람에게 힘을 실어 주는 것이고, cheer for someone은 그 사람이나 팀을 지지하며 응원하는 것이에요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-teal-500/20">
+                  <h3 class="text-teal-400 font-bold mb-2">cheer up</h3>
+                  <p class="text-slate-300 text-sm">기분이 나아지거나 다른 사람의 기분을 풀어 주는 뜻이에요.</p>
+              </div>
+          </section>
+
+          <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+              <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                  <p class="mb-6">We've all experienced some culture shock when traveling abroad, but imagine visiting Iceland around the year 1000. Forget the modern image of peaceful villages and comfortable homes. Life on a Viking-Age farm would challenge some of your most basic expectations about comfort, family, and justice.</p>
+                  <p class="mb-6">1. Privacy was extremely limited.</p>
+                  <p class="mb-6">Imagine living in a house where people cook, eat, work, and sleep in the same main room.</p>
+                  <p class="mb-6">For many people in Viking-Age Iceland, that was simply the norm.</p>
+                  <p class="mb-6">Families lived in turf-covered longhouses with a central hearth and sleeping areas along the walls.</p>
+                  <p class="mb-6"><b class="highlight quiz-target" data-ans="Privacy" data-kor="사생활">Privacy</b> was limited, especially for household workers. Some larger homes had separate sleeping spaces, but many people shared the main living area.</p>
+                  <p class="mb-6">If you were a <b class="highlight quiz-target" data-ans="timid" data-kor="소심한">timid</b> person who enjoyed spending time alone, this arrangement could be exhausting.</p>
+                  <p class="mb-6">And imagine trying to <b class="highlight quiz-target" data-ans="cheer up" data-kor="기분을 풀어 주다">cheer up</b> a family member after an argument when everyone else could hear your conversation.</p>
+                  <p class="mb-6">Where we're used to closing our bedroom doors for some peace and quiet, many people in Viking-Age Iceland had few opportunities to be completely alone.</p>
+                  <p class="mb-6">2. Vikings weren't necessarily as dirty as you might imagine.</p>
+                  <p class="mb-6">You might assume that Viking-Age Icelanders <b class="highlight quiz-target" data-ans="rarely washed" data-kor="거의 씻지 않았다">rarely washed</b> and lived in constant filth.</p>
+                  <p class="mb-6">But that isn't quite accurate.</p>
+                  <p class="mb-6">Archaeological evidence and medieval written sources indicate that bathing and personal grooming were part of Norse life.</p>
+                  <p class="mb-6">Iceland's natural hot springs also provided opportunities for bathing, although access varied by location.</p>
+                  <p class="mb-6">That doesn't mean every household had convenient washing facilities or that everyone maintained the same standards of hygiene.</p>
+                  <p class="mb-6">And of course, people didn't have modern bathrooms or dental <b class="highlight quiz-target" data-ans="floss" data-kor="치실">floss</b>.</p>
+                  <p class="mb-6">Still, the idea that Vikings never washed is misleading.</p>
+                  <p class="mb-6">Some aspects of their daily lives might have been more familiar than you'd expect.</p>
+                  <p class="mb-6">3. You could win a court case and still have to enforce the decision yourself.</p>
+                  <p class="mb-6">Perhaps the strangest part of Icelandic society was its legal system.</p>
+                  <p class="mb-6">In 930, Icelanders established the Althing, a national assembly where laws were discussed and disputes were judged.</p>
+                  <p class="mb-6">But Iceland had no king or central executive authority to enforce court decisions.</p>
+                  <p class="mb-6">Imagine winning a serious legal dispute. The court agrees that you're right.</p>
+                  <p class="mb-6">What happens next?</p>
+                  <p class="mb-6">You might need support from relatives, friends, or a powerful local leader to make sure the decision was respected.</p>
+                  <p class="mb-6">Being <b class="highlight quiz-target" data-ans="passive" data-kor="소극적인">passive</b> could put you at a serious disadvantage.</p>
+                  <p class="mb-6">And <b class="highlight quiz-target" data-ans="reading the room" data-kor="분위기를 파악하는 것">reading the room</b>, especially understanding who supported whom, could be essential.</p>
+                  <p class="mb-6">In modern society, we usually expect the authorities to enforce court decisions. In Viking-Age Iceland, private individuals and their supporters played a much larger role.</p>
+                  <p class="mb-6">That could certainly catch a modern visitor off guard.</p>
+                  <p class="mb-6">Iceland had an organized legal system, but it depended heavily on personal relationships and community support.</p>
+                  <p class="mb-6">The biggest surprise might be discovering that a society could have sophisticated laws without a government capable of enforcing them.</p>
+                  <p class="mb-6">Lesson patterns used: “It's the norm,” “We're used to,” “I wasn't expecting that,” and “That caught me off guard,” adapted naturally.</p>
+              </div>
+              <hr class="border-white/10">
+              <div class="text-slate-400 italic leading-relaxed space-y-6">
+                  <p class="mb-6">우리는 모두 해외여행을 하면서 어느 정도 문화 충격을 경험해 본 적이 있습니다. 하지만 서기 1000년 무렵의 아이슬란드를 방문한다고 상상해 보세요. 평화로운 마을과 편안한 집이라는 현대적인 이미지는 잠시 잊으세요. 바이킹 시대 농장에서의 생활은 편안함, 가족, 정의에 관한 여러분의 가장 기본적인 기대를 뒤흔들었을 것입니다.</p>
+                  <p class="mb-6">1. 사생활이 극도로 제한되어 있었다.</p>
+                  <p class="mb-6">사람들이 같은 공간에서 요리하고, 먹고, 일하고, 잠을 자는 집에서 산다고 상상해 보세요.</p>
+                  <p class="mb-6">바이킹 시대 아이슬란드의 많은 사람들에게는 그것이 당연한 생활 방식이었습니다.</p>
+                  <p class="mb-6">가족들은 잔디와 흙으로 덮인 긴 집에서 살았으며, 중앙에는 화덕이 있고 벽을 따라 잠을 잘 수 있는 공간이 있었습니다.</p>
+                  <p class="mb-6"><b class="highlight">사생활은</b> 제한적이었으며, 특히 집안일을 하는 사람들에게 그랬습니다. 일부 큰 집에는 별도의 침실이 있었지만, 많은 사람들이 주요 생활 공간을 함께 사용했습니다.</p>
+                  <p class="mb-6">혼자 시간을 보내는 것을 좋아하는 <b class="highlight">소심한 사람이라면</b> 이런 환경이 무척 피곤하게 느껴졌을 것입니다.</p>
+                  <p class="mb-6">게다가 가족과 다툰 사람의 <b class="highlight">기분을 풀어 주려고</b> 하는데 다른 사람들이 대화를 전부 들을 수 있다고 상상해 보세요.</p>
+                  <p class="mb-6">오늘날 우리는 평화롭고 조용한 시간을 보내기 위해 침실 문을 닫는 것에 익숙하지만, 바이킹 시대 아이슬란드의 많은 사람들에게는 완전히 혼자 있을 기회가 거의 없었습니다.</p>
+                  <p class="mb-6">2. 바이킹들은 생각만큼 더럽지 않았을 수도 있다.</p>
+                  <p class="mb-6">바이킹 시대 아이슬란드 사람들이 <b class="highlight">거의 씻지 않고</b> 늘 더러운 환경에서 살았다고 생각할 수도 있습니다.</p>
+                  <p class="mb-6">하지만 그것이 완전히 정확한 것은 아닙니다.</p>
+                  <p class="mb-6">고고학적 증거와 중세 문헌에 따르면 목욕과 개인위생 관리는 북유럽 사람들의 생활 일부였습니다.</p>
+                  <p class="mb-6">아이슬란드의 천연 온천도 목욕할 기회를 제공했지만, 이용 가능 여부는 지역에 따라 달랐습니다.</p>
+                  <p class="mb-6">그렇다고 모든 가정에 편리한 세면 시설이 있었다거나 모든 사람이 같은 위생 기준을 유지했다는 뜻은 아닙니다.</p>
+                  <p class="mb-6">물론 현대적인 욕실이나 <b class="highlight">치실도</b> 없었습니다.</p>
+                  <p class="mb-6">하지만 바이킹들이 전혀 씻지 않았다는 생각은 잘못된 것입니다.</p>
+                  <p class="mb-6">그들의 일상생활 중 일부는 예상보다 더 익숙하게 느껴질 수도 있습니다.</p>
+                  <p class="mb-6">3. 재판에서 이겨도 판결을 직접 집행해야 할 수 있었다.</p>
+                  <p class="mb-6">어쩌면 아이슬란드 사회에서 가장 이상한 부분은 법률제도였을 것입니다.</p>
+                  <p class="mb-6">930년, 아이슬란드 사람들은 법을 논의하고 분쟁을 판결하는 전국적인 의회인 '알싱'을 설립했습니다.</p>
+                  <p class="mb-6">하지만 아이슬란드에는 법원의 판결을 강제로 집행할 왕이나 중앙 행정권력이 없었습니다.</p>
+                  <p class="mb-6">심각한 법적 분쟁에서 승리했다고 상상해 보세요. 법원도 여러분이 옳다고 인정합니다.</p>
+                  <p class="mb-6">그렇다면 그다음에는 어떻게 될까요?</p>
+                  <p class="mb-6">판결이 실제로 지켜지도록 하려면 친척, 친구, 또는 강력한 지역 지도자의 도움이 필요할 수도 있었습니다.</p>
+                  <p class="mb-6"><b class="highlight">소극적인</b> 태도는 심각한 불이익으로 이어질 수 있었습니다.</p>
+                  <p class="mb-6">그리고 <b class="highlight">분위기를 파악하는 것</b>, 특히 누가 누구를 지지하는지 이해하는 것이 필수적일 수 있었습니다.</p>
+                  <p class="mb-6">현대 사회에서는 일반적으로 당국이 법원의 판결을 집행할 것이라고 기대합니다. 하지만 바이킹 시대 아이슬란드에서는 개인과 그 지지자들이 훨씬 더 큰 역할을 했습니다.</p>
+                  <p class="mb-6">현대의 방문객이라면 상당히 당황할 만한 상황입니다.</p>
+                  <p class="mb-6">아이슬란드에는 체계적인 법률제도가 있었지만, 그 제도는 개인적인 관계와 공동체의 지원에 크게 의존했습니다.</p>
+                  <p class="mb-6">가장 놀라운 사실은 정교한 법률을 갖춘 사회가 그 법을 강제로 집행할 수 있는 정부 없이도 존재할 수 있었다는 점일지도 모릅니다.</p>
+              </div>
+          </section>
+
+      </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "10191200.m4a";
+</script>
+      <script src="wordbank-utils.js"></script>
+  </body>
+  </html>

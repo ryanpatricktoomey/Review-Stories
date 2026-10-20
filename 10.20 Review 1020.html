@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+      <title>Review Note | Three Unusual Food Pairings That Actually Make Sense</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+      <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+      </style>
+</head>
+<body class="p-4 md:p-12">
+      <div class="max-w-4xl mx-auto space-y-8">
+
+          <header class="text-center space-y-4">
+              <div class="flex items-center justify-center gap-4">
+                  <span class="text-5xl">🥭</span>
+                  <h1 class="text-3xl md:text-4xl font-extrabold text-white">Three Unusual Food Pairings That Actually Make Sense</h1>
+              </div>
+              <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+          </header>
+
+          <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+              <div class="flex items-center justify-between px-2">
+                  <div class="flex items-center gap-3">
+                      <span class="text-xl">🎧</span>
+                      <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                  </div>
+                  <div class="flex gap-2">
+                      <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          <span class="text-lg">↺</span> 5s
+                      </button>
+                      <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          5s <span class="text-lg">↻</span>
+                      </button>
+                  </div>
+              </div>
+              <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+          </div>
+
+          <div class="flex justify-center">
+              <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+          </div>
+
+          <section class="glass rounded-3xl overflow-hidden shadow-xl">
+              <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                  <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+              </div>
+              <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                  <tr><td class="p-4"><b class="text-white">lend</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">빌려주다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">loan</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">대출, 빌려준 것 / 빌려주다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">on loan</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">임시로 빌려준 상태인</td></tr>
+                  <tr><td class="p-4"><b class="text-white">tangy</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">새콤하고 톡 쏘는</td></tr>
+                  <tr><td class="p-4"><b class="text-white">you really carried it today</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">오늘 네가 거의 다 해냈어 / 오늘 네가 큰 역할을 했어</td></tr>
+                  <tr><td class="p-4"><b class="text-white">like-minded people</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">생각이나 취향이 비슷한 사람들</td></tr>
+                  <tr><td class="p-4"><b class="text-white">have a lot in common</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">공통점이 많다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">we really click</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">우리는 정말 잘 통한다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">on the same wavelength</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">생각이나 감정이 잘 통하는</td></tr>
+                  <tr><td class="p-4"><b class="text-white">on the same page</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">서로 같은 내용을 이해하고 있거나 의견이 일치하는</td></tr>
+              </tbody></table>
+          </section>
+
+          <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-400">
+                  <h3 class="text-teal-400 font-bold mb-2">lend / loan / on loan</h3>
+                  <p class="text-slate-300 text-sm">lend는 빌려주다, loan은 주로 대출이나 빌려준 물건을 뜻해요. On loan은 소유권은 그대로지만 일시적으로 다른 사람에게 빌려준 상태를 말해요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-400">
+                  <h3 class="text-teal-400 font-bold mb-2">you really carried it today</h3>
+                  <p class="text-slate-300 text-sm">팀이나 공동 작업에서 한 사람이 특히 큰 역할을 했다는 뜻이에요. Carry the team처럼 자주 사용해요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-400">
+                  <h3 class="text-teal-400 font-bold mb-2">we really click</h3>
+                  <p class="text-slate-300 text-sm">사람들끼리 성격이나 대화가 잘 맞아서 금방 친해진다는 뜻이에요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-400">
+                  <h3 class="text-teal-400 font-bold mb-2">on the same wavelength / on the same page</h3>
+                  <p class="text-slate-300 text-sm">전자는 생각이나 감정이 자연스럽게 잘 통한다는 뜻이고, 후자는 특정 상황이나 계획에 대해 같은 이해를 하고 있다는 뜻이에요.</p>
+              </div>
+          </section>
+
+          <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+              <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                  <p class="mb-6">I've always enjoyed meeting <b class="highlight quiz-target" data-ans="like-minded people" data-kor="생각이나 취향이 비슷한 사람들">like-minded people</b> who love experimenting with food. We might <b class="highlight quiz-target" data-ans="have a lot in common" data-kor="공통점이 많다">have a lot in common</b>, but we don't necessarily agree on what tastes good. That's what makes trying strange combinations so interesting.</p>
+                  <p class="mb-6">Here are three pairings that sound questionable but have surprisingly good reasons behind them.</p>
+                  <p class="mb-6">1. Pineapple and Blue Cheese — An Unexpected Flavor Connection<br>Pineapple and blue cheese don't sound like natural partners. One is sweet and tropical, while the other is salty, creamy, and rather strong.</p>
+                  <p class="mb-6">But they share some fruity aroma notes, and the pineapple's acidity helps balance the richness of the cheese. The result is sweet, salty, and wonderfully <b class="highlight quiz-target" data-ans="tangy" data-kor="새콤하고 톡 쏘는">tangy</b>.</p>
+                  <p class="mb-6">Try a small cube of ripe pineapple with a little mild blue cheese. Start with more pineapple than cheese, because blue cheese can easily dominate.</p>
+                  <p class="mb-6">You might discover that these two ingredients are surprisingly <b class="highlight quiz-target" data-ans="on the same wavelength" data-kor="생각이나 감정이 잘 통하는">on the same wavelength</b> when it comes to flavor.</p>
+                  <p class="mb-6">2. Strawberries and Black Pepper — A Sweet Surprise<br>Here's a combination that sounds like someone confused the dessert table with the spice rack.</p>
+                  <p class="mb-6">Fresh strawberries are sweet and juicy. Black pepper adds a gentle heat and a complex aroma that can make the berries taste even more interesting.</p>
+                  <p class="mb-6">The trick is to use very little pepper. Slice a few strawberries, add a tiny pinch of freshly ground black pepper, and wait a minute before tasting.</p>
+                  <p class="mb-6">The pepper shouldn't make the fruit spicy. It should simply add another layer of flavor.</p>
+                  <p class="mb-6">If you're wondering whether these ingredients <b class="highlight quiz-target" data-ans="really click" data-kor="정말 잘 통한다">really click</b>, the easiest way to find out is to try them.</p>
+                  <p class="mb-6">3. Chickpeas and Red Bell Peppers — A Nutritional Partnership<br>This pairing isn't especially strange in a salad, but the nutritional reason behind it might surprise you.</p>
+                  <p class="mb-6">Chickpeas contain non-heme iron, a type of iron found in plant foods. Red bell peppers are rich in vitamin C, which helps your body absorb that iron more efficiently.</p>
+                  <p class="mb-6">Mix cooked chickpeas with chopped red bell peppers, olive oil, and lemon juice. You get a crunchy, refreshing salad that's easy to prepare.</p>
+                  <p class="mb-6">It's a simple example of ingredients working together for reasons beyond taste.</p>
+                  <p class="mb-6">Of course, no single food combination guarantees better health. But it's useful to understand how different nutrients interact.</p>
+                  <p class="mb-6">I once helped a friend prepare a food-tasting event, and she told me, "<b class="highlight quiz-target" data-ans="You really carried it today" data-kor="오늘 네가 큰 역할을 했어">You really carried it today</b>!" I thought that was generous, considering she'd done most of the cooking.</p>
+                  <p class="mb-6">She had <b class="highlight quiz-target" data-ans="lent" data-kor="빌려줬다">lent</b> me her favorite cookbook, which was technically <b class="highlight quiz-target" data-ans="on loan" data-kor="임시로 빌려준 상태인">on loan</b> until I returned it. I joked that I might need a long-term <b class="highlight quiz-target" data-ans="loan" data-kor="대출 / 빌린 기간">loan</b> because there were so many recipes I wanted to try.</p>
+                  <p class="mb-6">At least we were <b class="highlight quiz-target" data-ans="on the same page" data-kor="서로 의견이 일치하는">on the same page</b> about one thing: experimenting with food should be fun, not complicated.</p>
+              </div>
+              <hr class="border-white/10">
+              <div class="text-slate-400 italic leading-relaxed space-y-6">
+                  <p class="mb-6">알고 보면 꽤 그럴듯한 특이한 음식 조합 세 가지<br>저는 음식 실험을 좋아하는, <b class="highlight">취향이 비슷한 사람들</b>을 만나는 걸 늘 즐겨왔어요. <b class="highlight">공통점이 많더라도</b> 어떤 음식이 맛있는지에 대해서는 반드시 의견이 일치하는 건 아니죠. 바로 그런 점 때문에 특이한 음식 조합을 시도하는 게 재미있는 것 같아요.</p>
+                  <p class="mb-6">처음 들으면 좀 의심스럽지만, 알고 보면 잘 어울리는 이유가 있는 음식 조합 세 가지를 소개할게요.</p>
+                  <p class="mb-6">1. 파인애플과 블루치즈 — 뜻밖의 맛의 연결고리<br>파인애플과 블루치즈는 자연스럽게 어울리는 조합처럼 들리지 않아요. 하나는 달콤하고 열대과일 특유의 맛이 나지만, 다른 하나는 짭짤하고 크리미하면서 맛이 꽤 강하니까요.</p>
+                  <p class="mb-6">하지만 두 재료에는 과일 향과 관련된 일부 향의 특징이 있고, 파인애플의 산미가 치즈의 진한 맛을 잡아줘요. 그 결과 달콤하고 짭짤하면서 기분 좋게 <b class="highlight">새콤한</b> 맛이 만들어지죠.</p>
+                  <p class="mb-6">잘 익은 파인애플을 작게 썰어 순한 블루치즈를 조금 곁들여 보세요. 블루치즈는 맛이 쉽게 강해질 수 있으니 처음에는 파인애플을 더 많이 사용하는 게 좋아요.</p>
+                  <p class="mb-6">어쩌면 맛에 관한 한 이 두 재료가 의외로 <b class="highlight">잘 통한다는</b> 사실을 발견할지도 몰라요.</p>
+                  <p class="mb-6">2. 딸기와 후추 — 달콤한 놀라움<br>이번 조합은 누군가 디저트 재료와 향신료를 헷갈린 것처럼 들려요.</p>
+                  <p class="mb-6">신선한 딸기는 달콤하고 과즙이 풍부하죠. 후추는 은은한 매운맛과 복합적인 향을 더해서 딸기의 맛을 더욱 흥미롭게 만들어줄 수 있어요.</p>
+                  <p class="mb-6">비결은 후추를 아주 조금만 사용하는 거예요. 딸기 몇 개를 썰고 갓 간 후추를 아주 살짝 뿌린 다음 1분 정도 기다렸다가 먹어보세요.</p>
+                  <p class="mb-6">후추 때문에 딸기가 매워져서는 안 돼요. 단지 맛에 새로운 층을 하나 더해주는 정도여야 하죠.</p>
+                  <p class="mb-6">이 두 재료가 정말 <b class="highlight">잘 어울리는지</b> 궁금하다면 직접 먹어보는 게 가장 쉬운 방법이에요.</p>
+                  <p class="mb-6">3. 병아리콩과 빨간 파프리카 — 영양학적으로 좋은 파트너<br>샐러드에서 이 조합 자체는 특별히 이상하지 않지만, 영양학적으로 잘 어울리는 이유는 조금 놀라울 수 있어요.</p>
+                  <p class="mb-6">병아리콩에는 식물성 식품에 들어 있는 비헴철이라는 철분이 있어요. 빨간 파프리카에는 비타민 C가 풍부해서 우리 몸이 그 철분을 더 효율적으로 흡수하도록 도와줘요.</p>
+                  <p class="mb-6">익힌 병아리콩에 잘게 썬 빨간 파프리카, 올리브오일, 레몬즙을 섞어보세요. 아삭하고 상큼하면서 만들기도 쉬운 샐러드가 완성돼요.</p>
+                  <p class="mb-6">맛을 넘어 다른 이유로도 재료들이 서로 도움을 줄 수 있다는 간단한 사례예요.</p>
+                  <p class="mb-6">물론 어떤 음식 조합도 건강 개선을 보장하지는 않아요. 하지만 서로 다른 영양소가 어떻게 상호작용하는지 알아두는 건 유용하죠.</p>
+                  <p class="mb-6">예전에 친구의 음식 시식 행사를 도와준 적이 있는데, 친구가 저에게 "<b class="highlight">오늘 네가 정말 큰 역할을 했어</b>!"라고 말하더라고요. 사실 요리는 친구가 거의 다 했기 때문에 좀 과한 칭찬이라고 생각했어요.</p>
+                  <p class="mb-6">그 친구는 자신이 아끼는 요리책을 저에게 <b class="highlight">빌려줬는데</b>, 돌려줄 때까지 잠시 <b class="highlight">빌린 상태였죠</b>. 시도해 보고 싶은 레시피가 너무 많아서 장기 <b class="highlight">대출이</b> 필요할지도 모르겠다고 농담했어요.</p>
+                  <p class="mb-6">적어도 한 가지에 대해서는 우리 <b class="highlight">생각이 같았어요</b>. 음식 실험은 복잡한 일이 아니라 재미있는 일이 되어야 한다는 거죠.</p>
+              </div>
+          </section>
+
+      </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "10201020.m4a";
+</script>
+      <script src="wordbank-utils.js"></script>
+  </body>
+  </html>

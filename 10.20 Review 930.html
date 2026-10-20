@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+      <title>Review Note | Three Strange Food Combinations Worth Trying</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+      <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+      </style>
+</head>
+<body class="p-4 md:p-12">
+      <div class="max-w-4xl mx-auto space-y-8">
+
+          <header class="text-center space-y-4">
+              <div class="flex items-center justify-center gap-4">
+                  <span class="text-5xl">🥜</span>
+                  <h1 class="text-3xl md:text-4xl font-extrabold text-white">Three Strange Food Combinations Worth Trying</h1>
+              </div>
+              <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+          </header>
+
+          <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+              <div class="flex items-center justify-between px-2">
+                  <div class="flex items-center gap-3">
+                      <span class="text-xl">🎧</span>
+                      <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                  </div>
+                  <div class="flex gap-2">
+                      <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          <span class="text-lg">↺</span> 5s
+                      </button>
+                      <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          5s <span class="text-lg">↻</span>
+                      </button>
+                  </div>
+              </div>
+              <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+          </div>
+
+          <div class="flex justify-center">
+              <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+          </div>
+
+          <section class="glass rounded-3xl overflow-hidden shadow-xl">
+              <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                  <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+              </div>
+              <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                  <tr><td class="p-4"><b class="text-white">not a big priority</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그다지 중요한 일이 아닌 / 우선순위가 높지 않은</td></tr>
+                  <tr><td class="p-4"><b class="text-white">the sum is greater than the parts</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">각각 따로일 때보다 합쳤을 때 더 뛰어나다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">don't have an appetite</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">입맛이 없다 / 식욕이 없다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">adventurous eater</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">새로운 음식이나 낯선 맛에 도전하는 사람</td></tr>
+                  <tr><td class="p-4"><b class="text-white">tried and tested</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">이미 시도해서 효과나 품질이 검증된</td></tr>
+              </tbody></table>
+          </section>
+
+          <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-400">
+                  <h3 class="text-teal-400 font-bold mb-2">not a big priority</h3>
+                  <p class="text-slate-300 text-sm">중요하지 않다는 뜻보다는 다른 일에 비해 우선순위가 낮다는 뉘앙스예요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-400">
+                  <h3 class="text-teal-400 font-bold mb-2">the sum is greater than the parts</h3>
+                  <p class="text-slate-300 text-sm">각각의 요소보다 함께 어우러졌을 때 더 좋은 결과가 나온다는 뜻이에요. 흔히 the whole is greater than the sum of its parts라고도 해요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-400">
+                  <h3 class="text-teal-400 font-bold mb-2">don't have an appetite</h3>
+                  <p class="text-slate-300 text-sm">배가 고프지 않거나 음식을 먹고 싶은 마음이 없다는 뜻이에요. 단순히 특정 음식을 싫어한다는 의미는 아니예요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-400">
+                  <h3 class="text-teal-400 font-bold mb-2">adventurous eater</h3>
+                  <p class="text-slate-300 text-sm">낯선 음식이나 특이한 조합을 거리낌 없이 시도하는 사람이에요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-400">
+                  <h3 class="text-teal-400 font-bold mb-2">tried and tested</h3>
+                  <p class="text-slate-300 text-sm">실제로 사용하거나 시도해 봐서 효과가 검증되었다는 뜻이에요. tried-and-tested recipe처럼 명사 앞에서도 자주 사용해요.</p>
+              </div>
+          </section>
+
+          <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+              <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                  <p class="mb-6">I wouldn't describe myself as an <b class="highlight quiz-target" data-ans="adventurous eater" data-kor="새로운 음식에 도전하는 사람">adventurous eater</b>. When I'm hungry, I usually stick to <b class="highlight quiz-target" data-ans="tried-and-tested" data-kor="검증된">tried-and-tested</b> favorites. Discovering unusual food combinations has never been <b class="highlight quiz-target" data-ans="a big priority" data-kor="그다지 중요한 일">a big priority</b> for me.</p>
+                  <p class="mb-6">But recently, I've become interested in why certain ingredients work so well together. Sometimes it's chemistry, sometimes it's contrast, and sometimes there's a nutritional benefit you wouldn't expect.</p>
+                  <p class="mb-6">Here are three combinations worth knowing about.</p>
+                  <p class="mb-6">1. Peanut Butter and Miso — A Savory Surprise<br>Peanut butter belongs on toast, and miso belongs in soup. Right?</p>
+                  <p class="mb-6">Well, not necessarily.</p>
+                  <p class="mb-6">Both ingredients have rich, roasted, nutty flavors. Miso also contains glutamates, which give it that deep, satisfying umami taste. Combined with peanut butter, it creates a surprisingly complex sauce.</p>
+                  <p class="mb-6">Try mixing one tablespoon of unsweetened peanut butter with half a teaspoon of miso, a little warm water, and a squeeze of lemon.</p>
+                  <p class="mb-6">Drizzle it over steamed vegetables or noodles.</p>
+                  <p class="mb-6">The peanut butter makes the sauce creamy, while the miso adds salty, savory depth. It's a great example of how two ingredients can complement each other.</p>
+                  <p class="mb-6">2. Cucumber and Chili Crisp — Cool Meets Hot<br>I love cucumbers, but I usually eat them plain or with a little salt.</p>
+                  <p class="mb-6">Then I discovered what happens when you add chili crisp.</p>
+                  <p class="mb-6">Chili crisp is a spicy condiment made with chili oil and crunchy ingredients such as fried garlic or shallots. Its heat and richness contrast beautifully with cold, juicy cucumber.</p>
+                  <p class="mb-6">Slice a cucumber, add a teaspoon of chili crisp, and finish with a little rice vinegar.</p>
+                  <p class="mb-6">The cucumber cools your mouth, while the chili adds heat and crunch. It's the contrast that makes this combination so satisfying.</p>
+                  <p class="mb-6">If you <b class="highlight quiz-target" data-ans="don't have much of an appetite" data-kor="입맛이 별로 없다">don't have much of an appetite</b> on a hot day, this might be just the thing.</p>
+                  <p class="mb-6">3. Eggs and Red Bell Peppers — A Nutritional Bonus<br>Here's a combination that works for a completely different reason.</p>
+                  <p class="mb-6">Eggs contain iron, while red bell peppers are rich in vitamin C. Vitamin C can help your body absorb non-heme iron from plant foods, although most of the iron in eggs isn't easily absorbed.</p>
+                  <p class="mb-6">So while eggs and peppers make a delicious breakfast, the nutritional advantage isn't as straightforward as it might sound.</p>
+                  <p class="mb-6">For a more useful combination, try adding red bell peppers to an omelet containing spinach. The vitamin C can help with the absorption of iron from the spinach.</p>
+                  <p class="mb-6">It's easy to make, colorful, and genuinely tasty.</p>
+                  <p class="mb-6">Of course, none of these combinations is going to change your life. But they remind me of an interesting idea: sometimes <b class="highlight quiz-target" data-ans="the sum is greater than the parts" data-kor="각각 따로일 때보다 합쳤을 때 더 뛰어나다">the sum is greater than the parts</b>.</p>
+                  <p class="mb-6">And the best part? You don't need expensive ingredients or special cooking skills to find out for yourself.</p>
+              </div>
+              <hr class="border-white/10">
+              <div class="text-slate-400 italic leading-relaxed space-y-6">
+                  <p class="mb-6">한번쯤 시도해 볼 만한 특이한 음식 조합 세 가지<br>저는 스스로를 <b class="highlight">새로운 음식에 적극적으로 도전하는 사람</b>이라고 생각하지 않아요. 배가 고프면 보통 이미 먹어봐서 맛있다는 걸 아는 익숙한 음식을 선택하죠. 특이한 음식 조합을 찾아보는 건 저에게 <b class="highlight">그다지 중요한 일이 아니었어요</b>.</p>
+                  <p class="mb-6">그런데 최근에는 특정 재료들이 왜 그렇게 잘 어울리는지 궁금해지기 시작했어요. 때로는 화학적인 이유 때문이고, 때로는 서로 다른 맛의 대비 때문이며, 예상하지 못한 영양학적 이점이 있는 경우도 있더라고요.</p>
+                  <p class="mb-6">알아두면 좋은 음식 조합 세 가지를 소개할게요.</p>
+                  <p class="mb-6">1. 땅콩버터와 미소 된장 — 뜻밖의 감칠맛<br>땅콩버터는 토스트에 바르고, 미소 된장은 국에 넣는 거잖아요. 그렇죠?</p>
+                  <p class="mb-6">그런데 꼭 그렇지만은 않아요.</p>
+                  <p class="mb-6">두 재료 모두 진하고 고소하면서 볶은 듯한 풍미가 있어요. 미소 된장에는 글루탐산도 들어 있어서 깊고 만족스러운 감칠맛을 내죠. 땅콩버터와 섞으면 의외로 복합적인 맛의 소스가 만들어져요.</p>
+                  <p class="mb-6">무가당 땅콩버터 한 큰술에 미소 된장 반 작은술, 따뜻한 물 조금, 레몬즙 약간을 섞어보세요.</p>
+                  <p class="mb-6">찐 채소나 국수 위에 뿌려 먹으면 돼요.</p>
+                  <p class="mb-6">땅콩버터는 소스를 크리미하게 만들어주고, 미소 된장은 짭짤하고 깊은 감칠맛을 더해줘요. 두 재료가 서로의 맛을 살려주는 좋은 예죠.</p>
+                  <p class="mb-6">2. 오이와 칠리 크리스프 — 시원함과 매운맛의 만남<br>저는 오이를 좋아하지만, 보통 그냥 먹거나 소금을 조금 찍어 먹는 편이에요.</p>
+                  <p class="mb-6">그러다가 오이에 칠리 크리스프를 곁들이면 어떤 맛이 나는지 알게 됐어요.</p>
+                  <p class="mb-6">칠리 크리스프는 고추기름에 튀긴 마늘이나 샬롯 같은 바삭한 재료를 넣어 만든 매콤한 양념이에요. 매운맛과 기름진 풍미가 차갑고 아삭하면서 수분이 많은 오이와 멋진 대비를 이뤄요.</p>
+                  <p class="mb-6">오이를 썰어 칠리 크리스프 한 작은술을 넣고 쌀식초를 조금 뿌려보세요.</p>
+                  <p class="mb-6">오이는 입안을 시원하게 해주고, 칠리는 매운맛과 바삭한 식감을 더해줘요. 바로 이런 대비가 이 조합을 만족스럽게 만드는 거예요.</p>
+                  <p class="mb-6">더운 날 <b class="highlight">입맛이 별로 없다면</b> 딱 좋은 음식일지도 몰라요.</p>
+                  <p class="mb-6">3. 달걀과 빨간 파프리카 — 영양학적인 보너스<br>이번에는 전혀 다른 이유로 잘 어울리는 조합이에요.</p>
+                  <p class="mb-6">달걀에는 철분이 들어 있고, 빨간 파프리카에는 비타민 C가 풍부해요. 비타민 C는 식물성 식품에 들어 있는 비헴철의 흡수를 도와줄 수 있어요. 다만 달걀에 들어 있는 철분은 대부분 흡수가 잘되지 않는 편이에요.</p>
+                  <p class="mb-6">그러니까 달걀과 파프리카는 맛있는 아침 식사 조합이지만, 영양학적 이점은 생각만큼 단순하지 않아요.</p>
+                  <p class="mb-6">더 효과적인 조합을 원한다면 시금치가 들어간 오믈렛에 빨간 파프리카를 넣어보세요. 비타민 C가 시금치의 철분 흡수를 도와줄 수 있거든요.</p>
+                  <p class="mb-6">만들기도 쉽고, 색감도 예쁘고, 실제로 맛도 좋아요.</p>
+                  <p class="mb-6">물론 이런 음식 조합들이 인생을 바꿔놓지는 않을 거예요. 하지만 흥미로운 사실 하나를 떠올리게 해줘요. 때로는 <b class="highlight">각각의 재료를 따로 먹을 때보다 함께 먹을 때 훨씬 더 좋은 결과가 나온다는</b> 거죠.</p>
+                  <p class="mb-6">그리고 가장 좋은 점은 뭘까요? 비싼 재료나 특별한 요리 실력 없이도 직접 확인해 볼 수 있다는 거예요.</p>
+              </div>
+          </section>
+
+      </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "1020930.m4a";
+</script>
+      <script src="wordbank-utils.js"></script>
+  </body>
+  </html>

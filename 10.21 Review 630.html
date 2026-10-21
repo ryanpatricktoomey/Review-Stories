@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Wall Between Us</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🏚️</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Wall Between Us</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">good with my hands</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">손재주가 좋은, 손으로 하는 일을 잘하는</td></tr>
+                <tr><td class="p-4"><b class="text-white">demolish</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">철거하다, 허물다, 완전히 부수다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2"><h3 class="text-teal-400 font-bold text-lg">good with my hands</h3><p class="text-slate-300 text-sm leading-relaxed">손으로 물건을 만들거나 고치거나 다루는 데 능숙하다는 뜻이에요. 단순히 손이 좋다는 의미가 아니라 목공, 수리, 조립 같은 실용적인 기술을 잘한다는 표현이에요.</p></div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2"><h3 class="text-teal-400 font-bold text-lg">demolish</h3><p class="text-slate-300 text-sm leading-relaxed">건물이나 구조물을 완전히 허물거나 철거한다는 뜻이에요. 비유적으로 상대를 완패시키거나 주장을 완전히 무너뜨릴 때도 사용해요.</p></div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">My father was always <b class="highlight quiz-target" data-ans="good with his hands" data-kor="손재주가 좋으셨다">good with his hands</b>. He could fix almost anything, from broken chairs to leaking pipes. But he was terrible at talking about feelings.</p>
+                <p class="mb-6">When he died, he left me his old house. I hadn't lived there for fifteen years, and I had no intention of moving back.</p>
+                <p class="mb-6">The house needed expensive repairs, so I decided to <b class="highlight quiz-target" data-ans="demolish" data-kor="철거하고">demolish</b> it and sell the land.</p>
+                <p class="mb-6">My younger brother, Ben, was furious.</p>
+                <p class="mb-6">"You can't just tear down Dad's house," he said.</p>
+                <p class="mb-6">"Why not? You don't even live here."</p>
+                <p class="mb-6">"That's not the point."</p>
+                <p class="mb-6">"Then what is?"</p>
+                <p class="mb-6">He didn't answer.</p>
+                <p class="mb-6">On the morning of the <b class="highlight quiz-target" data-ans="demolition" data-kor="철거">demolition</b>, Ben arrived carrying a small toolbox.</p>
+                <p class="mb-6">"What are you doing?" I asked.</p>
+                <p class="mb-6">"Taking the kitchen door."</p>
+                <p class="mb-6">"The door?"</p>
+                <p class="mb-6">"Dad made it."</p>
+                <p class="mb-6">I looked at the old wooden door. It was scratched, and one of the hinges was loose.</p>
+                <p class="mb-6">"Ben, it's just a door."</p>
+                <p class="mb-6">He stared at me.</p>
+                <p class="mb-6">"You really don't remember, do you?"</p>
+                <p class="mb-6">When we were children, Ben had a serious accident. He spent months in a wheelchair. Our father had widened the kitchen doorway so Ben could move around the house.</p>
+                <p class="mb-6">I'd completely forgotten.</p>
+                <p class="mb-6">Ben began removing the hinges. I offered to help, but he refused.</p>
+                <p class="mb-6">As I watched him struggle, I remembered something else.</p>
+                <p class="mb-6">During those months, Dad had spent nearly every evening working on the house. I used to complain that he cared more about fixing things than spending time with us.</p>
+                <p class="mb-6">I'd believed that for years.</p>
+                <p class="mb-6">"Did Dad ever talk to you about the accident?" I asked.</p>
+                <p class="mb-6">"Not much."</p>
+                <p class="mb-6">"Then how do you know he cared?"</p>
+                <p class="mb-6">Ben stopped working.</p>
+                <p class="mb-6">"Because he rebuilt half the house for me."</p>
+                <p class="mb-6">I didn't know what to say.</p>
+                <p class="mb-6">When the <b class="highlight quiz-target" data-ans="demolition" data-kor="철거">demolition</b> crew arrived, Ben had finished removing the door. He carried it to his truck without looking at me.</p>
+                <p class="mb-6">The foreman asked if we were ready.</p>
+                <p class="mb-6">I looked at the house. Part of me wanted to cancel everything. But the repairs would cost more than I could afford.</p>
+                <p class="mb-6">"Go ahead," I said.</p>
+                <p class="mb-6">The machines started.</p>
+                <p class="mb-6">Ben stood beside his truck, watching. I walked over.</p>
+                <p class="mb-6">"You can have Dad's tools too," I told him.</p>
+                <p class="mb-6">He shook his head.</p>
+                <p class="mb-6">"I don't want his tools."</p>
+                <p class="mb-6">"Then what do you want?"</p>
+                <p class="mb-6">He looked at the house.</p>
+                <p class="mb-6">"I wanted you to remember."</p>
+                <p class="mb-6">I stood there as the first wall came down.</p>
+                <p class="mb-6">For years, I'd been angry at my father for not showing us enough love.</p>
+                <p class="mb-6">Now I wondered how much of it I'd simply failed to recognize.</p>
+                <p class="mb-6">I wanted to tell Ben that.</p>
+                <p class="mb-6">But he'd already gotten into his truck.</p>
+                <p class="mb-6">And I still hadn't asked him to stay.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>아버지는 언제나 <b class="highlight">손재주가 좋으셨다</b>. 망가진 의자부터 새는 수도관까지 거의 무엇이든 고칠 수 있었다. 하지만 감정에 대해 이야기하는 건 정말 서투르셨다.</p>
+                <p>아버지가 돌아가시면서 오래된 집을 내게 남기셨다. 나는 그 집에서 산 지 15년이나 지났고, 다시 돌아가 살 생각도 없었다.</p>
+                <p>집을 수리하려면 큰돈이 필요했기 때문에, 나는 집을 <b class="highlight">철거하고</b> 땅을 팔기로 했다.</p>
+                <p>남동생 벤은 몹시 화를 냈다.</p>
+                <p>"아버지 집을 그렇게 마음대로 허물 수는 없잖아."</p>
+                <p>"왜 안 되는데? 너는 여기 살지도 않잖아."</p>
+                <p>"그게 중요한 게 아니잖아."</p>
+                <p>"그럼 뭐가 중요한데?"</p>
+                <p>벤은 대답하지 않았다.</p>
+                <p><b class="highlight">철거</b> 당일 아침, 벤은 작은 공구함을 들고 나타났다.</p>
+                <p>"뭐 하는 거야?" 내가 물었다.</p>
+                <p>"부엌 문 떼어 가려고."</p>
+                <p>"문을?"</p>
+                <p>"아버지가 만드신 거야."</p>
+                <p>나는 낡은 나무문을 바라봤다. 여기저기 긁혀 있었고 경첩 하나는 헐거워져 있었다.</p>
+                <p>"벤, 그냥 문이잖아."</p>
+                <p>벤은 나를 빤히 쳐다봤다.</p>
+                <p>"정말 기억 안 나는구나?"</p>
+                <p>어린 시절, 벤은 큰 사고를 당한 적이 있었다. 몇 달 동안 휠체어를 타야 했다. 아버지는 벤이 집 안을 편하게 돌아다닐 수 있도록 부엌 출입구를 넓혀 주셨다.</p>
+                <p>나는 그 일을 완전히 잊고 있었다.</p>
+                <p>벤은 경첩을 떼어 내기 시작했다. 도와주겠다고 했지만 거절했다.</p>
+                <p>벤이 힘겹게 작업하는 모습을 보다가 또 다른 기억이 떠올랐다.</p>
+                <p>그 몇 달 동안 아버지는 거의 매일 저녁 집을 고치는 데 시간을 보내셨다. 나는 아버지가 우리와 시간을 보내는 것보다 집 고치는 일을 더 중요하게 생각한다고 불평하곤 했다.</p>
+                <p>오랫동안 그렇게 믿고 있었다.</p>
+                <p>"아버지가 그 사고에 대해 너랑 이야기하신 적 있어?" 내가 물었다.</p>
+                <p>"별로."</p>
+                <p>"그런데 아버지가 널 아끼셨다는 걸 어떻게 알아?"</p>
+                <p>벤은 작업을 멈췄다.</p>
+                <p>"나 때문에 집의 절반을 뜯어고치셨으니까."</p>
+                <p>나는 무슨 말을 해야 할지 몰랐다.</p>
+                <p><b class="highlight">철거</b> 작업자들이 도착했을 때, 벤은 문을 다 떼어 낸 상태였다. 그는 나를 쳐다보지도 않고 문을 트럭으로 옮겼다.</p>
+                <p>현장 책임자가 준비됐느냐고 물었다.</p>
+                <p>나는 집을 바라봤다. 한편으로는 모든 걸 취소하고 싶었다. 하지만 수리비는 내가 감당할 수 있는 수준을 훨씬 넘었다.</p>
+                <p>"시작하세요." 내가 말했다.</p>
+                <p>기계가 움직이기 시작했다.</p>
+                <p>벤은 트럭 옆에 서서 지켜보고 있었다. 나는 그에게 다가갔다.</p>
+                <p>"아버지 공구도 네가 가져도 돼."</p>
+                <p>벤은 고개를 저었다.</p>
+                <p>"공구는 필요 없어."</p>
+                <p>"그럼 뭘 원하는데?"</p>
+                <p>벤은 집을 바라봤다.</p>
+                <p>"형이 기억해 줬으면 했어."</p>
+                <p>첫 번째 벽이 무너져 내리는 동안 나는 그 자리에 서 있었다.</p>
+                <p>나는 오랫동안 아버지가 우리에게 사랑을 충분히 표현하지 않으셨다는 이유로 화가 나 있었다.</p>
+                <p>그런데 이제는 생각이 달라졌다. 어쩌면 아버지가 보여 주신 사랑을 내가 알아보지 못했던 건 아닐까.</p>
+                <p>벤에게 그 말을 하고 싶었다.</p>
+                <p>하지만 벤은 이미 트럭에 올라탄 뒤였다.</p>
+                <p>그리고 나는 여전히 그에게 조금 더 있다 가라고 말하지 못했다.</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+    function skipAudio(seconds) {
+        const player = document.getElementById('player');
+        if (player.src) {
+            player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+        }
+    }
+
+    function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+    let _quizOriginals = new Map();
+
+    function toggleQuiz() {
+        const btn = document.getElementById('quizBtn');
+        const isQuiz = btn.innerText.includes("Quiz");
+        const targets = document.querySelectorAll('.quiz-target');
+        const cells = document.querySelectorAll('.mystery-cell');
+
+        if (isQuiz) {
+            btn.innerText = "Study Mode 📖";
+            cells.forEach(c => c.classList.add('quiz-hidden'));
+            targets.forEach(t => {
+                const ans = t.dataset.ans; const kor = t.dataset.kor;
+                _quizOriginals.set(t, t.innerHTML);
+                t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+            });
+        } else {
+            btn.innerText = "Quiz Mode 👻";
+            cells.forEach(c => c.classList.remove('quiz-hidden'));
+            targets.forEach(t => {
+                if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+            });
+            _quizOriginals.clear();
+        }
+    }
+
+    function checkQuiz(i, a) {
+        if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+            i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+            confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+            checkAllSolved();
+        } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+    }
+
+    function checkAllSolved() {
+        const inputs = document.querySelectorAll('.quiz-input');
+        if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+            var duration = 3 * 1000; var end = Date.now() + duration;
+            (function frame() {
+                confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                if (Date.now() < end) requestAnimationFrame(frame);
+            }());
+        }
+    }
+
+    document.getElementById('player').src = "1021630.m4a";
+</script>
+    <script src="wordbank-utils.js"></script>
+</body>
+</html>

@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Last Haircut</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">✂️</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Last Haircut</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">had a falling out</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">(친했던 사람과) 크게 다투고 사이가 틀어졌다</td></tr>
+                <tr><td class="p-4"><b class="text-white">puffy eyes</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">부은 눈, 퉁퉁 부은 눈</td></tr>
+                <tr><td class="p-4"><b class="text-white">wait as long as I can</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">가능한 한 오래 기다리다</td></tr>
+                <tr><td class="p-4"><b class="text-white">brush cut</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">짧게 세워 깎은 머리, 스포츠형 머리</td></tr>
+                <tr><td class="p-4"><b class="text-white">buzz cut</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">바리캉으로 아주 짧게 민 머리</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2"><h3 class="text-teal-400 font-bold text-lg">had a falling out</h3><p class="text-slate-300 text-sm leading-relaxed">단순히 말다툼을 했다는 것보다 더 깊은 갈등으로 관계가 틀어졌다는 뜻이에요. 보통 have a falling out with someone 형태로 사용해요.</p></div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2"><h3 class="text-teal-400 font-bold text-lg">puffy eyes</h3><p class="text-slate-300 text-sm leading-relaxed">울거나 잠을 제대로 못 자거나 알레르기 때문에 눈 주변이 부은 상태를 말해요. swollen eyes보다 일상적인 표현이에요.</p></div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2"><h3 class="text-teal-400 font-bold text-lg">brush cut / buzz cut</h3><p class="text-slate-300 text-sm leading-relaxed">둘 다 짧은 머리지만, brush cut은 윗머리가 짧게 서 있는 스타일이고, buzz cut은 바리캉으로 전체를 매우 짧고 균일하게 깎은 스타일이에요.</p></div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2"><h3 class="text-teal-400 font-bold text-lg">wait as long as I can</h3><p class="text-slate-300 text-sm leading-relaxed">가능한 한 오래 기다리겠다는 뜻이에요. 상황에 따라 기다리는 사람의 인내심, 망설임, 또는 결정을 미루려는 마음을 나타낼 수 있어요.</p></div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">My brother Daniel and I <b class="highlight quiz-target" data-ans="had a falling out" data-kor="크게 다투고 사이가 틀어졌다">had a falling out</b> three years ago.</p>
+                <p class="mb-6">It started when our mother got sick. Daniel wanted to put her in a nursing home. I wanted her to stay with me.</p>
+                <p class="mb-6">We said some terrible things to each other. After that, we barely spoke.</p>
+                <p class="mb-6">When Mom died, Daniel didn't come to the funeral.</p>
+                <p class="mb-6">I told everyone I didn't care.</p>
+                <p class="mb-6">Last Thursday, Daniel called.</p>
+                <p class="mb-6">"I'm leaving for Canada on Saturday," he said. "Can we meet before I go?"</p>
+                <p class="mb-6">I almost said no.</p>
+                <p class="mb-6">Instead, I told him to come to my barbershop at six.</p>
+                <p class="mb-6">He arrived ten minutes late, looking exhausted. His eyes were red and <b class="highlight quiz-target" data-ans="puffy" data-kor="퉁퉁 부어">puffy</b>, and his hair had grown past his ears.</p>
+                <p class="mb-6">"You're still cutting hair?" he asked.</p>
+                <p class="mb-6">"Obviously."</p>
+                <p class="mb-6">He sat in my chair.</p>
+                <p class="mb-6">"Just a <b class="highlight quiz-target" data-ans="buzz cut" data-kor="아주 짧게">buzz cut</b>," he said.</p>
+                <p class="mb-6">"You used to hate having your hair that short."</p>
+                <p class="mb-6">"I don't care anymore."</p>
+                <p class="mb-6">I picked up my clippers.</p>
+                <p class="mb-6">For a while, neither of us spoke.</p>
+                <p class="mb-6">Then Daniel said, "I went to see Mom before she died."</p>
+                <p class="mb-6">I stopped cutting.</p>
+                <p class="mb-6">"What?"</p>
+                <p class="mb-6">"At the hospital. The day before."</p>
+                <p class="mb-6">"You told me you weren't coming."</p>
+                <p class="mb-6">"I know."</p>
+                <p class="mb-6">"Why didn't you tell me?"</p>
+                <p class="mb-6">He looked at himself in the mirror.</p>
+                <p class="mb-6">"She asked me not to."</p>
+                <p class="mb-6">I stared at him.</p>
+                <p class="mb-6">"Why would she do that?"</p>
+                <p class="mb-6">"She didn't want us fighting in her hospital room."</p>
+                <p class="mb-6">I wanted to argue, but I couldn't. It sounded exactly like something Mom would say.</p>
+                <p class="mb-6">Daniel reached into his jacket and handed me an envelope.</p>
+                <p class="mb-6">"She wanted you to have this."</p>
+                <p class="mb-6">Inside was a photograph of us as children. Daniel had a terrible <b class="highlight quiz-target" data-ans="brush cut" data-kor="스포츠머리를">brush cut</b>, and I was missing my two front teeth.</p>
+                <p class="mb-6">On the back, Mom had written: My boys. Please take care of each other.</p>
+                <p class="mb-6">I put the photograph on the counter.</p>
+                <p class="mb-6">"Why did you wait three years to give me this?"</p>
+                <p class="mb-6">Daniel didn't answer immediately.</p>
+                <p class="mb-6">"I thought you'd throw it away."</p>
+                <p class="mb-6">I looked at his reflection.</p>
+                <p class="mb-6">"Maybe I would have."</p>
+                <p class="mb-6">He nodded.</p>
+                <p class="mb-6">I finished his haircut, brushed the loose hair from his shoulders, and removed the cape.</p>
+                <p class="mb-6">"How much?" he asked.</p>
+                <p class="mb-6">"Nothing."</p>
+                <p class="mb-6">He stood up, then hesitated.</p>
+                <p class="mb-6">"Can I call you from Canada?"</p>
+                <p class="mb-6">I wanted to say yes. I also wanted to ask why he'd left me alone with everything.</p>
+                <p class="mb-6">Instead, I said, "You have my number."</p>
+                <p class="mb-6">He gave a small nod and walked toward the door.</p>
+                <p class="mb-6">"Daniel?"</p>
+                <p class="mb-6">He turned around.</p>
+                <p class="mb-6">"Mom was scared at the end," I said.</p>
+                <p class="mb-6">His face changed.</p>
+                <p class="mb-6">"I know."</p>
+                <p class="mb-6">That made me angry.</p>
+                <p class="mb-6">And strangely, it made me feel less alone.</p>
+                <p class="mb-6">After he left, I found twenty dollars under the chair.</p>
+                <p class="mb-6">I picked it up, walked to the window, and watched him disappear down the street.</p>
+                <p class="mb-6">I could have called him back.</p>
+                <p class="mb-6">But I didn't.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>동생 대니얼과 나는 3년 전 <b class="highlight">크게 다투고 사이가 틀어졌다</b>.</p>
+                <p>시작은 어머니가 편찮아지셨을 때였다. 대니얼은 어머니를 요양원에 모시자고 했고, 나는 우리 집에서 모시고 싶었다.</p>
+                <p>우리는 서로에게 심한 말을 했다. 그 후로 거의 연락하지 않았다.</p>
+                <p>어머니가 돌아가셨을 때, 대니얼은 장례식에도 오지 않았다.</p>
+                <p>나는 사람들에게 신경 쓰지 않는다고 말했다.</p>
+                <p>지난 목요일, 대니얼에게 전화가 왔다.</p>
+                <p>"토요일에 캐나다로 떠나. 가기 전에 만날 수 있을까?"</p>
+                <p>나는 거의 거절할 뻔했다.</p>
+                <p>하지만 대신 여섯 시에 내 이발소로 오라고 했다.</p>
+                <p>대니얼은 10분 늦게 도착했다. 몹시 지쳐 보였다. 눈은 빨갛고 <b class="highlight">퉁퉁 부어</b> 있었으며, 머리카락은 귀 아래까지 자라 있었다.</p>
+                <p>"아직도 이발하는구나?" 그가 물었다.</p>
+                <p>"보면 모르겠어?"</p>
+                <p>그는 의자에 앉았다.</p>
+                <p>"그냥 <b class="highlight">아주 짧게</b> 밀어 줘."</p>
+                <p>"너 예전에는 그렇게 짧은 머리 싫어했잖아."</p>
+                <p>"이젠 상관없어."</p>
+                <p>나는 바리캉을 집어 들었다.</p>
+                <p>한동안 우리 둘 다 아무 말도 하지 않았다.</p>
+                <p>그러다 대니얼이 입을 열었다.</p>
+                <p>"엄마 돌아가시기 전에 뵙고 왔어."</p>
+                <p>나는 이발을 멈췄다.</p>
+                <p>"뭐?"</p>
+                <p>"병원에서. 돌아가시기 전날."</p>
+                <p>"넌 안 온다고 했잖아."</p>
+                <p>"알아."</p>
+                <p>"왜 나한테 말 안 했어?"</p>
+                <p>그는 거울 속 자신의 모습을 바라봤다.</p>
+                <p>"엄마가 말하지 말라고 하셨어."</p>
+                <p>나는 그를 빤히 쳐다봤다.</p>
+                <p>"왜 그러셨는데?"</p>
+                <p>"병실에서 우리 둘이 싸우는 걸 보고 싶지 않으셨대."</p>
+                <p>반박하고 싶었지만 할 수 없었다. 어머니라면 충분히 하셨을 법한 말이었다.</p>
+                <p>대니얼은 재킷 안에서 봉투 하나를 꺼내 내게 건넸다.</p>
+                <p>"엄마가 형한테 주라고 하셨어."</p>
+                <p>안에는 우리가 어릴 때 찍은 사진이 있었다. 대니얼은 우스꽝스러운 <b class="highlight">스포츠머리를</b> 하고 있었고, 나는 앞니 두 개가 빠져 있었다.</p>
+                <p>사진 뒷면에는 어머니의 글씨가 적혀 있었다.</p>
+                <p>우리 아들들. 서로 잘 챙겨 주렴.</p>
+                <p>나는 사진을 계산대 위에 내려놓았다.</p>
+                <p>"왜 이걸 주는 데 3년이나 걸렸어?"</p>
+                <p>대니얼은 바로 대답하지 않았다.</p>
+                <p>"형이 버릴 것 같았어."</p>
+                <p>나는 거울에 비친 동생을 바라봤다.</p>
+                <p>"그랬을지도 모르지."</p>
+                <p>그는 고개를 끄덕였다.</p>
+                <p>나는 이발을 마치고, 어깨에 떨어진 머리카락을 털어 낸 뒤 이발보를 벗겨 주었다.</p>
+                <p>"얼마야?" 그가 물었다.</p>
+                <p>"됐어."</p>
+                <p>대니얼은 일어섰다가 잠시 망설였다.</p>
+                <p>"캐나다에서 전화해도 돼?"</p>
+                <p>나는 그러라고 말하고 싶었다. 동시에 왜 모든 일을 나 혼자 감당하게 내버려 뒀는지 따지고 싶기도 했다.</p>
+                <p>대신 이렇게 말했다.</p>
+                <p>"내 번호 알잖아."</p>
+                <p>그는 작게 고개를 끄덕이고 문 쪽으로 걸어갔다.</p>
+                <p>"대니얼?"</p>
+                <p>그가 돌아봤다.</p>
+                <p>"엄마, 마지막에 많이 무서워하셨어."</p>
+                <p>그의 표정이 달라졌다.</p>
+                <p>"알아."</p>
+                <p>그 말에 화가 났다.</p>
+                <p>그런데 이상하게도, 그 말을 들으니 조금은 덜 외로운 기분이 들었다.</p>
+                <p>동생이 떠난 뒤, 의자 아래에서 20달러짜리 지폐를 발견했다.</p>
+                <p>나는 지폐를 집어 들고 창가로 걸어가, 동생이 길 끝으로 사라지는 모습을 지켜봤다.</p>
+                <p>불러 세울 수도 있었다.</p>
+                <p>하지만 그러지 않았다.</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+    function skipAudio(seconds) {
+        const player = document.getElementById('player');
+        if (player.src) {
+            player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+        }
+    }
+
+    function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+    let _quizOriginals = new Map();
+
+    function toggleQuiz() {
+        const btn = document.getElementById('quizBtn');
+        const isQuiz = btn.innerText.includes("Quiz");
+        const targets = document.querySelectorAll('.quiz-target');
+        const cells = document.querySelectorAll('.mystery-cell');
+
+        if (isQuiz) {
+            btn.innerText = "Study Mode 📖";
+            cells.forEach(c => c.classList.add('quiz-hidden'));
+            targets.forEach(t => {
+                const ans = t.dataset.ans; const kor = t.dataset.kor;
+                _quizOriginals.set(t, t.innerHTML);
+                t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+            });
+        } else {
+            btn.innerText = "Quiz Mode 👻";
+            cells.forEach(c => c.classList.remove('quiz-hidden'));
+            targets.forEach(t => {
+                if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+            });
+            _quizOriginals.clear();
+        }
+    }
+
+    function checkQuiz(i, a) {
+        if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+            i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+            confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+            checkAllSolved();
+        } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+    }
+
+    function checkAllSolved() {
+        const inputs = document.querySelectorAll('.quiz-input');
+        if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+            var duration = 3 * 1000; var end = Date.now() + duration;
+            (function frame() {
+                confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                if (Date.now() < end) requestAnimationFrame(frame);
+            }());
+        }
+    }
+
+    document.getElementById('player').src = "1021715.m4a";
+</script>
+    <script src="wordbank-utils.js"></script>
+</body>
+</html>

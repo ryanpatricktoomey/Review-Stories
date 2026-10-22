@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | Grandpa's Fashion Emergency</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+      :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+      body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+      .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+      .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+      input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+      input:focus::placeholder { opacity: 0 !important; }
+      .mystery-cell { transition: color 0.3s; }
+      .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+      .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+      .highlight { color: var(--teal); font-weight: 700; }
+      .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+      audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🧢</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">Grandpa's Fashion Emergency</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">Mogging</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">외모나 매력, 존재감으로 상대를 압도하는 것</td></tr>
+                <tr><td class="p-4"><b class="text-white">Stand out</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">눈에 띄다, 돋보이다</td></tr>
+                <tr><td class="p-4"><b class="text-white">Delulu</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">망상에 빠진, 현실을 제대로 보지 못하는</td></tr>
+                <tr><td class="p-4"><b class="text-white">The bee's knees</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">최고인 것, 아주 훌륭한 사람이나 물건</td></tr>
+                <tr><td class="p-4"><b class="text-white">Unc</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">아재, 삼촌 (나이 든 사람을 놀리거나 친근하게 부르는 말)</td></tr>
+                <tr><td class="p-4"><b class="text-white">Glazing</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">지나치게 칭찬하기, 과하게 추켜세우기</td></tr>
+                <tr><td class="p-4"><b class="text-white">Kiss ass</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">아부하다, 비위를 맞추다</td></tr>
+                <tr><td class="p-4"><b class="text-white">Bootlicker</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">권력자에게 굽실거리며 아부하는 사람</td></tr>
+                <tr><td class="p-4"><b class="text-white">Suck up</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">아부하다, 잘 보이려고 비위를 맞추다</td></tr>
+                <tr><td class="p-4"><b class="text-white">Two-four</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">맥주 24캔 한 상자 (캐나다식 표현)</td></tr>
+                <tr><td class="p-4"><b class="text-white">Touch grass</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">인터넷 좀 그만하고 현실을 살아라</td></tr>
+                <tr><td class="p-4"><b class="text-white">Mid</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">평범한, 별로인, 기대 이하인</td></tr>
+                <tr><td class="p-4"><b class="text-white">Chopped</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">못생긴, 외모가 별로인 (요즘 슬랭)</td></tr>
+                <tr><td class="p-4"><b class="text-white">Didn't suit him</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그에게 어울리지 않았다</td></tr>
+                <tr><td class="p-4"><b class="text-white">Toque</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">겨울용 니트 모자 (캐나다식 영어)</td></tr>
+                <tr><td class="p-4"><b class="text-white">Toonie</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">캐나다 2달러 동전</td></tr>
+                <tr><td class="p-4"><b class="text-white">Loonie</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">캐나다 1달러 동전</td></tr>
+                <tr><td class="p-4"><b class="text-white">Single someone out</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">특정 사람만 골라 지목하거나 특별히 대우하다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-400 space-y-2">
+                <h3 class="font-bold text-white text-lg">Mogging</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">단순히 잘생겼다는 뜻을 넘어, 다른 사람과 비교했을 때 외모나 존재감에서 압도적으로 돋보인다는 뜻이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-400 space-y-2">
+                <h3 class="font-bold text-white text-lg">Glazing / Kiss ass / Suck up / Bootlicker</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">모두 아부와 관련되지만 느낌이 달라요. Glazing은 과도한 칭찬, kiss ass는 다소 거친 표현, suck up은 일반적인 아부, bootlicker는 권력자에게 비굴하게 굽실거리는 사람을 뜻해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-400 space-y-2">
+                <h3 class="font-bold text-white text-lg">Touch grass</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">온라인 세계에 너무 빠져 있거나 현실 감각이 부족한 사람에게 쓰는 표현이에요. 상대를 무시하는 느낌이 들 수도 있어요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-400 space-y-2">
+                <h3 class="font-bold text-white text-lg">Chopped</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">외모가 못생겼다는 뜻으로 쓰이는 꽤 무례한 슬랭이에요. 요리에서 무언가를 자른다는 뜻과는 달라요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-400 space-y-2">
+                <h3 class="font-bold text-white text-lg">Single someone out</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">여러 사람 중 특정 사람만 골라 특별히 주목하거나 대우한다는 뜻이에요. 칭찬할 때도, 부당하게 비난할 때도 사용할 수 있어요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-400 space-y-2">
+                <h3 class="font-bold text-white text-lg">Two-four / Toonie / Loonie / Toque</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">캐나다 특유의 일상 표현이에요. 특히 loonie와 toonie는 실제 동전을 가리켜요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Thirteen-year-old Noah was staying with his 98-year-old great-grandfather, Arthur, in Canada for the weekend.</p>
+                <p class="mb-6">On Saturday morning, Arthur appeared in the living room wearing a bright purple suit, a yellow tie, and a red winter hat.</p>
+                <p class="mb-6">"Well?" Arthur asked. "How do I look?"</p>
+                <p class="mb-6">Noah slowly lowered his phone.</p>
+                <p class="mb-6">"<b class="highlight quiz-target" data-ans="Unc" data-kor="아재">Unc</b>, you're absolutely <b class="highlight quiz-target" data-ans="mogging" data-kor="압도하시겠는데요">mogging</b> everyone."</p>
+                <p class="mb-6">Arthur smiled. "Really?"</p>
+                <p class="mb-6">"Yeah. You're definitely going to <b class="highlight quiz-target" data-ans="stand out" data-kor="눈에 띄실 거예요">stand out</b>."</p>
+                <p class="mb-6">"Excellent! I want to look sharp for my old friend's birthday party."</p>
+                <p class="mb-6">Noah hesitated. "Actually, Grandpa, that outfit is kind of—"</p>
+                <p class="mb-6">"<b class="highlight quiz-target" data-ans="The bee's knees" data-kor="최고라고">The bee's knees</b>?" Arthur interrupted.</p>
+                <p class="mb-6">"I was going to say it <b class="highlight quiz-target" data-ans="didn't suit you" data-kor="안 어울린다고">didn't suit you</b>."</p>
+                <p class="mb-6">Arthur's smile disappeared.</p>
+                <p class="mb-6">"Nonsense. Your great-grandmother loved this suit."</p>
+                <p class="mb-6">"Grandpa, you're being <b class="highlight quiz-target" data-ans="delulu" data-kor="망상에 빠지셨네요">delulu</b>."</p>
+                <p class="mb-6">"Delilah? Who's Delilah?"</p>
+                <p class="mb-6">"No, delulu means—never mind."</p>
+                <p class="mb-6">Arthur looked in the mirror. "I think I look magnificent."</p>
+                <p class="mb-6">Noah sighed. "Okay, but the hat is <b class="highlight quiz-target" data-ans="mid" data-kor="별로예요">mid</b>."</p>
+                <p class="mb-6">"Mid what?"</p>
+                <p class="mb-6">"Mid. Not great."</p>
+                <p class="mb-6">Arthur removed his hat.</p>
+                <p class="mb-6">"Well, what about my hair?"</p>
+                <p class="mb-6">Noah examined the few white hairs remaining on his great-grandfather's head.</p>
+                <p class="mb-6">"Grandpa, I hate to say this, but you're kind of <b class="highlight quiz-target" data-ans="chopped" data-kor="못생기셨어요">chopped</b>."</p>
+                <p class="mb-6">Arthur gasped. "You want to chop off my hair?"</p>
+                <p class="mb-6">"No! It means—"</p>
+                <p class="mb-6">"Young man, I've survived a world war, three heart operations, and ninety-eight Canadian winters. I will not be insulted by a child wearing pajamas in public!"</p>
+                <p class="mb-6">Noah looked down at his oversized sweatpants.</p>
+                <p class="mb-6">"These are designer."</p>
+                <p class="mb-6">"They look like you lost a fight with a laundry basket."</p>
+                <p class="mb-6">At the party, Arthur immediately approached the birthday boy, his 97-year-old friend George.</p>
+                <p class="mb-6">"George! Looking splendid!"</p>
+                <p class="mb-6">George laughed. "Arthur, you old rascal! That suit is <b class="highlight quiz-target" data-ans="the bee's knees" data-kor="끝내주는군">the bee's knees</b>!"</p>
+                <p class="mb-6">Noah whispered, "Bro, stop <b class="highlight quiz-target" data-ans="glazing" data-kor="아부 좀 그만하세요">glazing</b> him."</p>
+                <p class="mb-6">George turned around. "What did you say?"</p>
+                <p class="mb-6">"You're praising him way too much."</p>
+                <p class="mb-6">Arthur frowned. "It's called being polite."</p>
+                <p class="mb-6">"No, Grandpa. He's practically <b class="highlight quiz-target" data-ans="kissing your ass" data-kor="엉덩이를 핥을 정도로 아부하시잖아요">kissing your ass</b>."</p>
+                <p class="mb-6">George nearly dropped his drink.</p>
+                <p class="mb-6">"Excuse me?"</p>
+                <p class="mb-6">"He's being a <b class="highlight quiz-target" data-ans="bootlicker" data-kor="아부쟁이라고요">bootlicker</b>!"</p>
+                <p class="mb-6">Arthur grabbed Noah's arm.</p>
+                <p class="mb-6">"That's enough! George is my friend, not a pair of boots!"</p>
+                <p class="mb-6">Noah tried to explain. "I'm saying he's <b class="highlight quiz-target" data-ans="sucking up" data-kor="아부하는 거라고요">sucking up</b> to you!"</p>
+                <p class="mb-6">"Why would he need to? I'm not his boss!"</p>
+                <p class="mb-6">Several guests were now watching.</p>
+                <p class="mb-6">George's wife, Margaret, approached them.</p>
+                <p class="mb-6">"Arthur, could you help me bring in a <b class="highlight quiz-target" data-ans="two-four" data-kor="맥주 한 상자">two-four</b> from the car?"</p>
+                <p class="mb-6">Noah looked alarmed.</p>
+                <p class="mb-6">"A what? Grandpa, why does she need twenty-four of something?"</p>
+                <p class="mb-6">"A case of beer, son."</p>
+                <p class="mb-6">"Oh."</p>
+                <p class="mb-6">"And while you're there," Margaret continued, "I've got a <b class="highlight quiz-target" data-ans="toonie" data-kor="2달러짜리 동전">toonie</b> and a <b class="highlight quiz-target" data-ans="loonie" data-kor="1달러짜리 동전">loonie</b> for the parking meter."</p>
+                <p class="mb-6">Noah stared at her.</p>
+                <p class="mb-6">"Are those cartoon characters?"</p>
+                <p class="mb-6">Arthur burst out laughing.</p>
+                <p class="mb-6">"Three dollars, Noah. They're coins!"</p>
+                <p class="mb-6">Noah pulled out his phone.</p>
+                <p class="mb-6">"I'm Googling Canadian English."</p>
+                <p class="mb-6">Arthur took the phone away.</p>
+                <p class="mb-6">"No. You need to <b class="highlight quiz-target" data-ans="touch grass" data-kor="밖에서 현실 세계 좀 경험해야겠어">touch grass</b>."</p>
+                <p class="mb-6">Noah blinked.</p>
+                <p class="mb-6">"Grandpa! You know that expression?"</p>
+                <p class="mb-6">"Of course. You spend too much time staring at that screen."</p>
+                <p class="mb-6">"But that's Gen Alpha slang!"</p>
+                <p class="mb-6">"Son, people have been telling children to go outside since before I was born."</p>
+                <p class="mb-6">Just then, Margaret announced a prize for the best-dressed guest.</p>
+                <p class="mb-6">"Arthur, congratulations! You've won!"</p>
+                <p class="mb-6">Everyone applauded.</p>
+                <p class="mb-6">Noah stared in disbelief.</p>
+                <p class="mb-6">"Wait. Why did you <b class="highlight quiz-target" data-ans="single him out" data-kor="콕 집어서 뽑으셨어요">single him out</b>? There are twenty people here!"</p>
+                <p class="mb-6">Margaret smiled.</p>
+                <p class="mb-6">"Because he's the only man brave enough to wear a purple suit with a yellow tie."</p>
+                <p class="mb-6">Arthur turned to Noah triumphantly.</p>
+                <p class="mb-6">"See? <b class="highlight quiz-target" data-ans="The bee's knees" data-kor="최고라니까">The bee's knees</b>!"</p>
+                <p class="mb-6">Noah shook his head.</p>
+                <p class="mb-6">"Grandpa, your outfit is absolutely ridiculous."</p>
+                <p class="mb-6">"Perhaps," Arthur said, accepting his prize. "But apparently, ridiculous is fashionable."</p>
+                <p class="mb-6">Noah looked at his own oversized sweatpants.</p>
+                <p class="mb-6">For the first time all weekend, he had no comeback.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>열세 살 노아는 주말 동안 캐나다에 사는 98세 증조할아버지 아서의 집에 머물고 있었다.</p>
+                <p>토요일 아침, 아서가 밝은 보라색 정장에 노란색 넥타이, 빨간 겨울 모자를 쓰고 거실에 나타났다.</p>
+                <p>"어떠냐?" 아서가 물었다. "멋있지?"</p>
+                <p>노아는 천천히 휴대폰을 내렸다.</p>
+                <p>"<b class="highlight">아재</b>, 완전 다른 사람들 <b class="highlight">압도하시겠는데요</b>."</p>
+                <p>아서가 미소를 지었다.</p>
+                <p>"정말?"</p>
+                <p>"네. 확실히 엄청 <b class="highlight">눈에 띄실 거예요</b>."</p>
+                <p>"훌륭해! 오늘 오랜 친구 생일 파티에 멋지게 차려입고 가고 싶거든."</p>
+                <p>노아는 잠시 망설였다.</p>
+                <p>"사실 할아버지, 그 옷은 좀…"</p>
+                <p>"<b class="highlight">최고라고</b>?" 아서가 말을 끊었다.</p>
+                <p>"할아버지한테 <b class="highlight">안 어울린다고</b> 하려고 했는데요."</p>
+                <p>아서의 미소가 사라졌다.</p>
+                <p>"말도 안 되는 소리. 네 증조할머니가 이 정장을 얼마나 좋아하셨는데."</p>
+                <p>"할아버지, 완전 <b class="highlight">망상에 빠지셨네요</b>."</p>
+                <p>"딜라일라? 딜라일라가 누구냐?"</p>
+                <p>"아니요, delulu는… 됐어요."</p>
+                <p>아서는 거울을 바라봤다.</p>
+                <p>"내 생각엔 아주 근사한데."</p>
+                <p>노아가 한숨을 쉬었다.</p>
+                <p>"알겠어요. 근데 모자는 좀 <b class="highlight">별로예요</b>."</p>
+                <p>"뭐가 별로라고?"</p>
+                <p>"그냥 그저 그렇다고요. 안 멋있어요."</p>
+                <p>아서는 모자를 벗었다.</p>
+                <p>"그럼 내 머리는 어떠냐?"</p>
+                <p>노아는 증조할아버지 머리에 남아 있는 몇 가닥의 흰머리를 살펴봤다.</p>
+                <p>"할아버지, 이런 말 하기 싫지만 좀 <b class="highlight">못생기셨어요</b>."</p>
+                <p>아서는 깜짝 놀랐다.</p>
+                <p>"내 머리를 잘라버리겠다고?"</p>
+                <p>"아니요! 그게 무슨 뜻이냐면…"</p>
+                <p>"이 녀석아, 나는 세계대전도 겪었고, 심장 수술도 세 번이나 받았고, 캐나다의 겨울을 98번이나 버텼어. 그런데 잠옷 차림으로 밖에 돌아다니는 애한테 모욕까지 당해야겠냐!"</p>
+                <p>노아는 자신의 헐렁한 트레이닝 바지를 내려다봤다.</p>
+                <p>"이거 디자이너 브랜드거든요."</p>
+                <p>"세탁 바구니랑 싸우다가 진 것처럼 보이는구나."</p>
+                <p>파티에 도착하자 아서는 곧장 생일의 주인공인 97세 친구 조지에게 다가갔다.</p>
+                <p>"조지! 아주 멋진데!"</p>
+                <p>조지가 웃었다.</p>
+                <p>"아서, 이 늙은 장난꾸러기! 자네 정장 <b class="highlight">정말 끝내주는군</b>!"</p>
+                <p>노아가 속삭였다.</p>
+                <p>"아저씨, 할아버지한테 <b class="highlight">아부 좀 그만하세요</b>."</p>
+                <p>조지가 돌아봤다.</p>
+                <p>"뭐라고 했니?"</p>
+                <p>"너무 과하게 칭찬하시잖아요."</p>
+                <p>아서가 얼굴을 찌푸렸다.</p>
+                <p>"그걸 예의라고 하는 거야."</p>
+                <p>"아니요, 할아버지. 거의 <b class="highlight">엉덩이를 핥을 정도로 아부하시잖아요</b>."</p>
+                <p>조지는 하마터면 음료를 떨어뜨릴 뻔했다.</p>
+                <p>"뭐라고?"</p>
+                <p>"완전 <b class="highlight">아부쟁이라고요</b>!"</p>
+                <p>아서가 노아의 팔을 붙잡았다.</p>
+                <p>"그만해! 조지는 내 친구지, 장화가 아니야!"</p>
+                <p>노아가 설명하려 했다.</p>
+                <p>"그러니까 할아버지한테 잘 보이려고 <b class="highlight">아부하는 거라고요</b>!"</p>
+                <p>"왜 그래야 하는데? 내가 조지의 상사도 아닌데!"</p>
+                <p>이제 손님 몇 명이 그들을 쳐다보고 있었다.</p>
+                <p>그때 조지의 아내 마거릿이 다가왔다.</p>
+                <p>"아서, 차에서 <b class="highlight">맥주 한 상자</b> 좀 가져다주시겠어요?"</p>
+                <p>노아는 당황했다.</p>
+                <p>"뭘 가져오라고요? 왜 스물네 개나 필요한데요?"</p>
+                <p>"맥주 한 상자란다."</p>
+                <p>"아."</p>
+                <p>"그리고 가는 김에," 마거릿이 말을 이었다. "<b class="highlight">주차 요금 내게 2달러짜리 동전 하나랑 1달러짜리 동전 하나</b>도 있어요."</p>
+                <p>노아는 그녀를 빤히 쳐다봤다.</p>
+                <p>"그거 만화 캐릭터 이름이에요?"</p>
+                <p>아서가 크게 웃음을 터뜨렸다.</p>
+                <p>"3달러라는 뜻이야, 노아. 동전이라고!"</p>
+                <p>노아는 휴대폰을 꺼냈다.</p>
+                <p>"캐나다 영어 검색해 봐야겠어요."</p>
+                <p>아서는 휴대폰을 빼앗았다.</p>
+                <p>"안 돼. 넌 <b class="highlight">밖에 나가서 현실 세계 좀 경험해야겠어</b>."</p>
+                <p>노아가 눈을 깜빡였다.</p>
+                <p>"할아버지! 그 표현도 아세요?"</p>
+                <p>"당연하지. 넌 화면만 너무 오래 쳐다보잖니."</p>
+                <p>"근데 그건 알파 세대 슬랭인데요!"</p>
+                <p>"얘야, 어른들이 아이들한테 밖에 나가 놀라고 한 건 내가 태어나기 전부터 있었던 일이야."</p>
+                <p>바로 그때 마거릿이 가장 옷을 잘 입은 손님에게 상을 주겠다고 발표했다.</p>
+                <p>"아서, 축하해요! 당신이 우승이에요!"</p>
+                <p>모두가 박수를 쳤다.</p>
+                <p>노아는 믿을 수 없다는 듯 바라봤다.</p>
+                <p>"잠깐만요. 왜 할아버지만 <b class="highlight">콕 집어서 뽑으셨어요</b>? 여기 스무 명이나 있는데요!"</p>
+                <p>마거릿이 미소를 지었다.</p>
+                <p>"보라색 정장에 노란 넥타이를 맬 용기가 있는 유일한 남자니까."</p>
+                <p>아서는 의기양양하게 노아를 돌아봤다.</p>
+                <p>"봤지? <b class="highlight">최고라니까</b>!"</p>
+                <p>노아는 고개를 저었다.</p>
+                <p>"할아버지, 그 옷 진짜 말도 안 되게 웃겨요."</p>
+                <p>"그럴지도 모르지." 아서는 상을 받으며 말했다. "하지만 아무래도 요즘은 그렇게 웃긴 게 유행인가 보구나."</p>
+                <p>노아는 자신의 헐렁한 트레이닝 바지를 내려다봤다.</p>
+                <p>주말이 시작된 이후 처음으로, 노아는 할 말이 없었다.</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "1022715.m4a";
+</script>
+      <script src="wordbank-utils.js"></script>
+  </body>
+  </html>

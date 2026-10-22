@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | Grandpa's Dating Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+      :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+      body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+      .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+      .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+      input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+      input:focus::placeholder { opacity: 0 !important; }
+      .mystery-cell { transition: color 0.3s; }
+      .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+      .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+      .highlight { color: var(--teal); font-weight: 700; }
+      .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+      audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">📸</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">Grandpa's Dating Profile</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">Mogging</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">외모나 매력, 존재감으로 다른 사람을 압도하는 것</td></tr>
+                <tr><td class="p-4"><b class="text-white">Applesauce</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">헛소리, 말도 안 되는 소리 (옛날 미국 슬랭)</td></tr>
+                <tr><td class="p-4"><b class="text-white">Unc</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">아재, 삼촌 (나이 든 사람을 놀리거나 친근하게 부르는 말)</td></tr>
+                <tr><td class="p-4"><b class="text-white">Wet blanket</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">분위기를 망치는 사람, 흥을 깨는 사람</td></tr>
+                <tr><td class="p-4"><b class="text-white">Buzzkill</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">재미나 흥을 깨는 사람 또는 상황</td></tr>
+                <tr><td class="p-4"><b class="text-white">Two-four</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">맥주 24캔들이 한 상자 (캐나다식 표현)</td></tr>
+                <tr><td class="p-4"><b class="text-white">Toque</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">겨울용 니트 모자 (캐나다식 영어)</td></tr>
+                <tr><td class="p-4"><b class="text-white">Delulu</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">망상에 빠진, 현실과 동떨어진 착각을 하는</td></tr>
+                <tr><td class="p-4"><b class="text-white">Delusional</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">망상에 빠진, 현실을 제대로 판단하지 못하는</td></tr>
+                <tr><td class="p-4"><b class="text-white">Touch grass</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">인터넷 좀 그만하고 현실 세계를 경험해 봐</td></tr>
+                <tr><td class="p-4"><b class="text-white">Glazing</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">지나치게 칭찬하거나 아부하는 것</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-400 space-y-2">
+                <h3 class="font-bold text-white text-lg">Mogging</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">단순히 멋있다는 뜻이 아니라, 다른 사람과 비교했을 때 외모나 존재감에서 압도적으로 돋보인다는 뜻이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-400 space-y-2">
+                <h3 class="font-bold text-white text-lg">Applesauce</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">1920년대 미국에서 '헛소리'라는 뜻으로 쓰이던 옛날 슬랭이에요. 현대 영어에서는 보통 사과를 익혀 으깬 음식을 뜻해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-400 space-y-2">
+                <h3 class="font-bold text-white text-lg">Wet blanket / Buzzkill</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">둘 다 분위기를 깨는 사람을 뜻하지만, wet blanket은 지나치게 진지하거나 소극적인 사람에게, buzzkill은 즐거운 분위기를 망치는 사람이나 상황에 자주 써요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-400 space-y-2">
+                <h3 class="font-bold text-white text-lg">Delulu / Delusional</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">Delulu는 인터넷에서 장난스럽게 쓰는 표현이고, delusional은 훨씬 진지하거나 강한 비판으로 들릴 수 있어요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-400 space-y-2">
+                <h3 class="font-bold text-white text-lg">Glazing</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">누군가를 지나치게 칭찬하는 것을 비꼬는 최신 인터넷 슬랭이에요. 진심 어린 칭찬과는 구별해야 해요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Thirteen-year-old Liam was spending the weekend with his 98-year-old great-grandfather, Frank, in Toronto.</p>
+                <p class="mb-6">On Saturday afternoon, Liam discovered something unexpected.</p>
+                <p class="mb-6">Grandpa had a dating profile.</p>
+                <p class="mb-6">"Grandpa! You're on a dating app?"</p>
+                <p class="mb-6">"Of course. Your great-grandmother passed away twelve years ago. I wouldn't mind having someone to take to dinner."</p>
+                <p class="mb-6">Liam looked at the profile picture. Frank was wearing a brown suit and standing beside his refrigerator.</p>
+                <p class="mb-6">"<b class="highlight quiz-target" data-ans="Unc" data-kor="아재">Unc</b>, this picture is terrible."</p>
+                <p class="mb-6">"Who's <b class="highlight quiz-target" data-ans="Unc" data-kor="아재">Unc</b>?"</p>
+                <p class="mb-6">"You, Grandpa. Anyway, we need a better picture. You're supposed to be <b class="highlight quiz-target" data-ans="mogging" data-kor="외모로 압도해야">mogging</b> the other guys."</p>
+                <p class="mb-6">Frank looked worried. "Am I supposed to fight them?"</p>
+                <p class="mb-6">"No! You just need to look better than them."</p>
+                <p class="mb-6">"Well, why didn't you say so?"</p>
+                <p class="mb-6">Liam took Frank outside for a photo shoot.</p>
+                <p class="mb-6">"Put on your <b class="highlight quiz-target" data-ans="toque" data-kor="털모자">toque</b>," Frank said. "It's chilly."</p>
+                <p class="mb-6">"My what?"</p>
+                <p class="mb-6">"Your winter hat, boy!"</p>
+                <p class="mb-6">"Grandpa, nobody wears a winter hat for a dating profile."</p>
+                <p class="mb-6">"<b class="highlight quiz-target" data-ans="Applesauce" data-kor="말도 안 되는 소리">Applesauce</b>! I met your great-grandmother while wearing this very hat."</p>
+                <p class="mb-6">Liam stared at the faded green hat.</p>
+                <p class="mb-6">"Grandpa, you're <b class="highlight quiz-target" data-ans="delulu" data-kor="망상에 빠지셨네요">delulu</b>."</p>
+                <p class="mb-6">"What's that supposed to mean?"</p>
+                <p class="mb-6">"You're being unrealistic."</p>
+                <p class="mb-6">Frank crossed his arms. "I am not <b class="highlight quiz-target" data-ans="delusional" data-kor="현실 감각이 없는 게">delusional</b>. Your great-grandmother said I looked handsome in it."</p>
+                <p class="mb-6">"That was seventy years ago!"</p>
+                <p class="mb-6">"Good fashion never goes out of style."</p>
+                <p class="mb-6">Liam finally convinced Frank to remove the hat and stand beside his vintage car.</p>
+                <p class="mb-6">"Okay, smile!"</p>
+                <p class="mb-6">Frank smiled.</p>
+                <p class="mb-6">"Nice! Grandpa, you're actually looking pretty good!"</p>
+                <p class="mb-6">Frank straightened his jacket.</p>
+                <p class="mb-6">"Better than those other fellows?"</p>
+                <p class="mb-6">"Definitely. You're <b class="highlight quiz-target" data-ans="mogging" data-kor="압도하시는데요">mogging</b> them."</p>
+                <p class="mb-6">"Now you're just <b class="highlight quiz-target" data-ans="glazing" data-kor="지나치게 아부하는구나">glazing</b> me."</p>
+                <p class="mb-6">Liam froze.</p>
+                <p class="mb-6">"Wait. How do you know that word?"</p>
+                <p class="mb-6">"I looked it up after you called me an uncle. You young people aren't the only ones who can learn new expressions."</p>
+                <p class="mb-6">Liam laughed and showed him the picture.</p>
+                <p class="mb-6">Frank studied it carefully.</p>
+                <p class="mb-6">"Not bad. But shouldn't we put my age on the profile?"</p>
+                <p class="mb-6">"It's already there."</p>
+                <p class="mb-6">"Good. And mention that I own my house."</p>
+                <p class="mb-6">"Grandpa, that sounds like you're showing off."</p>
+                <p class="mb-6">"Of course I'm showing off. It's a dating profile!"</p>
+                <p class="mb-6">Liam shook his head.</p>
+                <p class="mb-6">"Okay, but don't mention your collection of antique lawnmowers."</p>
+                <p class="mb-6">"Why not? It's impressive."</p>
+                <p class="mb-6">"Grandpa, that's such a <b class="highlight quiz-target" data-ans="buzzkill" data-kor="분위기 깨요">buzzkill</b>."</p>
+                <p class="mb-6">Frank frowned. "A what?"</p>
+                <p class="mb-6">"It means something that ruins the fun."</p>
+                <p class="mb-6">"Well, you're being a <b class="highlight quiz-target" data-ans="wet blanket" data-kor="분위기를 망치고">wet blanket</b>. Those lawnmowers are valuable!"</p>
+                <p class="mb-6">Just then, Frank's phone made a sound.</p>
+                <p class="mb-6">Someone had liked his profile.</p>
+                <p class="mb-6">Liam grabbed the phone.</p>
+                <p class="mb-6">"Grandpa! You got a match! Her name's Dorothy. She's ninety-four!"</p>
+                <p class="mb-6">Frank looked delighted.</p>
+                <p class="mb-6">"Well, what do you know! Send her a message."</p>
+                <p class="mb-6">"What should I say?"</p>
+                <p class="mb-6">"Ask her if she'd like to come over for a <b class="highlight quiz-target" data-ans="two-four" data-kor="맥주 한 상자">two-four</b>."</p>
+                <p class="mb-6">Liam stared at him.</p>
+                <p class="mb-6">"Grandpa, you're inviting a ninety-four-year-old woman over for twenty-four beers?"</p>
+                <p class="mb-6">"Good heavens, no! I meant we could share a drink. Perhaps I should just invite her for tea."</p>
+                <p class="mb-6">"Yeah. That would make more sense."</p>
+                <p class="mb-6">Frank took back his phone and began typing.</p>
+                <p class="mb-6">Liam leaned over his shoulder.</p>
+                <p class="mb-6">"Grandpa, don't send a whole paragraph. Just say hi."</p>
+                <p class="mb-6">Frank pushed him away.</p>
+                <p class="mb-6">"Young man, you've spent three hours worrying about photographs and slang. Why don't you <b class="highlight quiz-target" data-ans="touch grass" data-kor="밖에 나가서 현실 세계를 즐기렴">touch grass</b> and let me talk to a lady?"</p>
+                <p class="mb-6">Liam opened his mouth, then closed it.</p>
+                <p class="mb-6">For the first time that weekend, his great-grandfather had used modern slang perfectly.</p>
+                <p class="mb-6">And somehow, that was more embarrassing than anything else.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>열세 살 리암은 토론토에 사는 98세 증조할아버지 프랭크와 주말을 보내고 있었다.</p>
+                <p>토요일 오후, 리암은 예상치 못한 사실을 발견했다.</p>
+                <p>할아버지가 데이팅 앱에 가입해 있었던 것이다.</p>
+                <p>"할아버지! 데이팅 앱 하세요?"</p>
+                <p>"당연하지. 네 증조할머니가 돌아가신 지도 12년이나 됐잖니. 저녁 식사를 함께할 사람이 있으면 좋겠구나."</p>
+                <p>리암은 프로필 사진을 봤다. 프랭크는 갈색 정장을 입고 냉장고 옆에 서 있었다.</p>
+                <p>"<b class="highlight">아재</b>, 이 사진 진짜 별로예요."</p>
+                <p>"<b class="highlight">아재</b>가 누구냐?"</p>
+                <p>"할아버지요. 아무튼 더 좋은 사진이 필요해요. 다른 남자들을 <b class="highlight">외모로 압도해야</b> 한다고요."</p>
+                <p>프랭크는 걱정스러운 표정을 지었다.</p>
+                <p>"그 사람들과 싸워야 한다는 거냐?"</p>
+                <p>"아니요! 그냥 그 사람들보다 더 멋있어 보여야 한다고요."</p>
+                <p>"그럼 그렇게 말하지 그랬니?"</p>
+                <p>리암은 사진을 찍으려고 프랭크를 밖으로 데리고 나갔다.</p>
+                <p>"<b class="highlight">털모자</b> 써라." 프랭크가 말했다. "쌀쌀하구나."</p>
+                <p>"뭘 쓰라고요?"</p>
+                <p>"겨울 모자 말이다!"</p>
+                <p>"할아버지, 데이팅 프로필 사진 찍을 때 겨울 모자 쓰는 사람은 없어요."</p>
+                <p>"<b class="highlight">말도 안 되는 소리</b>! 내가 바로 이 모자를 쓰고 네 증조할머니를 만났단다."</p>
+                <p>리암은 색이 바랜 초록색 모자를 바라봤다.</p>
+                <p>"할아버지, 완전 <b class="highlight">망상에 빠지셨네요</b>."</p>
+                <p>"그게 무슨 뜻이냐?"</p>
+                <p>"현실 감각이 없으시다고요."</p>
+                <p>프랭크는 팔짱을 꼈다.</p>
+                <p>"난 <b class="highlight">현실 감각이 없는 게</b> 아니야. 네 증조할머니는 내가 이 모자를 쓰면 잘생겼다고 하셨어."</p>
+                <p>"그건 70년 전이잖아요!"</p>
+                <p>"좋은 패션은 유행을 타지 않는 법이지."</p>
+                <p>리암은 마침내 프랭크를 설득해 모자를 벗기고 오래된 자동차 옆에 세웠다.</p>
+                <p>"좋아요, 웃으세요!"</p>
+                <p>프랭크가 미소를 지었다.</p>
+                <p>"좋아요! 할아버지, 진짜 꽤 멋있게 나오셨어요!"</p>
+                <p>프랭크는 재킷을 바로잡았다.</p>
+                <p>"다른 영감들보다 낫니?"</p>
+                <p>"당연하죠. 완전 <b class="highlight">압도하시는데요</b>."</p>
+                <p>"이제는 네가 나한테 <b class="highlight">지나치게 아부하는구나</b>."</p>
+                <p>리암은 얼어붙었다.</p>
+                <p>"잠깐만요. 그 단어 어떻게 아세요?"</p>
+                <p>"네가 나를 아재라고 부른 뒤에 찾아봤지. 너희 젊은이들만 새로운 표현을 배울 수 있는 건 아니란다."</p>
+                <p>리암은 웃으며 사진을 보여줬다.</p>
+                <p>프랭크는 사진을 자세히 살펴봤다.</p>
+                <p>"나쁘지 않구나. 그런데 프로필에 내 나이도 적어야 하지 않겠니?"</p>
+                <p>"이미 적혀 있어요."</p>
+                <p>"좋아. 그리고 내가 집을 소유하고 있다는 것도 써라."</p>
+                <p>"할아버지, 그건 좀 자랑하는 것 같잖아요."</p>
+                <p>"당연히 자랑해야지. 데이팅 프로필이잖니!"</p>
+                <p>리암은 고개를 저었다.</p>
+                <p>"알겠어요. 하지만 오래된 잔디깎이 수집품 이야기는 하지 마세요."</p>
+                <p>"왜? 아주 훌륭한 수집품인데."</p>
+                <p>"할아버지, 그런 얘기는 완전 <b class="highlight">분위기 깨요</b>."</p>
+                <p>프랭크가 얼굴을 찌푸렸다.</p>
+                <p>"뭐라고?"</p>
+                <p>"재미를 망친다는 뜻이에요."</p>
+                <p>"오히려 네가 <b class="highlight">분위기를 망치고</b> 있구나. 그 잔디깎이들이 얼마나 귀한데!"</p>
+                <p>바로 그때 프랭크의 휴대폰에서 알림음이 울렸다.</p>
+                <p>누군가 그의 프로필에 좋아요를 누른 것이다.</p>
+                <p>리암은 휴대폰을 집어 들었다.</p>
+                <p>"할아버지! 매칭됐어요! 도로시라는 분인데 아흔네 살이세요!"</p>
+                <p>프랭크는 기뻐했다.</p>
+                <p>"이런, 세상에! 메시지를 보내거라."</p>
+                <p>"뭐라고 할까요?"</p>
+                <p>"우리 집에 와서 <b class="highlight">맥주 한 상자</b> 같이 마시겠냐고 물어봐."</p>
+                <p>리암은 할아버지를 빤히 쳐다봤다.</p>
+                <p>"할아버지, 아흔네 살 할머니를 집에 초대해서 맥주 스물네 캔을 마시자고요?"</p>
+                <p>"세상에, 아니지! 그냥 술 한잔 같이하자는 뜻이었어. 차를 마시자고 초대하는 게 낫겠구나."</p>
+                <p>"네. 그게 훨씬 말이 되네요."</p>
+                <p>프랭크는 휴대폰을 돌려받아 메시지를 쓰기 시작했다.</p>
+                <p>리암은 할아버지 어깨너머로 화면을 들여다봤다.</p>
+                <p>"할아버지, 너무 길게 쓰지 마세요. 그냥 안녕하세요라고 하세요."</p>
+                <p>프랭크는 리암을 밀어냈다.</p>
+                <p>"이 녀석아, 넌 세 시간 동안 사진이랑 슬랭 걱정만 했잖니. 이제 휴대폰 좀 그만 보고 <b class="highlight">밖에 나가서 현실 세계를 즐기렴</b>. 내가 여자분과 이야기 좀 하게."</p>
+                <p>리암은 입을 열었다가 다시 다물었다.</p>
+                <p>그 주말 처음으로 증조할아버지가 요즘 슬랭을 완벽하게 사용한 것이다.</p>
+                <p>그런데 이상하게도, 그게 지금까지 있었던 어떤 일보다 더 창피했다.</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "1022845.m4a";
+</script>
+      <script src="wordbank-utils.js"></script>
+  </body>
+  </html>

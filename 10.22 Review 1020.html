@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | Grandpa's Birthday Disaster</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+      :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+      body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+      .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+      .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+      input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+      input:focus::placeholder { opacity: 0 !important; }
+      .mystery-cell { transition: color 0.3s; }
+      .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+      .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+      .highlight { color: var(--teal); font-weight: 700; }
+      .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+      audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🎂</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">Grandpa's Birthday Disaster</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">The bee's knees</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">최고인 것, 아주 훌륭한 사람이나 물건</td></tr>
+                <tr><td class="p-4"><b class="text-white">Glazing</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">지나치게 칭찬하기, 과하게 추켜세우기</td></tr>
+                <tr><td class="p-4"><b class="text-white">Kiss ass</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">아부하다, 비위를 맞추다 (다소 거친 표현)</td></tr>
+                <tr><td class="p-4"><b class="text-white">Suck up</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">아부하다, 잘 보이려고 비위를 맞추다</td></tr>
+                <tr><td class="p-4"><b class="text-white">Bootlick</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">권력자에게 비굴하게 아부하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">Laying it on thick</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">칭찬이나 아부를 지나칠 정도로 하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">Unc</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">아재, 삼촌 (나이 든 사람을 친근하게 또는 놀리듯 부르는 말)</td></tr>
+                <tr><td class="p-4"><b class="text-white">Mogging</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">외모나 존재감으로 다른 사람을 압도하기</td></tr>
+                <tr><td class="p-4"><b class="text-white">Delulu</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">망상에 빠진, 비현실적인 기대를 하는</td></tr>
+                <tr><td class="p-4"><b class="text-white">Delusional</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">망상에 빠진, 현실 판단을 제대로 하지 못하는</td></tr>
+                <tr><td class="p-4"><b class="text-white">Wet blanket</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">분위기를 망치는 사람, 흥을 깨는 사람</td></tr>
+                <tr><td class="p-4"><b class="text-white">Downer</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">기분을 가라앉히는 사람이나 상황</td></tr>
+                <tr><td class="p-4"><b class="text-white">Buzzkill</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">즐거운 분위기를 망치는 사람이나 일</td></tr>
+                <tr><td class="p-4"><b class="text-white">Two-four</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">맥주 24캔 한 상자 (캐나다식 표현)</td></tr>
+                <tr><td class="p-4"><b class="text-white">Touch grass</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">인터넷 좀 그만하고 현실 세계를 경험해 봐</td></tr>
+                <tr><td class="p-4"><b class="text-white">Mid</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그저 그런, 별로인, 기대 이하인</td></tr>
+                <tr><td class="p-4"><b class="text-white">I'm cooked</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">나 망했어, 큰일 났어</td></tr>
+                <tr><td class="p-4"><b class="text-white">Clanker</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">로봇이나 AI를 비하하거나 놀리는 말</td></tr>
+                <tr><td class="p-4"><b class="text-white">What am I, chopped liver?</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">나는 뭐야? 나는 안중에도 없어?</td></tr>
+                <tr><td class="p-4"><b class="text-white">Aura farming</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">멋있어 보이거나 카리스마 있어 보이려고 의도적으로 행동하는 것</td></tr>
+                <tr><td class="p-4"><b class="text-white">Rizz</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">이성을 끄는 매력, 사람을 매혹하는 능력</td></tr>
+                <tr><td class="p-4"><b class="text-white">Rage bait</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">사람들을 일부러 화나게 해서 반응을 유도하는 콘텐츠</td></tr>
+                <tr><td class="p-4"><b class="text-white">Chopped</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">못생긴, 외모가 별로인 (인터넷 슬랭)</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-400 space-y-2">
+                <h3 class="font-bold text-white text-lg">Glazing / Kiss ass / Suck up / Bootlick</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">모두 아부와 관련되지만, glazing은 과도한 칭찬, kiss ass는 거친 표현, suck up은 일반적인 아부, bootlick은 권력자에게 비굴하게 굽실거리는 행동을 강조해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-400 space-y-2">
+                <h3 class="font-bold text-white text-lg">Laying it on thick</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">칭찬, 아부, 감정 표현 등을 지나칠 정도로 과장한다는 뜻이에요. 꼭 아부에만 쓰이는 것은 아니에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-400 space-y-2">
+                <h3 class="font-bold text-white text-lg">Mogging / Aura farming / Rizz</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">각각 외모나 존재감으로 상대를 압도하기, 의도적으로 멋있는 분위기 연출하기, 사람을 매혹하는 매력을 뜻해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-400 space-y-2">
+                <h3 class="font-bold text-white text-lg">Delulu / Delusional</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">Delulu는 장난스럽게 쓰이는 인터넷 슬랭이고, delusional은 더 진지하고 강한 비판으로 들릴 수 있어요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-400 space-y-2">
+                <h3 class="font-bold text-white text-lg">Wet blanket / Downer / Buzzkill</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">모두 분위기를 가라앉히는 것과 관련돼요. Wet blanket은 사람의 태도, downer는 우울하게 만드는 사람이나 상황, buzzkill은 즐거움을 깨는 사람이나 사건에 자주 써요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-400 space-y-2">
+                <h3 class="font-bold text-white text-lg">What am I, chopped liver?</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">다른 사람만 인정받거나 관심을 받을 때, 자신도 중요하다는 것을 농담 섞어 강조하는 표현이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-400 space-y-2">
+                <h3 class="font-bold text-white text-lg">Rage bait</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">사람들을 일부러 화나게 해서 댓글이나 조회수를 얻으려는 콘텐츠예요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Thirteen-year-old Jake was spending the weekend with his 98-year-old great-grandfather, Walter, who was preparing for his birthday party.</p>
+                <p class="mb-6">Walter stood in front of the mirror, adjusting his tie.</p>
+                <p class="mb-6">"How do I look?"</p>
+                <p class="mb-6">Jake glanced up from his phone.</p>
+                <p class="mb-6">"<b class="highlight quiz-target" data-ans="Unc" data-kor="아재">Unc</b>, you're absolutely <b class="highlight quiz-target" data-ans="mogging" data-kor="외모로 압도하시겠는데요">mogging</b>."</p>
+                <p class="mb-6">Walter frowned. "I'm what?"</p>
+                <p class="mb-6">"You look better than everyone else."</p>
+                <p class="mb-6">Walter smiled. "Well, this suit is <b class="highlight quiz-target" data-ans="the bee's knees" data-kor="최고거든">the bee's knees</b>."</p>
+                <p class="mb-6">"Okay, don't get <b class="highlight quiz-target" data-ans="delulu" data-kor="망상에 빠지지는">delulu</b>."</p>
+                <p class="mb-6">"Delilah? Who's Delilah?"</p>
+                <p class="mb-6">"Never mind."</p>
+                <p class="mb-6">Just then, Walter's robot vacuum bumped into his shoe.</p>
+                <p class="mb-6">"Stupid <b class="highlight quiz-target" data-ans="clanker" data-kor="깡통 로봇">clanker</b>," Jake muttered.</p>
+                <p class="mb-6">Walter kicked it gently.</p>
+                <p class="mb-6">"Watch where you're going, you mechanical fool!"</p>
+                <p class="mb-6">Jake laughed. "Grandpa, you're actually hilarious."</p>
+                <p class="mb-6">"Stop <b class="highlight quiz-target" data-ans="glazing" data-kor="아부해라">glazing</b> me."</p>
+                <p class="mb-6">Jake froze.</p>
+                <p class="mb-6">"Wait. You know that word?"</p>
+                <p class="mb-6">"Your cousin taught me. Apparently, it means excessive praise."</p>
+                <p class="mb-6">"Wow. You've got serious <b class="highlight quiz-target" data-ans="rizz" data-kor="사람을 끌어당기는 매력이">rizz</b>."</p>
+                <p class="mb-6">"Ribs? My ribs are fine!"</p>
+                <p class="mb-6">When the guests arrived, Walter greeted everyone proudly.</p>
+                <p class="mb-6">His neighbor, Mr. Jenkins, complimented his suit.</p>
+                <p class="mb-6">"Walter! You look twenty years younger!"</p>
+                <p class="mb-6">Jake whispered, "Bro, he's <b class="highlight quiz-target" data-ans="laying it on thick" data-kor="아부를 과하게 하시네요">laying it on thick</b>."</p>
+                <p class="mb-6">Walter nodded. "Indeed. Jenkins has always been a bit of a <b class="highlight quiz-target" data-ans="suck-up" data-kor="아부쟁이었어">suck-up</b>."</p>
+                <p class="mb-6">"Exactly! He's practically <b class="highlight quiz-target" data-ans="kissing your ass" data-kor="엉덩이를 핥을 정도로 아부하잖아요">kissing your ass</b>."</p>
+                <p class="mb-6">Walter looked horrified.</p>
+                <p class="mb-6">"Mind your language!"</p>
+                <p class="mb-6">"Sorry. I meant he's <b class="highlight quiz-target" data-ans="bootlicking" data-kor="비굴하게 아부한다는">bootlicking</b>."</p>
+                <p class="mb-6">"That's hardly better!"</p>
+                <p class="mb-6">Meanwhile, Walter's friend Harold arrived carrying a <b class="highlight quiz-target" data-ans="two-four" data-kor="맥주 스물네 캔들이 한 상자를">two-four</b>.</p>
+                <p class="mb-6">Jake stared at the box.</p>
+                <p class="mb-6">"Twenty-four beers? Grandpa, you're ninety-eight!"</p>
+                <p class="mb-6">"They're for the guests, you <b class="highlight quiz-target" data-ans="wet blanket" data-kor="분위기 깨는">wet blanket</b>."</p>
+                <p class="mb-6">"Okay, but don't blame me if someone gets drunk."</p>
+                <p class="mb-6">"You're such a <b class="highlight quiz-target" data-ans="downer" data-kor="사람 기분을 가라앉히는구나">downer</b>," Walter complained.</p>
+                <p class="mb-6">Jake crossed his arms. "Fine. I'll stop being a <b class="highlight quiz-target" data-ans="buzzkill" data-kor="분위기 안 깰게요">buzzkill</b>."</p>
+                <p class="mb-6">Then Walter asked Jake to take a group photograph.</p>
+                <p class="mb-6">Everyone gathered around the birthday cake.</p>
+                <p class="mb-6">Walter stood in the middle, wearing sunglasses and holding a walking stick.</p>
+                <p class="mb-6">Jake laughed. "Grandpa, are you <b class="highlight quiz-target" data-ans="aura farming" data-kor="일부러 멋있는 분위기 연출하시는 거예요">aura farming</b>?"</p>
+                <p class="mb-6">"What?"</p>
+                <p class="mb-6">"Trying to look cool on purpose."</p>
+                <p class="mb-6">Walter straightened his back.</p>
+                <p class="mb-6">"At my age, looking cool takes effort."</p>
+                <p class="mb-6">Jake took the picture.</p>
+                <p class="mb-6">Unfortunately, Walter's robot vacuum rolled forward and knocked into the cake table.</p>
+                <p class="mb-6">The cake slid off the edge.</p>
+                <p class="mb-6">Jake caught the plate, but the cake landed upside down.</p>
+                <p class="mb-6">"<b class="highlight quiz-target" data-ans="I'm cooked" data-kor="나 망했다">I'm cooked</b>," he whispered.</p>
+                <p class="mb-6">Walter stared at the ruined cake.</p>
+                <p class="mb-6">"Well, that's unfortunate."</p>
+                <p class="mb-6">Jake expected him to get angry.</p>
+                <p class="mb-6">Instead, Walter burst out laughing.</p>
+                <p class="mb-6">"At least nobody got hurt!"</p>
+                <p class="mb-6">Harold examined the cake.</p>
+                <p class="mb-6">"Still looks edible."</p>
+                <p class="mb-6">Jake shook his head.</p>
+                <p class="mb-6">"Grandpa, that cake is <b class="highlight quiz-target" data-ans="mid" data-kor="그냥 그저 그래요">mid</b> at best."</p>
+                <p class="mb-6">Walter smiled. "Better than nothing."</p>
+                <p class="mb-6">Then Mr. Jenkins began praising Jake for saving the plate.</p>
+                <p class="mb-6">"What a wonderful young man! Such quick reflexes!"</p>
+                <p class="mb-6">Walter interrupted.</p>
+                <p class="mb-6">"<b class="highlight quiz-target" data-ans="What am I, chopped liver" data-kor="그럼 나는 뭐야? 나는 안중에도 없는 거야">What am I, chopped liver</b>? It's my birthday!"</p>
+                <p class="mb-6">Everyone laughed.</p>
+                <p class="mb-6">Jake showed Walter the photograph he'd taken just before the accident.</p>
+                <p class="mb-6">"Grandpa, you actually look amazing."</p>
+                <p class="mb-6">Walter studied it.</p>
+                <p class="mb-6">"Not bad for a ninety-eight-year-old."</p>
+                <p class="mb-6">"You're definitely not <b class="highlight quiz-target" data-ans="chopped" data-kor="못생기지">chopped</b>."</p>
+                <p class="mb-6">"Chopped? What does that mean?"</p>
+                <p class="mb-6">"Ugly."</p>
+                <p class="mb-6">Walter raised an eyebrow.</p>
+                <p class="mb-6">"Well, thank you, I suppose."</p>
+                <p class="mb-6">Jake uploaded the photograph to his family group chat.</p>
+                <p class="mb-6">Within minutes, his cousins started commenting.</p>
+                <p class="mb-6">One wrote, "Grandpa looks like a mafia boss."</p>
+                <p class="mb-6">Another wrote, "Jake looks like his bodyguard."</p>
+                <p class="mb-6">Walter laughed.</p>
+                <p class="mb-6">"Your cousins are funny."</p>
+                <p class="mb-6">Jake frowned.</p>
+                <p class="mb-6">"Actually, they're just posting <b class="highlight quiz-target" data-ans="rage bait" data-kor="자극하는 댓글을">rage bait</b> to annoy me."</p>
+                <p class="mb-6">Walter handed him a plate of damaged cake.</p>
+                <p class="mb-6">"Then stop reading it. You need to <b class="highlight quiz-target" data-ans="touch grass" data-kor="인터넷 좀 그만하고 밖에 나가서 현실 세계를 즐겨">touch grass</b>."</p>
+                <p class="mb-6">Jake stared at him.</p>
+                <p class="mb-6">"Grandpa, you used that perfectly!"</p>
+                <p class="mb-6">Walter winked.</p>
+                <p class="mb-6">"Of course. I've been dealing with foolish young people for nearly a century."</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>할아버지의 생일 대소동</p>
+                <p>열세 살 제이크는 98세 증조할아버지 월터와 주말을 보내고 있었다. 월터는 자신의 생일 파티를 준비하고 있었다.</p>
+                <p>월터는 거울 앞에 서서 넥타이를 고쳐 매고 있었다.</p>
+                <p>"어떠냐? 멋있지?"</p>
+                <p>제이크는 휴대폰에서 잠깐 눈을 들었다.</p>
+                <p>"<b class="highlight">아재</b>, 완전 다른 사람들 <b class="highlight">외모로 압도하시겠는데요</b>."</p>
+                <p>월터가 얼굴을 찌푸렸다.</p>
+                <p>"내가 뭘 한다고?"</p>
+                <p>"다른 사람들보다 훨씬 멋있어 보인다고요."</p>
+                <p>월터가 미소를 지었다.</p>
+                <p>"그렇지. 이 정장은 정말 <b class="highlight">최고거든</b>."</p>
+                <p>"알겠어요. 근데 너무 <b class="highlight">망상에 빠지지는</b> 마세요."</p>
+                <p>"딜라일라? 딜라일라가 누구냐?"</p>
+                <p>"아무것도 아니에요."</p>
+                <p>바로 그때 로봇 청소기가 월터의 신발에 부딪혔다.</p>
+                <p>"멍청한 <b class="highlight">깡통 로봇</b>." 제이크가 중얼거렸다.</p>
+                <p>월터는 로봇 청소기를 발로 살짝 밀었다.</p>
+                <p>"앞 좀 보고 다녀라, 이 기계 바보야!"</p>
+                <p>제이크가 웃었다.</p>
+                <p>"할아버지, 진짜 웃기세요."</p>
+                <p>"그만 <b class="highlight">아부해라</b>."</p>
+                <p>제이크는 깜짝 놀랐다.</p>
+                <p>"잠깐만요. 그 단어 아세요?"</p>
+                <p>"네 사촌이 알려줬어. 지나친 칭찬이라는 뜻이라더구나."</p>
+                <p>"와. 할아버지 진짜 <b class="highlight">사람을 끌어당기는 매력이</b> 있으시네요."</p>
+                <p>"갈비뼈? 내 갈비뼈는 멀쩡하다!"</p>
+                <p>손님들이 도착하자 월터는 자랑스럽게 모두를 맞이했다.</p>
+                <p>이웃인 젠킨스 씨가 그의 정장을 칭찬했다.</p>
+                <p>"월터! 스무 살은 젊어 보이는군!"</p>
+                <p>제이크가 속삭였다.</p>
+                <p>"와, 저 아저씨 진짜 <b class="highlight">아부를 과하게 하시네요</b>."</p>
+                <p>월터가 고개를 끄덕였다.</p>
+                <p>"그렇지. 젠킨스는 원래 좀 <b class="highlight">아부쟁이었어</b>."</p>
+                <p>"맞아요! 거의 할아버지 <b class="highlight">엉덩이를 핥을 정도로 아부하잖아요</b>."</p>
+                <p>월터는 기겁했다.</p>
+                <p>"말조심해라!"</p>
+                <p>"죄송해요. <b class="highlight">비굴하게 아부한다는</b> 뜻이었어요."</p>
+                <p>"그것도 별로 나은 표현은 아니구나!"</p>
+                <p>그때 월터의 친구 해럴드가 <b class="highlight">맥주 스물네 캔들이 한 상자를</b> 들고 도착했다.</p>
+                <p>제이크는 상자를 빤히 쳐다봤다.</p>
+                <p>"맥주 스물네 캔이요? 할아버지, 아흔여덟 살이시잖아요!"</p>
+                <p>"손님들 마시라고 가져온 거야, 이 <b class="highlight">분위기 깨는</b> 녀석아."</p>
+                <p>"알겠어요. 하지만 누가 취해도 제 탓은 하지 마세요."</p>
+                <p>"넌 정말 <b class="highlight">사람 기분을 가라앉히는구나</b>." 월터가 불평했다.</p>
+                <p>제이크는 팔짱을 꼈다.</p>
+                <p>"좋아요. 이제 <b class="highlight">분위기 안 깰게요</b>."</p>
+                <p>그러자 월터는 제이크에게 단체 사진을 찍어 달라고 부탁했다.</p>
+                <p>모두가 생일 케이크 주위에 모였다.</p>
+                <p>월터는 선글라스를 쓰고 지팡이를 든 채 가운데 서 있었다.</p>
+                <p>제이크가 웃었다.</p>
+                <p>"할아버지, <b class="highlight">일부러 멋있는 분위기 연출하시는 거예요</b>?"</p>
+                <p>"뭐라고?"</p>
+                <p>"멋있어 보이려고 일부러 그러시는 거냐고요."</p>
+                <p>월터는 허리를 꼿꼿이 폈다.</p>
+                <p>"내 나이에 멋있어 보이려면 노력이 필요하지."</p>
+                <p>제이크는 사진을 찍었다.</p>
+                <p>그런데 안타깝게도 로봇 청소기가 앞으로 굴러가 케이크 테이블에 부딪혔다.</p>
+                <p>케이크가 테이블 가장자리에서 미끄러졌다.</p>
+                <p>제이크는 접시를 잡았지만, 케이크는 뒤집힌 채 떨어졌다.</p>
+                <p>"<b class="highlight">나 망했다</b>." 제이크가 속삭였다.</p>
+                <p>월터는 망가진 케이크를 바라봤다.</p>
+                <p>"이런, 안타깝구나."</p>
+                <p>제이크는 할아버지가 화를 낼 줄 알았다.</p>
+                <p>하지만 월터는 크게 웃음을 터뜨렸다.</p>
+                <p>"그래도 아무도 안 다쳤잖니!"</p>
+                <p>해럴드는 케이크를 살펴봤다.</p>
+                <p>"아직 먹을 수는 있겠는데."</p>
+                <p>제이크는 고개를 저었다.</p>
+                <p>"할아버지, 저 케이크는 좋게 봐줘도 <b class="highlight">그냥 그저 그래요</b>."</p>
+                <p>월터가 미소를 지었다.</p>
+                <p>"없는 것보다는 낫지."</p>
+                <p>그때 젠킨스 씨가 접시를 구한 제이크를 칭찬하기 시작했다.</p>
+                <p>"정말 훌륭한 청년이군! 반사신경이 대단해!"</p>
+                <p>월터가 끼어들었다.</p>
+                <p>"<b class="highlight">그럼 나는 뭐야? 나는 안중에도 없는 거야</b>? 오늘 내 생일이라고!"</p>
+                <p>모두가 웃었다.</p>
+                <p>제이크는 사고 직전에 찍은 사진을 월터에게 보여줬다.</p>
+                <p>"할아버지, 진짜 멋있게 나오셨어요."</p>
+                <p>월터는 사진을 자세히 봤다.</p>
+                <p>"아흔여덟 살치고는 나쁘지 않구나."</p>
+                <p>"절대 <b class="highlight">못생기지</b> 않으셨어요."</p>
+                <p>"못생겼다고? 그게 무슨 뜻이냐?"</p>
+                <p>"외모가 별로라는 뜻이에요."</p>
+                <p>월터는 눈썹을 치켜올렸다.</p>
+                <p>"뭐, 칭찬으로 받아들이마."</p>
+                <p>제이크는 사진을 가족 단체 채팅방에 올렸다.</p>
+                <p>몇 분도 지나지 않아 사촌들이 댓글을 달기 시작했다.</p>
+                <p>한 명은 "할아버지 완전 마피아 보스 같아"라고 썼다.</p>
+                <p>다른 한 명은 "제이크는 경호원 같네"라고 썼다.</p>
+                <p>월터가 웃었다.</p>
+                <p>"네 사촌들 재미있구나."</p>
+                <p>제이크는 얼굴을 찌푸렸다.</p>
+                <p>"사실 저를 화나게 하려고 일부러 <b class="highlight">자극하는 댓글을</b> 다는 거예요."</p>
+                <p>월터는 망가진 케이크 한 접시를 제이크에게 건넸다.</p>
+                <p>"그럼 그만 읽어라. <b class="highlight">인터넷 좀 그만하고 밖에 나가서 현실 세계를 즐겨</b>."</p>
+                <p>제이크는 할아버지를 빤히 쳐다봤다.</p>
+                <p>"할아버지, 그 표현 완벽하게 쓰셨어요!"</p>
+                <p>월터는 윙크했다.</p>
+                <p>"당연하지. 거의 백 년 동안 철없는 젊은이들을 상대해 왔으니까."</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "10221020.m4a";
+</script>
+      <script src="wordbank-utils.js"></script>
+  </body>
+  </html>

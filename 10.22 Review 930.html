@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | Grandpa's Secret Account</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+      :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+      body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+      .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+      .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+      input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+      input:focus::placeholder { opacity: 0 !important; }
+      .mystery-cell { transition: color 0.3s; }
+      .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+      .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+      .highlight { color: var(--teal); font-weight: 700; }
+      .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+      audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">📱</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">Grandpa's Secret Account</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">Tease</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">놀리다, 장난스럽게 약 올리다</td></tr>
+                <tr><td class="p-4"><b class="text-white">Troll</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">일부러 상대를 자극하거나 골탕 먹이다</td></tr>
+                <tr><td class="p-4"><b class="text-white">Unc</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">아재, 삼촌 (나이 든 사람을 놀릴 때 쓰는 슬랭)</td></tr>
+                <tr><td class="p-4"><b class="text-white">Glazing</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">지나치게 칭찬하기, 과하게 추켜세우기</td></tr>
+                <tr><td class="p-4"><b class="text-white">Applesauce</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">헛소리, 말도 안 되는 소리 (옛날 미국 슬랭)</td></tr>
+                <tr><td class="p-4"><b class="text-white">Chopped</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">못생긴, 외모가 별로인 (요즘 슬랭)</td></tr>
+                <tr><td class="p-4"><b class="text-white">Looksmaxxing</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">외모를 최대한 개선하려고 노력하는 것</td></tr>
+                <tr><td class="p-4"><b class="text-white">Pick-me girl</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">남들의 관심이나 인정을 받으려고 일부러 자신을 특별하게 보이게 하는 여자</td></tr>
+                <tr><td class="p-4"><b class="text-white">Two-four</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">맥주 24캔 한 상자 (캐나다식 표현)</td></tr>
+                <tr><td class="p-4"><b class="text-white">Touch grass</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">인터넷 좀 그만하고 현실 세계를 살아라</td></tr>
+                <tr><td class="p-4"><b class="text-white">Echo chamber</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">비슷한 의견만 반복해서 접하는 환경, 확증 편향이 강화되는 공간</td></tr>
+                <tr><td class="p-4"><b class="text-white">Delulu</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">망상에 빠진, 비현실적인 기대를 하는</td></tr>
+                <tr><td class="p-4"><b class="text-white">Delusional</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">현실 판단을 못 하는, 망상에 빠진</td></tr>
+                <tr><td class="p-4"><b class="text-white">Mogging</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">외모나 존재감으로 상대를 압도하는 것</td></tr>
+                <tr><td class="p-4"><b class="text-white">Wet blanket</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">분위기를 망치는 사람, 흥을 깨는 사람</td></tr>
+                <tr><td class="p-4"><b class="text-white">Buzzkill</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">재미나 흥을 깨는 사람 또는 상황</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-400 space-y-2">
+                <h3 class="font-bold text-white text-lg">Tease / Troll</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">Tease는 친근하게 놀리는 상황에서도 쓰지만, troll은 일부러 상대의 반응을 유도하거나 화나게 만드는 행동에 가까워요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-400 space-y-2">
+                <h3 class="font-bold text-white text-lg">Glazing</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">누군가를 과하게 칭찬하거나 추켜세우는 것을 비꼬는 인터넷 표현이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-400 space-y-2">
+                <h3 class="font-bold text-white text-lg">Applesauce</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">1920년대에 유행했던 '헛소리'라는 뜻의 표현이에요. 지금은 주로 사과 퓌레를 의미해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-400 space-y-2">
+                <h3 class="font-bold text-white text-lg">Chopped / Looksmaxxing / Mogging</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">모두 외모와 관련된 인터넷 슬랭이지만 각각 '못생긴', '외모 개선에 힘쓰는 것', '외모로 상대를 압도하는 것'을 뜻해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-400 space-y-2">
+                <h3 class="font-bold text-white text-lg">Pick-me girl</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">다른 사람들과 자신을 차별화하면서 관심이나 인정을 얻으려는 여성을 비판적으로 부르는 표현이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-400 space-y-2">
+                <h3 class="font-bold text-white text-lg">Echo chamber</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">자기와 비슷한 생각만 계속 접하면서 기존 믿음이 더욱 강해지는 환경을 뜻해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-400 space-y-2">
+                <h3 class="font-bold text-white text-lg">Delulu / Delusional</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">Delulu는 장난스럽게 쓰기도 하지만, delusional은 훨씬 진지하고 강한 비판으로 들릴 수 있어요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Thirteen-year-old Ethan was spending the weekend with his 98-year-old great-grandfather, Stanley.</p>
+                <p class="mb-6">On Saturday morning, Ethan found Stanley sitting at the kitchen table, watching videos on a smartphone.</p>
+                <p class="mb-6">"Grandpa, since when do you use TikTok?"</p>
+                <p class="mb-6">"Since Tuesday. Your aunt showed me."</p>
+                <p class="mb-6">Ethan looked at the screen. A young man was explaining how to become more attractive.</p>
+                <p class="mb-6">"Grandpa, why are you watching <b class="highlight quiz-target" data-ans="looksmaxxing" data-kor="외모 관리">looksmaxxing</b> videos?"</p>
+                <p class="mb-6">"What's that?"</p>
+                <p class="mb-6">"People trying to improve their appearance."</p>
+                <p class="mb-6">"Well, this fellow says I should exercise my jaw. Sounds reasonable."</p>
+                <p class="mb-6">Ethan laughed. "<b class="highlight quiz-target" data-ans="Unc" data-kor="아재">Unc</b>, you're ninety-eight. Who are you trying to impress?"</p>
+                <p class="mb-6">"There's a lovely woman at the senior center."</p>
+                <p class="mb-6">Ethan leaned closer. "Grandpa! Are you serious?"</p>
+                <p class="mb-6">"Of course. Her name is Betty."</p>
+                <p class="mb-6">"Okay, but don't get <b class="highlight quiz-target" data-ans="delulu" data-kor="망상에 빠지진">delulu</b>. She might just be friendly."</p>
+                <p class="mb-6">Stanley frowned. "Delu-what?"</p>
+                <p class="mb-6">"<b class="highlight quiz-target" data-ans="Delusional" data-kor="현실과 다른 걸 믿는다는">Delusional</b>. You know, believing something that probably isn't true."</p>
+                <p class="mb-6">"<b class="highlight quiz-target" data-ans="Applesauce" data-kor="말도 안 되는 소리">Applesauce</b>! She invited me to lunch yesterday."</p>
+                <p class="mb-6">Ethan raised his eyebrows. "Okay, maybe you've got a chance."</p>
+                <p class="mb-6">Stanley showed him Betty's photograph.</p>
+                <p class="mb-6">"She's beautiful, isn't she?"</p>
+                <p class="mb-6">"Grandpa, stop <b class="highlight quiz-target" data-ans="glazing" data-kor="과하게 칭찬하지">glazing</b> her."</p>
+                <p class="mb-6">"Glazing? She's not a doughnut!"</p>
+                <p class="mb-6">Ethan burst out laughing.</p>
+                <p class="mb-6">"You're so easy to <b class="highlight quiz-target" data-ans="tease" data-kor="놀리기">tease</b>."</p>
+                <p class="mb-6">Stanley put down his phone.</p>
+                <p class="mb-6">"Are you here to help me or just <b class="highlight quiz-target" data-ans="troll" data-kor="일부러 약 올리러">troll</b> me?"</p>
+                <p class="mb-6">Ethan froze.</p>
+                <p class="mb-6">"Wait. You know what trolling means?"</p>
+                <p class="mb-6">"Of course. I've been reading comments online."</p>
+                <p class="mb-6">"That's actually impressive."</p>
+                <p class="mb-6">Stanley smiled. "Thank you."</p>
+                <p class="mb-6">Ethan noticed something else on the screen.</p>
+                <p class="mb-6">"Grandpa, why are you watching this guy? He's telling men to stare at women without blinking!"</p>
+                <p class="mb-6">"He says it makes you look confident."</p>
+                <p class="mb-6">"That's creepy!"</p>
+                <p class="mb-6">"Well, he has two million followers."</p>
+                <p class="mb-6">"Grandpa, you're stuck in an <b class="highlight quiz-target" data-ans="echo chamber" data-kor="비슷한 의견만 반복해서 듣는 환경에">echo chamber</b>. Just because lots of people agree doesn't mean they're right."</p>
+                <p class="mb-6">Stanley considered this.</p>
+                <p class="mb-6">"Maybe you're onto something."</p>
+                <p class="mb-6">Then he showed Ethan a photograph of himself at twenty-five.</p>
+                <p class="mb-6">"Look at that handsome fellow."</p>
+                <p class="mb-6">Ethan stared.</p>
+                <p class="mb-6">"Grandpa, you were actually <b class="highlight quiz-target" data-ans="mogging" data-kor="외모로 압도하셨네요">mogging</b> everyone!"</p>
+                <p class="mb-6">"Was I?"</p>
+                <p class="mb-6">"Yeah! You looked amazing!"</p>
+                <p class="mb-6">Stanley grinned. "And I didn't need any jaw exercises."</p>
+                <p class="mb-6">Ethan nodded. "Exactly."</p>
+                <p class="mb-6">"Now, help me choose a shirt for lunch with Betty."</p>
+                <p class="mb-6">Ethan opened the wardrobe and pulled out a bright orange shirt.</p>
+                <p class="mb-6">"This one?"</p>
+                <p class="mb-6">Stanley looked horrified.</p>
+                <p class="mb-6">"Good heavens! I'd look like a traffic cone."</p>
+                <p class="mb-6">Ethan laughed.</p>
+                <p class="mb-6">"Okay, what about this blue one?"</p>
+                <p class="mb-6">"Much better."</p>
+                <p class="mb-6">Ethan held it against Stanley's chest.</p>
+                <p class="mb-6">"Grandpa, no offense, but the orange one made you look kind of <b class="highlight quiz-target" data-ans="chopped" data-kor="못생겨 보이게">chopped</b>."</p>
+                <p class="mb-6">Stanley sighed. "I have absolutely no idea what that means."</p>
+                <p class="mb-6">Just then, the doorbell rang.</p>
+                <p class="mb-6">It was Stanley's neighbor, Harold.</p>
+                <p class="mb-6">"Stanley! Ready for our <b class="highlight quiz-target" data-ans="two-four" data-kor="맥주 한 상자">two-four</b>?"</p>
+                <p class="mb-6">Ethan looked confused.</p>
+                <p class="mb-6">"Two-four? Is that some kind of exercise?"</p>
+                <p class="mb-6">"Twenty-four beers," Stanley explained.</p>
+                <p class="mb-6">Ethan stared at him.</p>
+                <p class="mb-6">"Grandpa! You have a date tomorrow! You can't drink twenty-four beers!"</p>
+                <p class="mb-6">"Relax. Harold and I are taking them to the community barbecue."</p>
+                <p class="mb-6">"Oh."</p>
+                <p class="mb-6">Harold noticed Ethan holding the blue shirt.</p>
+                <p class="mb-6">"Going somewhere special, Stanley?"</p>
+                <p class="mb-6">"Lunch with Betty."</p>
+                <p class="mb-6">Harold grinned. "Well, well! Someone's got himself a girlfriend!"</p>
+                <p class="mb-6">Stanley turned red.</p>
+                <p class="mb-6">Ethan laughed. "Grandpa, you're blushing!"</p>
+                <p class="mb-6">"Stop being a <b class="highlight quiz-target" data-ans="buzzkill" data-kor="분위기 깨지">buzzkill</b> and let me enjoy myself!"</p>
+                <p class="mb-6">Ethan blinked.</p>
+                <p class="mb-6">"That's not how you use buzzkill."</p>
+                <p class="mb-6">Stanley shrugged. "Close enough."</p>
+                <p class="mb-6">Harold laughed.</p>
+                <p class="mb-6">"Come on, Ethan. Don't be a <b class="highlight quiz-target" data-ans="wet blanket" data-kor="분위기 깨지">wet blanket</b>. Your great-grandfather's still got it!"</p>
+                <p class="mb-6">Ethan shook his head.</p>
+                <p class="mb-6">"You two seriously need to <b class="highlight quiz-target" data-ans="touch grass" data-kor="인터넷 좀 그만하고 밖에 나가셔야겠어요">touch grass</b>."</p>
+                <p class="mb-6">Stanley looked out the window.</p>
+                <p class="mb-6">"Excellent idea. Harold, let's have our beers in the garden."</p>
+                <p class="mb-6">Ethan stared at him.</p>
+                <p class="mb-6">For someone who was nearly a hundred years old, his great-grandfather was surprisingly difficult to argue with.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p>할아버지의 비밀 계정</p>
+                <p>열세 살 이선은 98세 증조할아버지 스탠리와 주말을 보내고 있었다.</p>
+                <p>토요일 아침, 이선은 스탠리가 식탁에 앉아 스마트폰으로 영상을 보고 있는 모습을 발견했다.</p>
+                <p>"할아버지, 언제부터 틱톡 하셨어요?"</p>
+                <p>"화요일부터. 네 고모가 알려줬어."</p>
+                <p>이선은 화면을 들여다봤다. 한 젊은 남자가 외모를 더 매력적으로 만드는 방법을 설명하고 있었다.</p>
+                <p>"할아버지, 왜 <b class="highlight">외모 관리</b> 영상을 보고 계세요?"</p>
+                <p>"그게 뭔데?"</p>
+                <p>"사람들이 자기 외모를 개선하려고 노력하는 거예요."</p>
+                <p>"음, 이 친구가 턱 운동을 하라고 하더구나. 꽤 그럴듯한 말 같아."</p>
+                <p>이선이 웃었다.</p>
+                <p>"<b class="highlight">아재</b>, 아흔여덟 살이시잖아요. 누구한테 잘 보이려고요?"</p>
+                <p>"노인복지관에 아주 멋진 여자분이 계시거든."</p>
+                <p>이선이 몸을 앞으로 기울였다.</p>
+                <p>"할아버지! 진심이세요?"</p>
+                <p>"당연하지. 이름이 베티야."</p>
+                <p>"좋아요. 하지만 너무 <b class="highlight">망상에 빠지진</b> 마세요. 그냥 친절하게 대하시는 걸 수도 있잖아요."</p>
+                <p>스탠리가 얼굴을 찌푸렸다.</p>
+                <p>"뭐라고?"</p>
+                <p>"<b class="highlight">현실과 다른 걸 믿는다는</b> 뜻이에요. 사실이 아닐 가능성이 큰 걸 믿는 거죠."</p>
+                <p>"<b class="highlight">말도 안 되는 소리</b>! 어제 그분이 나한테 점심 먹자고 하셨어."</p>
+                <p>이선이 눈썹을 치켜올렸다.</p>
+                <p>"오, 그럼 가능성이 있겠는데요."</p>
+                <p>스탠리는 베티의 사진을 보여줬다.</p>
+                <p>"아름답지 않니?"</p>
+                <p>"할아버지, 너무 <b class="highlight">과하게 칭찬하지</b> 마세요."</p>
+                <p>"과하게 칭찬한다고? 그분이 도넛도 아닌데!"</p>
+                <p>이선은 크게 웃음을 터뜨렸다.</p>
+                <p>"할아버지는 <b class="highlight">놀리기</b> 너무 쉬워요."</p>
+                <p>스탠리는 휴대폰을 내려놓았다.</p>
+                <p>"넌 날 도와주러 온 거냐, 아니면 <b class="highlight">일부러 약 올리러</b> 온 거냐?"</p>
+                <p>이선은 깜짝 놀랐다.</p>
+                <p>"잠깐만요. 트롤링이 뭔지 아세요?"</p>
+                <p>"당연하지. 인터넷 댓글을 좀 읽어봤거든."</p>
+                <p>"그건 좀 놀라운데요."</p>
+                <p>스탠리가 미소를 지었다.</p>
+                <p>"고맙구나."</p>
+                <p>이선은 화면에서 다른 것을 발견했다.</p>
+                <p>"할아버지, 왜 이 사람 영상을 보세요? 여자들을 눈도 깜빡이지 말고 쳐다보라고 하잖아요!"</p>
+                <p>"그렇게 하면 자신감 있어 보인대."</p>
+                <p>"그건 소름 끼치잖아요!"</p>
+                <p>"하지만 팔로워가 200만 명이나 있단다."</p>
+                <p>"할아버지, <b class="highlight">비슷한 의견만 반복해서 듣는 환경에</b> 빠지신 거예요. 많은 사람이 동의한다고 해서 꼭 옳은 건 아니에요."</p>
+                <p>스탠리는 잠시 생각했다.</p>
+                <p>"네 말이 맞을지도 모르겠구나."</p>
+                <p>그러더니 스물다섯 살 때 찍은 자기 사진을 보여줬다.</p>
+                <p>"이 잘생긴 청년 좀 보렴."</p>
+                <p>이선은 사진을 빤히 쳐다봤다.</p>
+                <p>"할아버지, 그때는 진짜 다른 사람들을 <b class="highlight">외모로 압도하셨네요</b>!"</p>
+                <p>"그랬니?"</p>
+                <p>"네! 엄청 멋있으셨어요!"</p>
+                <p>스탠리는 활짝 웃었다.</p>
+                <p>"그런데 난 턱 운동 같은 건 하지도 않았단다."</p>
+                <p>이선이 고개를 끄덕였다.</p>
+                <p>"그러니까요."</p>
+                <p>"자, 이제 베티와 점심 먹을 때 입을 셔츠 좀 골라주렴."</p>
+                <p>이선은 옷장을 열고 밝은 주황색 셔츠를 꺼냈다.</p>
+                <p>"이건 어때요?"</p>
+                <p>스탠리는 기겁했다.</p>
+                <p>"세상에! 그걸 입으면 신호등처럼 보이겠구나."</p>
+                <p>이선이 웃었다.</p>
+                <p>"그럼 이 파란색은요?"</p>
+                <p>"훨씬 낫구나."</p>
+                <p>이선은 셔츠를 스탠리의 가슴에 대봤다.</p>
+                <p>"할아버지, 기분 나쁘게 듣지 마세요. 근데 주황색 셔츠는 좀 <b class="highlight">못생겨 보이게</b> 했어요."</p>
+                <p>스탠리가 한숨을 쉬었다.</p>
+                <p>"도대체 무슨 뜻인지 모르겠구나."</p>
+                <p>바로 그때 초인종이 울렸다.</p>
+                <p>스탠리의 이웃 해럴드였다.</p>
+                <p>"스탠리! <b class="highlight">맥주 한 상자</b> 준비됐나?"</p>
+                <p>이선은 어리둥절했다.</p>
+                <p>"투포요? 무슨 운동 이름이에요?"</p>
+                <p>"맥주 스물네 캔이란다." 스탠리가 설명했다.</p>
+                <p>이선은 할아버지를 빤히 쳐다봤다.</p>
+                <p>"할아버지! 내일 데이트 있으시잖아요! 맥주 스물네 캔을 마시면 안 되죠!"</p>
+                <p>"진정해. 해럴드랑 내가 동네 바비큐 모임에 가져갈 거야."</p>
+                <p>"아."</p>
+                <p>해럴드는 이선이 파란 셔츠를 들고 있는 걸 발견했다.</p>
+                <p>"스탠리, 어디 특별한 데 가나?"</p>
+                <p>"베티랑 점심 먹으러."</p>
+                <p>해럴드가 씩 웃었다.</p>
+                <p>"이런, 이런! 누가 여자친구가 생겼나 보군!"</p>
+                <p>스탠리의 얼굴이 빨개졌다.</p>
+                <p>이선이 웃었다.</p>
+                <p>"할아버지, 얼굴 빨개지셨어요!"</p>
+                <p>"<b class="highlight">분위기 깨지</b> 말고 내가 좀 즐기게 놔둬라!"</p>
+                <p>이선이 눈을 깜빡였다.</p>
+                <p>"그 표현은 그렇게 쓰는 게 아닌데요."</p>
+                <p>스탠리는 어깨를 으쓱했다.</p>
+                <p>"비슷하잖니."</p>
+                <p>해럴드가 웃었다.</p>
+                <p>"이선, 너무 <b class="highlight">분위기 깨지</b> 말게. 자네 증조할아버지 아직 살아 있네!"</p>
+                <p>이선은 고개를 저었다.</p>
+                <p>"두 분 진짜 <b class="highlight">인터넷 좀 그만하고 밖에 나가셔야겠어요</b>."</p>
+                <p>스탠리는 창밖을 내다봤다.</p>
+                <p>"좋은 생각이구나. 해럴드, 정원에서 맥주나 마시세."</p>
+                <p>이선은 할아버지를 빤히 쳐다봤다.</p>
+                <p>거의 백 살이 다 된 사람치고는 증조할아버지와 말싸움에서 이기기가 놀라울 정도로 어려웠다.</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "1022930.m4a";
+</script>
+      <script src="wordbank-utils.js"></script>
+  </body>
+  </html>

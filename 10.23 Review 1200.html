@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Secret to a Happy Marriage</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🍽️</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Secret to a Happy Marriage</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">braised mackerel</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">고등어조림</td></tr>
+                <tr><td class="p-4"><b class="text-white">let them pile up</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그것들이 쌓이도록 내버려 두다</td></tr>
+                <tr><td class="p-4"><b class="text-white">wise</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">현명한 / 지혜로운</td></tr>
+                <tr><td class="p-4"><b class="text-white">missed a spot</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">한 군데 빠뜨렸어 / 덜 닦은 곳이 있어</td></tr>
+                <tr><td class="p-4"><b class="text-white">used to</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">예전에는 ~하곤 했다</td></tr>
+                <tr><td class="p-4"><b class="text-white">developed</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">발전시켰다 / 개발했다 / 생겼다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl space-y-2 border-l-4 border-teal-400">
+                <h3 class="text-teal-400 font-bold text-lg">braised mackerel</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">고등어를 양념과 국물에 넣고 천천히 졸인 요리. Braised는 소량의 액체로 천천히 익히는 조리법</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2 border-l-4 border-teal-400">
+                <h3 class="text-teal-400 font-bold text-lg">let them pile up</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">설거지나 빨랫감 등을 치우지 않고 계속 쌓이게 내버려 두는 것</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2 border-l-4 border-teal-400">
+                <h3 class="text-teal-400 font-bold text-lg">missed a spot</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">청소나 페인트칠 등을 하면서 특정 부분을 빠뜨렸을 때 쓰는 일상적인 표현</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2 border-l-4 border-teal-400">
+                <h3 class="text-teal-400 font-bold text-lg">used to</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">used to + 동사원형은 과거의 습관이나 상태를 뜻함. be used to + 명사/-ing는 '~에 익숙하다'라는 뜻</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2 border-l-4 border-teal-400 md:col-span-2">
+                <h3 class="text-teal-400 font-bold text-lg">developed</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">습관이나 능력이 생기거나 발전했다는 의미로도 사용. developed a habit은 '습관이 생겼다'라는 뜻</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Six months earlier, Laura had almost ended her marriage.</p>
+                <p class="mb-6">She was exhausted from doing nearly all the housework. Her husband, Mark, <b class="highlight quiz-target" data-ans="used to" data-kor="예전에는 ~하곤 했다">used to</b> leave dirty dishes in the sink and <b class="highlight quiz-target" data-ans="let them pile up" data-kor="쌓이도록 내버려 두다">let them pile up</b> until she finally washed them.</p>
+                <p class="mb-6">After a terrible argument, Mark promised to change.</p>
+                <p class="mb-6">And for six months, he seemed to keep that promise.</p>
+                <p class="mb-6">The house was spotless. The laundry was folded. The bathroom was clean every weekend.</p>
+                <p class="mb-6">Mark even <b class="highlight quiz-target" data-ans="developed" data-kor="습관이 생겼다">developed</b> a habit of checking the house each evening to make sure everything had been done properly.</p>
+                <p class="mb-6">Laura couldn't believe the difference.</p>
+                <p class="mb-6">One Friday evening, she invited two friends over for dinner. She had prepared <b class="highlight quiz-target" data-ans="braised mackerel" data-kor="고등어조림">braised mackerel</b>, Mark's favorite dish.</p>
+                <p class="mb-6">"He's become a wonderful husband," Laura told them. "He does his share of the housework without complaining."</p>
+                <p class="mb-6">Mark smiled modestly.</p>
+                <p class="mb-6">"I've learned that a happy marriage requires effort from both people."</p>
+                <p class="mb-6">One friend nodded. "That's a very <b class="highlight quiz-target" data-ans="wise" data-kor="현명한">wise</b> attitude."</p>
+                <p class="mb-6">Mark continued, "The secret is consistency. You can't just help for a week and stop."</p>
+                <p class="mb-6">Laura looked at him proudly.</p>
+                <p class="mb-6">Their seventeen-year-old daughter, Emma, was sitting at the table, eating quietly.</p>
+                <p class="mb-6">"Emma," Mark said, "could you clear the plates?"</p>
+                <p class="mb-6">Emma looked at him.</p>
+                <p class="mb-6">"Is that included?"</p>
+                <p class="mb-6">Mark's smile disappeared.</p>
+                <p class="mb-6">"Just help your mother."</p>
+                <p class="mb-6">Emma shrugged and carried the plates into the kitchen.</p>
+                <p class="mb-6">The following morning, Laura was upstairs when she heard Mark and Emma arguing.</p>
+                <p class="mb-6">"You <b class="highlight quiz-target" data-ans="missed a spot" data-kor="한 군데 빠뜨렸어">missed a spot</b> in the bathroom yesterday," Mark complained.</p>
+                <p class="mb-6">"I cleaned everything you paid me to clean."</p>
+                <p class="mb-6">"Well, I'm not paying extra for you to finish the job properly."</p>
+                <p class="mb-6">Laura stopped halfway down the stairs.</p>
+                <p class="mb-6">"Paying extra for what?"</p>
+                <p class="mb-6">Mark froze.</p>
+                <p class="mb-6">Emma looked at her father.</p>
+                <p class="mb-6">"Dad, I told you we shouldn't discuss this when Mom's home."</p>
+                <p class="mb-6">Laura came down the remaining stairs.</p>
+                <p class="mb-6">"Discuss what?"</p>
+                <p class="mb-6">"Laura, I can explain," Mark said.</p>
+                <p class="mb-6">"Then explain."</p>
+                <p class="mb-6">Emma looked at the floor.</p>
+                <p class="mb-6">"Dad pays me to do his chores."</p>
+                <p class="mb-6">Laura turned to Mark.</p>
+                <p class="mb-6">"How long?"</p>
+                <p class="mb-6">He hesitated.</p>
+                <p class="mb-6">"Six months."</p>
+                <p class="mb-6">Laura remembered every compliment she'd given him. Every conversation with friends. The dinner the previous evening.</p>
+                <p class="mb-6">"You sat there telling everyone how much effort you put into our marriage."</p>
+                <p class="mb-6">"I did put in effort. I organized the work."</p>
+                <p class="mb-6">"You made our daughter do your chores and took all the credit!"</p>
+                <p class="mb-6">"The house was clean!"</p>
+                <p class="mb-6">"That's not the point!"</p>
+                <p class="mb-6">Mark tried to explain.</p>
+                <p class="mb-6">"I thought it was a practical solution. Emma wanted extra money, and I didn't have time to clean."</p>
+                <p class="mb-6">Laura looked at Emma.</p>
+                <p class="mb-6">"And you knew he was lying to me?"</p>
+                <p class="mb-6">Emma nodded.</p>
+                <p class="mb-6">"Dad told me not to say anything."</p>
+                <p class="mb-6">"And you agreed?"</p>
+                <p class="mb-6">Emma hesitated.</p>
+                <p class="mb-6">"He paid me an extra twenty dollars a month to keep it secret."</p>
+                <p class="mb-6">Laura slowly turned toward Mark.</p>
+                <p class="mb-6">"You paid our daughter to lie to me?"</p>
+                <p class="mb-6">Mark looked down.</p>
+                <p class="mb-6">"I didn't want us to fight about housework anymore."</p>
+                <p class="mb-6">"So instead, you lied to me for six months?"</p>
+                <p class="mb-6">"I thought if everything got done, you'd be happy."</p>
+                <p class="mb-6">"I was happy," Laura said quietly. "I thought you'd finally understood why this mattered to me."</p>
+                <p class="mb-6">Mark reached for her hand, but she pulled away.</p>
+                <p class="mb-6">"Six months ago, I told you I couldn't stay married to someone who treated me like his maid. You promised you'd change."</p>
+                <p class="mb-6">"I did change," Mark insisted.</p>
+                <p class="mb-6">"No. You just learned how to hide the problem."</p>
+                <p class="mb-6">For a moment, nobody spoke.</p>
+                <p class="mb-6">Then Laura stood up.</p>
+                <p class="mb-6">"I'm going to my sister's house. I need some time."</p>
+                <p class="mb-6">Mark followed her into the hallway.</p>
+                <p class="mb-6">"Laura, please. What can I do?"</p>
+                <p class="mb-6">She turned toward him.</p>
+                <p class="mb-6">"Start by telling the truth. To me, to our friends, and to yourself."</p>
+                <p class="mb-6">She went upstairs to pack.</p>
+                <p class="mb-6">Mark remained in the hallway.</p>
+                <p class="mb-6">Emma quietly closed her laptop.</p>
+                <p class="mb-6">"Dad?"</p>
+                <p class="mb-6">He looked at her.</p>
+                <p class="mb-6">"What?"</p>
+                <p class="mb-6">"Does this mean our agreement is over?"</p>
+                <p class="mb-6">Mark stared at her.</p>
+                <p class="mb-6">Emma waited.</p>
+                <p class="mb-6">"Because I still haven't been paid for this week."</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">6개월 전, 로라는 결혼 생활을 끝낼 뻔했다.</p>
+                <p class="mb-6">로라는 거의 모든 집안일을 혼자 하느라 지쳐 있었다. 남편 마크는 <b class="highlight">예전에</b> 더러운 그릇을 싱크대에 두고 로라가 결국 설거지할 때까지 <b class="highlight">계속 쌓이도록 내버려 두곤</b> 했다.</p>
+                <p class="mb-6">심하게 다툰 뒤, 마크는 달라지겠다고 약속했다.</p>
+                <p class="mb-6">그리고 6개월 동안, 그는 그 약속을 지키는 것처럼 보였다.</p>
+                <p class="mb-6">집은 흠잡을 데 없이 깨끗했다. 빨래는 가지런히 개어져 있었다. 화장실도 주말마다 청소되어 있었다.</p>
+                <p class="mb-6">마크는 심지어 매일 저녁 집안을 둘러보며 모든 일이 제대로 끝났는지 확인하는 <b class="highlight">습관까지 생겼다</b>.</p>
+                <p class="mb-6">로라는 그 변화를 믿을 수 없을 정도였다.</p>
+                <p class="mb-6">어느 금요일 저녁, 로라는 친구 두 명을 저녁 식사에 초대했다. 남편이 가장 좋아하는 음식인 <b class="highlight">고등어조림</b>을 준비했다.</p>
+                <p class="mb-6">"정말 좋은 남편이 됐어요." 로라가 친구들에게 말했다. "불평도 없이 자기 몫의 집안일을 다 한다니까요."</p>
+                <p class="mb-6">마크가 겸손하게 미소 지었다.</p>
+                <p class="mb-6">"행복한 결혼 생활을 위해서는 두 사람 모두 노력해야 한다는 걸 배웠죠."</p>
+                <p class="mb-6">친구 한 명이 고개를 끄덕였다.</p>
+                <p class="mb-6">"정말 <b class="highlight">현명한</b> 생각이네요."</p>
+                <p class="mb-6">마크가 말을 이었다.</p>
+                <p class="mb-6">"비결은 꾸준함이에요. 일주일만 도와주고 그만두면 안 되죠."</p>
+                <p class="mb-6">로라는 남편을 자랑스럽게 바라봤다.</p>
+                <p class="mb-6">열일곱 살 딸 엠마는 식탁에 앉아 조용히 밥을 먹고 있었다.</p>
+                <p class="mb-6">"엠마, 접시 좀 치워줄래?" 마크가 말했다.</p>
+                <p class="mb-6">엠마가 아빠를 바라봤다.</p>
+                <p class="mb-6">"그것도 계약에 포함돼 있어요?"</p>
+                <p class="mb-6">마크의 미소가 사라졌다.</p>
+                <p class="mb-6">"그냥 엄마 좀 도와드려."</p>
+                <p class="mb-6">엠마는 어깨를 으쓱하고 접시를 부엌으로 가져갔다.</p>
+                <p class="mb-6">다음 날 아침, 로라는 위층에 있다가 마크와 엠마가 다투는 소리를 들었다.</p>
+                <p class="mb-6">"너 어제 화장실 청소할 때 <b class="highlight">한 군데 빠뜨렸잖아</b>." 마크가 불평했다.</p>
+                <p class="mb-6">"돈 받고 하기로 한 건 전부 청소했어요."</p>
+                <p class="mb-6">"그렇다고 제대로 끝내는 데 돈을 더 줄 생각은 없어."</p>
+                <p class="mb-6">로라는 계단을 내려오다 중간에서 멈춰 섰다.</p>
+                <p class="mb-6">"무슨 돈을 더 준다는 거야?"</p>
+                <p class="mb-6">마크는 얼어붙었다.</p>
+                <p class="mb-6">엠마가 아빠를 바라봤다.</p>
+                <p class="mb-6">"아빠, 엄마가 집에 계실 때는 이런 얘기 하지 말자고 했잖아요."</p>
+                <p class="mb-6">로라가 나머지 계단을 내려왔다.</p>
+                <p class="mb-6">"무슨 얘기를 하지 말자는 거야?"</p>
+                <p class="mb-6">"로라, 설명할 수 있어." 마크가 말했다.</p>
+                <p class="mb-6">"그럼 설명해 봐."</p>
+                <p class="mb-6">엠마는 바닥을 내려다봤다.</p>
+                <p class="mb-6">"아빠가 자기 집안일을 하라고 저한테 돈을 주세요."</p>
+                <p class="mb-6">로라가 마크를 돌아봤다.</p>
+                <p class="mb-6">"얼마나 오래?"</p>
+                <p class="mb-6">마크가 망설였다.</p>
+                <p class="mb-6">"6개월."</p>
+                <p class="mb-6">로라는 남편을 칭찬했던 모든 순간을 떠올렸다. 친구들과 나눴던 대화들. 바로 전날 저녁 식사 자리까지.</p>
+                <p class="mb-6">"당신은 어제 거기 앉아서 우리 결혼 생활을 위해 자기가 얼마나 노력하는지 떠들었잖아."</p>
+                <p class="mb-6">"노력했지. 내가 집안일을 관리했으니까."</p>
+                <p class="mb-6">"우리 딸한테 당신 집안일을 시켜 놓고 공은 전부 당신이 가져간 거잖아!"</p>
+                <p class="mb-6">"어쨌든 집은 깨끗했잖아!"</p>
+                <p class="mb-6">"그게 중요한 게 아니라고!"</p>
+                <p class="mb-6">마크는 설명하려 했다.</p>
+                <p class="mb-6">"난 현실적인 해결책이라고 생각했어. 엠마는 용돈이 더 필요했고, 난 청소할 시간이 없었으니까."</p>
+                <p class="mb-6">로라가 엠마를 바라봤다.</p>
+                <p class="mb-6">"그리고 넌 아빠가 나한테 거짓말하고 있다는 걸 알고 있었어?"</p>
+                <p class="mb-6">엠마가 고개를 끄덕였다.</p>
+                <p class="mb-6">"아빠가 아무 말도 하지 말라고 하셨어요."</p>
+                <p class="mb-6">"그래서 그러겠다고 했어?"</p>
+                <p class="mb-6">엠마가 망설였다.</p>
+                <p class="mb-6">"비밀로 하는 조건으로 매달 20달러를 더 주셨어요."</p>
+                <p class="mb-6">로라는 천천히 마크를 돌아봤다.</p>
+                <p class="mb-6">"우리 딸한테 나를 속이라고 돈까지 줬다는 거야?"</p>
+                <p class="mb-6">마크는 고개를 숙였다.</p>
+                <p class="mb-6">"집안일 때문에 더 이상 당신이랑 싸우고 싶지 않았어."</p>
+                <p class="mb-6">"그래서 대신 6개월 동안 거짓말을 했다는 거야?"</p>
+                <p class="mb-6">"모든 일이 제대로 끝나면 당신도 행복할 거라고 생각했어."</p>
+                <p class="mb-6">"나 행복했어." 로라가 조용히 말했다. "당신이 마침내 이 문제가 나한테 왜 중요한지 이해했다고 생각했으니까."</p>
+                <p class="mb-6">마크가 로라의 손을 잡으려 했지만, 로라는 손을 피했다.</p>
+                <p class="mb-6">"6개월 전에 내가 뭐라고 했는지 기억해? 나를 가정부처럼 대하는 사람과는 더 이상 결혼 생활을 할 수 없다고 했잖아. 당신은 달라지겠다고 약속했고."</p>
+                <p class="mb-6">"난 달라졌어." 마크가 주장했다.</p>
+                <p class="mb-6">"아니. 당신은 그냥 문제를 숨기는 법을 배운 거야."</p>
+                <p class="mb-6">잠시 아무도 말하지 않았다.</p>
+                <p class="mb-6">그러자 로라가 자리에서 일어났다.</p>
+                <p class="mb-6">"나 언니 집에 갈 거야. 생각할 시간이 필요해."</p>
+                <p class="mb-6">마크가 복도까지 따라 나왔다.</p>
+                <p class="mb-6">"로라, 제발. 내가 뭘 하면 되겠어?"</p>
+                <p class="mb-6">로라가 남편을 돌아봤다.</p>
+                <p class="mb-6">"우선 사실대로 말하는 것부터 해. 나한테도, 친구들한테도, 그리고 당신 자신한테도."</p>
+                <p class="mb-6">로라는 짐을 싸러 위층으로 올라갔다.</p>
+                <p class="mb-6">마크는 복도에 그대로 서 있었다.</p>
+                <p class="mb-6">엠마가 조용히 노트북을 닫았다.</p>
+                <p class="mb-6">"아빠?"</p>
+                <p class="mb-6">마크가 딸을 바라봤다.</p>
+                <p class="mb-6">"왜?"</p>
+                <p class="mb-6">"그럼 우리 계약은 끝난 거예요?"</p>
+                <p class="mb-6">마크는 딸을 빤히 쳐다봤다.</p>
+                <p class="mb-6">엠마는 대답을 기다렸다.</p>
+                <p class="mb-6">"이번 주 일한 돈은 아직 못 받았거든요."</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+    function skipAudio(seconds) {
+        const player = document.getElementById('player');
+        if (player.src) {
+            player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+        }
+    }
+
+    function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+    let _quizOriginals = new Map();
+
+    function toggleQuiz() {
+        const btn = document.getElementById('quizBtn');
+        const isQuiz = btn.innerText.includes("Quiz");
+        const targets = document.querySelectorAll('.quiz-target');
+        const cells = document.querySelectorAll('.mystery-cell');
+
+        if (isQuiz) {
+            btn.innerText = "Study Mode 📖";
+            cells.forEach(c => c.classList.add('quiz-hidden'));
+            targets.forEach(t => {
+                const ans = t.dataset.ans; const kor = t.dataset.kor;
+                _quizOriginals.set(t, t.innerHTML);
+                t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+            });
+        } else {
+            btn.innerText = "Quiz Mode 👻";
+            cells.forEach(c => c.classList.remove('quiz-hidden'));
+            targets.forEach(t => {
+                if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+            });
+            _quizOriginals.clear();
+        }
+    }
+
+    function checkQuiz(i, a) {
+        if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+            i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+            confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+            checkAllSolved();
+        } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+    }
+
+    function checkAllSolved() {
+        const inputs = document.querySelectorAll('.quiz-input');
+        if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+            var duration = 3 * 1000; var end = Date.now() + duration;
+            (function frame() {
+                confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                if (Date.now() < end) requestAnimationFrame(frame);
+            }());
+        }
+    }
+
+    document.getElementById('player').src = "10231200.m4a";
+</script>
+    <script src="wordbank-utils.js"></script>
+</body>
+</html>

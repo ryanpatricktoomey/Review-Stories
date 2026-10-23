@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Price of a Promise</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">💔</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Price of a Promise</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">vicariously</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">다른 사람의 경험을 통해 간접적으로, 대리 만족하며</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl space-y-2 border-l-4 border-teal-400">
+                <h3 class="text-teal-400 font-bold text-lg">vicariously</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">자신이 직접 경험하지 않고 다른 사람의 행동이나 경험을 통해 간접적으로 느끼거나 경험한다는 뜻입니다.</p>
+                <p class="text-slate-300 text-sm leading-relaxed">흔히 *live vicariously through someone*이라는 표현으로 사용해요.</p>
+                <p class="text-slate-300 text-sm leading-relaxed">예: He lives vicariously through his son's success. (그는 아들의 성공을 통해 대리 만족을 느낀다.)</p>
+                <p class="text-slate-300 text-sm leading-relaxed">이번 이야기에서는 남편이 딸을 통해 집안일을 간접적으로 수행한다는 주장을 펼칠 때 사용합니다. 다만 일반적인 용법보다 의도적으로 억지스러운 주장이라는 점이 유머 포인트입니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Six months earlier, Helen had threatened to leave her husband, David, after twenty years of marriage.</p>
+                <p class="mb-6">"I'm tired of doing everything!" she'd shouted. "You need to pull your weight!"</p>
+                <p class="mb-6">David had promised to change. They agreed to split the chores equally. Helen would cook and do the laundry. David would wash the dishes, clean the bathrooms, and take out the trash.</p>
+                <p class="mb-6">For six months, the arrangement had worked beautifully.</p>
+                <p class="mb-6">Then, one Friday evening, Helen overheard David speaking to their sixteen-year-old daughter, Sophie.</p>
+                <p class="mb-6">"I'll transfer the money tonight," he whispered.</p>
+                <p class="mb-6">"Don't forget the extra ten dollars for the bathroom," Sophie replied.</p>
+                <p class="mb-6">Helen entered the kitchen.</p>
+                <p class="mb-6">"What money?"</p>
+                <p class="mb-6">Neither answered.</p>
+                <p class="mb-6">Twenty minutes later, the family was sitting around the dining table.</p>
+                <p class="mb-6">"So," Helen said slowly, "you've been paying our daughter to do your chores?"</p>
+                <p class="mb-6">David nodded.</p>
+                <p class="mb-6">"Since when?"</p>
+                <p class="mb-6">"Since we made the agreement."</p>
+                <p class="mb-6">Helen stared at him.</p>
+                <p class="mb-6">"Six months?"</p>
+                <p class="mb-6">"Yes."</p>
+                <p class="mb-6">"You promised me you'd change!"</p>
+                <p class="mb-6">"And I did. Everything gets done now."</p>
+                <p class="mb-6">"Because Sophie does it!"</p>
+                <p class="mb-6">David folded his hands.</p>
+                <p class="mb-6">"Technically, I do the chores <b class="highlight quiz-target" data-ans="vicariously" data-kor="간접적으로">vicariously</b> through Sophie."</p>
+                <p class="mb-6">Helen looked at him in disbelief.</p>
+                <p class="mb-6">"You're saying you've been cleaning the bathroom through our daughter?"</p>
+                <p class="mb-6">"That's one way of putting it."</p>
+                <p class="mb-6">"David, I wanted a husband who would share the load. Not a husband who would hire someone to pretend he was helping!"</p>
+                <p class="mb-6">Sophie raised her hand.</p>
+                <p class="mb-6">"For the record, I never pretended anything. Dad just told me not to discuss our business arrangement."</p>
+                <p class="mb-6">"Business arrangement?" Helen repeated.</p>
+                <p class="mb-6">"I provide cleaning services. He provides payment."</p>
+                <p class="mb-6">Helen turned to David.</p>
+                <p class="mb-6">"Where is this money coming from?"</p>
+                <p class="mb-6">David hesitated.</p>
+                <p class="mb-6">"Our household account."</p>
+                <p class="mb-6">Helen went completely still.</p>
+                <p class="mb-6">"Our joint account?"</p>
+                <p class="mb-6">"It's our money."</p>
+                <p class="mb-6">"So I've been paying half the cost of your chores?"</p>
+                <p class="mb-6">David looked uncomfortable.</p>
+                <p class="mb-6">"Well, technically—"</p>
+                <p class="mb-6">"Don't say technically!"</p>
+                <p class="mb-6">Sophie opened her banking app.</p>
+                <p class="mb-6">"Actually, Mom, if you're paying half, you're entitled to half the credit. Would you like me to update the invoices?"</p>
+                <p class="mb-6">Nobody spoke.</p>
+                <p class="mb-6">Finally, Helen stood up.</p>
+                <p class="mb-6">"I need to think about whether I can trust you anymore."</p>
+                <p class="mb-6">David looked genuinely hurt.</p>
+                <p class="mb-6">"I thought you'd be proud of me. I found a solution."</p>
+                <p class="mb-6">Helen walked toward the bedroom.</p>
+                <p class="mb-6">Behind her, Sophie cleared her throat.</p>
+                <p class="mb-6">"Before everyone leaves, there's still an outstanding payment for Tuesday's bathroom cleaning."</p>
+                <p class="mb-6">Helen closed the bedroom door.</p>
+                <p class="mb-6">David stared at his daughter.</p>
+                <p class="mb-6">"Could you give us a minute?"</p>
+                <p class="mb-6">Sophie nodded.</p>
+                <p class="mb-6">"Of course. But there's a late fee after midnight."</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">6개월 전, 헬렌은 결혼 20년 만에 남편 데이비드에게 집을 떠나겠다고 경고했다.</p>
+                <p class="mb-6">"나 혼자 다 하는 거 이제 지쳤어!" 그녀가 소리쳤다. "당신도 자기 몫은 해야지!"</p>
+                <p class="mb-6">데이비드는 달라지겠다고 약속했다. 두 사람은 집안일을 공평하게 나누기로 합의했다. 헬렌은 요리와 빨래를 맡고, 데이비드는 설거지와 화장실 청소, 쓰레기 버리기를 맡기로 했다.</p>
+                <p class="mb-6">그 후 6개월 동안 모든 것이 완벽하게 돌아가는 것처럼 보였다.</p>
+                <p class="mb-6">그러던 어느 금요일 저녁, 헬렌은 데이비드가 열여섯 살 딸 소피에게 조용히 말하는 것을 우연히 들었다.</p>
+                <p class="mb-6">"오늘 밤에 돈 보내줄게." 그가 속삭였다.</p>
+                <p class="mb-6">"화장실 청소 추가 요금 10달러도 잊지 마." 소피가 대답했다.</p>
+                <p class="mb-6">헬렌이 부엌으로 들어왔다.</p>
+                <p class="mb-6">"무슨 돈?"</p>
+                <p class="mb-6">두 사람 모두 대답하지 않았다.</p>
+                <p class="mb-6">20분 후, 가족 세 명이 식탁에 둘러앉아 있었다.</p>
+                <p class="mb-6">"그러니까," 헬렌이 천천히 입을 열었다. "당신이 소피한테 돈을 주고 당신 집안일을 시켰다는 거야?"</p>
+                <p class="mb-6">데이비드가 고개를 끄덕였다.</p>
+                <p class="mb-6">"언제부터?"</p>
+                <p class="mb-6">"우리 합의한 날부터."</p>
+                <p class="mb-6">헬렌은 남편을 빤히 쳐다봤다.</p>
+                <p class="mb-6">"6개월 동안?"</p>
+                <p class="mb-6">"응."</p>
+                <p class="mb-6">"당신 나한테 달라지겠다고 약속했잖아!"</p>
+                <p class="mb-6">"달라졌잖아. 이제 집안일이 전부 제대로 되잖아."</p>
+                <p class="mb-6">"그건 소피가 하니까 그렇지!"</p>
+                <p class="mb-6">데이비드는 두 손을 모았다.</p>
+                <p class="mb-6">"엄밀히 말하면, 난 소피를 통해 <b class="highlight">간접적으로</b> 집안일을 하는 거야."</p>
+                <p class="mb-6">헬렌은 믿을 수 없다는 표정으로 남편을 바라봤다.</p>
+                <p class="mb-6">"지금 우리 딸을 통해서 당신이 화장실 청소를 해왔다는 거야?"</p>
+                <p class="mb-6">"뭐, 그렇게 표현할 수도 있지."</p>
+                <p class="mb-6">"데이비드, 내가 원한 건 집안일의 부담을 함께 나누는 남편이었어. 누군가를 고용해서 자기가 도와주는 척하는 남편이 아니라!"</p>
+                <p class="mb-6">소피가 손을 들었다.</p>
+                <p class="mb-6">"정확히 말하자면, 전 도와주는 척한 적 없어요. 아빠가 우리 사업 계약에 대해 얘기하지 말라고 했을 뿐이에요."</p>
+                <p class="mb-6">"사업 계약?" 헬렌이 되물었다.</p>
+                <p class="mb-6">"저는 청소 서비스를 제공하고, 아빠는 대금을 지급하는 거죠."</p>
+                <p class="mb-6">헬렌이 데이비드를 돌아봤다.</p>
+                <p class="mb-6">"그 돈은 어디서 나오는 건데?"</p>
+                <p class="mb-6">데이비드가 잠시 망설였다.</p>
+                <p class="mb-6">"우리 생활비 통장에서."</p>
+                <p class="mb-6">헬렌이 그대로 굳었다.</p>
+                <p class="mb-6">"우리 공동 계좌?"</p>
+                <p class="mb-6">"우리 돈이잖아."</p>
+                <p class="mb-6">"그럼 내가 당신 집안일 비용의 절반을 내고 있었다는 거야?"</p>
+                <p class="mb-6">데이비드가 난처한 표정을 지었다.</p>
+                <p class="mb-6">"뭐, 엄밀히 말하면—"</p>
+                <p class="mb-6">"'엄밀히 말하면'이라는 말 좀 그만해!"</p>
+                <p class="mb-6">소피가 은행 앱을 열었다.</p>
+                <p class="mb-6">"사실 엄마, 엄마가 절반을 내셨으면 공로도 절반은 인정받으셔야죠. 청구서 수정해 드릴까요?"</p>
+                <p class="mb-6">아무도 말하지 않았다.</p>
+                <p class="mb-6">마침내 헬렌이 자리에서 일어났다.</p>
+                <p class="mb-6">"내가 당신을 앞으로도 믿을 수 있을지 생각 좀 해봐야겠어."</p>
+                <p class="mb-6">데이비드는 진심으로 상처받은 표정이었다.</p>
+                <p class="mb-6">"난 당신이 날 자랑스러워할 줄 알았어. 문제를 해결했잖아."</p>
+                <p class="mb-6">헬렌은 침실로 걸어갔다.</p>
+                <p class="mb-6">그때 뒤에서 소피가 헛기침을 했다.</p>
+                <p class="mb-6">"다들 가시기 전에요, 화요일 화장실 청소비가 아직 미납 상태인데요."</p>
+                <p class="mb-6">헬렌이 침실 문을 닫았다.</p>
+                <p class="mb-6">데이비드는 딸을 빤히 바라봤다.</p>
+                <p class="mb-6">"우리 잠깐만 시간을 좀 줄래?"</p>
+                <p class="mb-6">소피가 고개를 끄덕였다.</p>
+                <p class="mb-6">"물론이죠. 그런데 자정 넘으면 연체료 붙어요."</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+    function skipAudio(seconds) {
+        const player = document.getElementById('player');
+        if (player.src) {
+            player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+        }
+    }
+
+    function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+    let _quizOriginals = new Map();
+
+    function toggleQuiz() {
+        const btn = document.getElementById('quizBtn');
+        const isQuiz = btn.innerText.includes("Quiz");
+        const targets = document.querySelectorAll('.quiz-target');
+        const cells = document.querySelectorAll('.mystery-cell');
+
+        if (isQuiz) {
+            btn.innerText = "Study Mode 📖";
+            cells.forEach(c => c.classList.add('quiz-hidden'));
+            targets.forEach(t => {
+                const ans = t.dataset.ans; const kor = t.dataset.kor;
+                _quizOriginals.set(t, t.innerHTML);
+                t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+            });
+        } else {
+            btn.innerText = "Quiz Mode 👻";
+            cells.forEach(c => c.classList.remove('quiz-hidden'));
+            targets.forEach(t => {
+                if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+            });
+            _quizOriginals.clear();
+        }
+    }
+
+    function checkQuiz(i, a) {
+        if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+            i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+            confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+            checkAllSolved();
+        } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+    }
+
+    function checkAllSolved() {
+        const inputs = document.querySelectorAll('.quiz-input');
+        if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+            var duration = 3 * 1000; var end = Date.now() + duration;
+            (function frame() {
+                confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                if (Date.now() < end) requestAnimationFrame(frame);
+            }());
+        }
+    }
+
+    document.getElementById('player').src = "1023630.m4a";
+</script>
+    <script src="wordbank-utils.js"></script>
+</body>
+</html>

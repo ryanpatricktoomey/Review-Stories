@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+      <title>Review Note | The Secret Diet Company 🥤</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+      <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+      </style>
+</head>
+<body class="p-4 md:p-12">
+      <div class="max-w-4xl mx-auto space-y-8">
+
+          <header class="text-center space-y-4">
+              <div class="flex items-center justify-center gap-4">
+                  <span class="text-5xl">🥤</span>
+                  <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Secret Diet Company</h1>
+              </div>
+              <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+          </header>
+
+          <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+              <div class="flex items-center justify-between px-2">
+                  <div class="flex items-center gap-3">
+                      <span class="text-xl">🎧</span>
+                      <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                  </div>
+                  <div class="flex gap-2">
+                      <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          <span class="text-lg">↺</span> 5s
+                      </button>
+                      <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          5s <span class="text-lg">↻</span>
+                      </button>
+                  </div>
+              </div>
+              <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+          </div>
+
+          <div class="flex justify-center">
+              <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+          </div>
+
+          <section class="glass rounded-3xl overflow-hidden shadow-xl">
+              <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                  <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+              </div>
+              <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                  <tr><td class="p-4"><b class="text-white">intro</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">도입부, 소개 부분</td></tr>
+                  <tr><td class="p-4"><b class="text-white">sold his stake</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">자신의 지분을 매각했다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">non-compete clause</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">경업 금지 조항</td></tr>
+                  <tr><td class="p-4"><b class="text-white">admit</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">인정하다, 시인하다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">sugar cane</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">사탕수수</td></tr>
+                  <tr><td class="p-4"><b class="text-white">keep the weight off</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">감량한 체중을 유지하다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">stay in shape</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">건강한 몸 상태를 유지하다</td></tr>
+              </tbody></table>
+          </section>
+
+          <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                  <h3 class="font-bold text-white text-lg">sold his stake</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">회사나 사업체에서 자신이 소유한 지분을 팔았다는 뜻이에요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                  <h3 class="font-bold text-white text-lg">non-compete clause</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">퇴사하거나 지분을 매각한 뒤 일정 기간 경쟁 사업에 참여하는 것을 제한하는 계약 조항이에요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                  <h3 class="font-bold text-white text-lg">keep the weight off</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">살을 빼는 것이 아니라 감량한 체중이 다시 늘어나지 않도록 유지한다는 뜻이에요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                  <h3 class="font-bold text-white text-lg">stay in shape</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">체중과 관계없이 운동이나 건강한 생활 습관을 통해 몸 상태를 유지하는 것을 뜻해요.</p>
+              </div>
+          </section>
+
+          <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+              <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                  <p class="mb-6">When Daniel Kim <b class="highlight quiz-target" data-ans="sold his stake" data-kor="자신의 지분을 매각했다">sold his stake</b> in a successful health-drink company, everyone assumed he was retiring.</p>
+                  <p class="mb-6">His contract included a <b class="highlight quiz-target" data-ans="non-compete clause" data-kor="경업 금지 조항">non-compete clause</b> preventing him from starting a competing business for two years.</p>
+                  <p class="mb-6">Then someone spotted him carrying boxes into a small juice shop.</p>
+                  <p class="mb-6">A customer posted a photograph online.</p>
+                  <p class="mb-6">"Did you hear? Daniel's opening a new business!"</p>
+                  <p class="mb-6">Someone replied, "I heard he's developing a secret weight-loss drink."</p>
+                  <p class="mb-6">By the next morning, people were claiming that Daniel had invented a revolutionary formula that helped customers <b class="highlight quiz-target" data-ans="keep the weight off" data-kor="감량한 체중을 유지하다">keep the weight off</b> permanently.</p>
+                  <p class="mb-6">The rumor spread quickly.</p>
+                  <p class="mb-6">A fitness influencer posted a video with the <b class="highlight quiz-target" data-ans="intro" data-kor="도입부">intro</b>, "The drink the big companies don't want you to know about!"</p>
+                  <p class="mb-6">She hadn't tried the drink.</p>
+                  <p class="mb-6">She hadn't even spoken to Daniel.</p>
+                  <p class="mb-6">But the video received half a million views.</p>
+                  <p class="mb-6">Soon, customers were lining up outside the shop.</p>
+                  <p class="mb-6">The owner, Daniel's sister Mina, was delighted.</p>
+                  <p class="mb-6">"What's happening?" Daniel asked when he arrived.</p>
+                  <p class="mb-6">"Apparently, everyone thinks you're selling some amazing diet drink!"</p>
+                  <p class="mb-6">"That's ridiculous. You're selling ordinary <b class="highlight quiz-target" data-ans="sugar cane" data-kor="사탕수수">sugar cane</b> juice."</p>
+                  <p class="mb-6">"I know, but business is fantastic!"</p>
+                  <p class="mb-6">Daniel warned her to correct the misunderstanding.</p>
+                  <p class="mb-6">Instead, Mina posted a photograph of him holding a glass.</p>
+                  <p class="mb-6">Her caption read, "Even Daniel drinks it to <b class="highlight quiz-target" data-ans="stay in shape" data-kor="건강한 몸 상태를 유지하다">stay in shape</b>!"</p>
+                  <p class="mb-6">Within hours, customers were ordering hundreds of bottles.</p>
+                  <p class="mb-6">Daniel's former business partner saw the advertisement and threatened legal action.</p>
+                  <p class="mb-6">Mina panicked.</p>
+                  <p class="mb-6">She immediately removed Daniel's photograph.</p>
+                  <p class="mb-6">Unfortunately, customers interpreted the deletion as evidence that a powerful company was trying to hide the secret formula.</p>
+                  <p class="mb-6">Someone posted, "They're silencing him!"</p>
+                  <p class="mb-6">Another person claimed that the drink had been banned.</p>
+                  <p class="mb-6">By Friday, protesters were standing outside Daniel's former company, demanding that it release the formula.</p>
+                  <p class="mb-6">A reporter interviewed Mina.</p>
+                  <p class="mb-6">"Is it true your brother invented a drink that prevents weight gain?"</p>
+                  <p class="mb-6">"No," Mina replied.</p>
+                  <p class="mb-6">"Then why did you advertise it that way?"</p>
+                  <p class="mb-6">Mina hesitated.</p>
+                  <p class="mb-6">"I <b class="highlight quiz-target" data-ans="admit" data-kor="인정하다">admit</b> I used his photograph without permission. But I never promised anyone would lose weight."</p>
+                  <p class="mb-6">The reporter showed her the original influencer video.</p>
+                  <p class="mb-6">Mina stared at the screen.</p>
+                  <p class="mb-6">"That's not even our juice!"</p>
+                  <p class="mb-6">The influencer had used footage of a green smoothie from a completely different company.</p>
+                  <p class="mb-6">The reporter published the correction.</p>
+                  <p class="mb-6">But the damage was done.</p>
+                  <p class="mb-6">Hundreds of customers demanded refunds, Daniel faced legal threats, and Mina had spent thousands of dollars buying extra ingredients.</p>
+                  <p class="mb-6">That evening, Daniel found his sister sitting in the empty shop.</p>
+                  <p class="mb-6">"How many bottles did you sell?" he asked.</p>
+                  <p class="mb-6">"Almost two thousand."</p>
+                  <p class="mb-6">"How many refunds?"</p>
+                  <p class="mb-6">"Two thousand and forty."</p>
+                  <p class="mb-6">Daniel frowned.</p>
+                  <p class="mb-6">"How is that possible?"</p>
+                  <p class="mb-6">"Some people bought the same bottle twice from resellers."</p>
+                  <p class="mb-6">She looked at the remaining boxes.</p>
+                  <p class="mb-6">"Do you think we could just sell normal juice?"</p>
+                  <p class="mb-6">Daniel picked up a piece of <b class="highlight quiz-target" data-ans="sugar cane" data-kor="사탕수수">sugar cane</b>.</p>
+                  <p class="mb-6">"That's what you were supposed to be doing."</p>
+              </div>
+              <hr class="border-white/10">
+              <div class="text-slate-400 italic leading-relaxed space-y-6">
+                  <p class="mb-6">다니엘 김이 성공한 건강음료 회사의 <b class="highlight">지분을 매각했을</b> 때, 모두가 그가 은퇴한다고 생각했다.</p>
+                  <p class="mb-6">그의 계약에는 2년 동안 경쟁 사업을 시작하지 못하도록 하는 <b class="highlight">경업 금지 조항</b>이 포함되어 있었다.</p>
+                  <p class="mb-6">그러던 어느 날 누군가 그가 작은 주스 가게로 상자를 나르는 모습을 목격했다.</p>
+                  <p class="mb-6">한 손님이 사진을 온라인에 올렸다.</p>
+                  <p class="mb-6">"소식 들었어요? 다니엘이 새로운 사업을 시작한대요!"</p>
+                  <p class="mb-6">누군가 댓글을 달았다.</p>
+                  <p class="mb-6">"비밀 다이어트 음료를 개발하고 있다고 들었어요."</p>
+                  <p class="mb-6">다음 날 아침이 되자 사람들은 다니엘이 <b class="highlight">감량한 체중을</b> 영구적으로 <b class="highlight">유지하게</b> 해주는 혁신적인 음료를 발명했다고 주장하고 있었다.</p>
+                  <p class="mb-6">소문은 빠르게 퍼졌다.</p>
+                  <p class="mb-6">한 피트니스 인플루언서는 "대기업들이 여러분에게 숨기고 싶어 하는 음료!"라는 <b class="highlight">도입부</b>로 영상을 올렸다.</p>
+                  <p class="mb-6">그녀는 그 음료를 마셔본 적도 없었다.</p>
+                  <p class="mb-6">다니엘과 이야기를 나눈 적조차 없었다.</p>
+                  <p class="mb-6">하지만 영상 조회 수는 50만 회를 기록했다.</p>
+                  <p class="mb-6">곧 가게 밖에는 손님들이 줄을 서기 시작했다.</p>
+                  <p class="mb-6">가게 주인인 다니엘의 여동생 미나는 기뻐했다.</p>
+                  <p class="mb-6">"무슨 일이야?" 다니엘이 도착해서 물었다.</p>
+                  <p class="mb-6">"듣자 하니 사람들이 오빠가 엄청난 다이어트 음료를 판다고 생각하나 봐!"</p>
+                  <p class="mb-6">"말도 안 돼. 넌 그냥 평범한 <b class="highlight">사탕수수</b> 주스를 파는 거잖아."</p>
+                  <p class="mb-6">"알아. 그런데 장사가 엄청 잘돼!"</p>
+                  <p class="mb-6">다니엘은 오해를 바로잡으라고 경고했다.</p>
+                  <p class="mb-6">하지만 미나는 오히려 다니엘이 주스 잔을 들고 있는 사진을 올렸다.</p>
+                  <p class="mb-6">사진에는 "다니엘도 <b class="highlight">건강한 몸매를 유지하기</b> 위해 마시는 음료!"라는 문구가 적혀 있었다.</p>
+                  <p class="mb-6">몇 시간 만에 손님들이 수백 병을 주문했다.</p>
+                  <p class="mb-6">다니엘의 전 사업 파트너는 광고를 보고 법적 조치를 취하겠다고 위협했다.</p>
+                  <p class="mb-6">미나는 당황했다.</p>
+                  <p class="mb-6">그녀는 즉시 다니엘의 사진을 삭제했다.</p>
+                  <p class="mb-6">안타깝게도 손님들은 사진 삭제를 대기업이 비밀 제조법을 숨기려 한다는 증거로 받아들였다.</p>
+                  <p class="mb-6">누군가 "그들이 다니엘의 입을 막고 있어요!"라고 게시했다.</p>
+                  <p class="mb-6">다른 사람은 음료가 판매 금지되었다고 주장했다.</p>
+                  <p class="mb-6">금요일이 되자 시위대가 다니엘의 이전 회사 앞에 모여 제조법을 공개하라고 요구하고 있었다.</p>
+                  <p class="mb-6">한 기자가 미나를 인터뷰했다.</p>
+                  <p class="mb-6">"오빠가 체중 증가를 막아주는 음료를 발명했다는 게 사실인가요?"</p>
+                  <p class="mb-6">"아니요." 미나가 대답했다.</p>
+                  <p class="mb-6">"그럼 왜 그런 식으로 광고하셨죠?"</p>
+                  <p class="mb-6">미나는 망설였다.</p>
+                  <p class="mb-6">"허락 없이 오빠 사진을 사용한 건 <b class="highlight">인정해요</b>. 하지만 제가 살이 빠진다고 약속한 적은 없어요."</p>
+                  <p class="mb-6">기자는 최초의 인플루언서 영상을 보여주었다.</p>
+                  <p class="mb-6">미나는 화면을 바라봤다.</p>
+                  <p class="mb-6">"저건 우리 가게 주스도 아닌데요!"</p>
+                  <p class="mb-6">인플루언서는 전혀 다른 회사의 초록색 스무디 영상을 사용했던 것이다.</p>
+                  <p class="mb-6">기자는 정정 기사를 냈다.</p>
+                  <p class="mb-6">하지만 이미 피해는 발생한 뒤였다.</p>
+                  <p class="mb-6">수백 명의 손님이 환불을 요구했고, 다니엘은 법적 위협에 직면했으며, 미나는 추가 재료를 구입하느라 수천 달러를 써버렸다.</p>
+                  <p class="mb-6">그날 저녁, 다니엘은 텅 빈 가게에 앉아 있는 여동생을 발견했다.</p>
+                  <p class="mb-6">"몇 병이나 팔았어?" 그가 물었다.</p>
+                  <p class="mb-6">"거의 2천 병."</p>
+                  <p class="mb-6">"환불 요청은?"</p>
+                  <p class="mb-6">"2,040건."</p>
+                  <p class="mb-6">다니엘은 얼굴을 찌푸렸다.</p>
+                  <p class="mb-6">"그게 어떻게 가능해?"</p>
+                  <p class="mb-6">"일부 사람들은 되파는 사람한테 같은 병을 두 번 샀대."</p>
+                  <p class="mb-6">미나는 남은 상자들을 바라봤다.</p>
+                  <p class="mb-6">"우리 그냥 평범한 주스만 팔면 안 될까?"</p>
+                  <p class="mb-6">다니엘은 <b class="highlight">사탕수수</b> 한 조각을 집어 들었다.</p>
+                  <p class="mb-6">"원래 네가 하려고 했던 게 그거잖아."</p>
+              </div>
+          </section>
+
+      </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "1026715.m4a";
+</script>
+      <script src="wordbank-utils.js"></script>
+  </body>
+  </html>

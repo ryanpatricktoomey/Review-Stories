@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+      <title>Review Note | The Fitness Champion Scandal 🏆</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+      <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+      </style>
+</head>
+<body class="p-4 md:p-12">
+      <div class="max-w-4xl mx-auto space-y-8">
+
+          <header class="text-center space-y-4">
+              <div class="flex items-center justify-center gap-4">
+                  <span class="text-5xl">🏆</span>
+                  <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Fitness Champion Scandal</h1>
+              </div>
+              <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+          </header>
+
+          <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+              <div class="flex items-center justify-between px-2">
+                  <div class="flex items-center gap-3">
+                      <span class="text-xl">🎧</span>
+                      <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                  </div>
+                  <div class="flex gap-2">
+                      <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          <span class="text-lg">↺</span> 5s
+                      </button>
+                      <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          5s <span class="text-lg">↻</span>
+                      </button>
+                  </div>
+              </div>
+              <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+          </div>
+
+          <div class="flex justify-center">
+              <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+          </div>
+
+          <section class="glass rounded-3xl overflow-hidden shadow-xl">
+              <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                  <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+              </div>
+              <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                  <tr><td class="p-4"><b class="text-white">underdog</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">승산이 낮은 사람이나 팀, 약자</td></tr>
+                  <tr><td class="p-4"><b class="text-white">control my diet</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">식단을 조절하다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">obesity</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">비만</td></tr>
+                  <tr><td class="p-4"><b class="text-white">joy</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">기쁨, 즐거움</td></tr>
+                  <tr><td class="p-4"><b class="text-white">distinguish</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">구별하다, 구분하다</td></tr>
+              </tbody></table>
+          </section>
+
+          <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                  <h3 class="font-bold text-white text-lg">underdog</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">경쟁에서 이길 가능성이 낮다고 여겨지는 사람이나 팀이에요. 사람들이 응원하고 싶어 하는 약자라는 느낌도 있어요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                  <h3 class="font-bold text-white text-lg">control my diet</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">식단을 조절한다는 뜻이에요. 일상 회화에서는 watch what I eat도 자연스럽게 사용해요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                  <h3 class="font-bold text-white text-lg">distinguish</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">두 가지를 구별한다는 뜻이며, distinguish A from B 형태로 자주 사용해요.</p>
+              </div>
+          </section>
+
+          <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+              <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                  <p class="mb-6">When 58-year-old Mr. Han won a local fitness competition, everyone celebrated.</p>
+                  <p class="mb-6">He was the clear <b class="highlight quiz-target" data-ans="underdog" data-kor="약자">underdog</b>, competing against professional trainers half his age.</p>
+                  <p class="mb-6">Then someone posted an old photograph of him standing beside a much heavier man.</p>
+                  <p class="mb-6">The caption said, "Look how much weight our champion lost!"</p>
+                  <p class="mb-6">A woman commented, "I heard he used to suffer from severe <b class="highlight quiz-target" data-ans="obesity" data-kor="비만">obesity</b>."</p>
+                  <p class="mb-6">Another person replied, "Apparently, he lost 70 kilograms in three months."</p>
+                  <p class="mb-6">By the following morning, people were claiming that Mr. Han had discovered a secret diet.</p>
+                  <p class="mb-6">A fitness blogger wrote that he could <b class="highlight quiz-target" data-ans="control his diet" data-kor="식단을 조절하다">control his diet</b> so perfectly that he never felt hungry.</p>
+                  <p class="mb-6">Mr. Han had never said anything like that.</p>
+                  <p class="mb-6">Unfortunately, a supplement company noticed the story.</p>
+                  <p class="mb-6">It published an advertisement showing his photograph beside a bottle of expensive diet pills.</p>
+                  <p class="mb-6">The advertisement claimed that Mr. Han had used the pills to win the competition.</p>
+                  <p class="mb-6">Thousands of people placed orders.</p>
+                  <p class="mb-6">Mr. Han discovered the advertisement when his daughter called.</p>
+                  <p class="mb-6">"Dad, are you selling diet pills?"</p>
+                  <p class="mb-6">"What? Of course not!"</p>
+                  <p class="mb-6">"Then why is your face on their website?"</p>
+                  <p class="mb-6">Mr. Han contacted the company and demanded that it remove his photograph.</p>
+                  <p class="mb-6">The company deleted the advertisement.</p>
+                  <p class="mb-6">But customers interpreted the sudden deletion as evidence that the pills were so effective that the government had banned them.</p>
+                  <p class="mb-6">Online sales through resellers increased.</p>
+                  <p class="mb-6">Then someone claimed the pills contained a dangerous ingredient.</p>
+                  <p class="mb-6">People who had purchased them began panicking.</p>
+                  <p class="mb-6">A local pharmacy received dozens of calls from worried customers.</p>
+                  <p class="mb-6">The supplement company announced that the pills were perfectly legal.</p>
+                  <p class="mb-6">But its statement made the situation worse.</p>
+                  <p class="mb-6">"Why are they defending themselves if they haven't done anything wrong?" people asked.</p>
+                  <p class="mb-6">Finally, a television reporter interviewed Mr. Han.</p>
+                  <p class="mb-6">"Did you use these pills to lose weight?"</p>
+                  <p class="mb-6">"No. I've never used them."</p>
+                  <p class="mb-6">"Then how did you lose 70 kilograms?"</p>
+                  <p class="mb-6">"I didn't."</p>
+                  <p class="mb-6">The reporter looked confused.</p>
+                  <p class="mb-6">Mr. Han showed her the original photograph.</p>
+                  <p class="mb-6">"That's my brother standing beside me. He's the one who lost weight."</p>
+                  <p class="mb-6">"So the entire story was wrong?"</p>
+                  <p class="mb-6">"Yes. People need to <b class="highlight quiz-target" data-ans="distinguish" data-kor="구별하다">distinguish</b> facts from rumors."</p>
+                  <p class="mb-6">The reporter asked whether he was angry.</p>
+                  <p class="mb-6">"Of course. My brother worked hard for years to improve his health, and someone turned his story into a fake advertisement."</p>
+                  <p class="mb-6">The interview went viral.</p>
+                  <p class="mb-6">Mr. Han felt a moment of <b class="highlight quiz-target" data-ans="joy" data-kor="기쁨">joy</b> when people finally understood the truth.</p>
+                  <p class="mb-6">Then his phone rang.</p>
+                  <p class="mb-6">It was the supplement company.</p>
+                  <p class="mb-6">"We'd like to offer you an advertising contract," the manager said.</p>
+                  <p class="mb-6">Mr. Han stared at his phone.</p>
+                  <p class="mb-6">"Didn't you hear the interview?"</p>
+                  <p class="mb-6">"Yes! Your honesty is exactly what our brand needs."</p>
+                  <p class="mb-6">Mr. Han hung up.</p>
+                  <p class="mb-6">Ten minutes later, the company posted:</p>
+                  <p class="mb-6"><em>Fitness champion refuses million-dollar advertising deal!</em></p>
+                  <p class="mb-6">By evening, people were claiming he had rejected the money because he knew the pills were dangerous.</p>
+                  <p class="mb-6">The company had accidentally started a new scandal about its own products.</p>
+              </div>
+              <hr class="border-white/10">
+              <div class="text-slate-400 italic leading-relaxed space-y-6">
+                  <p class="mb-6">58세의 한 씨가 지역 피트니스 대회에서 우승하자 모두가 축하했다.</p>
+                  <p class="mb-6">그는 자신보다 나이가 절반밖에 되지 않는 전문 트레이너들과 경쟁한, 명백한 <b class="highlight">약자</b>였다.</p>
+                  <p class="mb-6">그러던 중 누군가 한 씨가 훨씬 몸집이 큰 남자 옆에 서 있는 오래된 사진을 올렸다.</p>
+                  <p class="mb-6">사진에는 "우리 챔피언이 얼마나 살을 많이 뺐는지 보세요!"라는 문구가 적혀 있었다.</p>
+                  <p class="mb-6">한 여성이 댓글을 달았다.</p>
+                  <p class="mb-6">"예전에 심한 <b class="highlight">비만</b>을 겪었다고 들었어요."</p>
+                  <p class="mb-6">다른 사람이 답했다.</p>
+                  <p class="mb-6">"듣자 하니 3개월 만에 70킬로그램을 감량했대요."</p>
+                  <p class="mb-6">다음 날 아침이 되자 사람들은 한 씨가 비밀 다이어트 방법을 발견했다고 주장하고 있었다.</p>
+                  <p class="mb-6">한 피트니스 블로거는 그가 배고픔을 전혀 느끼지 않을 정도로 완벽하게 <b class="highlight">식단을 조절할</b> 수 있다고 썼다.</p>
+                  <p class="mb-6">한 씨는 그런 말을 한 적이 없었다.</p>
+                  <p class="mb-6">안타깝게도 한 건강보조식품 회사가 그 이야기를 발견했다.</p>
+                  <p class="mb-6">회사는 한 씨의 사진을 비싼 다이어트 알약 옆에 배치한 광고를 공개했다.</p>
+                  <p class="mb-6">광고에는 한 씨가 대회에서 우승하기 위해 그 알약을 사용했다고 적혀 있었다.</p>
+                  <p class="mb-6">수천 명이 주문했다.</p>
+                  <p class="mb-6">한 씨는 딸에게 전화를 받고 광고의 존재를 알게 되었다.</p>
+                  <p class="mb-6">"아빠, 다이어트 약 팔아?"</p>
+                  <p class="mb-6">"뭐? 당연히 아니지!"</p>
+                  <p class="mb-6">"그럼 왜 아빠 얼굴이 그 회사 웹사이트에 있어?"</p>
+                  <p class="mb-6">한 씨는 회사에 연락해 사진을 삭제하라고 요구했다.</p>
+                  <p class="mb-6">회사는 광고를 삭제했다.</p>
+                  <p class="mb-6">하지만 손님들은 갑작스러운 삭제를 약의 효과가 너무 좋아서 정부가 판매를 금지했다는 증거로 받아들였다.</p>
+                  <p class="mb-6">재판매업자들을 통한 온라인 판매가 증가했다.</p>
+                  <p class="mb-6">그때 누군가 알약에 위험한 성분이 들어 있다고 주장했다.</p>
+                  <p class="mb-6">약을 구입한 사람들은 당황하기 시작했다.</p>
+                  <p class="mb-6">지역 약국에는 걱정하는 손님들의 전화가 수십 통 걸려 왔다.</p>
+                  <p class="mb-6">건강보조식품 회사는 제품이 완전히 합법적이라고 발표했다.</p>
+                  <p class="mb-6">하지만 그 성명은 상황을 더 악화시켰다.</p>
+                  <p class="mb-6">"잘못한 게 없으면 왜 저렇게 해명하는 거죠?" 사람들이 물었다.</p>
+                  <p class="mb-6">마침내 한 방송 기자가 한 씨를 인터뷰했다.</p>
+                  <p class="mb-6">"살을 빼기 위해 이 약을 사용하셨나요?"</p>
+                  <p class="mb-6">"아니요. 사용한 적 없습니다."</p>
+                  <p class="mb-6">"그럼 70킬로그램은 어떻게 감량하셨나요?"</p>
+                  <p class="mb-6">"감량하지 않았는데요."</p>
+                  <p class="mb-6">기자는 혼란스러워했다.</p>
+                  <p class="mb-6">한 씨는 원본 사진을 보여주었다.</p>
+                  <p class="mb-6">"제 옆에 서 있는 사람이 형이에요. 살을 뺀 사람은 형이라고요."</p>
+                  <p class="mb-6">"그럼 이야기 전체가 잘못된 거네요?"</p>
+                  <p class="mb-6">"네. 사람들은 사실과 소문을 <b class="highlight">구별해야</b> 해요."</p>
+                  <p class="mb-6">기자는 화가 났는지 물었다.</p>
+                  <p class="mb-6">"당연하죠. 형은 건강을 개선하려고 수년 동안 열심히 노력했는데, 누군가 그 이야기를 가짜 광고로 바꿔버렸잖아요."</p>
+                  <p class="mb-6">인터뷰는 온라인에서 폭발적인 관심을 받았다.</p>
+                  <p class="mb-6">사람들이 마침내 진실을 이해하자 한 씨는 잠시 <b class="highlight">기쁨</b>을 느꼈다.</p>
+                  <p class="mb-6">그때 휴대전화가 울렸다.</p>
+                  <p class="mb-6">건강보조식품 회사였다.</p>
+                  <p class="mb-6">"광고 계약을 제안하고 싶습니다." 담당자가 말했다.</p>
+                  <p class="mb-6">한 씨는 휴대전화를 멍하니 바라봤다.</p>
+                  <p class="mb-6">"인터뷰 못 보셨어요?"</p>
+                  <p class="mb-6">"봤습니다! 바로 그런 정직함이 저희 브랜드에 필요합니다."</p>
+                  <p class="mb-6">한 씨는 전화를 끊었다.</p>
+                  <p class="mb-6">10분 뒤 회사는 이런 글을 올렸다.</p>
+                  <p class="mb-6">'피트니스 챔피언, 백만 달러 광고 계약 거절!'</p>
+                  <p class="mb-6">저녁이 되자 사람들은 그가 약의 위험성을 알고 있어서 돈을 거절했다고 주장하고 있었다.</p>
+                  <p class="mb-6">회사는 실수로 자기 제품에 관한 새로운 스캔들을 만들어버린 것이었다.</p>
+              </div>
+          </section>
+
+      </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "1026930.m4a";
+</script>
+      <script src="wordbank-utils.js"></script>
+  </body>
+  </html>

@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+      <title>Review Note | The Hospital's Secret Experiment 🏥</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+      <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+      </style>
+</head>
+<body class="p-4 md:p-12">
+      <div class="max-w-4xl mx-auto space-y-8">
+
+          <header class="text-center space-y-4">
+              <div class="flex items-center justify-center gap-4">
+                  <span class="text-5xl">🏥</span>
+                  <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Hospital's Secret Experiment</h1>
+              </div>
+              <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+          </header>
+
+          <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+              <div class="flex items-center justify-between px-2">
+                  <div class="flex items-center gap-3">
+                      <span class="text-xl">🎧</span>
+                      <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                  </div>
+                  <div class="flex gap-2">
+                      <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          <span class="text-lg">↺</span> 5s
+                      </button>
+                      <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          5s <span class="text-lg">↻</span>
+                      </button>
+                  </div>
+              </div>
+              <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+          </div>
+
+          <div class="flex justify-center">
+              <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+          </div>
+
+          <section class="glass rounded-3xl overflow-hidden shadow-xl">
+              <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                  <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+              </div>
+              <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                  <tr><td class="p-4"><b class="text-white">indoor plumbing</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">실내 수도 및 배관 시설</td></tr>
+                  <tr><td class="p-4"><b class="text-white">food standards</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">식품 안전 및 품질 기준</td></tr>
+                  <tr><td class="p-4"><b class="text-white">pediatrician</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">소아청소년과 의사</td></tr>
+                  <tr><td class="p-4"><b class="text-white">gout</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">통풍</td></tr>
+                  <tr><td class="p-4"><b class="text-white">overweight</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">과체중인</td></tr>
+                  <tr><td class="p-4"><b class="text-white">obese</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">비만인</td></tr>
+                  <tr><td class="p-4"><b class="text-white">pancreas</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">췌장</td></tr>
+              </tbody></table>
+          </section>
+
+          <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                  <h3 class="font-bold text-white text-lg">indoor plumbing</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">건물 내부의 수도관, 배수관, 화장실 등 수도·위생 설비를 의미해요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                  <h3 class="font-bold text-white text-lg">pediatrician</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">어린이와 청소년의 건강을 전문적으로 진료하는 의사예요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                  <h3 class="font-bold text-white text-lg">gout</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">요산 결정이 관절에 쌓여 염증과 심한 통증을 유발할 수 있는 질환인 통풍이에요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                  <h3 class="font-bold text-white text-lg">overweight / obese</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">각각 과체중과 비만을 의미하며, 의학적 분류에서는 서로 구별해 사용해요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                  <h3 class="font-bold text-white text-lg">pancreas</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">소화 효소와 인슐린 등의 호르몬을 만드는 장기인 췌장이에요.</p>
+              </div>
+          </section>
+
+          <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+              <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                  <p class="mb-6">The rumor began with a conversation in a hospital cafeteria.</p>
+                  <p class="mb-6">A nurse told a colleague, "We're changing the <b class="highlight quiz-target" data-ans="food standards" data-kor="식품 기준">food standards</b> for patients with diabetes."</p>
+                  <p class="mb-6">A visitor sitting nearby heard only part of the conversation.</p>
+                  <p class="mb-6">She told her husband, "Apparently, the hospital has discovered something wrong with the food."</p>
+                  <p class="mb-6">Her husband mentioned it to a friend.</p>
+                  <p class="mb-6">"I heard the hospital's meals are making people sick."</p>
+                  <p class="mb-6">By lunchtime, the rumor had reached the parents' group chat of a nearby elementary school.</p>
+                  <p class="mb-6">One parent wrote, "Someone told me the hospital is secretly testing dangerous food on children."</p>
+                  <p class="mb-6">Another replied, "My cousin works there. She said doctors are studying the <b class="highlight quiz-target" data-ans="pancreas" data-kor="췌장">pancreas</b>."</p>
+                  <p class="mb-6">That was true.</p>
+                  <p class="mb-6">The hospital was conducting ordinary medical research.</p>
+                  <p class="mb-6">But nobody checked the details.</p>
+                  <p class="mb-6">By the following morning, people were claiming that children were being given experimental food that could damage their organs.</p>
+                  <p class="mb-6">A mother called her son's <b class="highlight quiz-target" data-ans="pediatrician" data-kor="소아과 의사">pediatrician</b>.</p>
+                  <p class="mb-6">"Should I be worried about the hospital's food?"</p>
+                  <p class="mb-6">"What exactly did you hear?" the doctor asked.</p>
+                  <p class="mb-6">"That they're experimenting on children."</p>
+                  <p class="mb-6">The pediatrician explained that she knew nothing about such a program.</p>
+                  <p class="mb-6">Unfortunately, the mother told her friends, "Even our doctor hasn't been told what's happening!"</p>
+                  <p class="mb-6">The rumor became more frightening.</p>
+                  <p class="mb-6">Someone claimed that the hospital was secretly studying <b class="highlight quiz-target" data-ans="obesity" data-kor="비만">obesity</b>.</p>
+                  <p class="mb-6">Another person said doctors were deliberately making children <b class="highlight quiz-target" data-ans="overweight" data-kor="과체중으로">overweight</b>.</p>
+                  <p class="mb-6">Soon, people were saying that patients were becoming dangerously <b class="highlight quiz-target" data-ans="obese" data-kor="비만이">obese</b> because of experimental meals.</p>
+                  <p class="mb-6">A man who had recently been treated for <b class="highlight quiz-target" data-ans="gout" data-kor="통풍">gout</b> posted that his condition might have been caused by the hospital's food.</p>
+                  <p class="mb-6">His post received thousands of shares.</p>
+                  <p class="mb-6">The hospital director, Dr. Lee, tried to correct the misinformation.</p>
+                  <p class="mb-6">"We are not conducting experiments on children," she announced.</p>
+                  <p class="mb-6">But a reporter asked why several patients had been moved to another building.</p>
+                  <p class="mb-6">Dr. Lee explained that the hospital was repairing its <b class="highlight quiz-target" data-ans="indoor plumbing" data-kor="실내 수도 배관">indoor plumbing</b>.</p>
+                  <p class="mb-6">Unfortunately, someone posted a video of workers carrying large pipes into the building.</p>
+                  <p class="mb-6">The caption read, "Hospital secretly replacing contaminated water system!"</p>
+                  <p class="mb-6">Within hours, frightened patients began canceling appointments.</p>
+                  <p class="mb-6">A delivery company refused to enter the hospital grounds.</p>
+                  <p class="mb-6">Even the hospital cafeteria workers were being questioned by angry visitors.</p>
+                  <p class="mb-6">Dr. Lee called a press conference.</p>
+                  <p class="mb-6">She explained the food changes, the plumbing repairs, and the medical research.</p>
+                  <p class="mb-6">Then she invited reporters to inspect the cafeteria.</p>
+                  <p class="mb-6">Everything appeared normal.</p>
+                  <p class="mb-6">Finally, a reporter asked, "So there's no dangerous food experiment?"</p>
+                  <p class="mb-6">"Absolutely not," Dr. Lee replied.</p>
+                  <p class="mb-6">"Then why did you change the menu?"</p>
+                  <p class="mb-6">"Because patients complained that the food was too salty."</p>
+                  <p class="mb-6">The room fell silent.</p>
+                  <p class="mb-6">The next morning, the hospital reopened its cafeteria with a new menu.</p>
+                  <p class="mb-6">But almost nobody came.</p>
+                  <p class="mb-6">Dr. Lee looked at the empty tables.</p>
+                  <p class="mb-6">"Well," she said, "at least the patients won't complain about waiting in line."</p>
+                  <p class="mb-6">Her assistant shook his head.</p>
+                  <p class="mb-6">"Actually, there's a new rumor."</p>
+                  <p class="mb-6">"What now?"</p>
+                  <p class="mb-6">"People think the cafeteria is empty because everyone who ate there has been hospitalized."</p>
+                  <p class="mb-6">Dr. Lee stared at him.</p>
+                  <p class="mb-6">"They're already in a hospital!"</p>
+                  <p class="mb-6">"I know."</p>
+              </div>
+              <hr class="border-white/10">
+              <div class="text-slate-400 italic leading-relaxed space-y-6">
+                  <p class="mb-6">소문은 병원 구내식당에서 나눈 대화로 시작됐다.</p>
+                  <p class="mb-6">한 간호사가 동료에게 말했다.</p>
+                  <p class="mb-6">"당뇨병 환자들을 위한 <b class="highlight">식품 기준</b>을 변경하고 있어요."</p>
+                  <p class="mb-6">근처에 앉아 있던 방문객은 대화의 일부만 들었다.</p>
+                  <p class="mb-6">그녀는 남편에게 말했다.</p>
+                  <p class="mb-6">"듣자 하니 병원에서 음식에 문제가 있다는 걸 발견했대요."</p>
+                  <p class="mb-6">남편은 친구에게 그 이야기를 전했다.</p>
+                  <p class="mb-6">"병원 음식 때문에 사람들이 아프다고 들었어."</p>
+                  <p class="mb-6">점심시간이 되자 소문은 근처 초등학교 학부모 단체 채팅방까지 퍼졌다.</p>
+                  <p class="mb-6">한 학부모가 글을 올렸다.</p>
+                  <p class="mb-6">"누가 그러는데 병원에서 아이들에게 위험한 음식을 몰래 실험하고 있대요."</p>
+                  <p class="mb-6">다른 사람이 답했다.</p>
+                  <p class="mb-6">"제 사촌이 거기서 일하는데, 의사들이 <b class="highlight">췌장</b>을 연구하고 있다고 했어요."</p>
+                  <p class="mb-6">그 말은 사실이었다.</p>
+                  <p class="mb-6">병원은 일반적인 의학 연구를 진행하고 있었다.</p>
+                  <p class="mb-6">하지만 아무도 자세한 내용을 확인하지 않았다.</p>
+                  <p class="mb-6">다음 날 아침이 되자 사람들은 아이들이 장기를 손상시킬 수 있는 실험용 음식을 먹고 있다고 주장하고 있었다.</p>
+                  <p class="mb-6">한 어머니가 아들의 <b class="highlight">소아과 의사</b>에게 전화했다.</p>
+                  <p class="mb-6">"병원 음식 때문에 걱정해야 할까요?"</p>
+                  <p class="mb-6">"정확히 어떤 이야기를 들으셨나요?" 의사가 물었다.</p>
+                  <p class="mb-6">"아이들을 대상으로 실험하고 있다는 얘기요."</p>
+                  <p class="mb-6">소아과 의사는 그런 프로그램에 대해 아는 것이 없다고 설명했다.</p>
+                  <p class="mb-6">안타깝게도 어머니는 친구들에게 이렇게 말했다.</p>
+                  <p class="mb-6">"우리 의사 선생님조차 무슨 일이 일어나는지 모르신대요!"</p>
+                  <p class="mb-6">소문은 더욱 무서워졌다.</p>
+                  <p class="mb-6">누군가는 병원에서 <b class="highlight">비만</b>을 몰래 연구하고 있다고 주장했다.</p>
+                  <p class="mb-6">다른 사람은 의사들이 일부러 아이들을 <b class="highlight">과체중으로</b> 만들고 있다고 말했다.</p>
+                  <p class="mb-6">곧 사람들은 실험용 식사 때문에 환자들이 위험할 정도로 <b class="highlight">비만이</b> 되고 있다고 이야기하기 시작했다.</p>
+                  <p class="mb-6">최근 <b class="highlight">통풍</b> 치료를 받은 한 남성은 자신의 질환이 병원 음식 때문에 생겼을지도 모른다는 글을 올렸다.</p>
+                  <p class="mb-6">그의 게시물은 수천 번 공유됐다.</p>
+                  <p class="mb-6">병원장 이 박사는 잘못된 정보를 바로잡으려고 했다.</p>
+                  <p class="mb-6">"저희는 아이들을 대상으로 실험을 진행하고 있지 않습니다." 그녀가 발표했다.</p>
+                  <p class="mb-6">하지만 한 기자는 왜 여러 환자가 다른 건물로 옮겨졌는지 물었다.</p>
+                  <p class="mb-6">이 박사는 병원에서 <b class="highlight">실내 수도 배관</b>을 수리하고 있다고 설명했다.</p>
+                  <p class="mb-6">안타깝게도 누군가 작업자들이 커다란 파이프를 건물 안으로 옮기는 영상을 올렸다.</p>
+                  <p class="mb-6">영상에는 이런 문구가 붙었다.</p>
+                  <p class="mb-6">'병원, 오염된 수도 시설 몰래 교체 중!'</p>
+                  <p class="mb-6">몇 시간 만에 겁에 질린 환자들이 진료 예약을 취소하기 시작했다.</p>
+                  <p class="mb-6">한 배송업체는 병원 부지에 들어가기를 거부했다.</p>
+                  <p class="mb-6">심지어 구내식당 직원들까지 화가 난 방문객들에게 질문을 받고 있었다.</p>
+                  <p class="mb-6">이 박사는 기자회견을 열었다.</p>
+                  <p class="mb-6">그녀는 식단 변경, 배관 수리, 의학 연구에 관해 설명했다.</p>
+                  <p class="mb-6">그리고 기자들을 구내식당으로 초대해 직접 살펴보게 했다.</p>
+                  <p class="mb-6">모든 것이 정상으로 보였다.</p>
+                  <p class="mb-6">마침내 한 기자가 물었다.</p>
+                  <p class="mb-6">"그럼 위험한 음식 실험은 없다는 말씀이시군요?"</p>
+                  <p class="mb-6">"전혀 없습니다." 이 박사가 대답했다.</p>
+                  <p class="mb-6">"그럼 왜 식단을 바꾸셨나요?"</p>
+                  <p class="mb-6">"환자들이 음식이 너무 짜다고 불평했기 때문입니다."</p>
+                  <p class="mb-6">회의실이 조용해졌다.</p>
+                  <p class="mb-6">다음 날 아침, 병원 구내식당은 새로운 메뉴로 영업을 시작했다.</p>
+                  <p class="mb-6">하지만 손님은 거의 오지 않았다.</p>
+                  <p class="mb-6">이 박사는 텅 빈 식탁들을 바라봤다.</p>
+                  <p class="mb-6">"뭐, 적어도 환자들이 줄 서서 기다린다고 불평하지는 않겠네요." 그녀가 말했다.</p>
+                  <p class="mb-6">비서가 고개를 저었다.</p>
+                  <p class="mb-6">"사실 새로운 소문이 났습니다."</p>
+                  <p class="mb-6">"이번엔 또 뭔가요?"</p>
+                  <p class="mb-6">"구내식당에서 식사한 사람들이 전부 입원해서 식당이 비어 있다는 소문입니다."</p>
+                  <p class="mb-6">이 박사는 그를 멍하니 바라봤다.</p>
+                  <p class="mb-6">"그 사람들은 원래 병원에 있는 사람들이잖아요!"</p>
+                  <p class="mb-6">"저도 압니다."</p>
+              </div>
+          </section>
+
+      </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "10261020.m4a";
+</script>
+      <script src="wordbank-utils.js"></script>
+  </body>
+  </html>

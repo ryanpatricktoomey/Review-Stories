@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+      <title>Review Note | The Mayor's Secret Replacement 🎭</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+      <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+      </style>
+</head>
+<body class="p-4 md:p-12">
+      <div class="max-w-4xl mx-auto space-y-8">
+
+          <header class="text-center space-y-4">
+              <div class="flex items-center justify-center gap-4">
+                  <span class="text-5xl">🎭</span>
+                  <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Mayor's Secret Replacement</h1>
+              </div>
+              <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+          </header>
+
+          <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+              <div class="flex items-center justify-between px-2">
+                  <div class="flex items-center gap-3">
+                      <span class="text-xl">🎧</span>
+                      <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                  </div>
+                  <div class="flex gap-2">
+                      <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          <span class="text-lg">↺</span> 5s
+                      </button>
+                      <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          5s <span class="text-lg">↻</span>
+                      </button>
+                  </div>
+              </div>
+              <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+          </div>
+
+          <div class="flex justify-center">
+              <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+          </div>
+
+          <section class="glass rounded-3xl overflow-hidden shadow-xl">
+              <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                  <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+              </div>
+              <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                  <tr><td class="p-4"><b class="text-white">draw</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">추첨, 제비뽑기 / 추첨하다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">raffle</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">경품 추첨 행사</td></tr>
+                  <tr><td class="p-4"><b class="text-white">bury your head in the sand</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">현실을 외면하다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">body double</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">대역 배우, 신체 대역</td></tr>
+                  <tr><td class="p-4"><b class="text-white">great driver of growth</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">성장을 이끄는 중요한 원동력</td></tr>
+                  <tr><td class="p-4"><b class="text-white">hook me up</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">연결해 줘, 소개해 줘, 구해 줘</td></tr>
+              </tbody></table>
+          </section>
+
+          <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                  <h3 class="font-bold text-white text-lg">draw / raffle</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">Draw는 당첨자를 뽑는 추첨 자체를, raffle은 경품 추첨 행사를 의미해요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                  <h3 class="font-bold text-white text-lg">body double</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">영화나 광고 등에서 배우를 대신해 촬영에 참여하는 대역을 뜻해요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                  <h3 class="font-bold text-white text-lg">bury your head in the sand</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">문제가 있다는 것을 알면서도 모른 척하거나 현실을 외면한다는 뜻이에요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                  <h3 class="font-bold text-white text-lg">hook me up</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">친한 사이에서 사람을 소개해 달라거나 물건을 구해 달라고 할 때 쓰는 구어체 표현이에요.</p>
+              </div>
+          </section>
+
+          <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+              <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                  <p class="mb-6">The rumor began when someone photographed the mayor of a small town entering a theater.</p>
+                  <p class="mb-6">Actually, it wasn't the mayor.</p>
+                  <p class="mb-6">It was an actor who looked remarkably similar to him.</p>
+                  <p class="mb-6">But the photograph spread online with the caption, "Why is the mayor secretly visiting the theater?"</p>
+                  <p class="mb-6">A woman commented, "I heard he's taking acting lessons."</p>
+                  <p class="mb-6">Someone else replied, "Apparently, he's preparing to quit politics and become an actor."</p>
+                  <p class="mb-6">By the following morning, the story had changed completely.</p>
+                  <p class="mb-6">People were claiming that the mayor had already resigned and hired a <b class="highlight quiz-target" data-ans="body double" data-kor="대역 배우">body double</b> to attend public events.</p>
+                  <p class="mb-6">At city hall, the mayor's assistant, Jason, showed him the posts.</p>
+                  <p class="mb-6">"Sir, people think you're using an actor to replace yourself."</p>
+                  <p class="mb-6">The mayor laughed.</p>
+                  <p class="mb-6">"That's ridiculous."</p>
+                  <p class="mb-6">"Shouldn't we release a statement?"</p>
+                  <p class="mb-6">"Don't worry about it."</p>
+                  <p class="mb-6">But the rumor kept growing.</p>
+                  <p class="mb-6">Someone noticed that the mayor had missed a charity <b class="highlight quiz-target" data-ans="raffle" data-kor="경품 추첨 행사">raffle</b> the previous weekend.</p>
+                  <p class="mb-6">He had actually been visiting his sick mother.</p>
+                  <p class="mb-6">Online, however, people claimed his replacement actor had refused to attend because he wasn't being paid enough.</p>
+                  <p class="mb-6">A local business owner then announced that the mayor had secretly moved overseas.</p>
+                  <p class="mb-6">Several companies postponed investment meetings.</p>
+                  <p class="mb-6">The mayor had been promoting a new shopping district as a <b class="highlight quiz-target" data-ans="great driver of growth" data-kor="성장을 이끄는 중요한 원동력">great driver of growth</b> for the town. Now investors were questioning whether the project would continue.</p>
+                  <p class="mb-6">Jason became desperate.</p>
+                  <p class="mb-6">"You can't just <b class="highlight quiz-target" data-ans="bury your head in the sand" data-kor="현실을 외면하다">bury your head in the sand</b>," he told the mayor. "This is affecting the town."</p>
+                  <p class="mb-6">"Fine. Arrange a press conference."</p>
+                  <p class="mb-6">Unfortunately, the mayor developed a severe throat infection that morning.</p>
+                  <p class="mb-6">He could barely speak.</p>
+                  <p class="mb-6">Jason called his friend Kevin, who worked at the theater.</p>
+                  <p class="mb-6">"Remember that actor who looks like the mayor? Can you <b class="highlight quiz-target" data-ans="hook me up" data-kor="연결해 줘">hook me up</b> with him?"</p>
+                  <p class="mb-6">"Why?"</p>
+                  <p class="mb-6">"I just want him to explain that he's an actor."</p>
+                  <p class="mb-6">Kevin agreed.</p>
+                  <p class="mb-6">But when the actor arrived at city hall, a reporter photographed him entering through the back door.</p>
+                  <p class="mb-6">Within minutes, the headline appeared:</p>
+                  <p class="mb-6"><em>Mayor's Secret Replacement Seen Entering City Hall!</em></p>
+                  <p class="mb-6">A crowd gathered outside.</p>
+                  <p class="mb-6">Jason rushed to the entrance.</p>
+                  <p class="mb-6">"Everyone, please calm down! There's been a misunderstanding!"</p>
+                  <p class="mb-6">"Where's the real mayor?" someone shouted.</p>
+                  <p class="mb-6">"He's upstairs!"</p>
+                  <p class="mb-6">"Then bring him out!"</p>
+                  <p class="mb-6">The mayor finally appeared, wearing a medical mask.</p>
+                  <p class="mb-6">The crowd immediately became suspicious.</p>
+                  <p class="mb-6">"Why is he hiding his face?"</p>
+                  <p class="mb-6">"That's not the real mayor!"</p>
+                  <p class="mb-6">Someone demanded that he remove the mask.</p>
+                  <p class="mb-6">He did.</p>
+                  <p class="mb-6">Then he tried to speak.</p>
+                  <p class="mb-6">Only a weak, strange sound came out.</p>
+                  <p class="mb-6">The crowd gasped.</p>
+                  <p class="mb-6">"Even his voice is different!"</p>
+                  <p class="mb-6">The mayor looked helplessly at Jason.</p>
+                  <p class="mb-6">Jason grabbed the microphone.</p>
+                  <p class="mb-6">"Would everyone please listen? The mayor is sick!"</p>
+                  <p class="mb-6">A reporter raised her hand.</p>
+                  <p class="mb-6">"Then who was supposed to announce the winners of today's charity <b class="highlight quiz-target" data-ans="draw" data-kor="추첨">draw</b>?"</p>
+                  <p class="mb-6">Jason froze.</p>
+                  <p class="mb-6">The mayor slowly pointed toward the actor.</p>
+                  <p class="mb-6">The crowd erupted.</p>
+                  <p class="mb-6">And the town's biggest conspiracy theory suddenly had photographic evidence, eyewitnesses, and an official gesture from the mayor himself.</p>
+              </div>
+              <hr class="border-white/10">
+              <div class="text-slate-400 italic leading-relaxed space-y-6">
+                  <p class="mb-6">소문은 누군가 작은 도시의 시장이 극장에 들어가는 모습을 사진으로 찍으면서 시작됐다.</p>
+                  <p class="mb-6">사실 그 사람은 시장이 아니었다.</p>
+                  <p class="mb-6">시장과 놀라울 정도로 닮은 배우였다.</p>
+                  <p class="mb-6">하지만 사진은 "시장이 왜 몰래 극장에 가는 걸까요?"라는 문구와 함께 온라인에 퍼졌다.</p>
+                  <p class="mb-6">한 여성이 댓글을 달았다.</p>
+                  <p class="mb-6">"연기 수업을 받고 있다고 들었어요."</p>
+                  <p class="mb-6">다른 사람이 답했다.</p>
+                  <p class="mb-6">"듣자 하니 정치를 그만두고 배우가 되려고 준비 중이래요."</p>
+                  <p class="mb-6">다음 날 아침이 되자 이야기는 완전히 달라져 있었다.</p>
+                  <p class="mb-6">사람들은 시장이 이미 사임했고, 공식 행사에 참석할 <b class="highlight">대역 배우</b>를 고용했다고 주장하고 있었다.</p>
+                  <p class="mb-6">시청에서 비서 제이슨은 시장에게 게시물들을 보여주었다.</p>
+                  <p class="mb-6">"시장님, 사람들이 시장님이 배우를 고용해서 대신 활동하게 한다고 생각하고 있습니다."</p>
+                  <p class="mb-6">시장은 웃었다.</p>
+                  <p class="mb-6">"말도 안 되는 소리군."</p>
+                  <p class="mb-6">"공식 입장을 발표해야 하지 않을까요?"</p>
+                  <p class="mb-6">"걱정하지 마세요."</p>
+                  <p class="mb-6">하지만 소문은 계속 커졌다.</p>
+                  <p class="mb-6">누군가 시장이 지난 주말 자선 <b class="highlight">경품 추첨 행사</b>에 참석하지 않았다는 사실을 알아냈다.</p>
+                  <p class="mb-6">사실 시장은 아픈 어머니를 찾아뵙고 있었다.</p>
+                  <p class="mb-6">하지만 온라인에서는 대역 배우가 충분한 보수를 받지 못해 참석을 거부했다고 주장했다.</p>
+                  <p class="mb-6">그때 한 지역 사업가가 시장이 몰래 해외로 이주했다고 발표했다.</p>
+                  <p class="mb-6">몇몇 기업들은 투자 회의를 연기했다.</p>
+                  <p class="mb-6">시장은 새로운 쇼핑 지구를 도시 <b class="highlight">성장의 중요한 원동력</b>으로 홍보하고 있었다. 그런데 이제 투자자들은 그 사업이 계속될지 의심하고 있었다.</p>
+                  <p class="mb-6">제이슨은 절박해졌다.</p>
+                  <p class="mb-6">"계속 <b class="highlight">현실을 외면하실</b> 수는 없습니다." 그가 시장에게 말했다. "도시 전체가 영향을 받고 있어요."</p>
+                  <p class="mb-6">"좋아요. 기자회견을 준비하세요."</p>
+                  <p class="mb-6">안타깝게도 그날 아침 시장은 심한 목감기에 걸렸다.</p>
+                  <p class="mb-6">거의 말을 할 수 없었다.</p>
+                  <p class="mb-6">제이슨은 극장에서 일하는 친구 케빈에게 전화했다.</p>
+                  <p class="mb-6">"시장님이랑 닮은 배우 기억나? 그 사람 좀 <b class="highlight">연결해 줄 수 있어</b>?"</p>
+                  <p class="mb-6">"왜?"</p>
+                  <p class="mb-6">"그냥 자기가 배우라는 걸 설명해 달라고 하려고."</p>
+                  <p class="mb-6">케빈은 동의했다.</p>
+                  <p class="mb-6">하지만 배우가 시청에 도착했을 때, 한 기자가 그가 뒷문으로 들어가는 모습을 촬영했다.</p>
+                  <p class="mb-6">몇 분 만에 기사가 올라왔다.</p>
+                  <p class="mb-6">'시장의 비밀 대역, 시청에 들어가는 모습 포착!'</p>
+                  <p class="mb-6">시청 밖에 군중이 모였다.</p>
+                  <p class="mb-6">제이슨은 서둘러 입구로 달려갔다.</p>
+                  <p class="mb-6">"여러분, 진정해 주세요! 오해가 있었습니다!"</p>
+                  <p class="mb-6">"진짜 시장은 어디 있어요?" 누군가 외쳤다.</p>
+                  <p class="mb-6">"위층에 계십니다!"</p>
+                  <p class="mb-6">"그럼 나오라고 하세요!"</p>
+                  <p class="mb-6">마침내 시장이 의료용 마스크를 쓰고 나타났다.</p>
+                  <p class="mb-6">군중은 즉시 의심하기 시작했다.</p>
+                  <p class="mb-6">"왜 얼굴을 가리고 있죠?"</p>
+                  <p class="mb-6">"저 사람도 진짜 시장이 아니야!"</p>
+                  <p class="mb-6">누군가 마스크를 벗으라고 요구했다.</p>
+                  <p class="mb-6">시장은 마스크를 벗었다.</p>
+                  <p class="mb-6">그리고 말을 하려고 했다.</p>
+                  <p class="mb-6">하지만 약하고 이상한 소리만 나왔다.</p>
+                  <p class="mb-6">군중이 놀라 숨을 들이켰다.</p>
+                  <p class="mb-6">"목소리까지 다르잖아!"</p>
+                  <p class="mb-6">시장은 난처한 표정으로 제이슨을 바라봤다.</p>
+                  <p class="mb-6">제이슨이 마이크를 잡았다.</p>
+                  <p class="mb-6">"여러분, 제발 들어주세요! 시장님은 아프십니다!"</p>
+                  <p class="mb-6">한 기자가 손을 들었다.</p>
+                  <p class="mb-6">"그럼 오늘 자선 <b class="highlight">추첨</b> 당첨자는 누가 발표하기로 되어 있었나요?"</p>
+                  <p class="mb-6">제이슨은 얼어붙었다.</p>
+                  <p class="mb-6">시장은 천천히 배우를 가리켰다.</p>
+                  <p class="mb-6">군중이 소란스러워졌다.</p>
+                  <p class="mb-6">그리고 마을 최대의 음모론은 갑자기 사진 증거와 목격자, 심지어 시장 자신의 공식적인 손짓까지 갖추게 되었다.</p>
+              </div>
+          </section>
+
+      </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "1026845.m4a";
+</script>
+      <script src="wordbank-utils.js"></script>
+  </body>
+  </html>

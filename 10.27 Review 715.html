@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | How to Choose Sunglasses That Actually Protect Your Eyes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">👓</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">How to Choose Sunglasses That Actually Protect Your Eyes</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">stepmill</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">계단을 계속 오르는 동작을 하는 운동기구, 계단 오르기 머신</td></tr>
+                <tr><td class="p-4"><b class="text-white">living beyond her means</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">자신의 경제적 능력보다 돈을 많이 쓰며 생활하는 것, 분수에 넘치는 소비를 하는 것</td></tr>
+                <tr><td class="p-4"><b class="text-white">cornea</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">각막 (눈의 앞쪽을 덮고 있는 투명한 조직)</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">1. Stepmill</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">계단이 계속 움직이는 운동기구입니다. 일반적인 스텝퍼와 달리 실제 계단을 오르는 것처럼 발을 번갈아 디디며 운동합니다. <i>Stair climber</i>라고도 부릅니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">2. Living beyond her means</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">수입이나 경제적 능력에 비해 지나치게 많은 돈을 쓰는 생활을 뜻합니다. <i>Live within your means</i>는 반대로 자신의 경제적 능력에 맞게 생활한다는 뜻입니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Expensive sunglasses aren't necessarily better at protecting your eyes. In fact, a cheap pair with proper UV protection can be safer than designer sunglasses without it.</p>
+                <p class="mb-6">Whether you're walking around town, driving, or exercising outdoors, knowing what to look for can help you protect your eyes without <b class="highlight quiz-target" data-ans="living beyond your means" data-kor="경제적 능력을 넘어서는 소비를 하지 않고">living beyond your means</b>.</p>
+                <p class="mb-6"><h3 class="text-xl font-bold text-white mb-2">1. Look for UV400 Protection</h3></p>
+                <p class="mb-6">The first thing to check is UV protection.</p>
+                <p class="mb-6">UV400 sunglasses are designed to block ultraviolet light up to 400 nanometers, covering both UVA and UVB wavelengths.</p>
+                <p class="mb-6">This matters because prolonged UV exposure can damage your eyes, including the <b class="highlight quiz-target" data-ans="cornea" data-kor="각막">cornea</b>, and contribute to conditions such as cataracts.</p>
+                <p class="mb-6">Don't be fooled by dark lenses. Darkness doesn't automatically mean better UV protection. Even very dark sunglasses may provide inadequate protection if they lack proper UV filtering.</p>
+                <p class="mb-6">Look for a clear UV400 or 100% UVA/UVB protection label from a trustworthy manufacturer.</p>
+                <p class="mb-6"><h3 class="text-xl font-bold text-white mb-2">2. Check the Fit and Coverage</h3></p>
+                <p class="mb-6">Good sunglasses should cover your eyes comfortably without constantly sliding down your nose.</p>
+                <p class="mb-6">Pay attention to the space around the frames. Sunlight can enter from the sides, especially when you're outdoors for long periods.</p>
+                <p class="mb-6">Wraparound sunglasses or larger frames can provide better coverage.</p>
+                <p class="mb-6">Here's a little trick: try looking down and gently shaking your head. If the sunglasses slide easily, they may not stay in place during everyday activities.</p>
+                <p class="mb-6"><h3 class="text-xl font-bold text-white mb-2">3. Understand Polarized Lenses</h3></p>
+                <p class="mb-6">Polarized sunglasses reduce glare from reflective surfaces such as water, roads, and snow.</p>
+                <p class="mb-6">They're particularly useful for driving, fishing, and spending time near water.</p>
+                <p class="mb-6">However, polarization and UV protection are different features. Polarized lenses don't automatically block UV rays.</p>
+                <p class="mb-6">One thing people tend to overlook is that polarized lenses can make certain digital screens difficult to see.</p>
+                <p class="mb-6">Try looking at your phone through the lenses before buying them.</p>
+                <p class="mb-6"><h3 class="text-xl font-bold text-white mb-2">4. Choose Lenses for Your Activities</h3></p>
+                <p class="mb-6">Different activities require different features.</p>
+                <p class="mb-6">For example, if you exercise outdoors or use a <b class="highlight quiz-target" data-ans="stepmill" data-kor="계단 오르기 운동기구">stepmill</b> near a sunny window, lightweight frames with comfortable nose pads may be especially useful.</p>
+                <p class="mb-6">For driving, gray or brown lenses are popular choices because they generally provide comfortable vision in bright conditions.</p>
+                <p class="mb-6">However, avoid extremely dark lenses that make it difficult to see clearly.</p>
+                <p class="mb-6">Also, check whether the sunglasses are suitable for driving, especially if they have a very dark tint.</p>
+                <p class="mb-6"><h3 class="text-xl font-bold text-white mb-2">5. Don't Assume Expensive Means Better</h3></p>
+                <p class="mb-6">Designer sunglasses can cost hundreds of dollars, but a high price doesn't guarantee superior eye protection.</p>
+                <p class="mb-6">What really matters is verified UV protection, comfortable fit, adequate coverage, and appropriate lens quality.</p>
+                <p class="mb-6">A savvy consumer looks beyond the logo and focuses on features that actually make a difference.</p>
+                <p class="mb-6">You don't need luxury sunglasses to protect your eyes. You need sunglasses that do their job properly.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">비싼 선글라스가 반드시 눈을 더 잘 보호하는 것은 아닙니다. 사실 적절한 자외선 차단 기능을 갖춘 저렴한 선글라스가 자외선 차단 기능이 없는 명품 선글라스보다 더 안전할 수 있습니다.</p>
+                <p class="mb-6">도심을 걷거나, 운전하거나, 야외에서 운동할 때 무엇을 확인해야 하는지 알면 <b class="highlight">경제적 능력을 넘어서는 소비를 하지 않고도</b> 눈을 보호할 수 있습니다.</p>
+                <p class="mb-6"><h3 class="text-xl font-bold text-white mb-2">1. UV400 차단 기능을 확인하세요</h3></p>
+                <p class="mb-6">가장 먼저 확인해야 할 것은 자외선 차단 기능입니다.</p>
+                <p class="mb-6">UV400 선글라스는 400나노미터 이하의 자외선을 차단하도록 설계되어 UVA와 UVB 파장을 모두 차단합니다.</p>
+                <p class="mb-6">이것이 중요한 이유는 자외선에 장기간 노출되면 <b class="highlight">각막</b>을 포함한 눈의 조직이 손상될 수 있고, 백내장과 같은 질환의 발생에도 영향을 줄 수 있기 때문입니다.</p>
+                <p class="mb-6">렌즈 색이 어둡다고 속지 마세요. 렌즈가 어둡다고 해서 자외선 차단 성능이 더 좋은 것은 아닙니다. 적절한 자외선 차단 필터가 없다면 매우 어두운 선글라스라도 충분한 보호 기능을 제공하지 못할 수 있습니다.</p>
+                <p class="mb-6">신뢰할 수 있는 제조사의 UV400 또는 UVA/UVB 100% 차단 표시를 확인하세요.</p>
+                <p class="mb-6"><h3 class="text-xl font-bold text-white mb-2">2. 착용감과 눈을 가리는 범위를 확인하세요</h3></p>
+                <p class="mb-6">좋은 선글라스는 편안하게 눈을 가려야 하며 코에서 계속 흘러내리지 않아야 합니다.</p>
+                <p class="mb-6">안경테 주변의 빈 공간을 잘 살펴보세요. 특히 장시간 야외에 있을 때는 측면으로 햇빛이 들어올 수 있습니다.</p>
+                <p class="mb-6">얼굴을 감싸는 형태의 선글라스나 크기가 큰 안경테는 더 넓은 범위를 보호할 수 있습니다.</p>
+                <p class="mb-6">작은 요령 하나를 알려드릴게요. 선글라스를 착용한 상태에서 아래를 내려다보고 머리를 가볍게 흔들어 보세요. 쉽게 흘러내린다면 일상생활에서도 안정적으로 고정되지 않을 수 있습니다.</p>
+                <p class="mb-6"><h3 class="text-xl font-bold text-white mb-2">3. 편광 렌즈를 이해하세요</h3></p>
+                <p class="mb-6">편광 선글라스는 물, 도로, 눈처럼 빛을 반사하는 표면에서 발생하는 눈부심을 줄여 줍니다.</p>
+                <p class="mb-6">특히 운전, 낚시, 물가에서 시간을 보낼 때 유용합니다.</p>
+                <p class="mb-6">하지만 편광 기능과 자외선 차단 기능은 서로 다릅니다. 편광 렌즈라고 해서 자동으로 자외선을 차단하는 것은 아닙니다.</p>
+                <p class="mb-6">사람들이 흔히 놓치는 점은 편광 렌즈를 착용하면 일부 디지털 화면이 잘 보이지 않을 수 있다는 것입니다.</p>
+                <p class="mb-6">구매하기 전에 선글라스를 착용하고 휴대폰 화면을 확인해 보세요.</p>
+                <p class="mb-6"><h3 class="text-xl font-bold text-white mb-2">4. 활동에 맞는 렌즈를 선택하세요</h3></p>
+                <p class="mb-6">활동에 따라 필요한 기능이 다릅니다.</p>
+                <p class="mb-6">예를 들어 야외에서 운동하거나 햇빛이 잘 드는 창가에서 <b class="highlight">계단 오르기 운동기구</b>를 사용한다면, 가벼운 안경테와 편안한 코받침이 특히 유용할 수 있습니다.</p>
+                <p class="mb-6">운전할 때는 회색이나 갈색 렌즈가 많이 선택됩니다. 밝은 환경에서 대체로 편안한 시야를 제공하기 때문입니다.</p>
+                <p class="mb-6">하지만 시야를 지나치게 어둡게 만드는 렌즈는 피하세요.</p>
+                <p class="mb-6">특히 렌즈 색이 매우 어둡다면 운전에 적합한 제품인지도 확인해야 합니다.</p>
+                <p class="mb-6"><h3 class="text-xl font-bold text-white mb-2">5. 비싸다고 무조건 좋다고 생각하지 마세요</h3></p>
+                <p class="mb-6">명품 선글라스는 수십만 원에 달할 수 있지만, 높은 가격이 더 뛰어난 눈 보호 기능을 보장하지는 않습니다.</p>
+                <p class="mb-6">정말 중요한 것은 검증된 자외선 차단 성능, 편안한 착용감, 충분한 보호 범위, 그리고 적절한 렌즈 품질입니다.</p>
+                <p class="mb-6">현명한 소비자는 로고에만 집중하지 않고 실제로 차이를 만드는 기능을 살펴봅니다.</p>
+                <p class="mb-6">눈을 보호하기 위해 반드시 명품 선글라스가 필요한 것은 아닙니다. 자신의 역할을 제대로 수행하는 선글라스가 필요한 것입니다.</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+    function skipAudio(seconds) {
+        const player = document.getElementById('player');
+        if (player.src) {
+            player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+        }
+    }
+
+    function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+    let _quizOriginals = new Map();
+
+    function toggleQuiz() {
+        const btn = document.getElementById('quizBtn');
+        const isQuiz = btn.innerText.includes("Quiz");
+        const targets = document.querySelectorAll('.quiz-target');
+        const cells = document.querySelectorAll('.mystery-cell');
+
+        if (isQuiz) {
+            btn.innerText = "Study Mode 📖";
+            cells.forEach(c => c.classList.add('quiz-hidden'));
+            targets.forEach(t => {
+                const ans = t.dataset.ans; const kor = t.dataset.kor;
+                _quizOriginals.set(t, t.innerHTML);
+                t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+            });
+        } else {
+            btn.innerText = "Quiz Mode 👻";
+            cells.forEach(c => c.classList.remove('quiz-hidden'));
+            targets.forEach(t => {
+                if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+            });
+            _quizOriginals.clear();
+        }
+    }
+
+    function checkQuiz(i, a) {
+        if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+            i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+            confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+            checkAllSolved();
+        } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+    }
+
+    function checkAllSolved() {
+        const inputs = document.querySelectorAll('.quiz-input');
+        if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+            var duration = 3 * 1000; var end = Date.now() + duration;
+            (function frame() {
+                confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                if (Date.now() < end) requestAnimationFrame(frame);
+            }());
+        }
+    }
+
+    document.getElementById('player').src = "1027715.m4a";
+</script>
+    <script src="wordbank-utils.js"></script>
+</body>
+</html>

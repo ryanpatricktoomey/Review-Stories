@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | How to Choose Really Good Bread at a Bakery</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🥖</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">How to Choose Really Good Bread at a Bakery</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">well-risen</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">잘 부풀어 오른, 발효가 잘된</td></tr>
+                <tr><td class="p-4"><b class="text-white">overmixed</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">지나치게 섞거나 반죽한</td></tr>
+                <tr><td class="p-4"><b class="text-white">savory</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">짭짤하고 감칠맛 나는, 달지 않은</td></tr>
+                <tr><td class="p-4"><b class="text-white">rustic</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">소박한, 시골풍의, 투박하지만 자연스러운</td></tr>
+                <tr><td class="p-4"><b class="text-white">hearty</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">든든한, 푸짐한, 속이 꽉 찬</td></tr>
+                <tr><td class="p-4"><b class="text-white">good ventilation</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">통풍이 잘됨, 환기가 잘되는 상태</td></tr>
+                <tr><td class="p-4"><b class="text-white">downtown</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">시내 중심가, 번화가</td></tr>
+                <tr><td class="p-4"><b class="text-white">guaranteed</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">보장된, 확실한</td></tr>
+                <tr><td class="p-4"><b class="text-white">apricot</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">살구</td></tr>
+                <tr><td class="p-4"><b class="text-white">where do you find the time?</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">도대체 그럴 시간이 어디서 나요?</td></tr>
+                <tr><td class="p-4"><b class="text-white">aspartame</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">아스파탐, 인공감미료의 일종</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">1. Well-risen / Overmixed</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">- <i>Well-risen</i>: 빵이나 반죽이 발효 또는 팽창 과정을 거쳐 적절하게 부푼 상태입니다.<br>
+                - <i>Overmixed</i>: 재료를 지나치게 섞은 상태입니다. 특히 머핀이나 케이크 반죽은 너무 많이 섞으면 질기거나 단단해질 수 있습니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">2. Savory</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">달콤한 음식과 대비되는 표현으로, 짭짤하거나 감칠맛이 나는 음식을 설명합니다. 반드시 짠 음식이라는 뜻은 아닙니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">3. Rustic</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">음식에서는 지나치게 정교하게 다듬지 않은 소박하고 전통적인 스타일을 뜻합니다. <i>Rustic bread</i>는 흔히 겉껍질이 두껍고 투박한 모양의 빵을 가리킵니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">4. Hearty</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">음식이 양도 넉넉하고 먹었을 때 든든하다는 의미입니다. <i>A hearty meal</i>은 배부르고 만족스러운 식사를 뜻합니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2 md:col-span-2">
+                <h3 class="text-teal-400 font-bold text-lg">5. Where Do You Find the Time?</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">상대방이 많은 일을 해내는 것을 보고 놀라거나 감탄할 때 사용하는 자연스러운 질문입니다. 실제로 시간을 어디서 구하는지 묻는 것이 아니라, 바쁜데 어떻게 그럴 시간이 있느냐는 의미입니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">A beautiful loaf of bread isn't necessarily a good one. Some bakeries produce impressive-looking bread that tastes disappointing once you get home. Others sell simple, <b class="highlight quiz-target" data-ans="rustic" data-kor="소박한">rustic</b> loaves that are surprisingly delicious.</p>
+                <p class="mb-6">So how can you tell whether bread is worth buying? Here are five practical tips that can help you choose better bread, even if you're not an experienced baker.</p>
+                <p class="mb-6"><h3 class="text-xl font-bold text-white mb-2">1. Look at the Shape and Structure</h3></p>
+                <p class="mb-6">The first thing I look for is whether the bread is properly <b class="highlight quiz-target" data-ans="well-risen" data-kor="잘 부풀어 오른">well-risen</b>.</p>
+                <p class="mb-6">A good loaf should have a shape appropriate to its style, without obvious signs of collapsing. However, don't assume that bigger always means better.</p>
+                <p class="mb-6">Some breads are naturally dense, while others should be light and airy.</p>
+                <p class="mb-6">For example, a traditional sourdough loaf may have an irregular shape, while a sandwich loaf should generally rise evenly.</p>
+                <p class="mb-6">If a loaf looks unusually flat or sunken, it may have been underproofed, overproofed, or improperly baked.</p>
+                <p class="mb-6"><h3 class="text-xl font-bold text-white mb-2">2. Check the Crust</h3></p>
+                <p class="mb-6">The crust can tell you quite a lot about how bread was baked.</p>
+                <p class="mb-6">A good artisan loaf often has a firm, well-developed crust with a rich golden-brown color.</p>
+                <p class="mb-6">However, a dark crust doesn't automatically mean the bread is better. Some breads are intentionally baked darker, while others should remain soft and pale.</p>
+                <p class="mb-6">Pay attention to the type of bread you're buying rather than judging every loaf by the same standard.</p>
+                <p class="mb-6"><h3 class="text-xl font-bold text-white mb-2">3. Understand the Texture</h3></p>
+                <p class="mb-6">Different breads should have different textures.</p>
+                <p class="mb-6">A <b class="highlight quiz-target" data-ans="hearty" data-kor="든든한">hearty</b> whole-grain loaf may feel relatively heavy, while a well-made baguette should have a crisp crust and a lighter interior.</p>
+                <p class="mb-6">If you're buying muffins or quick breads, watch out for a tough, rubbery texture. This can be a sign that the batter was <b class="highlight quiz-target" data-ans="overmixed" data-kor="지나치게 섞인">overmixed</b>.</p>
+                <p class="mb-6">For yeast breads, an unusually dense or gummy interior may indicate problems with fermentation or baking.</p>
+                <p class="mb-6"><h3 class="text-xl font-bold text-white mb-2">4. Pay Attention to the Bakery Itself</h3></p>
+                <p class="mb-6">A bakery's environment matters, too.</p>
+                <p class="mb-6">Look for clean preparation areas, properly stored ingredients, and <b class="highlight quiz-target" data-ans="good ventilation" data-kor="환기가 잘되는 상태">good ventilation</b>.</p>
+                <p class="mb-6">A bakery in a fashionable <b class="highlight quiz-target" data-ans="downtown" data-kor="시내 중심가">downtown</b> neighborhood isn't automatically better than a small neighborhood shop.</p>
+                <p class="mb-6">One thing people tend to overlook is how quickly the bakery sells its products. A busy bakery with frequent baking cycles may offer fresher bread, although high customer traffic alone doesn't guarantee quality.</p>
+                <p class="mb-6"><h3 class="text-xl font-bold text-white mb-2">5. Choose Bread That Suits Your Taste</h3></p>
+                <p class="mb-6">Not everyone wants the same kind of bread.</p>
+                <p class="mb-6">If you prefer <b class="highlight quiz-target" data-ans="savory" data-kor="짭짤하고 감칠맛 나는">savory</b> flavors, try olive bread, cheese bread, or a loaf with herbs.</p>
+                <p class="mb-6">If you enjoy something sweeter, look for bread containing dried fruit, such as raisins or <b class="highlight quiz-target" data-ans="apricots" data-kor="살구">apricots</b>.</p>
+                <p class="mb-6">Check ingredient labels when available, especially if you're avoiding particular additives or sweeteners such as <b class="highlight quiz-target" data-ans="aspartame" data-kor="아스파탐">aspartame</b>. It's not a typical ingredient in traditional bread, but checking labels is useful when buying packaged bakery products.</p>
+                <p class="mb-6">You might wonder how serious bread lovers find time to visit several bakeries. "<b class="highlight quiz-target" data-ans="Where do you find the time?" data-kor="도대체 그럴 시간이 어디서 나요?">Where do you find the time?</b>" is a reasonable question!</p>
+                <p class="mb-6">Fortunately, becoming a better bread shopper doesn't require hours of research.</p>
+                <p class="mb-6">No single appearance test is <b class="highlight quiz-target" data-ans="guaranteed" data-kor="보장된">guaranteed</b> to identify excellent bread. But by checking the structure, crust, texture, freshness, and ingredients, you can make a much more informed choice.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">아름답게 생긴 빵이 반드시 좋은 빵은 아닙니다. 어떤 빵집은 보기에는 훌륭하지만 집에 가져가 먹어 보면 실망스러운 빵을 만듭니다. 반면 <b class="highlight">소박하고</b> 투박한 빵을 판매하는 곳에서 놀라울 만큼 맛있는 빵을 발견하기도 합니다.</p>
+                <p class="mb-6">그렇다면 어떤 빵이 살 만한 가치가 있는지 어떻게 알 수 있을까요? 베이킹 경험이 많지 않아도 더 좋은 빵을 고를 수 있도록 도와주는 다섯 가지 실용적인 팁을 소개합니다.</p>
+                <p class="mb-6"><h3 class="text-xl font-bold text-white mb-2">1. 모양과 구조를 살펴보세요</h3></p>
+                <p class="mb-6">제가 가장 먼저 확인하는 것은 빵이 적절하게 <b class="highlight">잘 부풀었는지입니다</b>.</p>
+                <p class="mb-6">좋은 빵은 종류에 맞는 모양을 갖추고 있어야 하며, 눈에 띄게 주저앉은 흔적이 없어야 합니다. 하지만 크다고 해서 반드시 더 좋은 빵이라고 생각해서는 안 됩니다.</p>
+                <p class="mb-6">어떤 빵은 원래 밀도가 높고 묵직한 반면, 어떤 빵은 가볍고 공기가 잘 들어간 구조여야 합니다.</p>
+                <p class="mb-6">예를 들어 전통적인 사워도우 빵은 모양이 불규칙할 수 있지만, 샌드위치용 식빵은 일반적으로 고르게 부풀어 있어야 합니다.</p>
+                <p class="mb-6">빵이 비정상적으로 납작하거나 가운데가 꺼져 있다면 발효가 부족했거나 지나쳤거나 굽는 과정에 문제가 있었을 수 있습니다.</p>
+                <p class="mb-6"><h3 class="text-xl font-bold text-white mb-2">2. 빵 껍질을 확인하세요</h3></p>
+                <p class="mb-6">빵 껍질을 보면 굽는 과정에 대해 상당히 많은 것을 알 수 있습니다.</p>
+                <p class="mb-6">좋은 수제 빵은 흔히 단단하고 잘 형성된 껍질과 진한 황금빛 갈색을 띱니다.</p>
+                <p class="mb-6">하지만 껍질이 어둡다고 해서 반드시 더 좋은 빵은 아닙니다. 일부 빵은 의도적으로 더 진하게 굽지만, 다른 빵은 부드럽고 연한 색을 유지해야 합니다.</p>
+                <p class="mb-6">모든 빵을 같은 기준으로 판단하기보다는 구매하려는 빵의 종류에 주목하세요.</p>
+                <p class="mb-6"><h3 class="text-xl font-bold text-white mb-2">3. 식감을 이해하세요</h3></p>
+                <p class="mb-6">빵의 종류에 따라 적절한 식감도 다릅니다.</p>
+                <p class="mb-6"><b class="highlight">든든한</b> 통곡물 빵은 비교적 묵직할 수 있지만, 잘 만든 바게트는 바삭한 껍질과 상대적으로 가벼운 속을 가지고 있어야 합니다.</p>
+                <p class="mb-6">머핀이나 퀵브레드를 구매한다면 질기거나 고무 같은 식감을 주의하세요. 반죽을 <b class="highlight">지나치게 섞었다는</b> 신호일 수 있습니다.</p>
+                <p class="mb-6">이스트를 사용하는 빵의 경우 속이 비정상적으로 빽빽하거나 끈적거린다면 발효나 굽는 과정에 문제가 있었을 수 있습니다.</p>
+                <p class="mb-6"><h3 class="text-xl font-bold text-white mb-2">4. 빵집 자체도 살펴보세요</h3></p>
+                <p class="mb-6">빵집의 환경도 중요합니다.</p>
+                <p class="mb-6">깨끗한 작업 공간, 적절하게 보관된 재료, <b class="highlight">환기가 잘되는</b> 환경을 확인하세요.</p>
+                <p class="mb-6">유행하는 <b class="highlight">시내 중심가에</b> 있는 빵집이라고 해서 작은 동네 빵집보다 반드시 좋은 것은 아닙니다.</p>
+                <p class="mb-6">사람들이 흔히 놓치는 것 중 하나는 빵집에서 제품이 얼마나 빨리 판매되는지입니다. 손님이 많고 빵을 자주 굽는 빵집에서는 더 신선한 빵을 구매할 가능성이 있지만, 손님이 많다는 사실만으로 품질이 보장되는 것은 아닙니다.</p>
+                <p class="mb-6"><h3 class="text-xl font-bold text-white mb-2">5. 자신의 취향에 맞는 빵을 선택하세요</h3></p>
+                <p class="mb-6">모든 사람이 같은 종류의 빵을 좋아하는 것은 아닙니다.</p>
+                <p class="mb-6"><b class="highlight">짭짤하고 감칠맛 나는</b> 음식을 선호한다면 올리브 빵, 치즈 빵, 허브가 들어간 빵을 먹어 보세요.</p>
+                <p class="mb-6">달콤한 것을 좋아한다면 건포도나 <b class="highlight">살구</b> 같은 말린 과일이 들어간 빵을 찾아보세요.</p>
+                <p class="mb-6">특정 첨가물이나 <b class="highlight">아스파탐</b> 같은 감미료를 피하고 있다면, 확인할 수 있는 경우 원재료 표시를 살펴보세요. 아스파탐은 전통적인 빵에 흔히 들어가는 재료는 아니지만, 포장된 제과·제빵 제품을 구매할 때 성분표를 확인하는 것은 유용한 습관입니다.</p>
+                <p class="mb-6">빵을 정말 좋아하는 사람들이 어떻게 여러 빵집을 방문할 시간을 내는지 궁금할 수도 있습니다. "<b class="highlight">도대체 그럴 시간이 어디서 나요?</b>"라고 물어보는 것도 당연하겠죠!</p>
+                <p class="mb-6">다행히 빵을 더 잘 고르는 소비자가 되기 위해 몇 시간씩 조사할 필요는 없습니다.</p>
+                <p class="mb-6">겉모습만 보고 훌륭한 빵을 반드시 알아낼 수 있는 방법은 없지만(<b class="highlight">보장된</b> 것은 없습니다), 구조, 껍질, 식감, 신선도, 재료를 확인하면 훨씬 더 현명한 선택을 할 수 있습니다.</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+    function skipAudio(seconds) {
+        const player = document.getElementById('player');
+        if (player.src) {
+            player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+        }
+    }
+
+    function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+    let _quizOriginals = new Map();
+
+    function toggleQuiz() {
+        const btn = document.getElementById('quizBtn');
+        const isQuiz = btn.innerText.includes("Quiz");
+        const targets = document.querySelectorAll('.quiz-target');
+        const cells = document.querySelectorAll('.mystery-cell');
+
+        if (isQuiz) {
+            btn.innerText = "Study Mode 📖";
+            cells.forEach(c => c.classList.add('quiz-hidden'));
+            targets.forEach(t => {
+                const ans = t.dataset.ans; const kor = t.dataset.kor;
+                _quizOriginals.set(t, t.innerHTML);
+                t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+            });
+        } else {
+            btn.innerText = "Quiz Mode 👻";
+            cells.forEach(c => c.classList.remove('quiz-hidden'));
+            targets.forEach(t => {
+                if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+            });
+            _quizOriginals.clear();
+        }
+    }
+
+    function checkQuiz(i, a) {
+        if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+            i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+            confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+            checkAllSolved();
+        } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+    }
+
+    function checkAllSolved() {
+        const inputs = document.querySelectorAll('.quiz-input');
+        if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+            var duration = 3 * 1000; var end = Date.now() + duration;
+            (function frame() {
+                confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                if (Date.now() < end) requestAnimationFrame(frame);
+            }());
+        }
+    }
+
+    document.getElementById('player').src = "10271200.m4a";
+</script>
+    <script src="wordbank-utils.js"></script>
+</body>
+</html>

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+      <title>Review Note | Alone in the Arctic for 72 Days</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+      <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+      </style>
+</head>
+<body class="p-4 md:p-12">
+      <div class="max-w-4xl mx-auto space-y-8">
+
+          <header class="text-center space-y-4">
+              <div class="flex items-center justify-center gap-4">
+                  <span class="text-5xl">🧊</span>
+                  <h1 class="text-3xl md:text-4xl font-extrabold text-white">Alone in the Arctic for 72 Days</h1>
+              </div>
+              <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+          </header>
+
+          <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+              <div class="flex items-center justify-between px-2">
+                  <div class="flex items-center gap-3">
+                      <span class="text-xl">🎧</span>
+                      <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                  </div>
+                  <div class="flex gap-2">
+                      <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          <span class="text-lg">↺</span> 5s
+                      </button>
+                      <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          5s <span class="text-lg">↻</span>
+                      </button>
+                  </div>
+              </div>
+              <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+          </div>
+
+          <div class="flex justify-center">
+              <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+          </div>
+
+          <section class="glass rounded-3xl overflow-hidden shadow-xl">
+              <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                  <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+              </div>
+              <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                  <tr><td class="p-4"><b class="text-white">camo</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">위장무늬 / 군복 스타일 (camouflage의 줄임말)</td></tr>
+                  <tr><td class="p-4"><b class="text-white">camouflage</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">위장 / 위장하다 / 위장무늬</td></tr>
+                  <tr><td class="p-4"><b class="text-white">rock her</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그녀를 부드럽게 흔들다 / 안고 달래다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">rock her to sleep</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그녀를 살살 흔들어 재우다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">recall</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">기억해 내다 / 회상하다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">blackout</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">정전 / 의식 상실 / 기억이 끊긴 상태</td></tr>
+                  <tr><td class="p-4"><b class="text-white">stomach</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">배 / 위 / 복부</td></tr>
+                  <tr><td class="p-4"><b class="text-white">do I really have to work like this?</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">내가 정말 이런 식으로 일해야 하나?</td></tr>
+                  <tr><td class="p-4"><b class="text-white">do I really have to work this hard?</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">내가 정말 이렇게까지 열심히 일해야 하나?</td></tr>
+                  <tr><td class="p-4"><b class="text-white">baker</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">제빵사</td></tr>
+                  <tr><td class="p-4"><b class="text-white">baked goods</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">빵이나 쿠키처럼 구운 식품 / 제과·제빵 제품</td></tr>
+                  <tr><td class="p-4"><b class="text-white">block heater</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">자동차 엔진 예열 장치</td></tr>
+              </tbody></table>
+          </section>
+
+          <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="glass p-5 rounded-2xl space-y-2 border-l-4 border-teal-500">
+                  <h3 class="text-teal-400 font-bold text-lg">1. camo / camouflage</h3>
+                  <p class="text-slate-300 text-sm"><i>Camo</i>는 <i>camouflage</i>의 줄임말이에요. 군복이나 사냥복의 위장무늬를 이야기할 때 자주 사용해요.</p>
+                  <p class="text-slate-400 text-xs italic">• He was wearing a camo jacket.</p>
+                  <p class="text-slate-400 text-xs italic">• 그는 위장무늬 재킷을 입고 있었어요.</p>
+                  <p class="text-slate-300 text-sm"><i>Camouflage</i>는 주변 환경과 비슷하게 만들어 눈에 잘 띄지 않도록 하는 것을 의미해요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl space-y-2 border-l-4 border-teal-500">
+                  <h3 class="text-teal-400 font-bold text-lg">2. rock her to sleep</h3>
+                  <p class="text-slate-300 text-sm">아기나 어린아이를 안고 부드럽게 흔들어서 잠들게 한다는 뜻이에요.</p>
+                  <p class="text-slate-300 text-sm">여기서 <i>rock</i>은 '바위'가 아니라 '앞뒤로 부드럽게 흔들다'라는 동사예요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl space-y-2 border-l-4 border-teal-500">
+                  <h3 class="text-teal-400 font-bold text-lg">3. recall</h3>
+                  <p class="text-slate-300 text-sm"><i>Remember</i>와 비슷하지만, 기억 속에서 특정 사건이나 정보를 떠올린다는 느낌이 조금 더 강해요.</p>
+                  <p class="text-slate-400 text-xs italic">• I can't recall what happened.</p>
+                  <p class="text-slate-400 text-xs italic">• 무슨 일이 있었는지 기억이 나지 않아요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl space-y-2 border-l-4 border-teal-500">
+                  <h3 class="text-teal-400 font-bold text-lg">4. blackout</h3>
+                  <p class="text-slate-300 text-sm">문맥에 따라 의미가 달라져요.</p>
+                  <p class="text-slate-300 text-sm">• 정전: There was a blackout.</p>
+                  <p class="text-slate-300 text-sm">• 의식 상실: I blacked out.</p>
+                  <p class="text-slate-300 text-sm">• 기억 상실: I had a blackout and couldn't remember anything.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl space-y-2 border-l-4 border-teal-500">
+                  <h3 class="text-teal-400 font-bold text-lg">5. do I really have to work like this? / do I really have to work this hard?</h3>
+                  <p class="text-slate-300 text-sm">두 문장은 비슷해 보이지만 강조점이 달라요.</p>
+                  <p class="text-slate-300 text-sm">• <b>work like this:</b> 일하는 방식이나 환경에 대한 불만</p>
+                  <p class="text-slate-300 text-sm">• <b>work this hard:</b> 일의 강도나 노력의 정도에 대한 불만</p>
+              </div>
+              <div class="glass p-5 rounded-2xl space-y-2 border-l-4 border-teal-500">
+                  <h3 class="text-teal-400 font-bold text-lg">6. block heater</h3>
+                  <p class="text-slate-300 text-sm">추운 지역에서 자동차 엔진을 미리 따뜻하게 유지해 시동이 잘 걸리도록 돕는 장치예요. 특히 캐나다나 미국 북부처럼 겨울이 매우 추운 지역에서 사용해요.</p>
+              </div>
+          </section>
+
+          <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+              <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                  <p class="mb-6"><i>Based on a True Story: This story is inspired by the documented experience of Japanese adventurer Naomi Uemura, who completed a solo dog-sled journey to the North Pole in 1978. It is told in the first person, with thoughts and minor details reconstructed for storytelling purposes. The major events are based on his expedition.</i></p>
+                  <p class="mb-6">The first thing I learned about the Arctic was that the cold could kill me faster than I expected.</p>
+                  <p class="mb-6">I was traveling alone toward the North Pole with a team of sled dogs. My journey would take more than two months across frozen ocean.</p>
+                  <p class="mb-6">Before leaving, I had carefully prepared my equipment. I wore thick winter clothing, including a jacket with a <b class="highlight quiz-target" data-ans="camo" data-kor="위장무늬">camo</b> pattern. The <b class="highlight quiz-target" data-ans="camouflage" data-kor="위장무늬는">camouflage</b> wasn't important for hiding. I just needed clothing that could protect me from the freezing wind.</p>
+                  <p class="mb-6">Every morning, I woke up inside my tent and checked my equipment.</p>
+                  <p class="mb-6">There were no roads, no cars, and certainly no <b class="highlight quiz-target" data-ans="block heater" data-kor="엔진 예열 장치">block heater</b> to help me start a frozen engine.</p>
+                  <p class="mb-6">Everything depended on my dogs and my own strength.</p>
+                  <p class="mb-6">The days were exhausting.</p>
+                  <p class="mb-6">I had to guide the dogs across broken ice, pull the sled when it became stuck, and constantly watch for dangerous cracks.</p>
+                  <p class="mb-6">Sometimes, the ice moved beneath my feet.</p>
+                  <p class="mb-6">One day, a section of ice broke apart, leaving me separated from my sled.</p>
+                  <p class="mb-6">For a moment, I thought I might lose everything.</p>
+                  <p class="mb-6">I managed to get back to my equipment, but the experience terrified me.</p>
+                  <p class="mb-6">As the days passed, my body began to suffer.</p>
+                  <p class="mb-6">My <b class="highlight quiz-target" data-ans="stomach" data-kor="배가">stomach</b> hurt from the stress and irregular meals. My hands were constantly cold, and my legs ached from walking through deep snow.</p>
+                  <p class="mb-6">I had brought enough food for the journey, but I sometimes dreamed about warm meals.</p>
+                  <p class="mb-6">Back home, I loved visiting small bakeries. I could almost smell the fresh <b class="highlight quiz-target" data-ans="baked goods" data-kor="빵과 과자">baked goods</b> coming out of the oven.</p>
+                  <p class="mb-6">I imagined a friendly <b class="highlight quiz-target" data-ans="baker" data-kor="제빵사가">baker</b> handing me a warm loaf of bread.</p>
+                  <p class="mb-6">Then I opened my eyes and saw nothing but ice.</p>
+                  <p class="mb-6">One night, I was so exhausted that I almost experienced a <b class="highlight quiz-target" data-ans="blackout" data-kor="의식을 잃을 뻔했다">blackout</b>.</p>
+                  <p class="mb-6">I sat inside my tent, struggling to stay awake.</p>
+                  <p class="mb-6">I couldn't even <b class="highlight quiz-target" data-ans="recall" data-kor="기억해 낼">recall</b> how many hours I had been traveling.</p>
+                  <p class="mb-6">I looked at my dogs sleeping nearby.</p>
+                  <p class="mb-6">One of them was restless, so I gently held her and tried to <b class="highlight quiz-target" data-ans="rock her to sleep" data-kor="흔들어 재우려고">rock her to sleep</b>.</p>
+                  <p class="mb-6">Then I asked myself, "<b class="highlight quiz-target" data-ans="Do I really have to work this hard?" data-kor="내가 정말 이렇게까지 힘들게 해야 하나?">Do I really have to work this hard?</b>"</p>
+                  <p class="mb-6">Nobody was forcing me to continue.</p>
+                  <p class="mb-6">I could request help.</p>
+                  <p class="mb-6">But I had chosen this challenge because I wanted to test my limits.</p>
+                  <p class="mb-6">The next morning, I packed my tent and started moving.</p>
+                  <p class="mb-6">Every step was painful.</p>
+                  <p class="mb-6">My legs were burning, and I had to stop frequently to catch my breath.</p>
+                  <p class="mb-6">I was running on fumes.</p>
+                  <p class="mb-6">But I kept going.</p>
+                  <p class="mb-6">After 72 days, I finally reached the North Pole.</p>
+                  <p class="mb-6">I stood there surrounded by endless ice, completely exhausted.</p>
+                  <p class="mb-6">I had traveled hundreds of kilometers through one of the harshest environments on Earth.</p>
+                  <p class="mb-6">And I had done it alone.</p>
+              </div>
+              <hr class="border-white/10">
+              <div class="text-slate-400 italic leading-relaxed space-y-6">
+                  <p class="mb-6"><i>실화를 바탕으로 한 이야기: 이 이야기는 1978년 혼자 개썰매를 타고 북극점에 도달한 일본 탐험가 우에무라 나오미의 실제 탐험에서 영감을 받았습니다. 1인칭으로 재구성했으며, 생각과 일부 세부 사항은 이야기의 흐름을 위해 각색했습니다. 주요 사건은 그의 탐험을 바탕으로 합니다.</i></p>
+                  <p class="mb-6">북극에서 내가 가장 먼저 배운 것은 추위가 생각보다 훨씬 빠르게 사람을 죽일 수 있다는 사실이었다.</p>
+                  <p class="mb-6">나는 썰매개들과 함께 홀로 북극점을 향해 이동하고 있었다. 얼어붙은 바다 위를 가로지르는 여정은 두 달 넘게 걸릴 예정이었다.</p>
+                  <p class="mb-6">출발하기 전, 장비를 꼼꼼하게 준비했다. <b class="highlight">위장무늬</b> 재킷을 포함해 두꺼운 방한복을 입었다. <b class="highlight">위장무늬는</b> 몸을 숨기기 위한 것이 아니었다. 그저 얼어붙을 듯한 바람으로부터 나를 보호해 줄 옷이 필요했을 뿐이다.</p>
+                  <p class="mb-6">매일 아침 텐트 안에서 일어나 장비를 확인했다.</p>
+                  <p class="mb-6">도로도 없었고, 자동차도 없었으며, 얼어붙은 엔진의 시동을 도와줄 <b class="highlight">엔진 예열 장치</b> 같은 것도 당연히 없었다.</p>
+                  <p class="mb-6">모든 것이 썰매개들과 내 체력에 달려 있었다.</p>
+                  <p class="mb-6">하루하루가 고된 노동이었다.</p>
+                  <p class="mb-6">갈라진 얼음 위로 개들을 이끌어야 했고, 썰매가 걸리면 직접 끌어야 했으며, 위험한 균열이 없는지 끊임없이 살펴야 했다.</p>
+                  <p class="mb-6">때로는 발밑의 얼음이 움직이기도 했다.</p>
+                  <p class="mb-6">어느 날, 얼음 일부가 갈라지면서 나는 썰매와 떨어지게 되었다.</p>
+                  <p class="mb-6">순간 모든 것을 잃을 수도 있겠다는 생각이 들었다.</p>
+                  <p class="mb-6">어떻게든 장비가 있는 곳으로 돌아왔지만, 그 경험은 정말 무서웠다.</p>
+                  <p class="mb-6">날이 갈수록 몸은 점점 망가지기 시작했다.</p>
+                  <p class="mb-6">스트레스와 불규칙한 식사 때문에 <b class="highlight">배가</b> 아팠다. 손은 늘 차가웠고, 깊은 눈 속을 걸어 다니느라 다리가 쑤셨다.</p>
+                  <p class="mb-6">여정에 필요한 식량은 충분히 가져왔지만, 가끔은 따뜻한 음식이 꿈에 나타났다.</p>
+                  <p class="mb-6">고향에서는 작은 빵집에 가는 것을 좋아했다. 오븐에서 막 나온 <b class="highlight">빵과 과자</b> 냄새가 나는 것 같았다.</p>
+                  <p class="mb-6">친절한 <b class="highlight">제빵사가</b> 따뜻한 빵 한 덩어리를 건네주는 모습을 상상했다.</p>
+                  <p class="mb-6">그러다 눈을 뜨면 보이는 것은 얼음뿐이었다.</p>
+                  <p class="mb-6">어느 날 밤에는 너무 지쳐서 거의 <b class="highlight">의식을 잃을 뻔했다</b>.</p>
+                  <p class="mb-6">텐트 안에 앉아 잠들지 않으려고 애썼다.</p>
+                  <p class="mb-6">몇 시간이나 이동했는지조차 <b class="highlight">기억해 낼</b> 수 없었다.</p>
+                  <p class="mb-6">나는 근처에서 자고 있는 개들을 바라보았다.</p>
+                  <p class="mb-6">그중 한 마리가 불안해하며 뒤척이기에 부드럽게 안고 <b class="highlight">흔들어 재우려고</b> 했다.</p>
+                  <p class="mb-6">그러다 스스로에게 물었다.</p>
+                  <p class="mb-6">"<b class="highlight">내가 정말 이렇게까지 힘들게 해야 하나?</b>"</p>
+                  <p class="mb-6">누구도 나에게 계속하라고 강요하지 않았다.</p>
+                  <p class="mb-6">도움을 요청할 수도 있었다.</p>
+                  <p class="mb-6">하지만 나는 내 한계를 시험해 보고 싶어서 이 도전을 선택했다.</p>
+                  <p class="mb-6">다음 날 아침, 텐트를 정리하고 다시 움직이기 시작했다.</p>
+                  <p class="mb-6">한 걸음 한 걸음이 고통스러웠다.</p>
+                  <p class="mb-6">다리는 타는 듯이 아팠고, 숨을 고르기 위해 자주 멈춰야 했다.</p>
+                  <p class="mb-6">남은 힘을 쥐어짜며 겨우 버티고 있었다.</p>
+                  <p class="mb-6">하지만 계속 나아갔다.</p>
+                  <p class="mb-6">72일 만에 마침내 북극점에 도착했다.</p>
+                  <p class="mb-6">끝없이 펼쳐진 얼음에 둘러싸여 서 있는 나는 완전히 녹초가 되어 있었다.</p>
+                  <p class="mb-6">나는 지구상에서 가장 혹독한 환경 중 하나를 가로질러 수백 킬로미터를 이동한 것이다.</p>
+                  <p class="mb-6">그리고 그 모든 것을 혼자 해냈다.</p>
+              </div>
+          </section>
+
+      </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "10281020.m4a";
+</script>
+      <script src="wordbank-utils.js"></script>
+  </body>
+  </html>

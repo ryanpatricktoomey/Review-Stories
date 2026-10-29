@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+      <title>Review Note | No Means No. Apparently Not.</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+      <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+      </style>
+</head>
+<body class="p-4 md:p-12">
+      <div class="max-w-4xl mx-auto space-y-8">
+
+          <header class="text-center space-y-4">
+              <div class="flex items-center justify-center gap-4">
+                  <span class="text-5xl">🧩</span>
+                  <h1 class="text-3xl md:text-4xl font-extrabold text-white">No Means No. Apparently Not.</h1>
+              </div>
+              <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+          </header>
+
+          <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+              <div class="flex items-center justify-between px-2">
+                  <div class="flex items-center gap-3">
+                      <span class="text-xl">🎧</span>
+                      <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                  </div>
+                  <div class="flex gap-2">
+                      <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          <span class="text-lg">↺</span> 5s
+                      </button>
+                      <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          5s <span class="text-lg">↻</span>
+                      </button>
+                  </div>
+              </div>
+              <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+          </div>
+
+          <div class="flex justify-center">
+              <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+          </div>
+
+          <section class="glass rounded-3xl overflow-hidden shadow-xl">
+              <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                  <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+              </div>
+              <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                  <tr><td class="p-4"><b class="text-white">paralyzed</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">마비된 / 두려움 때문에 꼼짝 못 하는</td></tr>
+                  <tr><td class="p-4"><b class="text-white">that would kill me</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그러면 정말 못 견딜 거야</td></tr>
+                  <tr><td class="p-4"><b class="text-white">you're killing me!</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">너 때문에 미치겠어!</td></tr>
+                  <tr><td class="p-4"><b class="text-white">passive-aggressive</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">은근히 불만을 드러내는 / 수동 공격적인</td></tr>
+                  <tr><td class="p-4"><b class="text-white">unintentionally</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">의도치 않게</td></tr>
+                  <tr><td class="p-4"><b class="text-white">cliff</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">절벽</td></tr>
+                  <tr><td class="p-4"><b class="text-white">trap me in my own words</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">내가 한 말을 이용해서 나를 꼼짝 못 하게 만들다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">put words in my mouth</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">내가 하지도 않은 말을 했다고 몰아가다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">speak for yourself!</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그건 네 생각이지! / 너나 그렇겠지!</td></tr>
+              </tbody></table>
+          </section>
+
+          <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="glass p-5 rounded-2xl border-l-4 border-amber-500">
+                  <h3 class="text-amber-400 font-bold mb-2">Paralyzed</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">두려움이나 충격 때문에 몸이 굳거나 아무 행동도 하지 못하는 상황에도 쓸 수 있어요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-amber-500">
+                  <h3 class="text-amber-400 font-bold mb-2">That would kill me / You're killing me!</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">감당하기 힘든 상황이나 답답함을 과장해서 표현하는 말이에요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-amber-500">
+                  <h3 class="text-amber-400 font-bold mb-2">Passive-aggressive</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">불만을 직접 표현하지 않고 빈정거리거나 간접적으로 드러내는 태도예요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-amber-500">
+                  <h3 class="text-amber-400 font-bold mb-2">Trap me in my own words</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">내가 했던 말을 이용해 나를 불리한 상황에 몰아넣는다는 뜻이에요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-amber-500">
+                  <h3 class="text-amber-400 font-bold mb-2">Put words in my mouth</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">내가 하지 않은 말을 했다고 주장하거나 내 의도를 멋대로 해석한다는 뜻이에요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-amber-500">
+                  <h3 class="text-amber-400 font-bold mb-2">Speak for yourself!</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">상대방이 자신의 의견을 모든 사람의 의견인 것처럼 말할 때 반박하는 표현이에요.</p>
+              </div>
+          </section>
+
+          <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+              <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                  <p class="mb-6">Rebecca had spent the entire week looking forward to Friday evening. She had ordered takeout, bought a new puzzle, and planned to spend the night alone.</p>
+                  <p class="mb-6">At four o'clock, her coworker Amanda approached.</p>
+                  <p class="mb-6">"Are you free tonight? A few of us are having dinner."</p>
+                  <p class="mb-6">"Thanks, but I've already got plans."</p>
+                  <p class="mb-6">"With who?"</p>
+                  <p class="mb-6">"Just someone."</p>
+                  <p class="mb-6">Rebecca immediately regretted saying that.</p>
+                  <p class="mb-6">"Ooh! A date?"</p>
+                  <p class="mb-6">"No, it's not a date."</p>
+                  <p class="mb-6">"Then who is it?"</p>
+                  <p class="mb-6">"Someone I haven't seen in a while."</p>
+                  <p class="mb-6">That wasn't entirely a lie. She hadn't seen herself relax in weeks.</p>
+                  <p class="mb-6">Amanda smiled. "Well, have fun!"</p>
+                  <p class="mb-6">At five, Jessica stopped by Rebecca's desk.</p>
+                  <p class="mb-6">"Hey, Amanda said you're meeting someone special tonight."</p>
+                  <p class="mb-6">Rebecca looked up.</p>
+                  <p class="mb-6">"She said what?"</p>
+                  <p class="mb-6">"She thinks you have a secret boyfriend."</p>
+                  <p class="mb-6">"That's ridiculous. Don't <b class="highlight quiz-target" data-ans="put words in my mouth" data-kor="내가 하지도 않은 말을 했다고 몰아가다">put words in my mouth</b>. I never said that."</p>
+                  <p class="mb-6">Jessica laughed.</p>
+                  <p class="mb-6">"Relax! We're just curious."</p>
+                  <p class="mb-6">"Well, please stop being curious."</p>
+                  <p class="mb-6">Jessica's smile disappeared.</p>
+                  <p class="mb-6">"Okay. Sorry for asking."</p>
+                  <p class="mb-6">Ten minutes later, Rebecca received a message from Amanda.</p>
+                  <p class="mb-6"><i>Sorry if we upset you. We were just excited for you.</i></p>
+                  <p class="mb-6">Rebecca sighed and replied:</p>
+                  <p class="mb-6"><i>I'm not upset. I just want a quiet evening.</i></p>
+                  <p class="mb-6">Amanda responded immediately.</p>
+                  <p class="mb-6"><i>Oh! Then why didn't you say so? We're having a quiet dinner at my place. You should come!</i></p>
+                  <p class="mb-6">Rebecca stared at the screen.</p>
+                  <p class="mb-6"><i>Thanks, but I'd rather stay home.</i></p>
+                  <p class="mb-6"><i>It's just four people. Very relaxed.</i></p>
+                  <p class="mb-6"><i>I appreciate it, but no.</i></p>
+                  <p class="mb-6"><i>Okay. I guess you don't want to spend time with us.</i></p>
+                  <p class="mb-6">Rebecca recognized the <b class="highlight quiz-target" data-ans="passive-aggressive" data-kor="은근히 불만을 드러내는">passive-aggressive</b> tone.</p>
+                  <p class="mb-6">She typed a reply, deleted it, and put her phone away.</p>
+                  <p class="mb-6">At 5:45, Amanda appeared at her desk.</p>
+                  <p class="mb-6">"Rebecca, can we talk?"</p>
+                  <p class="mb-6">"Sure."</p>
+                  <p class="mb-6">"Did I do something wrong?"</p>
+                  <p class="mb-6">"No. I just want to go home."</p>
+                  <p class="mb-6">Amanda looked confused.</p>
+                  <p class="mb-6">"But you said you were meeting someone."</p>
+                  <p class="mb-6">"I know."</p>
+                  <p class="mb-6">"So you lied?"</p>
+                  <p class="mb-6">Rebecca hesitated.</p>
+                  <p class="mb-6">"Yes. I didn't want to hurt your feelings."</p>
+                  <p class="mb-6">Amanda folded her arms.</p>
+                  <p class="mb-6">"Well, that actually hurts my feelings more."</p>
+                  <p class="mb-6">Rebecca nodded.</p>
+                  <p class="mb-6">"Fair enough. I'm sorry."</p>
+                  <p class="mb-6">Amanda sighed.</p>
+                  <p class="mb-6">"You could've just told me you wanted to be alone."</p>
+                  <p class="mb-6">"I tried. You invited me to your house."</p>
+                  <p class="mb-6">Amanda paused.</p>
+                  <p class="mb-6">Then she laughed.</p>
+                  <p class="mb-6">"Okay. That's fair."</p>
+                  <p class="mb-6">At six, Rebecca finally left the office.</p>
+                  <p class="mb-6">On the train, Jessica sent a message.</p>
+                  <p class="mb-6"><i>Amanda told me what happened. Sorry!</i></p>
+                  <p class="mb-6">Rebecca smiled.</p>
+                  <p class="mb-6"><i>No worries.</i></p>
+                  <p class="mb-6">A second message appeared.</p>
+                  <p class="mb-6"><i>By the way, we're planning a hike tomorrow. Want to come?</i></p>
+                  <p class="mb-6">Rebecca looked at the photo Jessica had attached.</p>
+                  <p class="mb-6">The trail ran along the edge of a steep <b class="highlight quiz-target" data-ans="cliff" data-kor="절벽">cliff</b>.</p>
+                  <p class="mb-6">She replied:</p>
+                  <p class="mb-6"><i>Absolutely not. <b class="highlight quiz-target" data-ans="That would kill me" data-kor="그러면 정말 못 견딜 거야">That would kill me</b>.</i></p>
+                  <p class="mb-6">Jessica responded:</p>
+                  <p class="mb-6"><i>Haha! Don't worry. It's perfectly safe.</i></p>
+                  <p class="mb-6">Rebecca turned off her phone.</p>
+                  <p class="mb-6">At home, she opened her takeout, spread the puzzle pieces across the table, and sat down.</p>
+                  <p class="mb-6">For the first time all day, nobody was asking her to go anywhere.</p>
+                  <p class="mb-6">She picked up a puzzle piece.</p>
+                  <p class="mb-6">Then she heard a knock at the door.</p>
+                  <p class="mb-6">Rebecca froze.</p>
+                  <p class="mb-6">"Who is it?"</p>
+                  <p class="mb-6">"Food delivery!"</p>
+                  <p class="mb-6">She looked at the takeout already on her table.</p>
+                  <p class="mb-6">Then she remembered she'd ordered dinner from two different restaurants because she couldn't decide what she wanted.</p>
+                  <p class="mb-6">She opened the door.</p>
+                  <p class="mb-6">The delivery driver handed her a large bag.</p>
+                  <p class="mb-6">Rebecca smiled.</p>
+                  <p class="mb-6">"Perfect."</p>
+              </div>
+              <hr class="border-white/10">
+              <div class="text-slate-400 italic leading-relaxed space-y-6">
+                  <p class="mb-6">레베카는 일주일 내내 금요일 저녁만을 기다리고 있었다. 배달 음식을 주문하고 새 퍼즐을 사두었으며, 밤새 혼자 시간을 보낼 계획이었다.</p>
+                  <p class="mb-6">오후 네 시, 동료 아만다가 다가왔다.</p>
+                  <p class="mb-6">"오늘 저녁에 시간 있어? 우리 몇 명이 저녁 먹으러 가는데."</p>
+                  <p class="mb-6">"고맙지만 이미 약속이 있어."</p>
+                  <p class="mb-6">"누구랑?"</p>
+                  <p class="mb-6">"그냥 어떤 사람이랑."</p>
+                  <p class="mb-6">레베카는 그 말을 하자마자 후회했다.</p>
+                  <p class="mb-6">"오! 데이트야?"</p>
+                  <p class="mb-6">"아니, 데이트 아니야."</p>
+                  <p class="mb-6">"그럼 누구인데?"</p>
+                  <p class="mb-6">"오랫동안 못 만난 사람이야."</p>
+                  <p class="mb-6">완전히 거짓말은 아니었다. 레베카는 몇 주 동안 제대로 쉬는 자신의 모습을 보지 못했으니까.</p>
+                  <p class="mb-6">아만다가 웃었다.</p>
+                  <p class="mb-6">"그럼 재밌게 보내!"</p>
+                  <p class="mb-6">다섯 시, 제시카가 레베카의 책상으로 왔다.</p>
+                  <p class="mb-6">"있잖아, 아만다가 그러는데 너 오늘 특별한 사람 만난다며?"</p>
+                  <p class="mb-6">레베카가 고개를 들었다.</p>
+                  <p class="mb-6">"뭐라고 했다고?"</p>
+                  <p class="mb-6">"네가 비밀 남자친구 있는 것 같대."</p>
+                  <p class="mb-6">"말도 안 돼. <b class="highlight">내가 하지도 않은 말을 했다고 하지 마</b>. 난 그런 말 한 적 없어."</p>
+                  <p class="mb-6">제시카가 웃었다.</p>
+                  <p class="mb-6">"진정해! 그냥 궁금해서 그러는 거잖아."</p>
+                  <p class="mb-6">"그럼 제발 궁금해하지 마."</p>
+                  <p class="mb-6">제시카의 웃음이 사라졌다.</p>
+                  <p class="mb-6">"알았어. 물어봐서 미안."</p>
+                  <p class="mb-6">10분 뒤, 아만다에게 메시지가 왔다.</p>
+                  <p class="mb-6"><i>우리가 기분 상하게 했다면 미안해. 그냥 네가 잘돼서 기뻤던 거야.</i></p>
+                  <p class="mb-6">레베카는 한숨을 쉬고 답장했다.</p>
+                  <p class="mb-6"><i>나 화 안 났어. 그냥 조용한 저녁을 보내고 싶어.</i></p>
+                  <p class="mb-6">아만다가 즉시 답했다.</p>
+                  <p class="mb-6"><i>아! 그럼 진작 말하지! 우리 집에서 조용히 저녁 먹을 건데 너도 와!</i></p>
+                  <p class="mb-6">레베카는 화면을 바라봤다.</p>
+                  <p class="mb-6"><i>고맙지만 집에 있고 싶어.</i></p>
+                  <p class="mb-6"><i>딱 네 명이야. 아주 편한 자리야.</i></p>
+                  <p class="mb-6"><i>고맙지만 안 갈게.</i></p>
+                  <p class="mb-6"><i>알았어. 우리랑 시간 보내기 싫은가 보네.</i></p>
+                  <p class="mb-6">레베카는 그 메시지에 담긴 <b class="highlight">은근한 빈정거림</b>을 알아챘다.</p>
+                  <p class="mb-6">답장을 썼다가 지우고 휴대폰을 내려놓았다.</p>
+                  <p class="mb-6">5시 45분, 아만다가 레베카의 책상으로 왔다.</p>
+                  <p class="mb-6">"레베카, 잠깐 얘기할 수 있어?"</p>
+                  <p class="mb-6">"응."</p>
+                  <p class="mb-6">"내가 뭐 잘못했어?"</p>
+                  <p class="mb-6">"아니. 난 그냥 집에 가고 싶어."</p>
+                  <p class="mb-6">아만다는 이해가 안 된다는 표정이었다.</p>
+                  <p class="mb-6">"근데 누구 만난다고 했잖아."</p>
+                  <p class="mb-6">"알아."</p>
+                  <p class="mb-6">"그럼 거짓말한 거야?"</p>
+                  <p class="mb-6">레베카는 망설였다.</p>
+                  <p class="mb-6">"응. 네 기분 상하게 하고 싶지 않았어."</p>
+                  <p class="mb-6">아만다는 팔짱을 꼈다.</p>
+                  <p class="mb-6">"그게 오히려 더 기분 상하는데."</p>
+                  <p class="mb-6">레베카는 고개를 끄덕였다.</p>
+                  <p class="mb-6">"그건 맞아. 미안해."</p>
+                  <p class="mb-6">아만다가 한숨을 쉬었다.</p>
+                  <p class="mb-6">"그냥 혼자 있고 싶다고 말하면 됐잖아."</p>
+                  <p class="mb-6">"말했잖아. 그랬더니 네가 집으로 초대했지."</p>
+                  <p class="mb-6">아만다는 잠시 멈췄다.</p>
+                  <p class="mb-6">그러더니 웃었다.</p>
+                  <p class="mb-6">"그래. 그건 맞네."</p>
+                  <p class="mb-6">여섯 시, 레베카는 마침내 사무실을 나왔다.</p>
+                  <p class="mb-6">지하철에서 제시카에게 메시지가 왔다.</p>
+                  <p class="mb-6"><i>아만다한테 얘기 들었어. 미안해!</i></p>
+                  <p class="mb-6">레베카는 웃었다.</p>
+                  <p class="mb-6"><i>괜찮아.</i></p>
+                  <p class="mb-6">두 번째 메시지가 나타났다.</p>
+                  <p class="mb-6"><i>그런데 우리 내일 등산 가려고 하는데 같이 갈래?</i></p>
+                  <p class="mb-6">레베카는 제시카가 보낸 사진을 바라봤다.</p>
+                  <p class="mb-6">산책로가 가파른 <b class="highlight">절벽</b> 가장자리를 따라 이어져 있었다.</p>
+                  <p class="mb-6">레베카는 답장했다.</p>
+                  <p class="mb-6"><i>절대 안 돼. <b class="highlight">그런 건 정말 못 견뎌</b>.</i></p>
+                  <p class="mb-6">제시카가 답했다.</p>
+                  <p class="mb-6"><i>하하! 걱정 마. 완전히 안전해.</i></p>
+                  <p class="mb-6">레베카는 휴대폰을 껐다.</p>
+                  <p class="mb-6">집에 도착한 레베카는 배달 음식을 꺼내고 퍼즐 조각들을 식탁에 펼친 뒤 앉았다.</p>
+                  <p class="mb-6">하루 종일 처음으로 아무도 어디 가자고 하지 않았다.</p>
+                  <p class="mb-6">퍼즐 조각 하나를 집어 들었다.</p>
+                  <p class="mb-6">그때 문을 두드리는 소리가 났다.</p>
+                  <p class="mb-6">레베카는 굳어버렸다.</p>
+                  <p class="mb-6">"누구세요?"</p>
+                  <p class="mb-6">"음식 배달이요!"</p>
+                  <p class="mb-6">레베카는 이미 식탁에 놓인 배달 음식을 바라봤다.</p>
+                  <p class="mb-6">그러고는 생각났다. 뭘 먹을지 결정하지 못해서 서로 다른 식당 두 곳에 음식을 주문했던 것이다.</p>
+                  <p class="mb-6">문을 열었다.</p>
+                  <p class="mb-6">배달 기사가 커다란 봉지를 건넸다.</p>
+                  <p class="mb-6">레베카는 웃었다.</p>
+                  <p class="mb-6">"완벽해."</p>
+              </div>
+          </section>
+
+      </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "10291020.m4a";
+</script>
+      <script src="wordbank-utils.js"></script>
+  </body>
+  </html>

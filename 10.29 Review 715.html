@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+      <title>Review Note | The Most Expensive Free Dinner</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+      <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+      </style>
+</head>
+<body class="p-4 md:p-12">
+      <div class="max-w-4xl mx-auto space-y-8">
+
+          <header class="text-center space-y-4">
+              <div class="flex items-center justify-center gap-4">
+                  <span class="text-5xl">🍽️</span>
+                  <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Most Expensive Free Dinner</h1>
+              </div>
+              <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+          </header>
+
+          <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+              <div class="flex items-center justify-between px-2">
+                  <div class="flex items-center gap-3">
+                      <span class="text-xl">🎧</span>
+                      <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                  </div>
+                  <div class="flex gap-2">
+                      <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          <span class="text-lg">↺</span> 5s
+                      </button>
+                      <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          5s <span class="text-lg">↻</span>
+                      </button>
+                  </div>
+              </div>
+              <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+          </div>
+
+          <div class="flex justify-center">
+              <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+          </div>
+
+          <section class="glass rounded-3xl overflow-hidden shadow-xl">
+              <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                  <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+              </div>
+              <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                  <tr><td class="p-4"><b class="text-white">twists</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">반전들 / 예상치 못한 전개</td></tr>
+                  <tr><td class="p-4"><b class="text-white">if it's your treat</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">네가 사는 거라면</td></tr>
+                  <tr><td class="p-4"><b class="text-white">good coverage</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">보장 범위가 좋은 것 / 충분한 보장</td></tr>
+                  <tr><td class="p-4"><b class="text-white">affordable</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">가격이 부담스럽지 않은</td></tr>
+                  <tr><td class="p-4"><b class="text-white">pressure</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">압박 / 부담</td></tr>
+                  <tr><td class="p-4"><b class="text-white">Buddha</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">부처 / 석가모니</td></tr>
+                  <tr><td class="p-4"><b class="text-white">Buddhist</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">불교 신자 / 불교의</td></tr>
+                  <tr><td class="p-4"><b class="text-white">get your foot in the door</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">첫 기회를 잡다 / 발을 들여놓다</td></tr>
+              </tbody></table>
+          </section>
+
+          <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="glass p-5 rounded-2xl border-l-4 border-amber-500">
+                  <h3 class="text-amber-400 font-bold mb-2">If it's your treat</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">상대방이 비용을 낸다는 조건으로 초대를 받아들일 때 쓰는 표현이에요. <i>It's on me</i>도 비슷한 뜻이에요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-amber-500">
+                  <h3 class="text-amber-400 font-bold mb-2">Good coverage</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">보험에서는 충분한 보장 범위를 의미해요. 통신 서비스나 언론 보도에도 사용할 수 있어요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-amber-500 md:col-span-2">
+                  <h3 class="text-amber-400 font-bold mb-2">Get your foot in the door</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">원하는 직장이나 분야에 진입할 첫 기회를 얻는다는 관용 표현이에요.</p>
+              </div>
+          </section>
+
+          <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+              <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                  <p class="mb-6">For three weeks, Claire had been saving a new detective series for Friday night.</p>
+                  <p class="mb-6">She planned to watch six episodes without interruption.</p>
+                  <p class="mb-6">At four o'clock, her coworker Megan approached.</p>
+                  <p class="mb-6">"Are you free tonight? A few of us are having dinner with some people from another company."</p>
+                  <p class="mb-6">"Thanks, but I've already got plans."</p>
+                  <p class="mb-6">"Come on! It's a great networking opportunity."</p>
+                  <p class="mb-6">"I'm happy where I am."</p>
+                  <p class="mb-6">"But you never know. It could help you <b class="highlight quiz-target" data-ans="get your foot in the door" data-kor="발을 들여놓다">get your foot in the door</b> somewhere better."</p>
+                  <p class="mb-6">Claire smiled politely.</p>
+                  <p class="mb-6">"I appreciate it, but I'll pass."</p>
+                  <p class="mb-6">Megan lowered her voice.</p>
+                  <p class="mb-6">"The restaurant's really nice."</p>
+                  <p class="mb-6">"I'm sure it is."</p>
+                  <p class="mb-6">"And the food is surprisingly <b class="highlight quiz-target" data-ans="affordable" data-kor="가격이 부담스럽지 않은">affordable</b>."</p>
+                  <p class="mb-6">"That's great."</p>
+                  <p class="mb-6">"Actually, the manager's paying."</p>
+                  <p class="mb-6">Claire laughed.</p>
+                  <p class="mb-6">"Well, <b class="highlight quiz-target" data-ans="if it's your treat" data-kor="네가 사는 거라면">if it's your treat</b>, maybe I'd consider it."</p>
+                  <p class="mb-6">Megan stopped.</p>
+                  <p class="mb-6">"Wait. Seriously?"</p>
+                  <p class="mb-6">"No, I was joking."</p>
+                  <p class="mb-6">But Megan had already taken out her phone.</p>
+                  <p class="mb-6">"Let me ask him!"</p>
+                  <p class="mb-6">"Megan, don't—"</p>
+                  <p class="mb-6">Too late.</p>
+                  <p class="mb-6">Five minutes later, Megan returned.</p>
+                  <p class="mb-6">"Good news! He said he'll pay for you!"</p>
+                  <p class="mb-6">Claire stared at her.</p>
+                  <p class="mb-6">"Why would you ask him that?"</p>
+                  <p class="mb-6">"Because you said you'd come!"</p>
+                  <p class="mb-6">"I said maybe!"</p>
+                  <p class="mb-6">At 5:30, Claire reluctantly arrived at the restaurant.</p>
+                  <p class="mb-6">She planned to stay twenty minutes.</p>
+                  <p class="mb-6">Unfortunately, the manager sat beside her.</p>
+                  <p class="mb-6">"So, Claire, are you interested in changing jobs?"</p>
+                  <p class="mb-6">"Not really."</p>
+                  <p class="mb-6">"We offer excellent health insurance. Really <b class="highlight quiz-target" data-ans="good coverage" data-kor="보장 범위가 좋은 것">good coverage</b>."</p>
+                  <p class="mb-6">"That's nice."</p>
+                  <p class="mb-6">"And our employees handle <b class="highlight quiz-target" data-ans="pressure" data-kor="압박 / 부담">pressure</b> very well."</p>
+                  <p class="mb-6">Claire nodded, wondering how to leave.</p>
+                  <p class="mb-6">Then the manager mentioned that his company was organizing a charity event at a <b class="highlight quiz-target" data-ans="Buddhist" data-kor="불교의">Buddhist</b> temple.</p>
+                  <p class="mb-6">Claire became interested.</p>
+                  <p class="mb-6">"Oh, I visited a temple recently. They had a beautiful statue of <b class="highlight quiz-target" data-ans="Buddha" data-kor="부처">Buddha</b>."</p>
+                  <p class="mb-6">The manager smiled.</p>
+                  <p class="mb-6">"Wonderful! We're looking for volunteers."</p>
+                  <p class="mb-6">Claire immediately regretted speaking.</p>
+                  <p class="mb-6">"I'm actually pretty busy."</p>
+                  <p class="mb-6">"It's only Saturday morning."</p>
+                  <p class="mb-6">"Saturday's difficult."</p>
+                  <p class="mb-6">"What about Sunday?"</p>
+                  <p class="mb-6">Claire looked at Megan.</p>
+                  <p class="mb-6">Megan smiled encouragingly.</p>
+                  <p class="mb-6">The evening was developing more <b class="highlight quiz-target" data-ans="twists" data-kor="반전들">twists</b> than the detective series waiting at home.</p>
+                  <p class="mb-6">Finally, Claire stood up.</p>
+                  <p class="mb-6">"I'm sorry, but I really need to go."</p>
+                  <p class="mb-6">The manager looked disappointed.</p>
+                  <p class="mb-6">"Of course. But can I have your number?"</p>
+                  <p class="mb-6">Claire hesitated.</p>
+                  <p class="mb-6">"For what?"</p>
+                  <p class="mb-6">"To send you the volunteer information."</p>
+                  <p class="mb-6">Megan interrupted.</p>
+                  <p class="mb-6">"She'd love to help!"</p>
+                  <p class="mb-6">Claire turned toward her.</p>
+                  <p class="mb-6">"Please stop volunteering me for things."</p>
+                  <p class="mb-6">The manager looked embarrassed.</p>
+                  <p class="mb-6">"Oh. I'm sorry. I didn't realize."</p>
+                  <p class="mb-6">Claire picked up her bag.</p>
+                  <p class="mb-6">"Thank you for dinner. I appreciate the invitation."</p>
+                  <p class="mb-6">Outside, Megan followed her.</p>
+                  <p class="mb-6">"Why are you so upset? I was trying to help your career!"</p>
+                  <p class="mb-6">Claire stopped.</p>
+                  <p class="mb-6">"Megan, I don't want a new job. I don't want to volunteer. I just want to go home."</p>
+                  <p class="mb-6">"To do what?"</p>
+                  <p class="mb-6">"Watch television."</p>
+                  <p class="mb-6">Megan stared at her.</p>
+                  <p class="mb-6">"That's it?"</p>
+                  <p class="mb-6">"That's it."</p>
+                  <p class="mb-6">At home, Claire finally turned on her show.</p>
+                  <p class="mb-6">The opening scene featured a detective investigating a mysterious death at a Buddhist temple.</p>
+                  <p class="mb-6">Claire immediately turned it off.</p>
+              </div>
+              <hr class="border-white/10">
+              <div class="text-slate-400 italic leading-relaxed space-y-6">
+                  <p class="mb-6">클레어는 3주 동안 새로운 추리 드라마를 금요일 밤에 보려고 아껴두고 있었다.</p>
+                  <p class="mb-6">방해받지 않고 여섯 편을 연속으로 볼 계획이었다.</p>
+                  <p class="mb-6">오후 네 시, 동료 메건이 다가왔다.</p>
+                  <p class="mb-6">"오늘 저녁에 시간 있어? 우리 몇 명이 다른 회사 사람들이랑 저녁 먹는데."</p>
+                  <p class="mb-6">"고맙지만 이미 약속이 있어."</p>
+                  <p class="mb-6">"에이, 좋은 인맥 쌓을 기회잖아."</p>
+                  <p class="mb-6">"난 지금 회사가 좋아."</p>
+                  <p class="mb-6">"그래도 모르잖아. 더 좋은 곳에 <b class="highlight">발을 들여놓을</b> 기회가 될 수도 있지."</p>
+                  <p class="mb-6">클레어는 예의 바르게 웃었다.</p>
+                  <p class="mb-6">"고맙지만 이번엔 안 갈게."</p>
+                  <p class="mb-6">메건이 목소리를 낮췄다.</p>
+                  <p class="mb-6">"식당도 엄청 좋아."</p>
+                  <p class="mb-6">"그렇겠지."</p>
+                  <p class="mb-6">"음식도 생각보다 <b class="highlight">저렴하고</b>."</p>
+                  <p class="mb-6">"좋네."</p>
+                  <p class="mb-6">"사실 그쪽 매니저가 계산한대."</p>
+                  <p class="mb-6">클레어가 웃었다.</p>
+                  <p class="mb-6">"<b class="highlight">네가 사는 거면</b> 생각해 볼 수도 있겠네."</p>
+                  <p class="mb-6">메건이 멈췄다.</p>
+                  <p class="mb-6">"잠깐. 진짜?"</p>
+                  <p class="mb-6">"아니, 농담이야."</p>
+                  <p class="mb-6">하지만 메건은 이미 휴대폰을 꺼냈다.</p>
+                  <p class="mb-6">"내가 물어볼게!"</p>
+                  <p class="mb-6">"메건, 그러지 마—"</p>
+                  <p class="mb-6">너무 늦었다.</p>
+                  <p class="mb-6">5분 뒤 메건이 돌아왔다.</p>
+                  <p class="mb-6">"좋은 소식! 그분이 네 것도 계산해 주신대!"</p>
+                  <p class="mb-6">클레어는 그녀를 빤히 쳐다봤다.</p>
+                  <p class="mb-6">"왜 그런 걸 물어봤어?"</p>
+                  <p class="mb-6">"네가 온다고 했잖아!"</p>
+                  <p class="mb-6">"생각해 보겠다고 했지!"</p>
+                  <p class="mb-6">5시 30분, 클레어는 마지못해 식당에 도착했다.</p>
+                  <p class="mb-6">20분만 있다가 갈 생각이었다.</p>
+                  <p class="mb-6">하지만 매니저가 바로 옆자리에 앉았다.</p>
+                  <p class="mb-6">"클레어 씨, 혹시 이직에 관심 있으세요?"</p>
+                  <p class="mb-6">"별로 없는데요."</p>
+                  <p class="mb-6">"저희 회사는 건강보험이 아주 좋아요. <b class="highlight">보장 범위도 넓고요</b>."</p>
+                  <p class="mb-6">"좋네요."</p>
+                  <p class="mb-6">"직원들도 <b class="highlight">압박</b>이 심한 환경에서 일을 잘합니다."</p>
+                  <p class="mb-6">클레어는 어떻게 나갈지 고민하며 고개를 끄덕였다.</p>
+                  <p class="mb-6">그때 매니저가 회사에서 불교 사찰에서 자선 행사를 준비하고 있다고 말했다.</p>
+                  <p class="mb-6">클레어는 관심을 보였다.</p>
+                  <p class="mb-6">"아, 저도 최근에 절에 다녀왔어요. 아름다운 <b class="highlight">부처</b>님 상이 있더라고요."</p>
+                  <p class="mb-6">매니저가 웃었다.</p>
+                  <p class="mb-6">"잘됐네요! 저희가 자원봉사자를 찾고 있거든요."</p>
+                  <p class="mb-6">클레어는 말을 꺼낸 것을 즉시 후회했다.</p>
+                  <p class="mb-6">"사실 제가 좀 바빠서요."</p>
+                  <p class="mb-6">"토요일 오전만 하면 돼요."</p>
+                  <p class="mb-6">"토요일은 어려워요."</p>
+                  <p class="mb-6">"그럼 일요일은요?"</p>
+                  <p class="mb-6">클레어는 메건을 바라봤다.</p>
+                  <p class="mb-6">메건은 격려하듯 웃었다.</p>
+                  <p class="mb-6">오늘 저녁은 집에서 기다리는 추리 드라마보다 <b class="highlight">반전</b>이 더 많았다.</p>
+                  <p class="mb-6">마침내 클레어가 일어섰다.</p>
+                  <p class="mb-6">"죄송하지만 정말 가봐야겠어요."</p>
+                  <p class="mb-6">매니저는 실망한 표정을 지었다.</p>
+                  <p class="mb-6">"물론이죠. 그런데 전화번호 좀 알려주실 수 있을까요?"</p>
+                  <p class="mb-6">클레어는 망설였다.</p>
+                  <p class="mb-6">"왜요?"</p>
+                  <p class="mb-6">"봉사활동 정보를 보내드리려고요."</p>
+                  <p class="mb-6">메건이 끼어들었다.</p>
+                  <p class="mb-6">"클레어도 기꺼이 도울 거예요!"</p>
+                  <p class="mb-6">클레어는 메건을 돌아봤다.</p>
+                  <p class="mb-6">"제발 내 대신 뭘 하겠다고 하지 좀 마."</p>
+                  <p class="mb-6">매니저는 당황했다.</p>
+                  <p class="mb-6">"아, 죄송합니다. 그런 줄 몰랐네요."</p>
+                  <p class="mb-6">클레어는 가방을 집어 들었다.</p>
+                  <p class="mb-6">"저녁 잘 먹었습니다. 초대해 주셔서 감사해요."</p>
+                  <p class="mb-6">밖으로 나오자 메건이 따라왔다.</p>
+                  <p class="mb-6">"왜 그렇게 화가 났어? 네 경력에 도움이 되라고 한 건데!"</p>
+                  <p class="mb-6">클레어가 멈춰 섰다.</p>
+                  <p class="mb-6">"메건, 난 이직하고 싶지도 않고 봉사활동도 하고 싶지 않아. 그냥 집에 가고 싶어."</p>
+                  <p class="mb-6">"가서 뭐 하려고?"</p>
+                  <p class="mb-6">"텔레비전 보려고."</p>
+                  <p class="mb-6">메건은 그녀를 빤히 쳐다봤다.</p>
+                  <p class="mb-6">"그게 다야?"</p>
+                  <p class="mb-6">"그게 다야."</p>
+                  <p class="mb-6">집에 도착한 클레어는 마침내 드라마를 틀었다.</p>
+                  <p class="mb-6">첫 장면은 <b class="highlight">불교</b> 사찰에서 발생한 의문의 죽음을 조사하는 형사였다.</p>
+                  <p class="mb-6">클레어는 즉시 TV를 껐다.</p>
+              </div>
+          </section>
+
+      </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "1029715.m4a";
+</script>
+      <script src="wordbank-utils.js"></script>
+  </body>
+  </html>

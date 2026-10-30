@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Sound from the Rice Paddy</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🌾</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Sound from the Rice Paddy</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">centipede</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">지네</td></tr>
+                <tr><td class="p-4"><b class="text-white">pheasant</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">꿩</td></tr>
+                <tr><td class="p-4"><b class="text-white">gross</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">징그러운 / 역겨운</td></tr>
+                <tr><td class="p-4"><b class="text-white">rice paddy</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">논</td></tr>
+                <tr><td class="p-4"><b class="text-white">ribbit</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">개굴개굴 (개구리 울음소리)</td></tr>
+                <tr><td class="p-4"><b class="text-white">scared of the dark</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">어둠을 무서워하는</td></tr>
+                <tr><td class="p-4"><b class="text-white">pitch black</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">칠흑같이 어두운</td></tr>
+                <tr><td class="p-4"><b class="text-white">on strike</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">파업 중인</td></tr>
+                <tr><td class="p-4"><b class="text-white">got stitches</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">상처를 꿰맸다 / 봉합 치료를 받았다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">1. pitch black</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">빛이 전혀 없어서 아무것도 보이지 않을 정도로 캄캄한 상태입니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">2. got stitches</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">상처가 깊어 병원에서 꿰매는 치료를 받았다는 뜻입니다. <i>I got six stitches</i>처럼 바늘 수를 함께 말할 수 있습니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">3. on strike</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">노동자들이 근무 조건 등에 항의해 집단적으로 일을 중단한 상태입니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">When Yuna was eleven, she spent the summer at her grandmother's house in a small farming village.</p>
+                <p class="mb-6">Her bedroom faced a <b class="highlight quiz-target" data-ans="rice paddy" data-kor="논">rice paddy</b>. Every night, frogs gathered in the water and filled the house with their calls.</p>
+                <p class="mb-6">Yuna was <b class="highlight quiz-target" data-ans="scared of the dark" data-kor="어둠을 무서워하는">scared of the dark</b>, so she always slept with a small lamp beside her bed.</p>
+                <p class="mb-6">One evening, her grandmother noticed her listening to the frogs.</p>
+                <p class="mb-6">"Can you hear that?" she asked.</p>
+                <p class="mb-6">"Of course. They're really loud."</p>
+                <p class="mb-6">"Listen carefully. Sometimes one of them sounds different."</p>
+                <p class="mb-6">Yuna listened.</p>
+                <p class="mb-6"><i><b class="highlight quiz-target" data-ans="Ribbit" data-kor="개굴">Ribbit</b>. Ribbit. Ribbit.</i></p>
+                <p class="mb-6">Then, from somewhere farther away:</p>
+                <p class="mb-6"><i>Ribbit. Ribbit. Ribbit. Ribbit.</i></p>
+                <p class="mb-6">Four calls instead of three.</p>
+                <p class="mb-6">"That's strange," Yuna said.</p>
+                <p class="mb-6">Her grandmother closed the window.</p>
+                <p class="mb-6">"If you hear that one, don't look outside."</p>
+                <p class="mb-6">"Why?"</p>
+                <p class="mb-6">"Just promise me."</p>
+                <p class="mb-6">That night, Yuna woke at 2:30.</p>
+                <p class="mb-6">The lamp beside her bed was off.</p>
+                <p class="mb-6">Outside, everything was <b class="highlight quiz-target" data-ans="pitch black" data-kor="칠흑같이 어두운">pitch black</b>.</p>
+                <p class="mb-6">The frogs were silent.</p>
+                <p class="mb-6">Then she heard it.</p>
+                <p class="mb-6"><i>Ribbit. Ribbit. Ribbit. Ribbit.</i></p>
+                <p class="mb-6">The sound came from directly beneath her window.</p>
+                <p class="mb-6">Yuna pulled the blanket over her head.</p>
+                <p class="mb-6">A few minutes passed.</p>
+                <p class="mb-6">Then something tapped against the glass.</p>
+                <p class="mb-6">Four slow taps.</p>
+                <p class="mb-6">She lay perfectly still.</p>
+                <p class="mb-6">The tapping stopped.</p>
+                <p class="mb-6">In the morning, her grandmother found muddy fingerprints on the outside of the window.</p>
+                <p class="mb-6">They were much too high for a child to reach.</p>
+                <p class="mb-6">Yuna went home that afternoon.</p>
+                <p class="mb-6">***</p>
+                <p class="mb-6">Twenty years later, her grandmother died.</p>
+                <p class="mb-6">Yuna returned to the village to arrange the funeral.</p>
+                <p class="mb-6">That evening, she found an old notebook in her grandmother's bedroom.</p>
+                <p class="mb-6">Most pages contained farming records and household expenses.</p>
+                <p class="mb-6">But the final page had only three sentences.</p>
+                <p class="mb-6"><i>It learned to copy the frogs.</i></p>
+                <p class="mb-6"><i>Then it learned to knock.</i></p>
+                <p class="mb-6"><i>Last night, it learned my voice.</i></p>
+                <p class="mb-6">Yuna read the words several times.</p>
+                <p class="mb-6">Then she heard someone calling from outside.</p>
+                <p class="mb-6">"Yuna?"</p>
+                <p class="mb-6">It was her grandmother's voice.</p>
+                <p class="mb-6">Yuna stood frozen beside the bed.</p>
+                <p class="mb-6">"Yuna, sweetheart. Open the window."</p>
+                <p class="mb-6">She slowly turned toward the curtains.</p>
+                <p class="mb-6">A shadow stood on the other side.</p>
+                <p class="mb-6">It was much taller than her grandmother had been.</p>
+                <p class="mb-6">"Please, Yuna. It's cold out here."</p>
+                <p class="mb-6">Yuna backed toward the bedroom door.</p>
+                <p class="mb-6">Then her phone rang.</p>
+                <p class="mb-6">It was her mother.</p>
+                <p class="mb-6">"Yuna, where are you?"</p>
+                <p class="mb-6">"At Grandma's house."</p>
+                <p class="mb-6">Her mother went silent.</p>
+                <p class="mb-6">"Yuna, listen carefully. The police just called."</p>
+                <p class="mb-6">"What?"</p>
+                <p class="mb-6">"They found something in Grandma's house when they were collecting her belongings."</p>
+                <p class="mb-6">Yuna stared at the shadow behind the curtain.</p>
+                <p class="mb-6">Her mother continued.</p>
+                <p class="mb-6">"They found a recording on her phone. She made it the night before she died."</p>
+                <p class="mb-6">"What did she say?"</p>
+                <p class="mb-6">Her mother's voice began shaking.</p>
+                <p class="mb-6">"She said something had been standing outside her window for weeks."</p>
+                <p class="mb-6">Yuna could barely breathe.</p>
+                <p class="mb-6">"And every night, it looked a little more like her."</p>
+                <p class="mb-6">The shadow moved.</p>
+                <p class="mb-6">A thin hand appeared between the curtains.</p>
+                <p class="mb-6">Then her grandmother's voice spoke from outside.</p>
+                <p class="mb-6">"Yuna, don't listen to your mother."</p>
+                <p class="mb-6">The hand slowly pulled the curtain aside.</p>
+                <p class="mb-6">And Yuna saw what had been practicing her grandmother's face.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">유나가 열한 살이었을 때, 작은 농촌 마을에 있는 할머니 댁에서 여름을 보냈다.</p>
+                <p class="mb-6">유나의 방은 <b class="highlight">논을</b> 향해 있었다. 밤마다 개구리들이 논물에 모여들어 울었고, 그 소리가 집 안을 가득 채웠다.</p>
+                <p class="mb-6">유나는 <b class="highlight">어둠을 무서워해서</b> 항상 침대 옆에 작은 등을 켜 놓고 잤다.</p>
+                <p class="mb-6">어느 날 저녁, 할머니는 유나가 개구리 소리에 귀를 기울이고 있는 것을 보았다.</p>
+                <p class="mb-6">"저 소리 들리니?" 할머니가 물었다.</p>
+                <p class="mb-6">"당연하죠. 엄청 시끄러워요."</p>
+                <p class="mb-6">"잘 들어 보렴. 가끔 그중 하나가 다른 소리를 내거든."</p>
+                <p class="mb-6">유나는 귀를 기울였다.</p>
+                <p class="mb-6"><b class="highlight">개굴</b>. 개굴. 개굴.</p>
+                <p class="mb-6">그때 조금 더 먼 곳에서 소리가 들렸다.</p>
+                <p class="mb-6">개굴. 개굴. 개굴. 개굴.</p>
+                <p class="mb-6">세 번이 아니라 네 번이었다.</p>
+                <p class="mb-6">"이상하네요." 유나가 말했다.</p>
+                <p class="mb-6">할머니는 창문을 닫았다.</p>
+                <p class="mb-6">"저 소리가 들리면 절대로 밖을 내다보지 마."</p>
+                <p class="mb-6">"왜요?"</p>
+                <p class="mb-6">"그냥 할머니한테 약속해."</p>
+                <p class="mb-6">그날 밤, 유나는 새벽 2시 30분에 잠에서 꼈다.</p>
+                <p class="mb-6">침대 옆의 작은 등이 꺼져 있었다.</p>
+                <p class="mb-6">창밖은 <b class="highlight">칠흑같이 어두웠다</b>.</p>
+                <p class="mb-6">개구리 울음소리는 들리지 않았다.</p>
+                <p class="mb-6">그때 그 소리가 들렸다.</p>
+                <p class="mb-6">개굴. 개굴. 개굴. 개굴.</p>
+                <p class="mb-6">소리는 바로 창문 아래에서 들려왔다.</p>
+                <p class="mb-6">유나는 이불을 머리끝까지 끌어올렸다.</p>
+                <p class="mb-6">몇 분이 흘렀다.</p>
+                <p class="mb-6">그때 무언가가 창문을 두드렸다.</p>
+                <p class="mb-6">천천히 네 번.</p>
+                <p class="mb-6">유나는 꼼짝도 하지 않았다.</p>
+                <p class="mb-6">두드리는 소리가 멈췄다.</p>
+                <p class="mb-6">다음 날 아침, 할머니는 창문 바깥쪽에서 진흙 묻은 손가락 자국을 발견했다.</p>
+                <p class="mb-6">어린아이가 손을 뻗기에는 너무 높은 위치였다.</p>
+                <p class="mb-6">유나는 그날 오후 집으로 돌아갔다.</p>
+                <p class="mb-6">***</p>
+                <p class="mb-6">20년 후, 할머니가 돌아가셨다.</p>
+                <p class="mb-6">유나는 장례를 치르기 위해 마을로 돌아왔다.</p>
+                <p class="mb-6">그날 저녁, 할머니의 침실에서 오래된 공책 한 권을 발견했다.</p>
+                <p class="mb-6">대부분의 페이지에는 농사 기록과 생활비 지출 내역이 적혀 있었다.</p>
+                <p class="mb-6">하지만 마지막 페이지에는 문장 세 개만 적혀 있었다.</p>
+                <p class="mb-6"><i>그것은 개구리 소리를 흉내 내는 법을 배웠다.</i></p>
+                <p class="mb-6"><i>그다음에는 문을 두드리는 법을 배웠다.</i></p>
+                <p class="mb-6"><i>어젯밤에는 내 목소리를 배웠다.</i></p>
+                <p class="mb-6">유나는 그 문장들을 여러 번 읽었다.</p>
+                <p class="mb-6">그때 밖에서 누군가 자신을 부르는 소리가 들렸다.</p>
+                <p class="mb-6">"유나야?"</p>
+                <p class="mb-6">할머니의 목소리였다.</p>
+                <p class="mb-6">유나는 침대 옆에서 얼어붙었다.</p>
+                <p class="mb-6">"유나야, 우리 강아지. 창문 좀 열어 주렴."</p>
+                <p class="mb-6">유나는 천천히 커튼 쪽으로 고개를 돌렸다.</p>
+                <p class="mb-6">커튼 너머에 그림자가 서 있었다.</p>
+                <p class="mb-6">할머니보다 훨씬 키가 컸다.</p>
+                <p class="mb-6">"제발, 유나야. 밖이 춥구나."</p>
+                <p class="mb-6">유나는 침실 문 쪽으로 뒷걸음질 쳤다.</p>
+                <p class="mb-6">그때 휴대전화가 울렸다.</p>
+                <p class="mb-6">엄마였다.</p>
+                <p class="mb-6">"유나야, 어디니?"</p>
+                <p class="mb-6">"할머니 집이요."</p>
+                <p class="mb-6">엄마가 잠시 말을 멈췄다.</p>
+                <p class="mb-6">"유나야, 잘 들어. 방금 경찰한테 전화가 왔어."</p>
+                <p class="mb-6">"네?"</p>
+                <p class="mb-6">"할머니 유품을 정리하다가 뭔가를 발견했대."</p>
+                <p class="mb-6">유나는 커튼 뒤의 그림자를 바라보았다.</p>
+                <p class="mb-6">엄마가 말을 이었다.</p>
+                <p class="mb-6">"할머니 휴대전화에서 녹음 파일을 발견했대. 돌아가시기 전날 밤에 녹음하신 거래."</p>
+                <p class="mb-6">"뭐라고 하셨는데요?"</p>
+                <p class="mb-6">엄마의 목소리가 떨리기 시작했다.</p>
+                <p class="mb-6">"몇 주 동안 밤마다 창문 밖에 무언가가 서 있었다고 하셨어."</p>
+                <p class="mb-6">유나는 숨조차 제대로 쉴 수 없었다.</p>
+                <p class="mb-6">"그리고 밤이 지날수록 그게 점점 할머니를 닮아 갔대."</p>
+                <p class="mb-6">그림자가 움직였다.</p>
+                <p class="mb-6">커튼 사이로 가느다란 손 하나가 나타났다.</p>
+                <p class="mb-6">그때 창밖에서 할머니의 목소리가 들렸다.</p>
+                <p class="mb-6">"유나야, 엄마 말 듣지 마라."</p>
+                <p class="mb-6">손이 천천히 커튼을 옆으로 젖혔다.</p>
+                <p class="mb-6">그리고 유나는 할머니의 얼굴을 흉내 내는 연습을 해 온 그것의 모습을 보았다.</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+    function skipAudio(seconds) {
+        const player = document.getElementById('player');
+        if (player.src) {
+            player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+        }
+    }
+
+    function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+    let _quizOriginals = new Map();
+
+    function toggleQuiz() {
+        const btn = document.getElementById('quizBtn');
+        const isQuiz = btn.innerText.includes("Quiz");
+        const targets = document.querySelectorAll('.quiz-target');
+        const cells = document.querySelectorAll('.mystery-cell');
+
+        if (isQuiz) {
+            btn.innerText = "Study Mode 📖";
+            cells.forEach(c => c.classList.add('quiz-hidden'));
+            targets.forEach(t => {
+                const ans = t.dataset.ans; const kor = t.dataset.kor;
+                _quizOriginals.set(t, t.innerHTML);
+                t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+            });
+        } else {
+            btn.innerText = "Quiz Mode 👻";
+            cells.forEach(c => c.classList.remove('quiz-hidden'));
+            targets.forEach(t => {
+                if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+            });
+            _quizOriginals.clear();
+        }
+    }
+
+    function checkQuiz(i, a) {
+        if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+            i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+            confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+            checkAllSolved();
+        } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+    }
+
+    function checkAllSolved() {
+        const inputs = document.querySelectorAll('.quiz-input');
+        if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+            var duration = 3 * 1000; var end = Date.now() + duration;
+            (function frame() {
+                confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                if (Date.now() < end) requestAnimationFrame(frame);
+            }());
+        }
+    }
+
+    document.getElementById('player').src = "1030845.m4a";
+</script>
+    <script src="wordbank-utils.js"></script>
+</body>
+</html>

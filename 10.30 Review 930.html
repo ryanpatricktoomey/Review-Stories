@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Floor Above</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🛗</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Floor Above</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">hallway</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">복도</td></tr>
+                <tr><td class="p-4"><b class="text-white">layout</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">구조 / 배치 / 공간 구성</td></tr>
+                <tr><td class="p-4"><b class="text-white">peek out</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">살짝 내다보다 / 고개를 빼꼼 내밀다</td></tr>
+                <tr><td class="p-4"><b class="text-white">faint (appearance)</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">희미한 / 흐릿한 (모습이나 형체가 뚜렷하지 않은)</td></tr>
+                <tr><td class="p-4"><b class="text-white">brush past my leg</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">내 다리를 스치고 지나가다</td></tr>
+                <tr><td class="p-4"><b class="text-white">bloodshot eyes</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">충혈된 눈</td></tr>
+                <tr><td class="p-4"><b class="text-white">so dramatic</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">너무 유난스러운 / 호들갑스러운</td></tr>
+                <tr><td class="p-4"><b class="text-white">don't freak out</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">너무 놀라지 마 / 당황하지 마</td></tr>
+                <tr><td class="p-4"><b class="text-white">calm down</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">진정해 / 침착해</td></tr>
+                <tr><td class="p-4"><b class="text-white">overreact</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">과민 반응하다 / 지나치게 반응하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">upstairs</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">위층에 / 위층으로</td></tr>
+                <tr><td class="p-4"><b class="text-white">upper floor</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">위층 / 상층부</td></tr>
+                <tr><td class="p-4"><b class="text-white">feel someone's presence</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">누군가 있다는 기척을 느끼다</td></tr>
+                <tr><td class="p-4"><b class="text-white">making lots of noise</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">시끄럽게 소리를 내는 / 소란을 피우는</td></tr>
+                <tr><td class="p-4"><b class="text-white">work overtime</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">야근하다 / 초과 근무하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">suffocating</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">숨이 막히는 / 질식할 것 같은</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">1. peek out</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">문이나 창문 뒤에서 몸을 완전히 드러내지 않고 살짝 내다보는 행동입니다. <i>Peek out into the hallway</i>처럼 사용할 수 있습니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">2. faint (appearance)</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">모습이나 형체가 뚜렷하지 않고 희미하게 보이는 상태입니다. <i>A faint figure</i>는 '희미한 형체'라는 뜻입니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">3. brush past my leg</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">무언가가 다리를 가볍게 스치면서 지나가는 것을 뜻합니다. <i>Something brushed past my leg</i>처럼 과거형으로 사용할 수 있습니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">4. so dramatic / overreact</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">둘 다 상황에 지나치게 반응한다는 뜻이지만, <i>dramatic</i>은 호들갑스러운 태도를, <i>overreact</i>는 실제 상황보다 과도하게 반응하는 행동을 강조합니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">5. feel someone's presence</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">누군가를 직접 보거나 듣지 못해도 근처에 사람이 있다는 느낌이나 기척을 느끼는 것을 말합니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">6. suffocating</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">실제로 숨쉬기 어려운 상황뿐 아니라 심리적으로 압박감이 심하거나 답답한 상황에도 사용합니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">The first time Jisoo heard footsteps above her office, she assumed someone was moving furniture.</p>
+                <p class="mb-6">It was nearly midnight, and she was alone on the twelfth floor.</p>
+                <p class="mb-6">She often had to <b class="highlight quiz-target" data-ans="work overtime" data-kor="야근하다">work overtime</b>, but she had never heard anyone <b class="highlight quiz-target" data-ans="upstairs" data-kor="위층에">upstairs</b> before.</p>
+                <p class="mb-6">The next morning, she mentioned it to her manager.</p>
+                <p class="mb-6">"That's impossible. We're on the top floor."</p>
+                <p class="mb-6">"Maybe there's a storage area?"</p>
+                <p class="mb-6">He showed her the building's <b class="highlight quiz-target" data-ans="layout" data-kor="구조">layout</b>.</p>
+                <p class="mb-6">There was no <b class="highlight quiz-target" data-ans="upper floor" data-kor="위층">upper floor</b>.</p>
+                <p class="mb-6">"You're probably just tired," he said.</p>
+                <p class="mb-6">Jisoo didn't argue.</p>
+                <p class="mb-6">Three nights later, the footsteps returned.</p>
+                <p class="mb-6">This time, they stopped directly above her desk.</p>
+                <p class="mb-6">She moved to the other side of the office.</p>
+                <p class="mb-6">A few seconds later, the footsteps followed.</p>
+                <p class="mb-6">Jisoo called the security guard.</p>
+                <p class="mb-6">"Someone's walking above me."</p>
+                <p class="mb-6">"Ma'am, there's nobody up there."</p>
+                <p class="mb-6">"Can you come check?"</p>
+                <p class="mb-6">"Of course. Just <b class="highlight quiz-target" data-ans="calm down" data-kor="진정해">calm down</b>."</p>
+                <p class="mb-6">While she waited, Jisoo stepped into the <b class="highlight quiz-target" data-ans="hallway" data-kor="복도">hallway</b>.</p>
+                <p class="mb-6">The footsteps continued overhead.</p>
+                <p class="mb-6">She walked toward the elevators.</p>
+                <p class="mb-6">They followed.</p>
+                <p class="mb-6">Then she stopped.</p>
+                <p class="mb-6">So did they.</p>
+                <p class="mb-6">Jisoo looked up.</p>
+                <p class="mb-6">Three slow knocks came from the ceiling.</p>
+                <p class="mb-6">She knocked three times against the wall.</p>
+                <p class="mb-6">Three knocks answered.</p>
+                <p class="mb-6">Her phone rang.</p>
+                <p class="mb-6">It was the security guard.</p>
+                <p class="mb-6">"<b class="highlight quiz-target" data-ans="Don't freak out" data-kor="너무 놀라지 마">Don't freak out</b>, but I need you to leave the building."</p>
+                <p class="mb-6">"Why?"</p>
+                <p class="mb-6">"I checked the security cameras."</p>
+                <p class="mb-6">"And?"</p>
+                <p class="mb-6">"There's someone following you."</p>
+                <p class="mb-6">Jisoo turned around.</p>
+                <p class="mb-6">The hallway was empty.</p>
+                <p class="mb-6">"Where?"</p>
+                <p class="mb-6">The guard hesitated.</p>
+                <p class="mb-6">"On the camera, you're walking down the hallway."</p>
+                <p class="mb-6">"I know."</p>
+                <p class="mb-6">"But there's a woman walking directly behind you."</p>
+                <p class="mb-6">Jisoo felt the air turn cold.</p>
+                <p class="mb-6">"What's she doing?"</p>
+                <p class="mb-6">"Nothing. She's just following you."</p>
+                <p class="mb-6">Jisoo ran toward the elevator.</p>
+                <p class="mb-6">"Is she still there?"</p>
+                <p class="mb-6">The guard didn't answer.</p>
+                <p class="mb-6">"Hello?"</p>
+                <p class="mb-6">"She's stopped."</p>
+                <p class="mb-6">Jisoo pressed the elevator button repeatedly.</p>
+                <p class="mb-6">"Where is she?"</p>
+                <p class="mb-6">The guard's voice became very quiet.</p>
+                <p class="mb-6">"She's looking up."</p>
+                <p class="mb-6">"At what?"</p>
+                <p class="mb-6">"At the camera."</p>
+                <p class="mb-6">The elevator doors opened.</p>
+                <p class="mb-6">Jisoo rushed inside and pressed the ground-floor button.</p>
+                <p class="mb-6">As the doors closed, she heard the guard shout.</p>
+                <p class="mb-6">"WAIT! DON'T—"</p>
+                <p class="mb-6">The call disconnected.</p>
+                <p class="mb-6">***</p>
+                <p class="mb-6">The elevator began descending.</p>
+                <p class="mb-6">12.</p>
+                <p class="mb-6">11.</p>
+                <p class="mb-6">10.</p>
+                <p class="mb-6">Then it stopped.</p>
+                <p class="mb-6">The display showed 13.</p>
+                <p class="mb-6">Jisoo stared at the number.</p>
+                <p class="mb-6">A soft bell rang.</p>
+                <p class="mb-6">The doors opened onto a dark hallway.</p>
+                <p class="mb-6">At the far end stood a woman.</p>
+                <p class="mb-6">Her back was turned.</p>
+                <p class="mb-6">She wore the same clothes as Jisoo.</p>
+                <p class="mb-6">The woman slowly raised her phone to her ear.</p>
+                <p class="mb-6">Jisoo's phone rang.</p>
+                <p class="mb-6">The caller ID showed her own number.</p>
+                <p class="mb-6">She answered without thinking.</p>
+                <p class="mb-6">From the other end came her own voice, barely louder than a whisper.</p>
+                <p class="mb-6">"Don't get out."</p>
+                <p class="mb-6">Jisoo couldn't move.</p>
+                <p class="mb-6">"Who is this?"</p>
+                <p class="mb-6">"Listen carefully. The woman at the end of the hallway isn't the one following you."</p>
+                <p class="mb-6">Jisoo felt a gentle breath against the back of her neck.</p>
+                <p class="mb-6">Then the voice on the phone said:</p>
+                <p class="mb-6">"Whatever you do, don't turn around."</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">지수가 처음 사무실 위쪽에서 발소리를 들었을 때, 누군가 가구를 옮기고 있다고 생각했다.</p>
+                <p class="mb-6">자정이 가까운 시간이었고, 지수는 12층 사무실에 혼자 있었다.</p>
+                <p class="mb-6"><b class="highlight">야근을</b> 자주 했지만, <b class="highlight">위층에서</b> 누군가 움직이는 소리를 들은 적은 없었다.</p>
+                <p class="mb-6">다음 날 아침, 지수는 상사에게 그 이야기를 했다.</p>
+                <p class="mb-6">"그럴 리가 없는데요. 우리가 꼭대기 층이잖아요."</p>
+                <p class="mb-6">"혹시 위에 창고 같은 게 있나요?"</p>
+                <p class="mb-6">상사는 건물 <b class="highlight">구조도를</b> 보여주었다.</p>
+                <p class="mb-6"><b class="highlight">위층은</b> 존재하지 않았다.</p>
+                <p class="mb-6">"아마 피곤해서 그러신 것 같아요." 상사가 말했다.</p>
+                <p class="mb-6">지수는 더 이상 따지지 않았다.</p>
+                <p class="mb-6">사흘 뒤 밤, 발소리가 다시 들렸다.</p>
+                <p class="mb-6">이번에는 정확히 지수의 책상 위에서 멈췄다.</p>
+                <p class="mb-6">지수는 사무실 반대편으로 자리를 옮겼다.</p>
+                <p class="mb-6">몇 초 후, 발소리도 따라 움직였다.</p>
+                <p class="mb-6">지수는 경비원에게 전화했다.</p>
+                <p class="mb-6">"제 위에서 누가 걷고 있어요."</p>
+                <p class="mb-6">"손님, 위에는 아무도 없습니다."</p>
+                <p class="mb-6">"와서 확인해 주실 수 있나요?"</p>
+                <p class="mb-6">"물론이죠. 일단 <b class="highlight">진정하세요</b>."</p>
+                <p class="mb-6">경비원을 기다리는 동안 지수는 <b class="highlight">복도로</b> 나왔다.</p>
+                <p class="mb-6">발소리는 계속 천장 위에서 들렸다.</p>
+                <p class="mb-6">지수는 엘리베이터 쪽으로 걸어갔다.</p>
+                <p class="mb-6">발소리도 따라왔다.</p>
+                <p class="mb-6">그러다 지수가 멈췄다.</p>
+                <p class="mb-6">발소리도 멈췄다.</p>
+                <p class="mb-6">지수는 위를 올려다보았다.</p>
+                <p class="mb-6">천장에서 천천히 세 번 두드리는 소리가 들렸다.</p>
+                <p class="mb-6">지수는 벽을 세 번 두드렸다.</p>
+                <p class="mb-6">그러자 세 번의 노크 소리가 돌아왔다.</p>
+                <p class="mb-6">휴대전화가 울렸다.</p>
+                <p class="mb-6">경비원이었다.</p>
+                <p class="mb-6">"<b class="highlight">놀라지 마시고요</b>. 지금 바로 건물 밖으로 나가셔야겠습니다."</p>
+                <p class="mb-6">"왜요?"</p>
+                <p class="mb-6">"보안 카메라를 확인했는데요."</p>
+                <p class="mb-6">"그런데요?"</p>
+                <p class="mb-6">"누군가 손님을 따라가고 있습니다."</p>
+                <p class="mb-6">지수는 뒤를 돌아보았다.</p>
+                <p class="mb-6">복도에는 아무도 없었다.</p>
+                <p class="mb-6">"어디요?"</p>
+                <p class="mb-6">경비원이 잠시 망설였다.</p>
+                <p class="mb-6">"카메라에는 손님이 복도를 걷고 있는 모습이 보입니다."</p>
+                <p class="mb-6">"네, 알아요."</p>
+                <p class="mb-6">"그런데 바로 뒤에 여자가 한 명 따라 걷고 있어요."</p>
+                <p class="mb-6">지수는 공기가 차가워지는 것을 느꼈다.</p>
+                <p class="mb-6">"그 여자가 뭘 하고 있는데요?"</p>
+                <p class="mb-6">"아무것도요. 그냥 따라가고 있습니다."</p>
+                <p class="mb-6">지수는 엘리베이터를 향해 달렸다.</p>
+                <p class="mb-6">"아직도 따라오고 있어요?"</p>
+                <p class="mb-6">경비원은 대답하지 않았다.</p>
+                <p class="mb-6">"여보세요?"</p>
+                <p class="mb-6">"멈췄습니다."</p>
+                <p class="mb-6">지수는 엘리베이터 버튼을 계속 눌렀다.</p>
+                <p class="mb-6">"지금 어디 있어요?"</p>
+                <p class="mb-6">경비원의 목소리가 아주 작아졌다.</p>
+                <p class="mb-6">"위를 올려다보고 있어요."</p>
+                <p class="mb-6">"뭘요?"</p>
+                <p class="mb-6">"카메라를요."</p>
+                <p class="mb-6">엘리베이터 문이 열렸다.</p>
+                <p class="mb-6">지수는 안으로 뛰어들어 1층 버튼을 눌렀다.</p>
+                <p class="mb-6">문이 닫히는 순간, 경비원이 소리쳤다.</p>
+                <p class="mb-6">"잠깐만요! 타시면 안—"</p>
+                <p class="mb-6">전화가 끊겼다.</p>
+                <p class="mb-6">***</p>
+                <p class="mb-6">엘리베이터가 내려가기 시작했다.</p>
+                <p class="mb-6">12.</p>
+                <p class="mb-6">11.</p>
+                <p class="mb-6">10.</p>
+                <p class="mb-6">그러다 갑자기 멈췄다.</p>
+                <p class="mb-6">층수 표시창에는 13이 떠 있었다.</p>
+                <p class="mb-6">지수는 그 숫자를 멍하니 바라보았다.</p>
+                <p class="mb-6">작은 도착 알림음이 울렸다.</p>
+                <p class="mb-6">문이 열리자 어두운 복도가 나타났다.</p>
+                <p class="mb-6">복도 맨 끝에 여자가 서 있었다.</p>
+                <p class="mb-6">등을 돌리고 있었다.</p>
+                <p class="mb-6">지수와 똑같은 옷을 입고 있었다.</p>
+                <p class="mb-6">여자가 천천히 휴대전화를 귀에 가져갔다.</p>
+                <p class="mb-6">그 순간 지수의 휴대전화가 울렸다.</p>
+                <p class="mb-6">발신자 번호에는 지수 자신의 번호가 표시되어 있었다.</p>
+                <p class="mb-6">지수는 자신도 모르게 전화를 받았다.</p>
+                <p class="mb-6">전화기 너머에서 자신의 목소리가 들렸다.</p>
+                <p class="mb-6">거의 속삭이는 듯한 목소리였다.</p>
+                <p class="mb-6">"내리지 마."</p>
+                <p class="mb-6">지수는 움직일 수 없었다.</p>
+                <p class="mb-6">"누구세요?"</p>
+                <p class="mb-6">"잘 들어. 복도 끝에 있는 여자는 널 따라오던 그 여자가 아니야."</p>
+                <p class="mb-6">지수는 목덜미 뒤에서 누군가의 부드러운 숨결을 느꼈다.</p>
+                <p class="mb-6">그때 전화기 속 목소리가 말했다.</p>
+                <p class="mb-6">"무슨 일이 있어도 뒤돌아보지 마."</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+    function skipAudio(seconds) {
+        const player = document.getElementById('player');
+        if (player.src) {
+            player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+        }
+    }
+
+    function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+    let _quizOriginals = new Map();
+
+    function toggleQuiz() {
+        const btn = document.getElementById('quizBtn');
+        const isQuiz = btn.innerText.includes("Quiz");
+        const targets = document.querySelectorAll('.quiz-target');
+        const cells = document.querySelectorAll('.mystery-cell');
+
+        if (isQuiz) {
+            btn.innerText = "Study Mode 📖";
+            cells.forEach(c => c.classList.add('quiz-hidden'));
+            targets.forEach(t => {
+                const ans = t.dataset.ans; const kor = t.dataset.kor;
+                _quizOriginals.set(t, t.innerHTML);
+                t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+            });
+        } else {
+            btn.innerText = "Quiz Mode 👻";
+            cells.forEach(c => c.classList.remove('quiz-hidden'));
+            targets.forEach(t => {
+                if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+            });
+            _quizOriginals.clear();
+        }
+    }
+
+    function checkQuiz(i, a) {
+        if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+            i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+            confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+            checkAllSolved();
+        } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+    }
+
+    function checkAllSolved() {
+        const inputs = document.querySelectorAll('.quiz-input');
+        if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+            var duration = 3 * 1000; var end = Date.now() + duration;
+            (function frame() {
+                confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                if (Date.now() < end) requestAnimationFrame(frame);
+            }());
+        }
+    }
+
+    document.getElementById('player').src = "1030930.m4a";
+</script>
+    <script src="wordbank-utils.js"></script>
+</body>
+</html>

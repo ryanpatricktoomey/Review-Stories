@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Last Ride</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🎠</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Last Ride</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">warmth</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">따뜻함 / 온기</td></tr>
+                <tr><td class="p-4"><b class="text-white">a chicken</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">겁쟁이 / 겁이 많은 사람</td></tr>
+                <tr><td class="p-4"><b class="text-white">coward</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">겁쟁이 / 비겁한 사람</td></tr>
+                <tr><td class="p-4"><b class="text-white">poison</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">독 / 독살하다 / 독을 넣다</td></tr>
+                <tr><td class="p-4"><b class="text-white">venom</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">독 (동물이 물거나 쏘아서 주입하는 독)</td></tr>
+                <tr><td class="p-4"><b class="text-white">amusement park rides</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">놀이공원 놀이기구</td></tr>
+                <tr><td class="p-4"><b class="text-white">clumsy</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">덤벙대는 / 서투른</td></tr>
+                <tr><td class="p-4"><b class="text-white">tonedeaf</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">음치인 / 분위기 파악을 못 하는</td></tr>
+                <tr><td class="p-4"><b class="text-white">no sense of direction</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">길치인 / 방향 감각이 없는</td></tr>
+                <tr><td class="p-4"><b class="text-white">all thumbs</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">손재주가 없는 / 손이 서투른</td></tr>
+                <tr><td class="p-4"><b class="text-white">butterfingers</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">물건을 자꾸 떨어뜨리는 사람 / 덤벙이</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">1. a chicken / coward</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">둘 다 '겁쟁이'이지만 <i>a chicken</i>은 가볍게 놀릴 때 자주 사용하고, <i>coward</i>는 상대방을 강하게 비난하는 표현입니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">2. poison / venom</h3>
+                <p class="text-slate-300 text-sm leading-relaxed"><i>Poison</i>은 먹거나 접촉해서 해를 입히는 독을 가리키며, <i>venom</i>은 뱀이나 거미 등이 물거나 쏘면서 주입하는 독입니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">3. tonedeaf</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">원래 '음치'라는 뜻이지만, 다른 사람의 감정이나 상황을 제대로 파악하지 못한다는 뜻으로도 사용합니다. 이 의미에서는 <i>tone-deaf</i>라고 쓰는 경우가 많습니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">4. all thumbs</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">손으로 하는 일을 서툴게 하는 사람을 묘사하는 관용 표현입니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">5. butterfingers</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">물건을 자꾸 떨어뜨리는 사람을 장난스럽게 부르는 말입니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">6. no sense of direction</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">방향 감각이 없어서 길을 쉽게 잃는다는 뜻입니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">When Daniel was eight, his younger sister disappeared at an amusement park.</p>
+                <p class="mb-6">He remembered holding her hand near the carousel. Then someone bumped into him, and her hand slipped away.</p>
+                <p class="mb-6">The police searched for weeks.</p>
+                <p class="mb-6">They never found her.</p>
+                <p class="mb-6">Twenty-two years later, Daniel received a letter.</p>
+                <p class="mb-6">There was no return address.</p>
+                <p class="mb-6">Inside was an old photograph of the carousel and a handwritten message:</p>
+                <p class="mb-6"><i>Your sister is waiting. Come before midnight.</i></p>
+                <p class="mb-6">Daniel almost threw it away.</p>
+                <p class="mb-6">But on the back of the photograph, someone had written his childhood nickname.</p>
+                <p class="mb-6">Only his sister had called him that.</p>
+                <p class="mb-6">***</p>
+                <p class="mb-6">The amusement park had been closed for years.</p>
+                <p class="mb-6">Daniel entered through a broken gate and walked past the abandoned <b class="highlight quiz-target" data-ans="amusement park rides" data-kor="놀이기구들">amusement park rides</b>.</p>
+                <p class="mb-6">He remembered being <b class="highlight quiz-target" data-ans="a chicken" data-kor="겁쟁이">a chicken</b> as a boy, too frightened to ride the roller coaster.</p>
+                <p class="mb-6">His sister had always laughed at him.</p>
+                <p class="mb-6">The carousel stood at the center of the park.</p>
+                <p class="mb-6">Its lights were on.</p>
+                <p class="mb-6">A familiar tune played quietly.</p>
+                <p class="mb-6">Daniel recognized it immediately.</p>
+                <p class="mb-6">It was the song his sister used to sing, badly and loudly, because she was completely <b class="highlight quiz-target" data-ans="tonedeaf" data-kor="음치인">tonedeaf</b>.</p>
+                <p class="mb-6">He approached the carousel.</p>
+                <p class="mb-6">A little girl sat on a white horse.</p>
+                <p class="mb-6">She wore a yellow dress.</p>
+                <p class="mb-6">The same dress his sister had worn the day she disappeared.</p>
+                <p class="mb-6">"Emily?"</p>
+                <p class="mb-6">The girl turned.</p>
+                <p class="mb-6">She looked exactly as Daniel remembered her.</p>
+                <p class="mb-6">"You're late," she said.</p>
+                <p class="mb-6">Daniel couldn't speak.</p>
+                <p class="mb-6">"Come closer."</p>
+                <p class="mb-6">He stepped onto the carousel.</p>
+                <p class="mb-6">Emily smiled.</p>
+                <p class="mb-6">"Do you remember what happened that day?"</p>
+                <p class="mb-6">"You disappeared."</p>
+                <p class="mb-6">"No. Before that."</p>
+                <p class="mb-6">Daniel frowned.</p>
+                <p class="mb-6">Someone had bumped into him.</p>
+                <p class="mb-6">He had dropped Emily's hand.</p>
+                <p class="mb-6">Then he remembered something else.</p>
+                <p class="mb-6">He had been angry with her.</p>
+                <p class="mb-6">She had called him a <b class="highlight quiz-target" data-ans="coward" data-kor="겁쟁이">coward</b> in front of the other children.</p>
+                <p class="mb-6">He had pushed her away.</p>
+                <p class="mb-6">Not hard.</p>
+                <p class="mb-6">Just enough to make her stumble.</p>
+                <p class="mb-6">Daniel looked at the girl.</p>
+                <p class="mb-6">"I didn't mean to hurt you."</p>
+                <p class="mb-6">"I know."</p>
+                <p class="mb-6">"Where have you been?"</p>
+                <p class="mb-6">Emily pointed toward the empty horses.</p>
+                <p class="mb-6">"Here."</p>
+                <p class="mb-6">Daniel heard footsteps behind him.</p>
+                <p class="mb-6">He turned.</p>
+                <p class="mb-6">A middle-aged woman stood beside the carousel.</p>
+                <p class="mb-6">She had Emily's eyes.</p>
+                <p class="mb-6">And the same small scar above her eyebrow.</p>
+                <p class="mb-6">"Daniel," she whispered.</p>
+                <p class="mb-6">His sister.</p>
+                <p class="mb-6">His real sister.</p>
+                <p class="mb-6">She looked terrified.</p>
+                <p class="mb-6">"Don't talk to that thing."</p>
+                <p class="mb-6">Daniel turned back toward the white horse.</p>
+                <p class="mb-6">The little girl was gone.</p>
+                <p class="mb-6">The music stopped.</p>
+                <p class="mb-6">The woman grabbed his arm.</p>
+                <p class="mb-6">"We have to leave."</p>
+                <p class="mb-6">"Emily? How—"</p>
+                <p class="mb-6">"Please. I'll explain outside."</p>
+                <p class="mb-6">They ran toward the gate.</p>
+                <p class="mb-6">But Daniel stopped when he noticed something.</p>
+                <p class="mb-6">The woman's hand was cold.</p>
+                <p class="mb-6">And she was wearing a yellow dress beneath her coat.</p>
+                <p class="mb-6">It was far too small for her.</p>
+                <p class="mb-6">Daniel slowly looked down.</p>
+                <p class="mb-6">The dress was stretched tightly across her body.</p>
+                <p class="mb-6">The fabric was old and stained.</p>
+                <p class="mb-6">He remembered the little girl's words.</p>
+                <p class="mb-6"><i>Do you remember what happened that day?</i></p>
+                <p class="mb-6">The woman tightened her grip.</p>
+                <p class="mb-6">"Daniel, don't look at me like that."</p>
+                <p class="mb-6">From the carousel behind them, a little girl's voice began to cry.</p>
+                <p class="mb-6">"Daniel?"</p>
+                <p class="mb-6">He turned.</p>
+                <p class="mb-6">The girl in the yellow dress was standing beside the white horse.</p>
+                <p class="mb-6">She was holding out her hand.</p>
+                <p class="mb-6">"Please don't leave me with her."</p>
+                <p class="mb-6">The woman beside Daniel squeezed his arm so hard that he cried out.</p>
+                <p class="mb-6">Then she leaned close to his ear.</p>
+                <p class="mb-6">"Don't listen to her," she whispered.</p>
+                <p class="mb-6">"That's what she said to me twenty-two years ago."</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">다니엘이 여덟 살이었을 때, 여동생이 놀이공원에서 사라졌다.</p>
+                <p class="mb-6">그는 회전목마 근처에서 동생의 손을 잡고 있었던 것을 기억했다. 그러다 누군가 자신과 부딪혔고, 동생의 손이 빠져나갔다.</p>
+                <p class="mb-6">경찰은 몇 주 동안 수색했다.</p>
+                <p class="mb-6">하지만 동생을 찾지 못했다.</p>
+                <p class="mb-6">22년 후, 다니엘에게 편지 한 통이 도착했다.</p>
+                <p class="mb-6">보낸 사람의 주소는 없었다.</p>
+                <p class="mb-6">봉투 안에는 오래된 회전목마 사진과 손으로 쓴 메시지가 들어 있었다.</p>
+                <p class="mb-6"><i>네 여동생이 기다리고 있어. 자정 전에 와.</i></p>
+                <p class="mb-6">다니엘은 편지를 버릴 뻔했다.</p>
+                <p class="mb-6">하지만 사진 뒷면에 어린 시절 자신의 별명이 적혀 있었다.</p>
+                <p class="mb-6">그 별명으로 자신을 부르던 사람은 여동생뿐이었다.</p>
+                <p class="mb-6">***</p>
+                <p class="mb-6">놀이공원은 오래전에 문을 닫았다.</p>
+                <p class="mb-6">다니엘은 부서진 출입문을 통해 들어가 버려진 <b class="highlight">놀이기구들</b> 사이를 걸었다.</p>
+                <p class="mb-6">어릴 때 자신이 얼마나 <b class="highlight">겁이 많았는지</b> 기억났다. 롤러코스터가 무서워서 타지 못했다.</p>
+                <p class="mb-6">여동생은 항상 그를 놀렸다.</p>
+                <p class="mb-6">회전목마는 놀이공원 중앙에 서 있었다.</p>
+                <p class="mb-6">불이 켜져 있었다.</p>
+                <p class="mb-6">익숙한 노래가 조용히 흘러나왔다.</p>
+                <p class="mb-6">다니엘은 그 노래를 즉시 알아차렸다.</p>
+                <p class="mb-6">여동생이 <b class="highlight">음치여서</b> 엉망으로, 하지만 큰 소리로 부르곤 했던 노래였다.</p>
+                <p class="mb-6">그는 회전목마로 다가갔다.</p>
+                <p class="mb-6">하얀 말 위에 어린 여자아이가 앉아 있었다.</p>
+                <p class="mb-6">노란색 원피스를 입고 있었다.</p>
+                <p class="mb-6">동생이 사라지던 날 입었던 바로 그 옷이었다.</p>
+                <p class="mb-6">"에밀리?"</p>
+                <p class="mb-6">아이가 돌아보았다.</p>
+                <p class="mb-6">다니엘의 기억 속 동생과 똑같은 모습이었다.</p>
+                <p class="mb-6">"늦었네." 아이가 말했다.</p>
+                <p class="mb-6">다니엘은 아무 말도 할 수 없었다.</p>
+                <p class="mb-6">"가까이 와."</p>
+                <p class="mb-6">그는 회전목마 위로 올라갔다.</p>
+                <p class="mb-6">에밀리가 미소를 지었다.</p>
+                <p class="mb-6">"그날 무슨 일이 있었는지 기억해?"</p>
+                <p class="mb-6">"네가 사라졌잖아."</p>
+                <p class="mb-6">"아니. 그 전에."</p>
+                <p class="mb-6">다니엘은 얼굴을 찌푸렸다.</p>
+                <p class="mb-6">누군가 자신과 부딪혔다.</p>
+                <p class="mb-6">그는 에밀리의 손을 놓쳤다.</p>
+                <p class="mb-6">그러다 다른 기억이 떠올랐다.</p>
+                <p class="mb-6">그는 동생에게 화가 나 있었다.</p>
+                <p class="mb-6">동생이 다른 아이들 앞에서 자신을 <b class="highlight">겁쟁이라고</b> 놀렸기 때문이다.</p>
+                <p class="mb-6">그는 동생을 밀쳤다.</p>
+                <p class="mb-6">세게 민 것은 아니었다.</p>
+                <p class="mb-6">그저 동생이 비틀거릴 정도였다.</p>
+                <p class="mb-6">다니엘은 아이를 바라보았다.</p>
+                <p class="mb-6">"널 다치게 하려던 건 아니었어."</p>
+                <p class="mb-6">"알아."</p>
+                <p class="mb-6">"그동안 어디 있었어?"</p>
+                <p class="mb-6">에밀리는 텅 빈 말들을 가리켰다.</p>
+                <p class="mb-6">"여기."</p>
+                <p class="mb-6">그때 다니엘의 뒤에서 발소리가 들렸다.</p>
+                <p class="mb-6">그는 돌아보았다.</p>
+                <p class="mb-6">회전목마 옆에 중년 여성이 서 있었다.</p>
+                <p class="mb-6">에밀리와 똑같은 눈을 가지고 있었다.</p>
+                <p class="mb-6">눈썹 위의 작은 흉터도 같았다.</p>
+                <p class="mb-6">"다니엘." 여자가 속삭였다.</p>
+                <p class="mb-6">여동생이었다.</p>
+                <p class="mb-6">진짜 여동생.</p>
+                <p class="mb-6">그녀는 몹시 겁에 질린 표정이었다.</p>
+                <p class="mb-6">"그것과 말하지 마."</p>
+                <p class="mb-6">다니엘이 다시 하얀 말 쪽을 돌아보았다.</p>
+                <p class="mb-6">어린 여자아이는 사라지고 없었다.</p>
+                <p class="mb-6">음악이 멈췄다.</p>
+                <p class="mb-6">여자가 그의 팔을 붙잡았다.</p>
+                <p class="mb-6">"여기서 나가야 해."</p>
+                <p class="mb-6">"에밀리? 어떻게—"</p>
+                <p class="mb-6">"제발. 밖에 나가서 설명할게."</p>
+                <p class="mb-6">두 사람은 출입문을 향해 달렸다.</p>
+                <p class="mb-6">하지만 다니엘은 무언가를 알아차리고 멈췄다.</p>
+                <p class="mb-6">여자의 손이 차가웠다.</p>
+                <p class="mb-6">그리고 그녀는 코트 안에 노란색 원피스를 입고 있었다.</p>
+                <p class="mb-6">몸에 비해 너무 작은 옷이었다.</p>
+                <p class="mb-6">다니엘은 천천히 아래를 내려다보았다.</p>
+                <p class="mb-6">원피스는 그녀의 몸에 팽팽하게 늘어나 있었다.</p>
+                <p class="mb-6">천은 낡고 얼룩져 있었다.</p>
+                <p class="mb-6">다니엘은 어린 여자아이가 했던 말을 떠올렸다.</p>
+                <p class="mb-6"><i>그날 무슨 일이 있었는지 기억해?</i></p>
+                <p class="mb-6">여자가 그의 팔을 더욱 세게 움켜쥐었다.</p>
+                <p class="mb-6">"다니엘, 그런 눈으로 보지 마."</p>
+                <p class="mb-6">그들 뒤의 회전목마에서 어린 여자아이의 울음소리가 들리기 시작했다.</p>
+                <p class="mb-6">"다니엘?"</p>
+                <p class="mb-6">그는 돌아보았다.</p>
+                <p class="mb-6">노란색 원피스를 입은 아이가 하얀 말 옆에 서 있었다.</p>
+                <p class="mb-6">아이는 손을 내밀고 있었다.</p>
+                <p class="mb-6">"제발 나를 저 여자랑 두고 가지 마."</p>
+                <p class="mb-6">다니엘 옆의 여자가 그의 팔을 너무 세게 움켜쥐어 다니엘은 비명을 질렀다.</p>
+                <p class="mb-6">그때 여자가 그의 귀에 얼굴을 가까이 대고 속삭였다.</p>
+                <p class="mb-6">"저 아이 말 듣지 마."</p>
+                <p class="mb-6">"22년 전에 나한테도 똑같은 말을 했으니까."</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+    function skipAudio(seconds) {
+        const player = document.getElementById('player');
+        if (player.src) {
+            player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+        }
+    }
+
+    function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+    let _quizOriginals = new Map();
+
+    function toggleQuiz() {
+        const btn = document.getElementById('quizBtn');
+        const isQuiz = btn.innerText.includes("Quiz");
+        const targets = document.querySelectorAll('.quiz-target');
+        const cells = document.querySelectorAll('.mystery-cell');
+
+        if (isQuiz) {
+            btn.innerText = "Study Mode 📖";
+            cells.forEach(c => c.classList.add('quiz-hidden'));
+            targets.forEach(t => {
+                const ans = t.dataset.ans; const kor = t.dataset.kor;
+                _quizOriginals.set(t, t.innerHTML);
+                t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+            });
+        } else {
+            btn.innerText = "Quiz Mode 👻";
+            cells.forEach(c => c.classList.remove('quiz-hidden'));
+            targets.forEach(t => {
+                if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+            });
+            _quizOriginals.clear();
+        }
+    }
+
+    function checkQuiz(i, a) {
+        if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+            i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+            confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+            checkAllSolved();
+        } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+    }
+
+    function checkAllSolved() {
+        const inputs = document.querySelectorAll('.quiz-input');
+        if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+            var duration = 3 * 1000; var end = Date.now() + duration;
+            (function frame() {
+                confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                if (Date.now() < end) requestAnimationFrame(frame);
+            }());
+        }
+    }
+
+    document.getElementById('player').src = "10301200.m4a";
+</script>
+    <script src="wordbank-utils.js"></script>
+</body>
+</html>

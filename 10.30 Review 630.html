@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Man in Room 6</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🕷️</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Man in Room 6</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">follow me</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">나를 따라와요. / 따라오세요.</td></tr>
+                <tr><td class="p-4"><b class="text-white">my legs became jelly</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">다리에 힘이 풀렸어요. / 다리가 후들거렸어요.</td></tr>
+                <tr><td class="p-4"><b class="text-white">low tolerance</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">~을 잘 견디지 못함 / 내성이 약함</td></tr>
+                <tr><td class="p-4"><b class="text-white">low threshold</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">자극에 쉽게 반응하는 편 / 참을 수 있는 한계가 낮음</td></tr>
+                <tr><td class="p-4"><b class="text-white">venom</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">독 (동물이 물거나 쏘아서 주입하는 독)</td></tr>
+                <tr><td class="p-4"><b class="text-white">venomous</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">독이 있는 / 독을 지닌</td></tr>
+                <tr><td class="p-4"><b class="text-white">Lord of the Flies</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">《파리대왕》 (윌리엄 골딩의 소설)</td></tr>
+                <tr><td class="p-4"><b class="text-white">pupil</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">동공 / 학생</td></tr>
+                <tr><td class="p-4"><b class="text-white">attempted suicide</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">자살 시도</td></tr>
+                <tr><td class="p-4"><b class="text-white">pulse</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">맥박 / 심장 박동</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">1. my legs became jelly</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">무서움이나 긴장 때문에 다리에 힘이 풀려 제대로 서 있기 어려운 상태를 표현합니다. 일상적으로는 <i>My legs turned to jelly</i>가 더 자연스럽습니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">2. low tolerance vs. low threshold</h3>
+                <p class="text-slate-300 text-sm leading-relaxed"><b>low tolerance:</b> 어떤 것을 잘 견디지 못하는 성향. 예: <i>a low tolerance for pain</i> (통증을 잘 참지 못함)<br><b>low threshold:</b> 특정 반응이 쉽게 일어나는 상태. 예: <i>a low pain threshold</i> (작은 통증에도 쉽게 아픔을 느낌)</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">3. venom vs. venomous</h3>
+                <p class="text-slate-300 text-sm leading-relaxed"><i>Venom</i>은 독사가 물거나 독충이 쏘면서 주입하는 독입니다. <i>Venomous</i>는 그런 독을 지닌 동물을 설명하는 형용사입니다. 먹거나 만졌을 때 해로운 독은 보통 <i>poison</i>이라고 합니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">4. Lord of the Flies</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">윌리엄 골딩의 유명한 소설 《파리대왕》입니다. 무인도에 고립된 소년들이 점차 폭력적으로 변하는 이야기로, 인간의 본성과 문명의 붕괴를 다룹니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">5. pupil</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">'학생'이라는 뜻도 있지만, 눈의 중앙에 있는 '동공'이라는 뜻도 있습니다. 공포 이야기에서는 눈의 이상한 변화를 묘사할 때 사용할 수 있습니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">The hospital had been closed for twenty years.</p>
+                <p class="mb-6">When Daniel arrived, the security guard was waiting outside the main entrance.</p>
+                <p class="mb-6">"You're the new night inspector?"</p>
+                <p class="mb-6">Daniel nodded. He had been hired to check the building before its demolition.</p>
+                <p class="mb-6">The guard unlocked the door.</p>
+                <p class="mb-6">"<b class="highlight quiz-target" data-ans="Follow me" data-kor="따라오세요">Follow me</b>. There's something you need to see."</p>
+                <p class="mb-6">Inside, the hospital smelled of dust and damp wood. Their footsteps echoed through the empty corridors.</p>
+                <p class="mb-6">They stopped outside Room 6.</p>
+                <p class="mb-6">A yellow sign on the door read:</p>
+                <p class="mb-6"><b>DO NOT ENTER.</b></p>
+                <p class="mb-6">"What's in there?" Daniel asked.</p>
+                <p class="mb-6">"A patient died in that room in 1998," the guard replied. "He was admitted after an <b class="highlight quiz-target" data-ans="attempted suicide" data-kor="자살 시도">attempted suicide</b>. The nurses said he kept complaining about spiders crawling inside his body."</p>
+                <p class="mb-6">Daniel frowned.</p>
+                <p class="mb-6">"Was he mentally ill?"</p>
+                <p class="mb-6">"That's what the doctors thought. But before he died, he told them something strange."</p>
+                <p class="mb-6">"What?"</p>
+                <p class="mb-6">"He said the spiders were waiting for him to fall asleep."</p>
+                <p class="mb-6">Daniel laughed nervously. He had a <b class="highlight quiz-target" data-ans="low tolerance" data-kor="낮은 내성">low tolerance</b> for horror stories, especially in abandoned buildings.</p>
+                <p class="mb-6">The guard didn't smile.</p>
+                <p class="mb-6">"Just don't open that door."</p>
+                <p class="mb-6">Then he handed Daniel the keys and left.</p>
+                <p class="mb-6">***</p>
+                <p class="mb-6">At 11:47 p.m., Daniel heard scratching.</p>
+                <p class="mb-6">It was coming from Room 6.</p>
+                <p class="mb-6">He approached the door and listened.</p>
+                <p class="mb-6">Scratch. Scratch. Scratch.</p>
+                <p class="mb-6">"Hello?"</p>
+                <p class="mb-6">The scratching stopped.</p>
+                <p class="mb-6">Then a man's voice whispered, "Please. They're inside me."</p>
+                <p class="mb-6">Daniel's <b class="highlight quiz-target" data-ans="pulse" data-kor="맥박">pulse</b> quickened.</p>
+                <p class="mb-6">He knew the building was empty. He had checked every room himself.</p>
+                <p class="mb-6">"Who's there?"</p>
+                <p class="mb-6">"Help me."</p>
+                <p class="mb-6">Daniel unlocked the door.</p>
+                <p class="mb-6">Inside was an old hospital bed.</p>
+                <p class="mb-6">A man lay beneath a dirty white sheet.</p>
+                <p class="mb-6">Daniel couldn't move. <b class="highlight quiz-target" data-ans="His legs turned to jelly" data-kor="다리에 힘이 풀렸다">His legs turned to jelly.</b></p>
+                <p class="mb-6">The man slowly opened his eyes.</p>
+                <p class="mb-6">His <b class="highlight quiz-target" data-ans="pupils" data-kor="동공">pupils</b> were enormous, almost completely black.</p>
+                <p class="mb-6">"Are you a doctor?" he whispered.</p>
+                <p class="mb-6">"No. I'm—"</p>
+                <p class="mb-6">"Then you shouldn't be here."</p>
+                <p class="mb-6">Something moved beneath the sheet.</p>
+                <p class="mb-6">Daniel stepped backward.</p>
+                <p class="mb-6">The man grabbed his wrist.</p>
+                <p class="mb-6">"Don't let them bite you. They're <b class="highlight quiz-target" data-ans="venomous" data-kor="독이 있는">venomous</b>."</p>
+                <p class="mb-6">Daniel pulled away.</p>
+                <p class="mb-6">The sheet began to rise.</p>
+                <p class="mb-6">Dozens of small shapes moved underneath it.</p>
+                <p class="mb-6">Daniel ran toward the door.</p>
+                <p class="mb-6">But it wouldn't open.</p>
+                <p class="mb-6">Behind him, the bed creaked.</p>
+                <p class="mb-6">The man was standing now.</p>
+                <p class="mb-6">Daniel heard something wet hit the floor.</p>
+                <p class="mb-6">Then something else.</p>
+                <p class="mb-6">He turned around.</p>
+                <p class="mb-6">The man's mouth was open.</p>
+                <p class="mb-6">A large black spider was slowly crawling out.</p>
+                <p class="mb-6">Daniel screamed.</p>
+                <p class="mb-6">The spider dropped onto the floor.</p>
+                <p class="mb-6">Then the man spoke.</p>
+                <p class="mb-6">"That's not the one you should be afraid of."</p>
+                <p class="mb-6">Daniel felt something moving beneath the skin of his wrist.</p>
+                <p class="mb-6">He looked down.</p>
+                <p class="mb-6">A small black shape was crawling toward his elbow.</p>
+                <p class="mb-6">And then, from somewhere inside his chest, he heard scratching.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">그 병원은 20년 동안 문을 닫은 상태였다.</p>
+                <p class="mb-6">다니엘이 도착했을 때, 경비원이 정문 밖에서 기다리고 있었다.</p>
+                <p class="mb-6">"새로 온 야간 점검 직원이죠?"</p>
+                <p class="mb-6">다니엘은 고개를 끄덕였다. 그는 병원이 철거되기 전에 건물 상태를 점검하는 일을 맡았다.</p>
+                <p class="mb-6">경비원이 문을 열었다.</p>
+                <p class="mb-6">"<b class="highlight">따라오세요</b>. 보여드릴 게 있습니다."</p>
+                <p class="mb-6">병원 안에서는 먼지와 축축한 나무 냄새가 났다. 텅 빈 복도에 두 사람의 발소리가 울려 퍼졌다.</p>
+                <p class="mb-6">그들은 6호실 앞에서 멈췄다.</p>
+                <p class="mb-6">문에는 노란색 경고문이 붙어 있었다.</p>
+                <p class="mb-6"><b>출입 금지.</b></p>
+                <p class="mb-6">"안에 뭐가 있죠?" 다니엘이 물었다.</p>
+                <p class="mb-6">"1998년에 이 방에서 환자 한 명이 죽었습니다." 경비원이 대답했다. "<b class="highlight">자살을 시도한</b> 후 이곳에 입원했죠. 간호사들 말로는 자기 몸속에서 거미들이 기어 다닌다고 계속 호소했답니다."</p>
+                <p class="mb-6">다니엘이 미간을 찌푸렸다.</p>
+                <p class="mb-6">"정신 질환이 있었나요?"</p>
+                <p class="mb-6">"의사들도 그렇게 생각했죠. 그런데 죽기 전에 이상한 말을 했다고 합니다."</p>
+                <p class="mb-6">"무슨 말이요?"</p>
+                <p class="mb-6">"거미들이 자기가 잠들기를 기다리고 있다고요."</p>
+                <p class="mb-6">다니엘은 긴장한 듯 웃었다. 그는 원래 무서운 이야기를 <b class="highlight">잘 견디지 못했다</b>. 특히 버려진 건물에서는 더 그랬다.</p>
+                <p class="mb-6">경비원은 웃지 않았다.</p>
+                <p class="mb-6">"그 문만은 열지 마세요."</p>
+                <p class="mb-6">그 말을 남기고 경비원은 다니엘에게 열쇠를 건넨 뒤 떠났다.</p>
+                <p class="mb-6">***</p>
+                <p class="mb-6">밤 11시 47분, 다니엘은 긁는 소리를 들었다.</p>
+                <p class="mb-6">6호실에서 나는 소리였다.</p>
+                <p class="mb-6">그는 문으로 다가가 귀를 기울였다.</p>
+                <p class="mb-6">긁적. 긁적. 긁적.</p>
+                <p class="mb-6">"누구 있어요?"</p>
+                <p class="mb-6">소리가 멈췄다.</p>
+                <p class="mb-6">그러더니 남자의 목소리가 속삭였다.</p>
+                <p class="mb-6">"제발요. 그것들이 제 몸속에 있어요."</p>
+                <p class="mb-6">다니엘의 <b class="highlight">맥박이</b> 빨라졌다.</p>
+                <p class="mb-6">건물 안에 아무도 없다는 걸 알고 있었다. 직접 모든 방을 확인했으니까.</p>
+                <p class="mb-6">"누구세요?"</p>
+                <p class="mb-6">"도와주세요."</p>
+                <p class="mb-6">다니엘은 문을 열었다.</p>
+                <p class="mb-6">방 안에는 낡은 병원 침대가 있었다.</p>
+                <p class="mb-6">더러운 흰색 시트 아래에 남자 한 명이 누워 있었다.</p>
+                <p class="mb-6">다니엘은 움직일 수 없었다. <b class="highlight">다리에 힘이 완전히 풀렸다</b>.</p>
+                <p class="mb-6">남자가 천천히 눈을 떴다.</p>
+                <p class="mb-6"><b class="highlight">동공이</b> 비정상적으로 커져 있었다. 거의 새까맣게 보일 정도였다.</p>
+                <p class="mb-6">"의사세요?" 남자가 속삭였다.</p>
+                <p class="mb-6">"아니요. 저는……"</p>
+                <p class="mb-6">"그럼 여기 오시면 안 됐는데."</p>
+                <p class="mb-6">시트 아래에서 무언가 움직였다.</p>
+                <p class="mb-6">다니엘은 뒷걸음질 쳤다.</p>
+                <p class="mb-6">남자가 그의 손목을 움켜잡았다.</p>
+                <p class="mb-6">"물리지 마세요. <b class="highlight">독이 있어요</b>."</p>
+                <p class="mb-6">다니엘은 손을 뿌리쳤다.</p>
+                <p class="mb-6">시트가 서서히 부풀어 오르기 시작했다.</p>
+                <p class="mb-6">그 아래에서 수십 개의 작은 형체가 움직이고 있었다.</p>
+                <p class="mb-6">다니엘은 문을 향해 달렸다.</p>
+                <p class="mb-6">하지만 문이 열리지 않았다.</p>
+                <p class="mb-6">등 뒤에서 침대가 삐걱거렸다.</p>
+                <p class="mb-6">남자가 일어서고 있었다.</p>
+                <p class="mb-6">무언가 축축한 것이 바닥에 떨어지는 소리가 들렸다.</p>
+                <p class="mb-6">그리고 또 하나.</p>
+                <p class="mb-6">다니엘이 뒤를 돌아보았다.</p>
+                <p class="mb-6">남자는 입을 벌리고 있었다.</p>
+                <p class="mb-6">그 입에서 커다란 검은 거미 한 마리가 천천히 기어 나오고 있었다.</p>
+                <p class="mb-6">다니엘은 비명을 질렀다.</p>
+                <p class="mb-6">거미가 바닥으로 떨어졌다.</p>
+                <p class="mb-6">그때 남자가 말했다.</p>
+                <p class="mb-6">"당신이 무서워해야 할 건 그놈이 아니에요."</p>
+                <p class="mb-6">다니엘은 자신의 손목 피부 아래에서 무언가 움직이는 것을 느꼈다.</p>
+                <p class="mb-6">그는 아래를 내려다보았다.</p>
+                <p class="mb-6">작고 검은 형체 하나가 피부 밑에서 팔꿈치를 향해 기어 올라가고 있었다.</p>
+                <p class="mb-6">그리고 바로 그 순간,</p>
+                <p class="mb-6">자신의 가슴속 어딘가에서</p>
+                <p class="mb-6">긁는 소리가 들렸다.</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+    function skipAudio(seconds) {
+        const player = document.getElementById('player');
+        if (player.src) {
+            player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+        }
+    }
+
+    function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+    let _quizOriginals = new Map();
+
+    function toggleQuiz() {
+        const btn = document.getElementById('quizBtn');
+        const isQuiz = btn.innerText.includes("Quiz");
+        const targets = document.querySelectorAll('.quiz-target');
+        const cells = document.querySelectorAll('.mystery-cell');
+
+        if (isQuiz) {
+            btn.innerText = "Study Mode 📖";
+            cells.forEach(c => c.classList.add('quiz-hidden'));
+            targets.forEach(t => {
+                const ans = t.dataset.ans; const kor = t.dataset.kor;
+                _quizOriginals.set(t, t.innerHTML);
+                t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+            });
+        } else {
+            btn.innerText = "Quiz Mode 👻";
+            cells.forEach(c => c.classList.remove('quiz-hidden'));
+            targets.forEach(t => {
+                if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+            });
+            _quizOriginals.clear();
+        }
+    }
+
+    function checkQuiz(i, a) {
+        if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+            i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+            confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+            checkAllSolved();
+        } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+    }
+
+    function checkAllSolved() {
+        const inputs = document.querySelectorAll('.quiz-input');
+        if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+            var duration = 3 * 1000; var end = Date.now() + duration;
+            (function frame() {
+                confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                if (Date.now() < end) requestAnimationFrame(frame);
+            }());
+        }
+    }
+
+    document.getElementById('player').src = "1030630.m4a";
+</script>
+    <script src="wordbank-utils.js"></script>
+</body>
+</html>

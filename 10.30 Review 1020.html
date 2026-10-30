@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Last Question</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🦉</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Last Question</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">intuition</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">직감 / 직관</td></tr>
+                <tr><td class="p-4"><b class="text-white">pheasant</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">꿩</td></tr>
+                <tr><td class="p-4"><b class="text-white">minor things</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">사소한 일들 / 작은 문제들</td></tr>
+                <tr><td class="p-4"><b class="text-white">superstition</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">미신</td></tr>
+                <tr><td class="p-4"><b class="text-white">cast a spell</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">주문을 걸다 / 마법을 걸다</td></tr>
+                <tr><td class="p-4"><b class="text-white">ouija board</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">위자 보드 / 영혼과 대화할 때 사용하는 판</td></tr>
+                <tr><td class="p-4"><b class="text-white">generator</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">발전기</td></tr>
+                <tr><td class="p-4"><b class="text-white">hooting</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">부엉이가 우는 소리 / 부엉이 울음</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">1. intuition</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">명확한 증거가 없지만 무언가를 본능적으로 느끼거나 알아차리는 능력입니다. <i>Trust your intuition</i>은 '자신의 직감을 믿어라'라는 뜻입니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">2. superstition</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">과학적 근거 없이 행운이나 불운, 초자연적인 현상과 관련해 믿는 것을 뜻합니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">3. cast a spell</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">마법이나 주술을 사용해 누군가 또는 무언가에 영향을 미친다는 뜻입니다. <i>Cast</i>는 여기서 과거형도 <i>cast</i>입니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">4. ouija board</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">알파벳과 숫자가 적힌 판 위에서 작은 표시판을 움직여 영혼과 의사소통한다고 여겨지는 도구입니다.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">5. hooting</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">부엉이의 울음소리를 가리키며, <i>an owl hooting</i>처럼 사용합니다. 문맥에 따라 사람이 야유하거나 큰 소리를 내는 것을 뜻하기도 합니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">The cabin had no electricity, so Emma's uncle had left a small <b class="highlight quiz-target" data-ans="generator" data-kor="발전기">generator</b> behind the house.</p>
+                <p class="mb-6">It was supposed to run until morning.</p>
+                <p class="mb-6">At eleven, it stopped.</p>
+                <p class="mb-6">Emma was sitting at the kitchen table with her friends, Daniel and Sophie. They had come to the mountains for a quiet weekend.</p>
+                <p class="mb-6">The only light came from three candles.</p>
+                <p class="mb-6">Outside, an owl was <b class="highlight quiz-target" data-ans="hooting" data-kor="울고">hooting</b> somewhere in the trees.</p>
+                <p class="mb-6">"Great," Daniel said. "Now what?"</p>
+                <p class="mb-6">Sophie opened a drawer and found an old <b class="highlight quiz-target" data-ans="ouija board" data-kor="위자 보드">ouija board</b>.</p>
+                <p class="mb-6">"Let's try this."</p>
+                <p class="mb-6">Emma shook her head.</p>
+                <p class="mb-6">"Absolutely not."</p>
+                <p class="mb-6">"Come on. It's just a game."</p>
+                <p class="mb-6">"I don't like it."</p>
+                <p class="mb-6">Daniel laughed.</p>
+                <p class="mb-6">"You believe in that <b class="highlight quiz-target" data-ans="superstition" data-kor="미신">superstition</b>?"</p>
+                <p class="mb-6">"No. I just have a bad feeling."</p>
+                <p class="mb-6">Emma couldn't explain it. Her <b class="highlight quiz-target" data-ans="intuition" data-kor="직감">intuition</b> was telling her to put the board away.</p>
+                <p class="mb-6">But Sophie had already placed it on the table.</p>
+                <p class="mb-6">They rested their fingers on the small wooden pointer.</p>
+                <p class="mb-6">"Is anyone here?" Sophie asked.</p>
+                <p class="mb-6">Nothing happened.</p>
+                <p class="mb-6">Then the pointer moved.</p>
+                <p class="mb-6">YES.</p>
+                <p class="mb-6">Daniel smiled.</p>
+                <p class="mb-6">"Very funny, Sophie."</p>
+                <p class="mb-6">"I'm not moving it."</p>
+                <p class="mb-6">They asked a few simple questions.</p>
+                <p class="mb-6">The answers were mostly nonsense.</p>
+                <p class="mb-6">Then Emma asked, "How many people are in this cabin?"</p>
+                <p class="mb-6">The pointer moved slowly.</p>
+                <p class="mb-6">FOUR.</p>
+                <p class="mb-6">Daniel frowned.</p>
+                <p class="mb-6">"There are three of us."</p>
+                <p class="mb-6">Sophie looked toward the dark hallway.</p>
+                <p class="mb-6">"Maybe your uncle is here."</p>
+                <p class="mb-6">"He's in Seoul," Emma said.</p>
+                <p class="mb-6">She took her fingers off the pointer.</p>
+                <p class="mb-6">"We're finished."</p>
+                <p class="mb-6">At that moment, the generator started.</p>
+                <p class="mb-6">The kitchen lights came on.</p>
+                <p class="mb-6">Daniel stood up.</p>
+                <p class="mb-6">"See? Everything's fine."</p>
+                <p class="mb-6">But Sophie was staring at the board.</p>
+                <p class="mb-6">The pointer was moving.</p>
+                <p class="mb-6">Nobody was touching it.</p>
+                <p class="mb-6">It stopped on the word NO.</p>
+                <p class="mb-6">Then it began spelling something.</p>
+                <p class="mb-6">D-O-N-T</p>
+                <p class="mb-6">L-O-O-K</p>
+                <p class="mb-6">U-N-D-E-R</p>
+                <p class="mb-6">T-H-E</p>
+                <p class="mb-6">T-A-B-L-E</p>
+                <p class="mb-6">Nobody spoke.</p>
+                <p class="mb-6">Emma felt something touch her ankle.</p>
+                <p class="mb-6">She thought it was Sophie's foot.</p>
+                <p class="mb-6">Then it touched her other ankle.</p>
+                <p class="mb-6">Slowly, Emma looked at her friends.</p>
+                <p class="mb-6">Both had their feet on their chairs.</p>
+                <p class="mb-6">Something beneath the table shifted.</p>
+                <p class="mb-6">A quiet scratching sound came from the wooden floor.</p>
+                <p class="mb-6">Daniel whispered, "We need to leave."</p>
+                <p class="mb-6">Emma nodded.</p>
+                <p class="mb-6">But before anyone moved, the kitchen lights went out.</p>
+                <p class="mb-6">The generator was still running.</p>
+                <p class="mb-6">In the darkness, a fourth person pulled out a chair.</p>
+                <p class="mb-6">They heard it scrape across the floor.</p>
+                <p class="mb-6">Then someone sat down.</p>
+                <p class="mb-6">A hand settled gently on Emma's wrist.</p>
+                <p class="mb-6">It was warm.</p>
+                <p class="mb-6">A woman's voice spoke beside her.</p>
+                <p class="mb-6">"Now there are four."</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">그 오두막에는 전기가 들어오지 않아 엠마의 삼촌이 집 뒤에 작은 <b class="highlight">발전기를</b> 설치해 두었다.</p>
+                <p class="mb-6">발전기는 아침까지 작동할 예정이었다.</p>
+                <p class="mb-6">하지만 밤 11시에 멈췄다.</p>
+                <p class="mb-6">엠마는 친구 다니엘, 소피와 함께 부엌 식탁에 앉아 있었다. 세 사람은 조용한 주말을 보내기 위해 산속에 왔다.</p>
+                <p class="mb-6">빛이라고는 촛불 세 개뿐이었다.</p>
+                <p class="mb-6">밖에서는 숲 어딘가에서 부엉이가 <b class="highlight">울고</b> 있었다.</p>
+                <p class="mb-6">"아, 좋네." 다니엘이 말했다. "이제 어떡하지?"</p>
+                <p class="mb-6">소피가 서랍을 열더니 오래된 <b class="highlight">위자 보드를</b> 발견했다.</p>
+                <p class="mb-6">"이거 해 보자."</p>
+                <p class="mb-6">엠마는 고개를 저었다.</p>
+                <p class="mb-6">"절대 안 돼."</p>
+                <p class="mb-6">"왜 그래? 그냥 게임이잖아."</p>
+                <p class="mb-6">"난 싫어."</p>
+                <p class="mb-6">다니엘이 웃었다.</p>
+                <p class="mb-6">"너 그런 <b class="highlight">미신을</b> 믿어?"</p>
+                <p class="mb-6">"아니. 그냥 느낌이 안 좋아."</p>
+                <p class="mb-6">엠마는 이유를 설명할 수 없었다. <b class="highlight">직감적으로</b> 그 판을 치워야 한다는 생각이 들었다.</p>
+                <p class="mb-6">하지만 소피는 이미 식탁 위에 올려놓았다.</p>
+                <p class="mb-6">세 사람은 작은 나무 표시판에 손가락을 올렸다.</p>
+                <p class="mb-6">"여기 누구 있나요?" 소피가 물었다.</p>
+                <p class="mb-6">아무 일도 일어나지 않았다.</p>
+                <p class="mb-6">그러다 표시판이 움직였다.</p>
+                <p class="mb-6">'예.'</p>
+                <p class="mb-6">다니엘이 웃었다.</p>
+                <p class="mb-6">"재밌네, 소피."</p>
+                <p class="mb-6">"나 안 움직였어."</p>
+                <p class="mb-6">그들은 간단한 질문 몇 개를 했다.</p>
+                <p class="mb-6">대답은 대부분 엉뚱했다.</p>
+                <p class="mb-6">그러다 엠마가 물었다.</p>
+                <p class="mb-6">"이 오두막 안에 몇 명이 있나요?"</p>
+                <p class="mb-6">표시판이 천천히 움직였다.</p>
+                <p class="mb-6">'넷.'</p>
+                <p class="mb-6">다니엘이 얼굴을 찌푸렸다.</p>
+                <p class="mb-6">"우리는 세 명인데."</p>
+                <p class="mb-6">소피가 어두운 복도를 바라보았다.</p>
+                <p class="mb-6">"네 삼촌이 와 계신 거 아닐까?"</p>
+                <p class="mb-6">"삼촌은 서울에 계셔." 엠마가 말했다.</p>
+                <p class="mb-6">엠마는 표시판에서 손을 뗐다.</p>
+                <p class="mb-6">"이제 그만하자."</p>
+                <p class="mb-6">바로 그 순간 발전기가 다시 작동하기 시작했다.</p>
+                <p class="mb-6">부엌 불이 켜졌다.</p>
+                <p class="mb-6">다니엘이 일어섰다.</p>
+                <p class="mb-6">"봤지? 아무 문제 없잖아."</p>
+                <p class="mb-6">하지만 소피는 위자 보드를 뚫어지게 바라보고 있었다.</p>
+                <p class="mb-6">표시판이 움직이고 있었다.</p>
+                <p class="mb-6">아무도 손을 대지 않았는데도.</p>
+                <p class="mb-6">표시판이 '아니오'라는 글자 위에서 멈췄다.</p>
+                <p class="mb-6">그리고 글자를 하나씩 가리키기 시작했다.</p>
+                <p class="mb-6">탁자</p>
+                <p class="mb-6">아래를</p>
+                <p class="mb-6">보지</p>
+                <p class="mb-6">마라.</p>
+                <p class="mb-6">아무도 말하지 않았다.</p>
+                <p class="mb-6">엠마는 무언가가 자신의 발목에 닿는 것을 느꼈다.</p>
+                <p class="mb-6">소피의 발이라고 생각했다.</p>
+                <p class="mb-6">그런데 그것이 반대쪽 발목에도 닿았다.</p>
+                <p class="mb-6">엠마는 천천히 친구들을 바라보았다.</p>
+                <p class="mb-6">두 사람 모두 의자 위에 발을 올리고 있었다.</p>
+                <p class="mb-6">탁자 아래에서 무언가가 움직였다.</p>
+                <p class="mb-6">나무 바닥을 긁는 작은 소리가 들렸다.</p>
+                <p class="mb-6">다니엘이 속삭였다.</p>
+                <p class="mb-6">"우리 나가야 해."</p>
+                <p class="mb-6">엠마는 고개를 끄덕였다.</p>
+                <p class="mb-6">하지만 누구도 움직이기 전에 부엌 불이 꺼졌다.</p>
+                <p class="mb-6">발전기는 여전히 돌아가고 있었다.</p>
+                <p class="mb-6">어둠 속에서 네 번째 사람이 의자를 빼는 소리가 들렸다.</p>
+                <p class="mb-6">의자가 바닥을 긁으며 움직였다.</p>
+                <p class="mb-6">그리고 누군가 자리에 앉았다.</p>
+                <p class="mb-6">손 하나가 엠마의 손목 위에 부드럽게 얹혔다.</p>
+                <p class="mb-6">따뜻한 손이었다.</p>
+                <p class="mb-6">그녀의 바로 옆에서 여자의 목소리가 들렸다.</p>
+                <p class="mb-6">"이제 네 명이네."</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+    function skipAudio(seconds) {
+        const player = document.getElementById('player');
+        if (player.src) {
+            player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+        }
+    }
+
+    function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+    let _quizOriginals = new Map();
+
+    function toggleQuiz() {
+        const btn = document.getElementById('quizBtn');
+        const isQuiz = btn.innerText.includes("Quiz");
+        const targets = document.querySelectorAll('.quiz-target');
+        const cells = document.querySelectorAll('.mystery-cell');
+
+        if (isQuiz) {
+            btn.innerText = "Study Mode 📖";
+            cells.forEach(c => c.classList.add('quiz-hidden'));
+            targets.forEach(t => {
+                const ans = t.dataset.ans; const kor = t.dataset.kor;
+                _quizOriginals.set(t, t.innerHTML);
+                t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+            });
+        } else {
+            btn.innerText = "Quiz Mode 👻";
+            cells.forEach(c => c.classList.remove('quiz-hidden'));
+            targets.forEach(t => {
+                if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+            });
+            _quizOriginals.clear();
+        }
+    }
+
+    function checkQuiz(i, a) {
+        if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+            i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+            confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+            checkAllSolved();
+        } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+    }
+
+    function checkAllSolved() {
+        const inputs = document.querySelectorAll('.quiz-input');
+        if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+            var duration = 3 * 1000; var end = Date.now() + duration;
+            (function frame() {
+                confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+                confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+                if (Date.now() < end) requestAnimationFrame(frame);
+            }());
+        }
+    }
+
+    document.getElementById('player').src = "10301020.m4a";
+</script>
+    <script src="wordbank-utils.js"></script>
+</body>
+</html>

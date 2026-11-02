@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+      <title>Review Note | The Smell Test</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+      <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+      </style>
+</head>
+<body class="p-4 md:p-12">
+      <div class="max-w-4xl mx-auto space-y-8">
+
+          <header class="text-center space-y-4">
+              <div class="flex items-center justify-center gap-4">
+                  <span class="text-5xl">👃</span>
+                  <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Smell Test</h1>
+              </div>
+              <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+          </header>
+
+          <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+              <div class="flex items-center justify-between px-2">
+                  <div class="flex items-center gap-3">
+                      <span class="text-xl">🎧</span>
+                      <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                  </div>
+                  <div class="flex gap-2">
+                      <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          <span class="text-lg">↺</span> 5s
+                      </button>
+                      <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          5s <span class="text-lg">↻</span>
+                      </button>
+                  </div>
+              </div>
+              <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+          </div>
+
+          <div class="flex justify-center">
+              <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+          </div>
+
+          <section class="glass rounded-3xl overflow-hidden shadow-xl">
+              <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                  <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+              </div>
+              <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                  <tr><td class="p-4"><b class="text-white">B.O.</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">불쾌한 체취, 땀 냄새 (body odor)</td></tr>
+                  <tr><td class="p-4"><b class="text-white">never get tired of</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">아무리 ~해도 질리지 않다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">sizzle</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">지글지글 소리가 나다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">freshly-baked bread</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">갓 구운 빵</td></tr>
+                  <tr><td class="p-4"><b class="text-white">pine nut</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">잣</td></tr>
+                  <tr><td class="p-4"><b class="text-white">teleportation</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">순간이동</td></tr>
+              </tbody></table>
+          </section>
+
+          <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                  <h3 class="text-teal-400 font-bold mb-1">B.O.</h3>
+                  <p class="text-slate-300 text-sm">Body odor의 줄임말이에요. 특히 불쾌한 체취를 가리키는 구어체 표현이에요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                  <h3 class="text-teal-400 font-bold mb-1">never get tired of</h3>
+                  <p class="text-slate-300 text-sm">어떤 것을 계속 경험해도 싫증이 나지 않는다는 뜻이에요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                  <h3 class="text-teal-400 font-bold mb-1">sizzle</h3>
+                  <p class="text-slate-300 text-sm">음식이 뜨거운 팬이나 그릴에서 익을 때 나는 소리나 그 동작을 표현해요.</p>
+              </div>
+          </section>
+
+          <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+              <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                  <p class="mb-6">If I could keep only one smell in the world, which one would I choose?</p>
+                  <p class="mb-6">My first thought is <b class="highlight quiz-target" data-ans="freshly-baked bread" data-kor="갓 구운 빵">freshly-baked bread</b>.</p>
+                  <p class="mb-6">There's a bakery near my apartment, and every morning I walk past it on my way to work. The smell makes me happy even when I'm running late.</p>
+                  <p class="mb-6">But wait. If I choose the smell of bread, does that mean I can never smell anything else?</p>
+                  <p class="mb-6">That sounds dangerous.</p>
+                  <p class="mb-6">What about smoke? If there's a fire, I need to know.</p>
+                  <p class="mb-6">And what about spoiled milk?</p>
+                  <p class="mb-6">Okay, maybe the question means one pleasant smell. Let's assume dangerous smells are still allowed.</p>
+                  <p class="mb-6">Then bread is a strong candidate.</p>
+                  <p class="mb-6">But coffee is also wonderful. I don't even drink much coffee. I just like the smell.</p>
+                  <p class="mb-6">Especially when someone opens a fresh bag of beans.</p>
+                  <p class="mb-6">Actually, that reminds me of restaurants.</p>
+                  <p class="mb-6">You know the sound of meat starting to <b class="highlight quiz-target" data-ans="sizzle" data-kor="지글지글 소리가 나다">sizzle</b> on a hot grill? The smell that comes right after it is incredible.</p>
+                  <p class="mb-6">Could I choose barbecue?</p>
+                  <p class="mb-6">No. That's too specific. Sometimes I want something lighter.</p>
+                  <p class="mb-6">Like the smell of a forest after rain.</p>
+                  <p class="mb-6">Or the ocean.</p>
+                  <p class="mb-6">Although the ocean doesn't always smell good. Sometimes it smells like old fish.</p>
+                  <p class="mb-6">Maybe I should choose the smell of home.</p>
+                  <p class="mb-6">But what does home smell like?</p>
+                  <p class="mb-6">My mother's cooking, probably. Garlic, sesame oil, soup bubbling on the stove.</p>
+                  <p class="mb-6">She makes a vegetable dish with <b class="highlight quiz-target" data-ans="pine nut" data-kor="잣">pine nuts</b> that smells amazing.</p>
+                  <p class="mb-6">But if I chose that smell, would I eventually stop noticing it?</p>
+                  <p class="mb-6">People say they <b class="highlight quiz-target" data-ans="never get tired of" data-kor="아무리 ~해도 질리지 않다">never get tired of</b> certain things. I wonder whether that's really true.</p>
+                  <p class="mb-6">I remember visiting my uncle's house when I was little. He had a huge garden full of flowers. The smell was beautiful for the first ten minutes.</p>
+                  <p class="mb-6">After an hour, I couldn't smell the flowers at all.</p>
+                  <p class="mb-6">My nose had simply gotten used to them.</p>
+                  <p class="mb-6">So if I choose one smell forever, maybe it won't feel special anymore.</p>
+                  <p class="mb-6">This is terrible.</p>
+                  <p class="mb-6">And there's a more embarrassing issue.</p>
+                  <p class="mb-6">What about <b class="highlight quiz-target" data-ans="B.O." data-kor="불쾌한 체취, 땀 냄새">B.O.</b>?</p>
+                  <p class="mb-6">I know nobody wants to smell sweat, but sometimes a bad smell tells you something important. If I couldn't smell myself after exercising, how would I know whether I needed a shower?</p>
+                  <p class="mb-6">I'd have to ask someone.</p>
+                  <p class="mb-6">Absolutely not.</p>
+                  <p class="mb-6">Maybe <b class="highlight quiz-target" data-ans="teleportation" data-kor="순간이동">teleportation</b> would solve part of the problem. I could travel anywhere instantly and experience my favorite smell in its natural setting.</p>
+                  <p class="mb-6">But that doesn't help if I'm allowed only one.</p>
+                  <p class="mb-6">Bread, coffee, barbecue, flowers, rain, my mother's cooking.</p>
+                  <p class="mb-6">I keep returning to bread.</p>
+                  <p class="mb-6">Then I remember my father.</p>
+                  <p class="mb-6">When I was a child, he used to come home from work smelling of soap and the cold evening air. I always knew he was home before I heard the door close.</p>
+                  <p class="mb-6">I haven't thought about that smell in years.</p>
+                  <p class="mb-6">Now I'm not sure I can choose bread.</p>
+                  <p class="mb-6">If you could keep only one pleasant smell for the rest of your life, which one would you choose?</p>
+              </div>
+              <hr class="border-white/10">
+              <div class="text-slate-400 italic leading-relaxed space-y-6">
+                  <p>세상에서 단 하나의 냄새만 남길 수 있다면 어떤 냄새를 고를까?</p>
+                  <p>가장 먼저 떠오르는 건 <b class="highlight">갓 구운 빵</b> 냄새다.</p>
+                  <p>우리 아파트 근처에 빵집이 하나 있는데, 나는 매일 아침 출근하면서 그 앞을 지나간다. 지각할 것 같아 서두르는 날에도 그 냄새를 맡으면 기분이 좋아진다.</p>
+                  <p>그런데 잠깐. 빵 냄새를 선택하면 다른 냄새는 영원히 맡을 수 없다는 뜻일까?</p>
+                  <p>그건 위험할 것 같다.</p>
+                  <p>연기 냄새는 어떡하지? 불이 나면 알아야 하는데.</p>
+                  <p>상한 우유 냄새도 마찬가지다.</p>
+                  <p>좋아. 아마 이 질문은 기분 좋은 냄새 하나를 고르라는 뜻일 것이다. 위험을 알리는 냄새는 맡을 수 있다고 가정하자.</p>
+                  <p>그렇다면 빵은 강력한 후보다.</p>
+                  <p>하지만 커피 향도 훌륭하다. 나는 커피를 많이 마시지도 않는다. 그냥 그 향이 좋다.</p>
+                  <p>특히 누군가 원두 봉지를 새로 뜯을 때 나는 향.</p>
+                  <p>그러고 보니 식당도 생각난다.</p>
+                  <p>고기가 뜨거운 불판에서 <b class="highlight">지글지글</b> 익기 시작할 때 나는 소리 알지? 바로 뒤이어 퍼지는 냄새가 정말 끝내준다.</p>
+                  <p>바비큐 냄새를 선택할까?</p>
+                  <p>아니다. 너무 구체적이다. 가끔은 좀 더 가벼운 향이 좋을 때도 있다.</p>
+                  <p>비 온 뒤 숲의 냄새 같은 것.</p>
+                  <p>아니면 바다 냄새.</p>
+                  <p>하지만 바다가 항상 좋은 냄새가 나는 건 아니다. 가끔은 오래된 생선 냄새가 난다.</p>
+                  <p>어쩌면 집의 냄새를 선택해야 할지도 모른다.</p>
+                  <p>그런데 집에서는 무슨 냄새가 나지?</p>
+                  <p>아마 엄마의 요리 냄새일 것이다. 마늘, 참기름, 가스레인지에서 보글보글 끓는 국.</p>
+                  <p>엄마는 <b class="highlight">잣</b>을 넣은 채소 요리를 만드시는데, 냄새가 정말 좋다.</p>
+                  <p>하지만 그 냄새를 선택하면 언젠가는 더 이상 알아차리지 못하게 되지 않을까?</p>
+                  <p>사람들은 어떤 것에는 <b class="highlight">절대 질리지 않는다고</b> 말한다. 정말 그럴까?</p>
+                  <p>어릴 때 삼촌 집에 놀러 갔던 기억이 난다. 삼촌에게는 꽃이 가득한 커다란 정원이 있었다. 처음 10분 동안은 향기가 정말 아름다웠다.</p>
+                  <p>하지만 한 시간쯤 지나자 꽃향기가 전혀 느껴지지 않았다.</p>
+                  <p>코가 그 냄새에 익숙해진 것이다.</p>
+                  <p>그렇다면 한 가지 냄새를 영원히 선택해도, 결국 특별하게 느껴지지 않을 수 있다.</p>
+                  <p>끔찍한 일이다.</p>
+                  <p>그리고 좀 민망한 문제도 있다.</p>
+                  <p><b class="highlight">땀 냄새</b>는 어떡하지?</p>
+                  <p>누구도 땀 냄새를 맡고 싶어 하지는 않지만, 가끔 나쁜 냄새는 중요한 사실을 알려 준다. 운동한 뒤 내 체취를 맡을 수 없다면 샤워가 필요한지 어떻게 알 수 있을까?</p>
+                  <p>누군가에게 물어봐야 한다.</p>
+                  <p>그건 절대 싫다.</p>
+                  <p><b class="highlight">순간이동</b>을 할 수 있다면 문제의 일부는 해결될지도 모른다. 어디든 즉시 이동해서 내가 좋아하는 냄새를 원래의 장소에서 맡을 수 있으니까.</p>
+                  <p>하지만 냄새를 하나만 선택할 수 있다면 그것도 소용없다.</p>
+                  <p>빵, 커피, 바비큐, 꽃, 비, 엄마의 요리.</p>
+                  <p>생각은 자꾸 빵으로 돌아간다.</p>
+                  <p>그때 아빠가 떠오른다.</p>
+                  <p>어릴 때 아빠는 퇴근해서 집에 오실 때마다 비누와 차가운 저녁 공기가 섞인 냄새가 났다. 문이 닫히는 소리를 듣기도 전에 아빠가 집에 오셨다는 걸 알 수 있었다.</p>
+                  <p>그 냄새를 몇 년 동안 생각해 본 적이 없다.</p>
+                  <p>이제 빵을 고를 수 있을지 모르겠다.</p>
+                  <p>여러분이 평생 단 하나의 기분 좋은 냄새만 맡을 수 있다면 어떤 냄새를 선택하시겠어요?</p>
+              </div>
+          </section>
+
+      </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "112845.m4a";
+</script>
+      <script src="wordbank-utils.js"></script>
+  </body>
+  </html>

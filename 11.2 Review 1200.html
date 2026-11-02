@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+      <title>Review Note | One Exercise Forever</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+      <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+      </style>
+</head>
+<body class="p-4 md:p-12">
+      <div class="max-w-4xl mx-auto space-y-8">
+
+          <header class="text-center space-y-4">
+              <div class="flex items-center justify-center gap-4">
+                  <span class="text-5xl">🏃</span>
+                  <h1 class="text-3xl md:text-4xl font-extrabold text-white">One Exercise Forever</h1>
+              </div>
+              <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+          </header>
+
+          <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+              <div class="flex items-center justify-between px-2">
+                  <div class="flex items-center gap-3">
+                      <span class="text-xl">🎧</span>
+                      <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                  </div>
+                  <div class="flex gap-2">
+                      <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          <span class="text-lg">↺</span> 5s
+                      </button>
+                      <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          5s <span class="text-lg">↻</span>
+                      </button>
+                  </div>
+              </div>
+              <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+          </div>
+
+          <div class="flex justify-center">
+              <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+          </div>
+
+          <section class="glass rounded-3xl overflow-hidden shadow-xl">
+              <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                  <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+              </div>
+              <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                  <tr><td class="p-4"><b class="text-white">get back in the swing of things</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">다시 원래의 생활이나 일의 리듬을 되찾다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">diversity</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">다양성</td></tr>
+                  <tr><td class="p-4"><b class="text-white">one third</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">3분의 1</td></tr>
+                  <tr><td class="p-4"><b class="text-white">sprain</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">(발목이나 손목 등을) 삐다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">swollen</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">부어 있는</td></tr>
+                  <tr><td class="p-4"><b class="text-white">pine nut</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">잣</td></tr>
+                  <tr><td class="p-4"><b class="text-white">fiber</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">식이섬유</td></tr>
+                  <tr><td class="p-4"><b class="text-white">get tired of</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">~에 질리다</td></tr>
+              </tbody></table>
+          </section>
+
+          <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                  <h3 class="text-teal-400 font-bold mb-1">get back in the swing of things</h3>
+                  <p class="text-slate-300 text-sm">휴식이나 변화 이후에 평소의 생활 방식에 다시 적응하는 것을 뜻해요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                  <h3 class="text-teal-400 font-bold mb-1">one third</h3>
+                  <p class="text-slate-300 text-sm">전체를 세 부분으로 나눴을 때 그중 한 부분을 뜻해요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                  <h3 class="text-teal-400 font-bold mb-1">sprain / swollen</h3>
+                  <p class="text-slate-300 text-sm">Sprain은 인대가 손상되는 부상을 말하고, swollen은 부상 등으로 신체 일부가 부어 있는 상태를 뜻해요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                  <h3 class="text-teal-400 font-bold mb-1">fiber</h3>
+                  <p class="text-slate-300 text-sm">음식이나 영양에 관해 이야기할 때는 '식이섬유'를 뜻해요.</p>
+              </div>
+          </section>
+
+          <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+              <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                  <p class="mb-6">If I could do only one kind of exercise for the rest of my life, which one would I choose?</p>
+                  <p class="mb-6">Running.</p>
+                  <p class="mb-6">That seems obvious. It's free, I can do it almost anywhere, and I don't need much equipment.</p>
+                  <p class="mb-6">Except I hate running.</p>
+                  <p class="mb-6">That's a fairly important detail.</p>
+                  <p class="mb-6">I always forget how much I hate it until I'm actually running. The first five minutes are fine. Then I start wondering why I'm doing this to myself.</p>
+                  <p class="mb-6">Maybe swimming would be better.</p>
+                  <p class="mb-6">I love being in the water. It's relaxing, and it exercises the whole body.</p>
+                  <p class="mb-6">But swimming means finding a pool, changing clothes, showering, and dealing with wet hair.</p>
+                  <p class="mb-6">If I have only thirty minutes, I might spend <b class="highlight quiz-target" data-ans="one third" data-kor="3분의 1">one third</b> of that time just getting ready.</p>
+                  <p class="mb-6">Also, I don't like crowded swimming pools.</p>
+                  <p class="mb-6">What about cycling?</p>
+                  <p class="mb-6">Cycling is fun. I could exercise and travel somewhere at the same time.</p>
+                  <p class="mb-6">But what happens when it rains? Or snows?</p>
+                  <p class="mb-6">And I'd need somewhere to store a bicycle.</p>
+                  <p class="mb-6">I live in a small apartment. My bicycle would probably end up beside my dining table.</p>
+                  <p class="mb-6">Maybe that's fine. I barely use the table anyway.</p>
+                  <p class="mb-6">Wait. There's a bigger issue.</p>
+                  <p class="mb-6">Last year, I <b class="highlight quiz-target" data-ans="sprained" data-kor="삐었다">sprained</b> my ankle while hiking. It was so <b class="highlight quiz-target" data-ans="swollen" data-kor="부어 있는">swollen</b> that I couldn't wear my normal shoes for several days.</p>
+                  <p class="mb-6">Since then, I've been nervous about exercising on uneven ground.</p>
+                  <p class="mb-6">So perhaps hiking isn't the best choice.</p>
+                  <p class="mb-6">Although I love hiking.</p>
+                  <p class="mb-6">Especially the feeling of reaching the top of a mountain and sitting down with a snack.</p>
+                  <p class="mb-6">My favorite hiking snack is a little rice cake with <b class="highlight quiz-target" data-ans="pine nuts" data-kor="잣">pine nuts</b>. I tell myself it's healthy because it contains nuts.</p>
+                  <p class="mb-6">Actually, I have no idea how much <b class="highlight quiz-target" data-ans="fiber" data-kor="식이섬유">fiber</b> is in it.</p>
+                  <p class="mb-6">Why am I thinking about snacks? I'm supposed to be choosing exercise.</p>
+                  <p class="mb-6">Maybe yoga.</p>
+                  <p class="mb-6">Yoga doesn't require much space. I could do it at home, and it might help me relax.</p>
+                  <p class="mb-6">But would I <b class="highlight quiz-target" data-ans="get tired of" data-kor="~에 질리다">get tired of</b> doing the same poses every day?</p>
+                  <p class="mb-6">I know there are different kinds of yoga. That's the advantage of choosing something with a lot of <b class="highlight quiz-target" data-ans="diversity" data-kor="다양성">diversity</b>.</p>
+                  <p class="mb-6">Still, I can't imagine doing yoga when I want to run around outside.</p>
+                  <p class="mb-6">Maybe basketball would be more exciting.</p>
+                  <p class="mb-6">Except I haven't played basketball since school, and I wasn't very good at it then.</p>
+                  <p class="mb-6">I'd probably spend half the game chasing the ball.</p>
+                  <p class="mb-6">The real problem is that I want different exercises for different moods.</p>
+                  <p class="mb-6">When I'm stressed, I want to walk.</p>
+                  <p class="mb-6">When I'm energetic, I want to swim.</p>
+                  <p class="mb-6">When the weather is beautiful, I want to hike.</p>
+                  <p class="mb-6">And after a long vacation, I need something gentle to help me <b class="highlight quiz-target" data-ans="get back in the swing of things" data-kor="다시 원래의 리듬을 되찾다">get back in the swing of things</b>.</p>
+                  <p class="mb-6">I look at the running shoes by my front door.</p>
+                  <p class="mb-6">They're almost new.</p>
+                  <p class="mb-6">I bought them eight months ago because I was convinced running would change my life.</p>
+                  <p class="mb-6">I've worn them four times.</p>
+                  <p class="mb-6">Maybe I should give running a proper chance.</p>
+                  <p class="mb-6">I put on my shoes, step outside, and start jogging.</p>
+                  <p class="mb-6">After three minutes, I stop at a traffic light.</p>
+                  <p class="mb-6">My legs hurt.</p>
+                  <p class="mb-6">I look across the street.</p>
+                  <p class="mb-6">There's a yoga studio on one corner and a bicycle shop on the other.</p>
+                  <p class="mb-6">This isn't helping.</p>
+                  <p class="mb-6">If you could do only one kind of exercise for the rest of your life, which one would you choose?</p>
+              </div>
+              <hr class="border-white/10">
+              <div class="text-slate-400 italic leading-relaxed space-y-6">
+                  <p>평생 단 한 종류의 운동만 할 수 있다면 어떤 운동을 고를까?</p>
+                  <p>달리기.</p>
+                  <p>당연한 선택처럼 보인다. 돈도 들지 않고 거의 어디서나 할 수 있으며 장비도 많이 필요하지 않다.</p>
+                  <p>그런데 나는 달리기를 싫어한다.</p>
+                  <p>꽤 중요한 사실이다.</p>
+                  <p>실제로 달리기 전까지는 내가 달리기를 얼마나 싫어하는지 항상 잊어버린다. 처음 5분은 괜찮다. 그러다가 왜 스스로 이런 고생을 하고 있는지 생각하기 시작한다.</p>
+                  <p>어쩌면 수영이 더 좋을지도 모른다.</p>
+                  <p>나는 물속에 있는 걸 좋아한다. 마음이 편안해지고 전신 운동도 된다.</p>
+                  <p>하지만 수영을 하려면 수영장을 찾고, 옷을 갈아입고, 샤워하고, 젖은 머리도 처리해야 한다.</p>
+                  <p>시간이 30분밖에 없다면 그중 <b class="highlight">3분의 1</b>은 준비하는 데 쓸 수도 있다.</p>
+                  <p>게다가 사람이 많은 수영장은 별로 좋아하지 않는다.</p>
+                  <p>자전거는 어떨까?</p>
+                  <p>자전거 타기는 재미있다. 운동하면서 다른 곳으로 이동할 수도 있다.</p>
+                  <p>하지만 비가 오면? 눈이 오면?</p>
+                  <p>자전거를 보관할 장소도 필요하다.</p>
+                  <p>나는 작은 아파트에 산다. 자전거를 사면 아마 식탁 옆에 세워 두게 될 것이다.</p>
+                  <p>뭐, 괜찮을지도 모른다. 어차피 식탁을 거의 사용하지 않으니까.</p>
+                  <p>잠깐. 더 큰 문제가 있다.</p>
+                  <p>작년에 등산하다가 발목을 <b class="highlight">삐었다</b>. 발목이 너무 심하게 <b class="highlight">부어서</b> 며칠 동안 평소 신던 신발을 신을 수 없었다.</p>
+                  <p>그 이후로는 울퉁불퉁한 곳에서 운동하는 게 조금 무섭다.</p>
+                  <p>그러니 등산은 최고의 선택이 아닐지도 모른다.</p>
+                  <p>하지만 나는 등산을 정말 좋아한다.</p>
+                  <p>특히 산 정상에 도착해서 간식을 먹으며 앉아 있는 기분이 좋다.</p>
+                  <p>내가 가장 좋아하는 등산 간식은 <b class="highlight">잣</b>이 들어간 작은 떡이다. 견과류가 들어 있으니까 건강한 음식이라고 스스로에게 말한다.</p>
+                  <p>사실 <b class="highlight">식이섬유</b>가 얼마나 들어 있는지는 전혀 모른다.</p>
+                  <p>왜 간식 생각을 하고 있지? 운동을 고르는 중인데.</p>
+                  <p>어쩌면 요가가 좋겠다.</p>
+                  <p>요가는 공간이 많이 필요하지 않다. 집에서도 할 수 있고 마음을 편안하게 하는 데도 도움이 될 것이다.</p>
+                  <p>하지만 매일 똑같은 자세를 하면 <b class="highlight">질리지</b> 않을까?</p>
+                  <p>요가에도 여러 종류가 있다는 건 안다. <b class="highlight">다양성</b>이 큰 운동을 선택하면 그런 점이 좋다.</p>
+                  <p>그래도 밖에서 신나게 움직이고 싶은 날에 요가를 하는 모습은 상상하기 어렵다.</p>
+                  <p>농구가 더 신날지도 모른다.</p>
+                  <p>하지만 학교를 졸업한 뒤로 농구를 해 본 적이 없고, 그때도 잘하지 못했다.</p>
+                  <p>아마 경기 시간의 절반은 공을 쫓아다니며 보낼 것이다.</p>
+                  <p>진짜 문제는 기분에 따라 다른 운동을 하고 싶다는 것이다.</p>
+                  <p>스트레스를 받을 때는 걷고 싶다.</p>
+                  <p>에너지가 넘칠 때는 수영하고 싶다.</p>
+                  <p>날씨가 아름다울 때는 등산하고 싶다.</p>
+                  <p>그리고 긴 휴가를 마친 뒤에는 다시 <b class="highlight">일상적인 리듬을 찾는 데</b> 도움이 되는 가벼운 운동이 필요하다.</p>
+                  <p>현관 옆에 놓인 러닝화를 바라본다.</p>
+                  <p>거의 새것이다.</p>
+                  <p>8개월 전에 달리기가 내 인생을 바꿔 줄 거라고 확신해서 산 신발이다.</p>
+                  <p>지금까지 네 번 신었다.</p>
+                  <p>어쩌면 달리기에 제대로 기회를 줘야 할지도 모른다.</p>
+                  <p>운동화를 신고 밖으로 나가 조깅을 시작한다.</p>
+                  <p>3분 뒤, 신호등 앞에 멈춘다.</p>
+                  <p>다리가 아프다.</p>
+                  <p>길 건너편을 바라본다.</p>
+                  <p>한쪽 모퉁이에는 요가 스튜디오가 있고, 반대편에는 자전거 가게가 있다.</p>
+                  <p>전혀 도움이 되지 않는다.</p>
+                  <p>여러분이 평생 단 한 종류의 운동만 할 수 있다면 어떤 운동을 선택하시겠어요?</p>
+              </div>
+          </section>
+
+      </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "1121200.m4a";
+</script>
+      <script src="wordbank-utils.js"></script>
+  </body>
+  </html>

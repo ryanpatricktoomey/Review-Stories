@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+      <title>Review Note | Should Parents Tell Their Children They're Not Talented?</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+      <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+      </style>
+</head>
+<body class="p-4 md:p-12">
+      <div class="max-w-4xl mx-auto space-y-8">
+
+          <header class="text-center space-y-4">
+              <div class="flex items-center justify-center gap-4">
+                  <span class="text-5xl">🎭</span>
+                  <h1 class="text-3xl md:text-4xl font-extrabold text-white">Should Parents Tell Their Children They're Not Talented?</h1>
+              </div>
+              <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+          </header>
+
+          <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+              <div class="flex items-center justify-between px-2">
+                  <div class="flex items-center gap-3">
+                      <span class="text-xl">🎧</span>
+                      <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                  </div>
+                  <div class="flex gap-2">
+                      <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          <span class="text-lg">↺</span> 5s
+                      </button>
+                      <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          5s <span class="text-lg">↻</span>
+                      </button>
+                  </div>
+              </div>
+              <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+          </div>
+
+          <div class="flex justify-center">
+              <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+          </div>
+
+          <section class="glass rounded-3xl overflow-hidden shadow-xl">
+              <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                  <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+              </div>
+              <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                  <tr><td class="p-4"><b class="text-white">open class</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">학부모 공개수업</td></tr>
+                  <tr><td class="p-4"><b class="text-white">goes bad</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">상하다, 변질되다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">do a little at a time</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">한 번에 조금씩 하다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">a hassle</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">번거로운 일, 귀찮은 일</td></tr>
+                  <tr><td class="p-4"><b class="text-white">shade</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그늘 / 은근한 비꼼, 험담</td></tr>
+                  <tr><td class="p-4"><b class="text-white">I couldn't be bothered</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">귀찮아서 할 마음이 안 났다</td></tr>
+              </tbody></table>
+          </section>
+
+          <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <h3 class="text-teal-400 font-bold text-lg">Open class</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">한국의 학부모 공개수업을 설명할 때 사용할 수 있어요. 영어권에서는 classroom observation day나 open classroom event라고 하면 의미가 더 명확해요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <h3 class="text-teal-400 font-bold text-lg">Goes bad</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">음식이 상하거나 못 먹게 될 때 쓰는 표현이에요. Go bad는 음식뿐 아니라 상황이나 관계가 나빠질 때도 사용할 수 있어요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <h3 class="text-teal-400 font-bold text-lg">A hassle</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">단순히 어렵다는 뜻이 아니라, 시간과 노력이 들어서 번거롭고 귀찮다는 느낌이에요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <h3 class="text-teal-400 font-bold text-lg">Shade</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">기본 뜻은 ‘그늘’이지만, throw shade at someone은 누군가를 은근히 비꼬거나 깎아내린다는 뜻이에요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2 md:col-span-2">
+                  <h3 class="text-teal-400 font-bold text-lg">I couldn't be bothered</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">할 수 없었던 게 아니라 귀찮거나 내키지 않아서 하지 않았다는 뜻이에요. 상대방에게 직접 말하면 무례하게 들릴 수도 있어요.</p>
+              </div>
+          </section>
+
+          <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+              <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                  <p class="mb-6"><em>The Honest Truth Podcast</em></p>
+                  <p class="mb-6"><strong>Host (Laura):</strong> Welcome back to <em>The Honest Truth Podcast</em>. Today we're asking a question that makes a lot of parents uncomfortable: Are you supposed to tell your children when they're simply not good at something? Joining me are Rebecca, a mother of two, and David, a father of three.</p>
+                  <p class="mb-6"><strong>Rebecca:</strong> I don't think parents should tell children they're untalented. They're supposed to encourage them.</p>
+                  <p class="mb-6"><strong>David:</strong> Encourage them to improve, sure. But telling them they're amazing when they're not? That's dishonest.</p>
+                  <p class="mb-6"><strong>Laura:</strong> Rebecca, you recently attended your daughter's <b class="highlight quiz-target" data-ans="open class" data-kor="학부모 공개수업">open class</b>. What happened?</p>
+                  <p class="mb-6"><strong>Rebecca:</strong> Her teacher had been telling us she was doing wonderfully in English. But when I watched the lesson, she struggled to answer basic questions.</p>
+                  <p class="mb-6"><strong>David:</strong> So the teacher lied?</p>
+                  <p class="mb-6"><strong>Rebecca:</strong> I wouldn't say lied. Maybe she was trying to be encouraging.</p>
+                  <p class="mb-6"><strong>David:</strong> That's exactly the problem. Adults are so afraid of hurting children's feelings that they stop telling the truth.</p>
+                  <p class="mb-6"><strong>Rebecca:</strong> She's nine years old!</p>
+                  <p class="mb-6"><strong>David:</strong> And she's supposed to learn. How can she improve if nobody tells her what she's doing wrong?</p>
+                  <p class="mb-6"><strong>Rebecca:</strong> She knows she's struggling. She doesn't need adults reminding her constantly.</p>
+                  <p class="mb-6"><strong>Laura:</strong> What did you say to her afterward?</p>
+                  <p class="mb-6"><strong>Rebecca:</strong> I told her I was proud of how hard she tried.</p>
+                  <p class="mb-6"><strong>David:</strong> Did she actually try hard?</p>
+                  <p class="mb-6"><strong>Rebecca:</strong> Excuse me?</p>
+                  <p class="mb-6"><strong>David:</strong> You said she struggled. Had she been practicing?</p>
+                  <p class="mb-6"><strong>Rebecca:</strong> Not as much as she should have. We've been trying to <b class="highlight quiz-target" data-ans="do a little at a time" data-kor="한 번에 조금씩 하다">do a little at a time</b>.</p>
+                  <p class="mb-6"><strong>David:</strong> So why tell her you're proud of her effort if she hasn't been putting in the effort?</p>
+                  <p class="mb-6"><strong>Rebecca:</strong> Because I don't want her to hate learning!</p>
+                  <p class="mb-6"><strong>Laura:</strong> David, your son plays basketball. Is he good?</p>
+                  <p class="mb-6"><strong>David:</strong> Honestly? Not particularly.</p>
+                  <p class="mb-6"><strong>Laura:</strong> Have you told him that?</p>
+                  <p class="mb-6"><strong>David:</strong> I've told him he needs to practice if he wants to make the school team.</p>
+                  <p class="mb-6"><strong>Rebecca:</strong> That's not the same as telling him he isn't talented.</p>
+                  <p class="mb-6"><strong>David:</strong> No, because talent isn't the issue. Effort is.</p>
+                  <p class="mb-6"><strong>Rebecca:</strong> Then why did you start by saying parents shouldn't tell children they're amazing?</p>
+                  <p class="mb-6"><strong>David:</strong> Because some parents confuse encouragement with pretending.</p>
+                  <p class="mb-6"><strong>Laura:</strong> Rebecca, what happens when your daughter doesn't want to practice?</p>
+                  <p class="mb-6"><strong>Rebecca:</strong> Sometimes I let it go. After work, homework, and dinner, getting her to study can be <b class="highlight quiz-target" data-ans="a hassle" data-kor="번거로운 일, 귀찮은 일">a hassle</b>.</p>
+                  <p class="mb-6"><strong>David:</strong> So you're avoiding an uncomfortable conversation.</p>
+                  <p class="mb-6"><strong>Rebecca:</strong> Sometimes, yes. Last week, I was supposed to help her study, but <b class="highlight quiz-target" data-ans="I couldn't be bothered" data-kor="귀찮아서 할 마음이 안 났다">I couldn't be bothered</b>. I was exhausted.</p>
+                  <p class="mb-6"><strong>David:</strong> That's understandable.</p>
+                  <p class="mb-6"><strong>Rebecca:</strong> Really? I thought you were supposed to be the strict one.</p>
+                  <p class="mb-6"><strong>David:</strong> Being honest doesn't mean being cruel.</p>
+                  <p class="mb-6"><strong>Laura:</strong> David, does your son enjoy basketball?</p>
+                  <p class="mb-6"><strong>David:</strong> He loves it.</p>
+                  <p class="mb-6"><strong>Laura:</strong> And if he never makes the team?</p>
+                  <p class="mb-6"><strong>David:</strong> He'll be disappointed. But disappointment isn't the end of the world.</p>
+                  <p class="mb-6"><strong>Rebecca:</strong> Would you tell him he should quit?</p>
+                  <p class="mb-6"><strong>David:</strong> No. Why would I?</p>
+                  <p class="mb-6"><strong>Rebecca:</strong> Because he's not particularly good. Your words.</p>
+                  <p class="mb-6"><strong>David:</strong> He doesn't have to be good to enjoy it.</p>
+                  <p class="mb-6"><strong>Rebecca:</strong> Exactly. My daughter doesn't have to be excellent at English to feel proud of herself.</p>
+                  <p class="mb-6"><strong>David:</strong> But she does need to understand where she stands.</p>
+                  <p class="mb-6"><strong>Laura:</strong> Can I ask both of you something? When you praise your children, are you supposed to be judging their performance or supporting them emotionally?</p>
+                  <p class="mb-6"><strong>David:</strong> Both, depending on the situation.</p>
+                  <p class="mb-6"><strong>Rebecca:</strong> And that's what makes it difficult.</p>
+                  <p class="mb-6"><strong>Laura:</strong> Rebecca, did your daughter seem upset after the lesson?</p>
+                  <p class="mb-6"><strong>Rebecca:</strong> Not at all. She was excited because she'd answered one question correctly.</p>
+                  <p class="mb-6"><strong>David:</strong> Then you should have praised that. It's specific and true.</p>
+                  <p class="mb-6"><strong>Rebecca:</strong> I did.</p>
+                  <p class="mb-6"><strong>David:</strong> Well, then we don't disagree as much as I thought.</p>
+                  <p class="mb-6"><strong>Rebecca:</strong> Don't get too comfortable. You still sound like someone who throws <b class="highlight quiz-target" data-ans="shade" data-kor="그늘 / 은근한 비꼼, 험담">shade</b> at parents for being kind.</p>
+                  <p class="mb-6"><strong>David:</strong> And you sound like someone who thinks criticism automatically means cruelty.</p>
+                  <p class="mb-6"><strong>Laura:</strong> Before we finish, Rebecca, what did your daughter want to do after the lesson?</p>
+                  <p class="mb-6"><strong>Rebecca:</strong> She wanted ice cream. But the milk at home had <b class="highlight quiz-target" data-ans="gone bad" data-kor="상하다, 변질되다">gone bad</b>, so we stopped at a shop.</p>
+                  <p class="mb-6"><strong>David:</strong> And did you make her practice English before buying it?</p>
+                  <p class="mb-6"><strong>Rebecca:</strong> No. I bought her ice cream because she was happy.</p>
+                  <p class="mb-6"><strong>David:</strong> Good.</p>
+                  <p class="mb-6"><strong>Rebecca:</strong> You sound surprised.</p>
+                  <p class="mb-6"><strong>David:</strong> I'm not. I'm just glad you didn't tell her the ice cream was a reward for being brilliant at English.</p>
+                  <p class="mb-6"><strong>Rebecca:</strong> Oh, give me a break.</p>
+              </div>
+              <hr class="border-white/10">
+              <div class="text-slate-400 italic leading-relaxed space-y-6">
+                  <p class="mb-6"><em>어니스트 트루스 팟캐스트</em></p>
+                  <p class="mb-6"><strong>진행자 (로라):</strong> <em>어니스트 트루스 팟캐스트</em>에 다시 오신 걸 환영합니다. 오늘은 많은 부모를 불편하게 만드는 질문을 해보겠습니다. 자녀가 어떤 일을 정말 못할 때, 부모는 그 사실을 말해줘야 할까요? 오늘은 두 아이의 엄마인 레베카 씨와 세 아이의 아빠인 데이비드 씨를 모셨습니다.</p>
+                  <p class="mb-6"><strong>레베카:</strong> 저는 부모가 아이에게 재능이 없다고 말해서는 안 된다고 생각해요. 부모는 아이를 격려해야 하잖아요.</p>
+                  <p class="mb-6"><strong>데이비드:</strong> 더 잘할 수 있도록 격려하는 건 좋죠. 하지만 실제로 그렇지 않은데도 대단하다고 말하는 건 정직하지 못한 거예요.</p>
+                  <p class="mb-6"><strong>로라:</strong> 레베카 씨, 최근 따님의 <b class="highlight">학부모 공개수업</b>에 참석하셨죠. 무슨 일이 있었나요?</p>
+                  <p class="mb-6"><strong>레베카:</strong> 선생님이 계속 딸아이가 영어를 아주 잘하고 있다고 말씀하셨어요. 그런데 수업을 직접 보니 기본적인 질문에도 대답하기 어려워하더라고요.</p>
+                  <p class="mb-6"><strong>데이비드:</strong> 그럼 선생님이 거짓말을 하신 건가요?</p>
+                  <p class="mb-6"><strong>레베카:</strong> 거짓말이라고까지 하고 싶지는 않아요. 격려해 주려고 하셨던 것 같아요.</p>
+                  <p class="mb-6"><strong>데이비드:</strong> 바로 그게 문제예요. 어른들이 아이들 마음을 상하게 할까 봐 너무 두려워서 진실을 말하지 않게 되는 거죠.</p>
+                  <p class="mb-6"><strong>레베카:</strong> 아홉 살밖에 안 됐어요!</p>
+                  <p class="mb-6"><strong>데이비드:</strong> 그리고 배워야 하는 나이잖아요. 무엇을 잘못하고 있는지 아무도 알려주지 않으면 어떻게 발전하겠어요?</p>
+                  <p class="mb-6"><strong>레베카:</strong> 본인도 힘들어하고 있다는 걸 알아요. 어른들이 계속 상기시켜 줄 필요는 없어요.</p>
+                  <p class="mb-6"><strong>로라:</strong> 수업이 끝난 뒤 따님에게 뭐라고 하셨나요?</p>
+                  <p class="mb-6"><strong>레베카:</strong> 열심히 노력한 게 자랑스럽다고 했어요.</p>
+                  <p class="mb-6"><strong>데이비드:</strong> 실제로 열심히 노력했나요?</p>
+                  <p class="mb-6"><strong>레베카:</strong> 네?</p>
+                  <p class="mb-6"><strong>데이비드:</strong> 수업에서 어려움을 겪었다고 하셨잖아요. 평소에 연습은 하고 있었나요?</p>
+                  <p class="mb-6"><strong>레베카:</strong> 해야 하는 만큼은 못 했어요. <b class="highlight">한 번에 조금씩</b> 해보려고 노력하고 있어요.</p>
+                  <p class="mb-6"><strong>데이비드:</strong> 그럼 충분히 노력하지도 않았는데 왜 노력한 게 자랑스럽다고 하셨어요?</p>
+                  <p class="mb-6"><strong>레베카:</strong> 아이가 공부를 싫어하게 만들고 싶지 않으니까요!</p>
+                  <p class="mb-6"><strong>로라:</strong> 데이비드 씨, 아드님이 농구를 한다고요. 잘하나요?</p>
+                  <p class="mb-6"><strong>데이비드:</strong> 솔직히요? 그렇게 잘하지는 못해요.</p>
+                  <p class="mb-6"><strong>로라:</strong> 아드님에게 그렇게 말씀하신 적 있나요?</p>
+                  <p class="mb-6"><strong>데이비드:</strong> 학교 농구팀에 들어가고 싶다면 연습이 필요하다고 말했어요.</p>
+                  <p class="mb-6"><strong>레베카:</strong> 그건 재능이 없다고 말하는 것과 다르잖아요.</p>
+                  <p class="mb-6"><strong>데이비드:</strong> 맞아요. 중요한 건 재능이 아니라 노력이니까요.</p>
+                  <p class="mb-6"><strong>레베카:</strong> 그럼 왜 처음에는 부모가 아이들에게 대단하다고 말하면 안 된다고 하셨어요?</p>
+                  <p class="mb-6"><strong>데이비드:</strong> 어떤 부모들은 격려하는 것과 사실이 아닌 걸 사실인 척하는 걸 혼동하니까요.</p>
+                  <p class="mb-6"><strong>로라:</strong> 레베카 씨, 따님이 연습하기 싫어하면 어떻게 하시나요?</p>
+                  <p class="mb-6"><strong>레베카:</strong> 가끔은 그냥 넘어가요. 일하고, 숙제 봐주고, 저녁까지 먹고 나면 아이를 공부시키는 게 정말 <b class="highlight">번거로울</b> 때가 있거든요.</p>
+                  <p class="mb-6"><strong>데이비드:</strong> 그러니까 불편한 대화를 피하고 계신 거네요.</p>
+                  <p class="mb-6"><strong>레베카:</strong> 가끔은요. 지난주에는 딸아이 공부를 도와주기로 했는데 너무 <b class="highlight">귀찮아서 못 하겠더라고요</b>. 완전히 지쳐 있었어요.</p>
+                  <p class="mb-6"><strong>데이비드:</strong> 그건 이해할 수 있어요.</p>
+                  <p class="mb-6"><strong>레베카:</strong> 정말요? 엄격한 분이실 줄 알았는데요.</p>
+                  <p class="mb-6"><strong>데이비드:</strong> 정직하다는 게 잔인해야 한다는 뜻은 아니니까요.</p>
+                  <p class="mb-6"><strong>로라:</strong> 데이비드 씨, 아드님은 농구를 좋아하나요?</p>
+                  <p class="mb-6"><strong>데이비드:</strong> 정말 좋아해요.</p>
+                  <p class="mb-6"><strong>로라:</strong> 끝내 학교 농구팀에 들어가지 못한다면요?</p>
+                  <p class="mb-6"><strong>데이비드:</strong> 실망하겠죠. 하지만 실망한다고 세상이 끝나는 건 아니잖아요.</p>
+                  <p class="mb-6"><strong>레베카:</strong> 그럼 농구를 그만두라고 하실 건가요?</p>
+                  <p class="mb-6"><strong>데이비드:</strong> 아니요. 왜 그래야 하죠?</p>
+                  <p class="mb-6"><strong>레베카:</strong> 잘하지 못하니까요. 본인이 하신 말씀이잖아요.</p>
+                  <p class="mb-6"><strong>데이비드:</strong> 즐기기 위해 꼭 잘해야 하는 건 아니니까요.</p>
+                  <p class="mb-6"><strong>레베카:</strong> 바로 그거예요. 제 딸도 영어를 아주 잘해야만 자신을 자랑스럽게 여길 수 있는 건 아니잖아요.</p>
+                  <p class="mb-6"><strong>데이비드:</strong> 하지만 자기 실력이 어느 정도인지는 알아야 해요.</p>
+                  <p class="mb-6"><strong>로라:</strong> 두 분께 하나 여쭤볼게요. 자녀를 칭찬할 때 부모는 아이의 성과를 평가해야 할까요, 아니면 정서적으로 지지해 줘야 할까요?</p>
+                  <p class="mb-6"><strong>데이비드:</strong> 상황에 따라 둘 다 해야죠.</p>
+                  <p class="mb-6"><strong>레베카:</strong> 그래서 어려운 거예요.</p>
+                  <p class="mb-6"><strong>로라:</strong> 레베카 씨, 수업이 끝난 뒤 따님이 속상해 보였나요?</p>
+                  <p class="mb-6"><strong>레베카:</strong> 전혀요. 질문 하나에 제대로 대답했다면서 신나 있었어요.</p>
+                  <p class="mb-6"><strong>데이비드:</strong> 그럼 그걸 칭찬해 주셨어야죠. 구체적이고 사실이니까요.</p>
+                  <p class="mb-6"><strong>레베카:</strong> 그렇게 했어요.</p>
+                  <p class="mb-6"><strong>데이비드:</strong> 그럼 생각보다 의견 차이가 크지 않네요.</p>
+                  <p class="mb-6"><strong>레베카:</strong> 너무 안심하지 마세요. 여전히 친절한 부모들을 <b class="highlight">은근히 비꼬는</b> 분처럼 들리거든요.</p>
+                  <p class="mb-6"><strong>데이비드:</strong> 레베카 씨는 비판을 무조건 잔인한 행동이라고 생각하는 분처럼 들리고요.</p>
+                  <p class="mb-6"><strong>로라:</strong> 마무리하기 전에 하나만 더 여쭤볼게요. 레베카 씨, 수업이 끝난 뒤 따님은 뭘 하고 싶어 했나요?</p>
+                  <p class="mb-6"><strong>레베카:</strong> 아이스크림을 먹고 싶어 했어요. 그런데 집에 있던 우유가 <b class="highlight">상해서</b> 가게에 들렀죠.</p>
+                  <p class="mb-6"><strong>데이비드:</strong> 아이스크림을 사주기 전에 영어 공부부터 시키셨나요?</p>
+                  <p class="mb-6"><strong>레베카:</strong> 아니요. 아이가 기분이 좋아서 아이스크림을 사줬어요.</p>
+                  <p class="mb-6"><strong>데이비드:</strong> 잘하셨네요.</p>
+                  <p class="mb-6"><strong>레베카:</strong> 의외라는 듯이 말씀하시네요.</p>
+                  <p class="mb-6"><strong>데이비드:</strong> 아니에요. 단지 영어를 아주 잘해서 주는 상이라고 말씀하지 않으셔서 다행이라는 거죠.</p>
+                  <p class="mb-6"><strong>레베카:</strong> 아, 좀 그만하세요.</p>
+              </div>
+          </section>
+
+      </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "1131200.m4a";
+</script>
+      <script src="wordbank-utils.js"></script>
+  </body>
+  </html>

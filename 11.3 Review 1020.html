@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+      <title>Review Note | Is Self-Improvement Making Us Miserable?</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+      <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+      </style>
+</head>
+<body class="p-4 md:p-12">
+      <div class="max-w-4xl mx-auto space-y-8">
+
+          <header class="text-center space-y-4">
+              <div class="flex items-center justify-center gap-4">
+                  <span class="text-5xl">🎙️</span>
+                  <h1 class="text-3xl md:text-4xl font-extrabold text-white">Is Self-Improvement Making Us Miserable?</h1>
+              </div>
+              <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+          </header>
+
+          <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+              <div class="flex items-center justify-between px-2">
+                  <div class="flex items-center gap-3">
+                      <span class="text-xl">🎧</span>
+                      <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                  </div>
+                  <div class="flex gap-2">
+                      <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          <span class="text-lg">↺</span> 5s
+                      </button>
+                      <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          5s <span class="text-lg">↻</span>
+                      </button>
+                  </div>
+              </div>
+              <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+          </div>
+
+          <div class="flex justify-center">
+              <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+          </div>
+
+          <section class="glass rounded-3xl overflow-hidden shadow-xl">
+              <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                  <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+              </div>
+              <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                  <tr><td class="p-4"><b class="text-white">crosswalk</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">횡단보도</td></tr>
+                  <tr><td class="p-4"><b class="text-white">pedestrians</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">보행자들</td></tr>
+                  <tr><td class="p-4"><b class="text-white">doubt</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">의심하다, 의문을 품다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">disillusioned</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">환상이 깨진, 기대가 무너져 실망한</td></tr>
+                  <tr><td class="p-4"><b class="text-white">anticlimactic</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">기대했던 것에 비해 싱겁고 허무한</td></tr>
+                  <tr><td class="p-4"><b class="text-white">put off</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">미루다, 연기하다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">push back</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">일정을 뒤로 미루다, 연기하다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">supplements</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">영양제, 보충제</td></tr>
+                  <tr><td class="p-4"><b class="text-white">do many loads of laundry</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">빨래를 여러 번 돌리다</td></tr>
+              </tbody></table>
+          </section>
+
+          <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <h3 class="text-teal-400 font-bold text-lg">Disillusioned</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">단순히 실망했다는 뜻보다 강해요. 믿고 있던 사람이나 제도에 대한 환상이나 신뢰가 깨졌을 때 사용해요. <i>Feel disillusioned with ~</i>는 ‘~에 환멸을 느끼다’라는 뜻이에요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <h3 class="text-teal-400 font-bold text-lg">Anticlimactic</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">큰 기대나 긴장감이 쌓였는데 결과가 별것 아닐 때 사용하는 표현이에요. 영화의 결말, 중요한 발표, 오랫동안 기다린 행사 등에 사용할 수 있어요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <h3 class="text-teal-400 font-bold text-lg">Put off / Push back</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">둘 다 일정을 미룰 수 있지만 뉘앙스가 달라요. <i>Put off</i>는 하기 싫거나 부담스러운 일을 미루는 상황에도 자주 쓰이고, <i>push back</i>은 회의나 마감일처럼 정해진 일정을 뒤로 옮길 때 자연스러워요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <h3 class="text-teal-400 font-bold text-lg">Do many loads of laundry</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed"><i>One load of laundry</i>는 세탁기에 한 번 넣어 돌리는 빨랫감을 뜻해요. 따라서 <i>do three loads of laundry</i>는 ‘세탁기를 세 번 돌리다’라는 의미예요.</p>
+              </div>
+          </section>
+
+          <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+              <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                  <p class="mb-6"><em>The Pressure Point Podcast</em></p>
+                  <p class="mb-6"><strong>Host (Nora):</strong> Welcome back to <em>The Pressure Point Podcast</em>. Today we're asking whether adults are supposed to spend their lives trying to become better versions of themselves. Our guests are fitness coach Tyler and journalist Hannah.</p>
+                  <p class="mb-6"><strong>Tyler:</strong> I don't see the problem. People are supposed to take responsibility for their health.</p>
+                  <p class="mb-6"><strong>Hannah:</strong> Sure. But when did taking care of yourself become a full-time job?</p>
+                  <p class="mb-6"><strong>Tyler:</strong> It doesn't have to be.</p>
+                  <p class="mb-6"><strong>Hannah:</strong> Your website recommends exercise, meditation, meal preparation, eight hours of sleep, and daily <b class="highlight quiz-target" data-ans="supplements" data-kor="영양제, 보충제">supplements</b>. When are people supposed to do all that?</p>
+                  <p class="mb-6"><strong>Tyler:</strong> You make time for what's important.</p>
+                  <p class="mb-6"><strong>Hannah:</strong> I have two kids. Yesterday, I had to <b class="highlight quiz-target" data-ans="do many loads of laundry" data-kor="빨래를 여러 번 돌리다">do many loads of laundry</b>, cook dinner, and help with homework. I went to bed at midnight.</p>
+                  <p class="mb-6"><strong>Tyler:</strong> Then maybe you need better time management.</p>
+                  <p class="mb-6"><strong>Hannah:</strong> That's exactly the attitude I'm talking about. Every problem is supposedly a personal failure.</p>
+                  <p class="mb-6"><strong>Nora:</strong> Tyler, Hannah says she's become <b class="highlight quiz-target" data-ans="disillusioned" data-kor="환상이 깨진, 기대가 무너져 실망한">disillusioned</b> with the self-improvement industry.</p>
+                  <p class="mb-6"><strong>Hannah:</strong> I have. There's always something else we're supposed to fix. Our bodies, our careers, our relationships. When is enough actually enough?</p>
+                  <p class="mb-6"><strong>Tyler:</strong> When you're happy with your progress.</p>
+                  <p class="mb-6"><strong>Hannah:</strong> And if you're not?</p>
+                  <p class="mb-6"><strong>Tyler:</strong> Keep working.</p>
+                  <p class="mb-6"><strong>Hannah:</strong> Convenient answer from someone selling coaching programs.</p>
+                  <p class="mb-6"><strong>Tyler:</strong> My clients get results.</p>
+                  <p class="mb-6"><strong>Nora:</strong> Can I ask about your most expensive program? It's advertised as a ninety-day transformation.</p>
+                  <p class="mb-6"><strong>Tyler:</strong> Yes.</p>
+                  <p class="mb-6"><strong>Nora:</strong> What happens after ninety days?</p>
+                  <p class="mb-6"><strong>Tyler:</strong> Most clients continue with a maintenance plan.</p>
+                  <p class="mb-6"><strong>Hannah:</strong> So the transformation never ends?</p>
+                  <p class="mb-6"><strong>Tyler:</strong> Health isn't something you finish.</p>
+                  <p class="mb-6"><strong>Hannah:</strong> Then calling it a ninety-day transformation is a little misleading.</p>
+                  <p class="mb-6"><strong>Tyler:</strong> I <b class="highlight quiz-target" data-ans="doubt" data-kor="의심하다, 의문을 품다">doubt</b> anyone genuinely believes they can solve every problem in ninety days.</p>
+                  <p class="mb-6"><strong>Nora:</strong> Tyler, you recently had to <b class="highlight quiz-target" data-ans="push back" data-kor="일정을 뒤로 미루다, 연기하다">push back</b> your own fitness challenge. Why?</p>
+                  <p class="mb-6"><strong>Tyler:</strong> I injured my knee.</p>
+                  <p class="mb-6"><strong>Hannah:</strong> And you were supposed to run a marathon?</p>
+                  <p class="mb-6"><strong>Tyler:</strong> Yes. I had to <b class="highlight quiz-target" data-ans="put off" data-kor="미루다, 연기하다">put off</b> training for several weeks.</p>
+                  <p class="mb-6"><strong>Hannah:</strong> So sometimes life gets in the way.</p>
+                  <p class="mb-6"><strong>Tyler:</strong> Obviously.</p>
+                  <p class="mb-6"><strong>Hannah:</strong> But when I say that, I need better time management?</p>
+                  <p class="mb-6"><strong>Tyler:</strong> An injury isn't the same as being busy.</p>
+                  <p class="mb-6"><strong>Hannah:</strong> You really can't hear yourself, can you?</p>
+                  <p class="mb-6"><strong>Nora:</strong> Let's change the question. What does a successful day look like to each of you?</p>
+                  <p class="mb-6"><strong>Tyler:</strong> I exercise, eat well, and complete my important tasks.</p>
+                  <p class="mb-6"><strong>Hannah:</strong> Yesterday, I walked my kids to school. At the <b class="highlight quiz-target" data-ans="crosswalk" data-kor="횡단보도">crosswalk</b>, my youngest insisted on pressing the button for the <b class="highlight quiz-target" data-ans="pedestrians" data-kor="보행자들">pedestrians</b>. We waited through two signals because he wanted to do it himself.</p>
+                  <p class="mb-6"><strong>Tyler:</strong> Okay?</p>
+                  <p class="mb-6"><strong>Hannah:</strong> Then we got ice cream after school. That was the best part of my day.</p>
+                  <p class="mb-6"><strong>Tyler:</strong> That's nice, but what's your point?</p>
+                  <p class="mb-6"><strong>Hannah:</strong> I spent years believing every day was supposed to be productive. Now I'm trying to enjoy ordinary moments.</p>
+                  <p class="mb-6"><strong>Tyler:</strong> And you think exercise prevents that?</p>
+                  <p class="mb-6"><strong>Hannah:</strong> No. I think turning every moment into a test prevents it.</p>
+                  <p class="mb-6"><strong>Nora:</strong> Tyler, have you ever felt disappointed after reaching a big goal?</p>
+                  <p class="mb-6"><strong>Tyler:</strong> Actually, yes. When I finished my first marathon, it was strangely <b class="highlight quiz-target" data-ans="anticlimactic" data-kor="기대했던 것에 비해 싱겁고 허무한">anticlimactic</b>. I crossed the finish line, got my medal, and thought, “Now what?”</p>
+                  <p class="mb-6"><strong>Hannah:</strong> What did you do?</p>
+                  <p class="mb-6"><strong>Tyler:</strong> Signed up for a longer race.</p>
+                  <p class="mb-6"><strong>Nora:</strong> Did that make you happier?</p>
+                  <p class="mb-6"><strong>Tyler:</strong> For a while.</p>
+                  <p class="mb-6"><strong>Hannah:</strong> And then?</p>
+                  <p class="mb-6"><strong>Tyler:</strong> I signed up for an even longer one.</p>
+                  <p class="mb-6"><strong>Hannah:</strong> That's what I'm talking about.</p>
+                  <p class="mb-6"><strong>Tyler:</strong> Maybe. But I'd still rather keep trying than give up.</p>
+                  <p class="mb-6"><strong>Hannah:</strong> Who said anything about giving up?</p>
+                  <p class="mb-6"><strong>Nora:</strong> Tyler, can you imagine taking a month off without setting a new goal?</p>
+                  <p class="mb-6"><strong>Tyler:</strong> Honestly? That sounds harder than running a marathon.</p>
+              </div>
+              <hr class="border-white/10">
+              <div class="text-slate-400 italic leading-relaxed space-y-6">
+                  <p class="mb-6"><em>프레셔 포인트 팟캐스트</em></p>
+                  <p class="mb-6"><strong>진행자 (노라):</strong> <em>프레셔 포인트 팟캐스트</em>에 다시 오신 걸 환영합니다. 오늘은 어른들이 평생 더 나은 자신이 되기 위해 노력해야 하는지 이야기해 보겠습니다. 오늘의 출연자는 피트니스 코치 타일러와 기자 한나입니다.</p>
+                  <p class="mb-6"><strong>타일러:</strong> 뭐가 문제인지 모르겠어요. 사람들은 자기 건강에 책임을 져야 하잖아요.</p>
+                  <p class="mb-6"><strong>한나:</strong> 물론이죠. 그런데 언제부터 자기 관리를 하는 게 직업 하나를 더 갖는 것처럼 되어버렸죠?</p>
+                  <p class="mb-6"><strong>타일러:</strong> 꼭 그렇게까지 할 필요는 없어요.</p>
+                  <p class="mb-6"><strong>한나:</strong> 타일러 씨 웹사이트에는 운동, 명상, 식사 준비, 8시간 수면, 매일 <b class="highlight">영양제 챙겨 먹기</b>를 권장하더라고요. 사람들이 그걸 다 언제 해야 하죠?</p>
+                  <p class="mb-6"><strong>타일러:</strong> 중요한 일에는 시간을 내는 법이죠.</p>
+                  <p class="mb-6"><strong>한나:</strong> 저는 아이가 둘이에요. 어제는 <b class="highlight">세탁기를 여러 번 돌리고</b>, 저녁을 만들고, 숙제까지 도와줘야 했어요. 자정에 잠자리에 들었다고요.</p>
+                  <p class="mb-6"><strong>타일러:</strong> 그럼 시간 관리를 좀 더 잘하셔야 할지도 모르겠네요.</p>
+                  <p class="mb-6"><strong>한나:</strong> 바로 그런 태도를 말하는 거예요. 모든 문제가 결국 개인의 잘못이라는 식이잖아요.</p>
+                  <p class="mb-6"><strong>노라:</strong> 타일러 씨, 한나 씨는 자기계발 산업에 <b class="highlight">환멸을 느끼게 됐다고</b> 합니다.</p>
+                  <p class="mb-6"><strong>한나:</strong> 맞아요. 우리가 고쳐야 할 게 항상 더 있어요. 몸, 직장 생활, 인간관계까지요. 도대체 언제쯤이면 충분한 거죠?</p>
+                  <p class="mb-6"><strong>타일러:</strong> 자신의 발전에 만족할 때죠.</p>
+                  <p class="mb-6"><strong>한나:</strong> 만족하지 못하면요?</p>
+                  <p class="mb-6"><strong>타일러:</strong> 계속 노력해야죠.</p>
+                  <p class="mb-6"><strong>한나:</strong> 코칭 프로그램을 판매하는 분이 하기에는 참 편리한 대답이네요.</p>
+                  <p class="mb-6"><strong>타일러:</strong> 제 고객들은 실제로 성과를 내고 있어요.</p>
+                  <p class="mb-6"><strong>노라:</strong> 가장 비싼 프로그램에 대해 물어봐도 될까요? 90일 만에 변화를 만들어 준다고 광고하시던데요.</p>
+                  <p class="mb-6"><strong>타일러:</strong> 네.</p>
+                  <p class="mb-6"><strong>노라:</strong> 90일이 지나면 어떻게 되나요?</p>
+                  <p class="mb-6"><strong>타일러:</strong> 대부분의 고객이 유지 관리 프로그램을 계속 이용합니다.</p>
+                  <p class="mb-6"><strong>한나:</strong> 그럼 변화가 끝나지 않는 거네요?</p>
+                  <p class="mb-6"><strong>타일러:</strong> 건강 관리는 끝내는 일이 아니니까요.</p>
+                  <p class="mb-6"><strong>한나:</strong> 그렇다면 '90일 만의 변화'라는 표현은 조금 오해의 소지가 있네요.</p>
+                  <p class="mb-6"><strong>타일러:</strong> 90일 만에 모든 문제가 해결된다고 진심으로 믿는 사람이 있을지는 <b class="highlight">의문인데요</b>.</p>
+                  <p class="mb-6"><strong>노라:</strong> 타일러 씨, 최근 본인의 운동 도전 일정을 <b class="highlight">연기하셨죠</b>. 이유가 뭔가요?</p>
+                  <p class="mb-6"><strong>타일러:</strong> 무릎을 다쳤어요.</p>
+                  <p class="mb-6"><strong>한나:</strong> 마라톤을 뛰기로 되어 있었죠?</p>
+                  <p class="mb-6"><strong>타일러:</strong> 네. 몇 주 동안 훈련을 <b class="highlight">미뤄야</b> 했어요.</p>
+                  <p class="mb-6"><strong>한나:</strong> 그러니까 살다 보면 계획대로 되지 않을 때도 있는 거네요.</p>
+                  <p class="mb-6"><strong>타일러:</strong> 당연하죠.</p>
+                  <p class="mb-6"><strong>한나:</strong> 그런데 제가 그런 말을 하면 시간 관리를 더 잘해야 한다고 하셨잖아요?</p>
+                  <p class="mb-6"><strong>타일러:</strong> 부상과 바쁜 건 다른 문제죠.</p>
+                  <p class="mb-6"><strong>한나:</strong> 본인이 무슨 말을 하는지 정말 모르시겠어요?</p>
+                  <p class="mb-6"><strong>노라:</strong> 질문을 바꿔볼게요. 두 분에게 성공적인 하루란 어떤 모습인가요?</p>
+                  <p class="mb-6"><strong>타일러:</strong> 운동하고, 건강하게 먹고, 중요한 일을 끝내는 하루죠.</p>
+                  <p class="mb-6"><strong>한나:</strong> 어제 저는 아이들을 학교까지 걸어서 데려다줬어요. <b class="highlight">횡단보도</b>에서 막내가 <b class="highlight">보행자용</b> 버튼을 자기가 꼭 누르겠다고 우겼죠. 직접 누르고 싶어 해서 신호가 두 번 바뀌는 동안 기다렸어요.</p>
+                  <p class="mb-6"><strong>타일러:</strong> 그래서요?</p>
+                  <p class="mb-6"><strong>한나:</strong> 그리고 방과 후에 아이들과 아이스크림을 먹었어요. 그게 하루 중 가장 좋았던 순간이었어요.</p>
+                  <p class="mb-6"><strong>타일러:</strong> 좋은 일이네요. 그런데 무슨 말씀을 하시려는 거죠?</p>
+                  <p class="mb-6"><strong>한나:</strong> 저는 오랫동안 매일 생산적인 하루를 보내야 한다고 믿었어요. 이제는 평범한 순간들을 즐기려고 노력하고 있어요.</p>
+                  <p class="mb-6"><strong>타일러:</strong> 운동을 하면 그런 순간들을 즐길 수 없다는 건가요?</p>
+                  <p class="mb-6"><strong>한나:</strong> 아니요. 모든 순간을 시험처럼 만드는 게 문제라는 거예요.</p>
+                  <p class="mb-6"><strong>노라:</strong> 타일러 씨, 큰 목표를 달성한 뒤 오히려 실망한 적이 있나요?</p>
+                  <p class="mb-6"><strong>타일러:</strong> 사실 있어요. 첫 마라톤을 완주했을 때 이상하게 <b class="highlight">허무했어요</b>. 결승선을 통과하고 메달을 받았는데, '이제 뭐 하지?'라는 생각이 들더라고요.</p>
+                  <p class="mb-6"><strong>한나:</strong> 그래서 어떻게 하셨어요?</p>
+                  <p class="mb-6"><strong>타일러:</strong> 더 긴 경주에 등록했죠.</p>
+                  <p class="mb-6"><strong>노라:</strong> 그러니까 더 행복해지셨나요?</p>
+                  <p class="mb-6"><strong>타일러:</strong> 한동안은요.</p>
+                  <p class="mb-6"><strong>한나:</strong> 그다음에는요?</p>
+                  <p class="mb-6"><strong>타일러:</strong> 그것보다 더 긴 경주에 등록했어요.</p>
+                  <p class="mb-6"><strong>한나:</strong> 바로 그걸 말하는 거예요.</p>
+                  <p class="mb-6"><strong>타일러:</strong> 그럴지도 모르죠. 하지만 저는 포기하는 것보다는 계속 도전하는 게 나아요.</p>
+                  <p class="mb-6"><strong>한나:</strong> 누가 포기하라고 했나요?</p>
+                  <p class="mb-6"><strong>노라:</strong> 타일러 씨, 새로운 목표를 세우지 않고 한 달 동안 쉴 수 있을 것 같으세요?</p>
+                  <p class="mb-6"><strong>타일러:</strong> 솔직히요? 그건 마라톤을 뛰는 것보다 더 어려울 것 같네요.</p>
+              </div>
+          </section>
+
+      </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "1131020.m4a";
+</script>
+      <script src="wordbank-utils.js"></script>
+  </body>
+  </html>

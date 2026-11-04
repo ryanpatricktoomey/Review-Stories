@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Golden Road That Almost Disappears</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🍂</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Golden Road That Almost Disappears</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">dynamic</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">역동적인, 활기찬, 변화가 많은</td></tr>
+                <tr><td class="p-4"><b class="text-white">rethink</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">다시 생각하다, 재고하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">bike lanes</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">자전거 전용 차로</td></tr>
+                <tr><td class="p-4"><b class="text-white">gene</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">유전자</td></tr>
+                <tr><td class="p-4"><b class="text-white">sense of smell</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">후각</td></tr>
+                <tr><td class="p-4"><b class="text-white">oak</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">참나무</td></tr>
+                <tr><td class="p-4"><b class="text-white">ginkgo</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">은행나무</td></tr>
+                <tr><td class="p-4"><b class="text-white">birch</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">자작나무</td></tr>
+                <tr><td class="p-4"><b class="text-white">by myself</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">혼자서, 스스로</td></tr>
+                <tr><td class="p-4"><b class="text-white">clams</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">조개</td></tr>
+                <tr><td class="p-4"><b class="text-white">get sentimental</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">감상적이 되다, 감성에 젖다</td></tr>
+                <tr><td class="p-4"><b class="text-white">autumn blues</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">가을을 타는 우울한 기분, 가을의 쓸쓸함</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="font-bold text-white text-lg mb-1">dynamic</h3>
+                <p class="text-slate-300 text-sm">단순히 활발하다는 뜻뿐 아니라, 다양한 활동이나 변화가 있어서 생동감이 느껴지는 상황에도 사용해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="font-bold text-white text-lg mb-1">rethink</h3>
+                <p class="text-slate-300 text-sm">기존의 생각이나 계획을 다시 검토하고 바꿀 가능성까지 고려하는 표현이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="font-bold text-white text-lg mb-1">gene</h3>
+                <p class="text-slate-300 text-sm">부모에게서 자녀에게 전달되는 유전 정보의 단위예요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="font-bold text-white text-lg mb-1">sense of smell</h3>
+                <p class="text-slate-300 text-sm">냄새를 맡고 구별하는 감각인 '후각'을 뜻해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="font-bold text-white text-lg mb-1">by myself</h3>
+                <p class="text-slate-300 text-sm">'혼자서'라는 뜻이지만 문맥에 따라 '다른 사람의 도움 없이 스스로'라는 의미도 돼요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="font-bold text-white text-lg mb-1">get sentimental</h3>
+                <p class="text-slate-300 text-sm">추억이나 감정에 젖어 평소보다 감상적인 기분이 되는 것을 말해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="font-bold text-white text-lg mb-1">autumn blues</h3>
+                <p class="text-slate-300 text-sm">가을철에 느끼는 쓸쓸함이나 가벼운 우울감을 표현하는 말이에요. 의학적인 진단명은 아니에요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Destination: Mungwang Reservoir (문광저수지), Goesan, Chungcheongbuk-do</p>
+                <p class="mb-6">Some autumn destinations are famous for mountains, while others are known for colorful forests. But in the small farming village of Yanggok-ri, there's a place where an ordinary road becomes something extraordinary for a few weeks each year.</p>
+                <p class="mb-6">Mungwang Reservoir in Goesan is surrounded by hills and farmland. At its entrance, hundreds of <b class="highlight quiz-target" data-ans="ginkgo" data-kor="은행나무">ginkgo</b> trees line a road stretching approximately 400 meters. In late autumn, their leaves turn brilliant yellow, creating a golden tunnel that seems to stretch into the distance.</p>
+                <p class="mb-6">The best time to arrive is early in the morning, especially when a thin layer of mist is floating above the water. As the sun rises, the yellow trees begin to reflect on the reservoir's surface. The scene changes constantly as the mist moves and the light grows stronger.</p>
+                <p class="mb-6">It's a surprisingly <b class="highlight quiz-target" data-ans="dynamic" data-kor="역동적인">dynamic</b> landscape for such a peaceful place.</p>
+                <p class="mb-6">Start by walking slowly beneath the trees. Golden leaves cover the ground, and the cool autumn breeze sends more drifting down from the branches. On a quiet morning, you can hear your footsteps and the gentle rustling of leaves overhead.</p>
+                <p class="mb-6">There's one thing you might notice, though. <b class="highlight quiz-target" data-ans="Ginkgo" data-kor="은행나무">Ginkgo</b> trees produce fruit with a strong, unpleasant smell. If you have a sensitive <b class="highlight quiz-target" data-ans="sense of smell" data-kor="후각">sense of smell</b>, watch where you step! The fallen fruit can make certain sections of the path less pleasant than they look.</p>
+                <p class="mb-6">Beyond the famous golden road, a walking route continues around the reservoir for approximately two kilometers. The scenery gradually changes as the path moves away from the trees and opens toward the surrounding countryside.</p>
+                <p class="mb-6">You can take your time, stop for photographs, or simply enjoy the view across the water. There's no need to follow a strict schedule.</p>
+                <p class="mb-6">This is also a lovely place to visit <b class="highlight quiz-target" data-ans="by yourself" data-kor="혼자서">by yourself</b>. Without anyone waiting for you, you can sit beside the water for as long as you like. There's something about watching the last leaves of autumn fall that can make you <b class="highlight quiz-target" data-ans="get sentimental" data-kor="감상적이 되다">get sentimental</b>, especially when you realize how quickly the season is passing.</p>
+                <p class="mb-6">If you're feeling the <b class="highlight quiz-target" data-ans="autumn blues" data-kor="가을을 타는 우울한 기분">autumn blues</b>, a peaceful morning outdoors might be just what you need.</p>
+                <p class="mb-6">What makes Mungwang Reservoir particularly special is its history. The beautiful <b class="highlight quiz-target" data-ans="ginkgo" data-kor="은행나무">ginkgo</b> road began with trees donated by a local resident in 1979. Over the decades, the community's efforts transformed a simple village road into a remarkable autumn destination.</p>
+                <p class="mb-6">The golden leaves won't last much longer. If you want to experience one of Chungcheongbuk-do's most beautiful seasonal sights, this quiet reservoir is well worth the trip.</p>
+                <p class="mb-6">Travel details: The reservoir is free to enter and generally accessible year-round. The 2026 Yanggok Ginkgo Festival is scheduled for October 17–November 15.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">곧 사라질 황금빛 길</p>
+                <p class="mb-6">어떤 가을 여행지는 산으로 유명하고, 또 어떤 곳은 알록달록한 숲으로 유명합니다. 하지만 양곡리라는 작은 농촌 마을에는 매년 몇 주 동안 평범한 도로가 특별한 풍경으로 변하는 곳이 있습니다.</p>
+                <p class="mb-6">괴산의 문광저수지는 언덕과 농경지로 둘러싸여 있습니다. 입구에는 수백 그루의 <b class="highlight">은행나무</b>가 약 400미터에 걸쳐 도로 양옆으로 늘어서 있습니다. 늦가을이 되면 나뭇잎이 선명한 노란색으로 물들면서 멀리까지 이어지는 듯한 황금빛 터널을 만들어 냅니다.</p>
+                <p class="mb-6">가장 좋은 방문 시간은 이른 아침입니다. 특히 물 위에 얇은 물안개가 떠 있을 때 더욱 아름답습니다. 해가 떠오르면 노란 은행나무들이 저수지 수면에 비치기 시작합니다. 안개가 움직이고 햇빛이 점점 강해지면서 풍경도 끊임없이 달라집니다.</p>
+                <p class="mb-6">이렇게 평화로운 장소에서 풍경이 놀라울 만큼 <b class="highlight">역동적으로</b> 변하는 것입니다.</p>
+                <p class="mb-6">먼저 나무 아래를 천천히 걸어 보세요. 황금빛 낙엽이 땅을 뒤덮고, 선선한 가을바람이 불 때마다 나뭇가지에서 잎들이 흩날립니다. 조용한 아침에는 자신의 발소리와 머리 위에서 나뭇잎이 바스락거리는 소리가 들립니다.</p>
+                <p class="mb-6">그런데 한 가지 눈에 띄는 점이 있을 수 있습니다. <b class="highlight">은행나무</b> 열매에서는 강하고 불쾌한 냄새가 납니다. <b class="highlight">후각</b>이 예민하다면 발밑을 조심하세요! 떨어진 은행 열매 때문에 일부 구간은 보기보다 쾌적하지 않을 수 있습니다.</p>
+                <p class="mb-6">유명한 황금빛 길을 지나면 저수지 주변으로 약 2킬로미터의 산책로가 이어집니다. 은행나무 길에서 멀어지고 주변 시골 풍경이 펼쳐지면서 경치도 서서히 달라집니다.</p>
+                <p class="mb-6">서두르지 않고 천천히 걸으며 사진을 찍거나, 물 건너편 풍경을 감상해도 좋습니다. 빡빡한 일정을 따를 필요는 없습니다.</p>
+                <p class="mb-6">이곳은 <b class="highlight">혼자</b> 방문하기에도 참 좋은 장소입니다. 기다리는 사람이 없으니 원하는 만큼 오래 물가에 앉아 있을 수 있습니다. 가을의 마지막 나뭇잎들이 떨어지는 모습을 바라보고 있으면 왠지 <b class="highlight">감상적인</b> 기분이 들기도 합니다. 특히 계절이 얼마나 빠르게 지나가는지 깨닫게 될 때 더욱 그렇습니다.</p>
+                <p class="mb-6">가을을 타는 <b class="highlight">우울한 기분</b>을 느끼고 있다면, 야외에서 보내는 평화로운 아침이 바로 필요한 것일지도 모릅니다.</p>
+                <p class="mb-6">문광저수지를 더욱 특별하게 만드는 것은 이곳의 역사입니다. 아름다운 <b class="highlight">은행나무</b> 길은 1979년 한 지역 주민이 기증한 나무들에서 시작되었습니다. 수십 년 동안 마을 사람들의 노력으로 평범한 시골길이 놀라운 가을 명소로 변했습니다.</p>
+                <p class="mb-6">황금빛 단풍은 오래가지 않을 것입니다. 충청북도에서 가장 아름다운 계절 풍경 중 하나를 경험하고 싶다면, 이 조용한 저수지는 충분히 찾아갈 가치가 있습니다.</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "114715.m4a";
+</script>
+      <script src="wordbank-utils.js"></script>
+  </body>
+  </html>

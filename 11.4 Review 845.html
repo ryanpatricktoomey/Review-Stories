@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Forest That Changes Color Above Your Head</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🍁</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Forest That Changes Color Above Your Head</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">birch</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">자작나무</td></tr>
+                <tr><td class="p-4"><b class="text-white">oak</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">참나무</td></tr>
+                <tr><td class="p-4"><b class="text-white">ginkgo</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">은행나무</td></tr>
+                <tr><td class="p-4"><b class="text-white">not very sentimental</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">별로 감상적이지 않은</td></tr>
+                <tr><td class="p-4"><b class="text-white">not very well known</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">별로 알려지지 않은</td></tr>
+                <tr><td class="p-4"><b class="text-white">lesser known</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">덜 알려진, 상대적으로 유명하지 않은</td></tr>
+                <tr><td class="p-4"><b class="text-white">arboretum</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">수목원</td></tr>
+                <tr><td class="p-4"><b class="text-white">bar hopping</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">술집을 여러 곳 옮겨 다니기</td></tr>
+                <tr><td class="p-4"><b class="text-white">pub crawl</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">여러 술집을 돌아다니며 술을 마시는 활동</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="font-bold text-white text-lg mb-1">not very sentimental</h3>
+                <p class="text-slate-300 text-sm">추억이나 감정에 쉽게 젖지 않는 성격을 설명할 때 사용해요. 감정이 없다는 뜻은 아니에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="font-bold text-white text-lg mb-1">not very well known</h3>
+                <p class="text-slate-300 text-sm">많은 사람에게 알려지지 않았다는 뜻이에요. 반드시 인기가 없거나 별로라는 의미는 아니에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="font-bold text-white text-lg mb-1">lesser-known</h3>
+                <p class="text-slate-300 text-sm">유명한 다른 장소에 비해 상대적으로 덜 알려진 곳을 설명해요. 명사 앞에서는 보통 하이픈을 넣어요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="font-bold text-white text-lg mb-1">arboretum</h3>
+                <p class="text-slate-300 text-sm">다양한 나무와 식물을 수집하고 보존하거나 연구하는 수목원이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="font-bold text-white text-lg mb-1">bar hopping</h3>
+                <p class="text-slate-300 text-sm">한 술집에 오래 머물지 않고 여러 술집을 옮겨 다니며 술을 마시는 활동이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="font-bold text-white text-lg mb-1">pub crawl</h3>
+                <p class="text-slate-300 text-sm">bar hopping과 비슷하지만, 여러 술집을 정해진 순서로 돌아다니는 단체 활동이나 행사에도 자주 사용해요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Destination: Jangtaesan Recreational Forest (장태산자연휴양림), Daejeon</p>
+                <p class="mb-6">When people plan an autumn trip, they often think of famous mountains or crowded national parks. But one of Daejeon's most beautiful fall destinations is a <b class="highlight quiz-target" data-ans="lesser-known" data-kor="덜 알려진">lesser-known</b> forest where the most impressive scenery is high above your head.</p>
+                <p class="mb-6">Jangtaesan Recreational Forest is famous for its towering metasequoia trees. Unlike the white trunks of <b class="highlight quiz-target" data-ans="birch" data-kor="자작나무">birch</b> trees or the broad branches of <b class="highlight quiz-target" data-ans="oak" data-kor="참나무">oak</b> trees, metasequoias grow tall and straight, forming enormous columns that reach toward the sky.</p>
+                <p class="mb-6">In autumn, their soft, needle-like leaves change from green to golden orange and reddish brown. When sunlight passes through the branches, the entire forest takes on a warm, copper-colored glow.</p>
+                <p class="mb-6">It's a remarkable sight, especially when the leaves are at their peak.</p>
+                <p class="mb-6">One of the best ways to experience Jangtaesan is simply to follow the walking paths through the trees. You don't need to be an experienced hiker. Several paths allow visitors to enjoy the forest without climbing to the mountain summit.</p>
+                <p class="mb-6">As you walk, you can hear leaves rustling in the breeze and feel the cool autumn air against your face. Look up occasionally. The trees are so tall that their branches seem to meet overhead, creating a natural ceiling of colorful leaves.</p>
+                <p class="mb-6">There's also a small botanical garden and an ecological pond where you can slow down and enjoy the surroundings. If you enjoy learning about plants, these areas offer a pleasant alternative to a long hike.</p>
+                <p class="mb-6">The forest was originally developed privately and later purchased by Daejeon Metropolitan City. Today, it's a public recreation area where visitors can enjoy nature without paying an entrance fee.</p>
+                <p class="mb-6">What makes Jangtaesan especially appealing is that it doesn't feel like a typical city park. Even though it's within Daejeon, the dense trees create a peaceful atmosphere that feels far removed from traffic and busy streets.</p>
+                <p class="mb-6">You don't have to be a particularly <b class="highlight quiz-target" data-ans="sentimental" data-kor="감상적인">sentimental</b> person to appreciate the experience. There's something satisfying about watching the sunlight change as the afternoon passes and seeing golden leaves slowly drift toward the ground.</p>
+                <p class="mb-6">After exploring the forest, you could stop by a restaurant in the surrounding area for a warm meal before heading home.</p>
+                <p class="mb-6">If you're looking for an autumn outing that's <b class="highlight quiz-target" data-ans="not very well known" data-kor="별로 알려지지 않은">not very well known</b> outside the region, Jangtaesan is worth considering. The scenery alone makes it worth the trip, and there's no need to fill the day with activities.</p>
+                <p class="mb-6">Sometimes, a beautiful forest and a few peaceful hours are enough.</p>
+                <p class="mb-6">Travel note: Admission is free. The forest is open year-round, although individual facilities have operating hours. The elevated Skyway and Sky Tower were reported closed for repairs in October 2026, so check their status before visiting.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">머리 위에서 색이 변하는 숲</p>
+                <p class="mb-6">가을 여행을 계획할 때 사람들은 흔히 유명한 산이나 사람들이 많이 찾는 국립공원을 떠올립니다. 하지만 대전에서 가장 아름다운 가을 여행지 중 하나는 머리 위 높은 곳에 놀라운 풍경이 펼쳐지는, 비교적 <b class="highlight">덜 알려진</b> 숲입니다.</p>
+                <p class="mb-6">장태산자연휴양림은 하늘 높이 솟은 메타세쿼이아 나무들로 유명합니다. 하얀 줄기의 <b class="highlight">자작나무</b>나 가지가 넓게 퍼지는 <b class="highlight">참나무</b>와 달리, 메타세쿼이아는 곧고 높게 자라 하늘을 향해 뻗은 거대한 기둥처럼 보입니다.</p>
+                <p class="mb-6">가을이 되면 부드러운 바늘 모양의 잎들이 초록색에서 황금빛 주황색과 붉은 갈색으로 변합니다. 나뭇가지 사이로 햇살이 비치면 숲 전체가 따뜻한 구릿빛으로 빛나는 듯합니다.</p>
+                <p class="mb-6">특히 단풍이 절정에 이르렀을 때는 정말 인상적인 풍경을 볼 수 있습니다.</p>
+                <p class="mb-6">장태산을 즐기는 가장 좋은 방법 중 하나는 나무 사이로 이어진 산책로를 따라 걷는 것입니다. 등산 경험이 많을 필요는 없습니다. 산 정상까지 오르지 않고도 숲을 감상할 수 있는 산책로가 여러 곳 마련되어 있습니다.</p>
+                <p class="mb-6">걷다 보면 산들바람에 나뭇잎이 바스락거리는 소리가 들리고, 얼굴에 닿는 선선한 가을 공기를 느낄 수 있습니다. 가끔씩 고개를 들어 보세요. 나무가 워낙 높아서 가지들이 머리 위에서 서로 만나는 듯하고, 알록달록한 나뭇잎으로 이루어진 자연의 천장을 만들어 냅니다.</p>
+                <p class="mb-6">작은 식물원과 생태연못도 있어 걸음을 늦추고 주변 풍경을 여유롭게 즐길 수 있습니다. 식물에 대해 배우는 것을 좋아한다면, 이런 공간들은 긴 산행 대신 즐기기 좋은 장소입니다.</p>
+                <p class="mb-6">이 숲은 원래 민간에서 조성했으며, 이후 대전광역시가 매입했습니다. 현재는 누구나 입장료 없이 자연을 즐길 수 있는 공공 휴양 공간입니다.</p>
+                <p class="mb-6">장태산이 특히 매력적인 이유는 일반적인 도시공원처럼 느껴지지 않는다는 점입니다. 대전 시내에 위치해 있지만, 울창한 나무들이 만들어 내는 평화로운 분위기 덕분에 교통 소음과 복잡한 거리에서 멀리 떨어진 듯한 느낌을 줍니다.</p>
+                <p class="mb-6">특별히 <b class="highlight">감상적인</b> 사람이 아니더라도 이곳의 매력을 충분히 느낄 수 있습니다. 오후가 지나면서 햇빛이 달라지는 모습을 바라보고, 황금빛 나뭇잎들이 천천히 땅으로 떨어지는 모습을 감상하는 것만으로도 만족스러운 기분이 듭니다.</p>
+                <p class="mb-6">숲을 둘러본 뒤에는 주변 식당에 들러 따뜻한 식사를 즐기고 집으로 돌아가도 좋습니다.</p>
+                <p class="mb-6">지역 밖에서는 상대적으로 <b class="highlight">많이 알려지지 않은</b> 가을 나들이 장소를 찾고 있다면 장태산을 고려해 보세요. 풍경만으로도 충분히 방문할 가치가 있으며, 하루를 여러 활동으로 가득 채울 필요도 없습니다.</p>
+                <p class="mb-6">때로는 아름다운 숲과 평화로운 몇 시간만으로도 충분하니까요.</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "114845.m4a";
+</script>
+      <script src="wordbank-utils.js"></script>
+  </body>
+  </html>

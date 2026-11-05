@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | I Just Want Some Peace and Quiet!</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🏢</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">I Just Want Some Peace and Quiet!</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">get off my chest</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">속에 담아 둔 말을 털어놓다</td></tr>
+                <tr><td class="p-4"><b class="text-white">in a bad mood</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">기분이 안 좋은, 기분이 언짢은</td></tr>
+                <tr><td class="p-4"><b class="text-white">run ahead of him</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그 사람보다 앞서 달려가다</td></tr>
+                <tr><td class="p-4"><b class="text-white">avoid confrontation</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">충돌이나 언쟁을 피하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">noise between floors</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">층간소음</td></tr>
+                <tr><td class="p-4"><b class="text-white">upstairs neighbor</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">윗집 이웃</td></tr>
+                <tr><td class="p-4"><b class="text-white">quit his job</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">직장을 그만두었다</td></tr>
+                <tr><td class="p-4"><b class="text-white">unemployed</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">실직한, 직업이 없는</td></tr>
+                <tr><td class="p-4"><b class="text-white">can't keep a smile on my face</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">더 이상 웃는 얼굴을 유지할 수 없다</td></tr>
+                <tr><td class="p-4"><b class="text-white">the car behind me</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">내 뒤에 있는 차</td></tr>
+                <tr><td class="p-4"><b class="text-white">blamed my daughter</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">내 딸 탓으로 돌렸다</td></tr>
+                <tr><td class="p-4"><b class="text-white">cut me off</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">(운전 중) 내 앞으로 갑자기 끼어들었다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold text-lg mb-2">get off my chest</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">마음에 쌓인 걱정이나 불만을 털어놓아 속이 후련해진다는 표현. <i>I need to get something off my chest.</i>처럼 자주 사용해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold text-lg mb-2">run ahead of him</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">단순히 달리는 것이 아니라 누군가보다 앞서 나가는 것. 상황에 따라 run ahead of me, ran ahead of her처럼 바꿀 수 있어요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold text-lg mb-2">avoid confrontation</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">상대방과 직접 부딪히거나 따지는 상황을 피하는 것. 단순히 싸움을 피한다는 뜻보다 넓게 사용해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold text-lg mb-2">can't keep a smile on my face</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">불쾌하거나 힘든 상황에서도 웃는 표정을 유지하려 하지만 더 이상 그럴 수 없다는 뜻이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500 md:col-span-2">
+                <h3 class="text-teal-400 font-bold text-lg mb-2">cut me off</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">운전 중 다른 차가 갑자기 앞으로 끼어들어 진로를 방해했다는 뜻. 대화 중 말을 끊는다는 뜻으로도 사용해요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Okay, I need to <b class="highlight quiz-target" data-ans="get something off my chest" data-kor="속에 담아 둔 말을 털어놓다">get something off my chest</b>. Why is it so difficult for people to be quiet in an apartment building? Seriously, I'm not asking for complete silence. I understand that people have lives. But some people act like they're living in a house in the middle of nowhere!</p>
+                <p class="mb-6">Let's start with my <b class="highlight quiz-target" data-ans="upstairs neighbor" data-kor="윗집 이웃">upstairs neighbor</b>.</p>
+                <p class="mb-6">I don't know what this man does all day. Apparently, he <b class="highlight quiz-target" data-ans="quit his job" data-kor="직장을 그만두었다">quit his job</b> a few months ago, so he's <b class="highlight quiz-target" data-ans="unemployed" data-kor="실직한">unemployed</b>. Fine. That's none of my business. But why does being unemployed apparently mean rearranging furniture at two in the morning?</p>
+                <p class="mb-6">Every night, I hear chairs scraping, heavy footsteps, and things dropping on the floor. Sometimes it sounds like he's exercising. At 1 a.m.! Who exercises at one in the morning in an apartment?</p>
+                <p class="mb-6">And don't get me started on the children. I understand that kids need to play. I have a daughter myself. But when a child is constantly running across the floor, jumping off furniture, and screaming, somebody needs to say something!</p>
+                <p class="mb-6">Yesterday, I heard a father shouting, "Don't <b class="highlight quiz-target" data-ans="run ahead of me" data-kor="나보다 앞서 달려가다">run ahead of me</b>!" while his child was racing down the hallway. Great! At least he's trying to control his kid. But why are they running in the hallway in the first place?</p>
+                <p class="mb-6">And here's what really gets under my skin. Whenever I complain about the <b class="highlight quiz-target" data-ans="noise between floors" data-kor="층간소음">noise between floors</b>, people tell me, "You just have to be understanding."</p>
+                <p class="mb-6">Understanding? I've been understanding for six months!</p>
+                <p class="mb-6">I try to <b class="highlight quiz-target" data-ans="avoid confrontation" data-kor="충돌을 피하다">avoid confrontation</b>. I really do. I don't want to be that annoying neighbor who complains about everything. So I bite my tongue. I stay quiet. I tell myself they're probably just having a difficult day.</p>
+                <p class="mb-6">But what about my difficult day?</p>
+                <p class="mb-6">Last week, I was already <b class="highlight quiz-target" data-ans="in a bad mood" data-kor="기분이 안 좋은">in a bad mood</b> because some idiot <b class="highlight quiz-target" data-ans="cut me off" data-kor="갑자기 끼어들었다">cut me off</b> in traffic. Then <b class="highlight quiz-target" data-ans="the car behind me" data-kor="내 뒤에 있는 차">the car behind me</b> started honking as if the whole thing was my fault!</p>
+                <p class="mb-6">When I finally got home, I heard another loud crash upstairs. I completely lost my patience.</p>
+                <p class="mb-6">I went upstairs and knocked on the door. The neighbor opened it and said, "Oh, is the noise bothering you?"</p>
+                <p class="mb-6">IS THE NOISE BOTHERING ME?</p>
+                <p class="mb-6">I wanted to scream, but I managed to stay calm.</p>
+                <p class="mb-6">"Yes," I said. "A little."</p>
+                <p class="mb-6">A LITTLE?!</p>
+                <p class="mb-6">Why did I say that? I can't even be honest when I'm furious!</p>
+                <p class="mb-6">And the worst part? When I went back downstairs, my wife asked why I was so angry. I said our daughter had left her toys everywhere. Somehow, I <b class="highlight quiz-target" data-ans="blamed my daughter" data-kor="내 딸 탓으로 돌렸다">blamed my daughter</b>!</p>
+                <p class="mb-6">Now she's upset with me, my neighbor is still making noise, and I <b class="highlight quiz-target" data-ans="can't keep a smile on my face" data-kor="더 이상 웃는 얼굴을 유지할 수 없다">can't keep a smile on my face</b> anymore.</p>
+                <p class="mb-6">I just want to sleep!</p>
+                <p class="mb-6">Is that really too much to ask?</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">좋아요, 저 진짜 <b class="highlight">속에 쌓인 말 좀 털어놔야겠어요</b>. 아파트에서 사람들이 좀 조용히 지내는 게 왜 이렇게 어려운 거죠? 진심으로요. 완벽한 정적을 바라는 것도 아니에요. 사람들마다 자기 생활이 있다는 거 알아요. 그런데 어떤 사람들은 마치 아무도 없는 외딴집에 혼자 사는 것처럼 행동한다니까요!</p>
+                <p class="mb-6">일단 우리 <b class="highlight">윗집 사람</b>부터 얘기해 볼게요.</p>
+                <p class="mb-6">이 사람이 하루 종일 뭘 하는지 모르겠어요. 듣기로는 몇 달 전에 <b class="highlight">직장을 그만둬서</b> 지금 <b class="highlight">실직</b> 상태라는데, 좋아요. 그건 제 알 바 아니죠. 그런데 실직했다고 새벽 두 시에 가구를 옮겨야 하는 건가요?</p>
+                <p class="mb-6">매일 밤 의자 끄는 소리, 쿵쿵 걷는 소리, 뭔가 바닥에 떨어뜨리는 소리가 들려요. 가끔은 운동을 하는 것 같기도 해요. 새벽 한 시에요! 대체 누가 아파트에서 새벽 한 시에 운동을 해요?</p>
+                <p class="mb-6">그리고 애들 얘기는 꺼내지도 마세요. 아이들이 뛰어놀아야 한다는 건 알아요. 저도 딸이 있으니까요. 그런데 아이가 계속 바닥을 뛰어다니고, 가구에서 뛰어내리고, 소리를 지르면 누군가는 말려야 하는 거 아닌가요?</p>
+                <p class="mb-6">어제는 복도에서 아이가 뛰어가는데 아빠가 "<b class="highlight">아빠보다 앞서 뛰어가지 마</b>!"라고 소리치는 걸 들었어요. 좋아요! 적어도 애를 통제하려고는 하네요. 그런데 애초에 복도에서 왜 뛰는 건데요?</p>
+                <p class="mb-6">그리고 정말 짜증 나는 게 뭔지 아세요? 제가 <b class="highlight">층간소음</b>에 대해 불평할 때마다 사람들이 "좀 이해하고 살아야죠"라고 한다는 거예요.</p>
+                <p class="mb-6">이해요? 제가 6개월 동안 이해하고 살았다고요!</p>
+                <p class="mb-6">저도 <b class="highlight">직접 부딪히는 상황은 피하려고</b> 해요. 정말이에요. 모든 일에 불평하는 그런 짜증 나는 이웃이 되고 싶지는 않거든요. 그래서 하고 싶은 말을 꾹 참아요. 조용히 있어요. 저 사람들도 아마 힘든 하루를 보내고 있겠지 하고 생각해요.</p>
+                <p class="mb-6">그런데 제가 힘든 하루를 보낸 건요?</p>
+                <p class="mb-6">지난주에는 운전하다가 어떤 멍청이가 <b class="highlight">갑자기 제 앞으로 끼어드는</b> 바람에 이미 <b class="highlight">기분이 안 좋았어요</b>. 그런데 <b class="highlight">뒤차는</b> 마치 모든 게 제 잘못이라는 듯이 경적을 울려대더라고요!</p>
+                <p class="mb-6">겨우 집에 도착했는데 윗집에서 또 쾅 하는 소리가 들렸어요. 결국 인내심이 바닥났죠.</p>
+                <p class="mb-6">윗집으로 올라가서 문을 두드렸어요. 이웃이 문을 열더니 이렇게 말하더라고요.</p>
+                <p class="mb-6">"아, 소음 때문에 불편하세요?"</p>
+                <p class="mb-6">소음 때문에 불편하냐고요?!</p>
+                <p class="mb-6">소리를 지르고 싶었지만 간신히 침착함을 유지했어요.</p>
+                <p class="mb-6">"네. 조금요."</p>
+                <p class="mb-6">조금이라고요?!</p>
+                <p class="mb-6">제가 왜 그렇게 말한 거죠? 화가 머리끝까지 나도 솔직하게 말을 못 하겠어요!</p>
+                <p class="mb-6">그런데 더 최악인 건 뭔지 아세요? 아래층으로 내려왔더니 아내가 왜 그렇게 화가 났냐고 묻더라고요. 그래서 딸이 장난감을 여기저기 어질러 놨다고 했어요. 어쩌다 보니 <b class="highlight">딸 탓을 해 버린</b> 거예요!</p>
+                <p class="mb-6">이제 딸은 저한테 화가 났고, 윗집에서는 여전히 소음이 들리고, 저는 더 이상 <b class="highlight">웃는 얼굴을 유지할 수도 없어요</b>.</p>
+                <p class="mb-6">저는 그냥 잠 좀 자고 싶다고요!</p>
+                <p class="mb-6">그게 그렇게 큰 부탁인가요?</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "115630.m4a";
+</script>
+      <script src="wordbank-utils.js"></script>
+  </body>
+  </html>

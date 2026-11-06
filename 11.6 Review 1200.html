@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+      <title>Review Note | The Husband Who Refused to Save His Wife</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+      <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+      </style>
+</head>
+<body class="p-4 md:p-12">
+      <div class="max-w-4xl mx-auto space-y-8">
+
+          <header class="text-center space-y-4">
+              <div class="flex items-center justify-center gap-4">
+                  <span class="text-5xl">🏥</span>
+                  <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Husband Who Refused to Save His Wife</h1>
+              </div>
+              <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+          </header>
+
+          <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+              <div class="flex items-center justify-between px-2">
+                  <div class="flex items-center gap-3">
+                      <span class="text-xl">🎧</span>
+                      <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                  </div>
+                  <div class="flex gap-2">
+                      <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          <span class="text-lg">↺</span> 5s
+                      </button>
+                      <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          5s <span class="text-lg">↻</span>
+                      </button>
+                  </div>
+              </div>
+              <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+          </div>
+
+          <div class="flex justify-center">
+              <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+          </div>
+
+          <section class="glass rounded-3xl overflow-hidden shadow-xl">
+              <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                  <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+              </div>
+              <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                  <tr><td class="p-4"><b class="text-white">stand beside someone</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">누군가의 곁을 지키다 / 지지하다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">cross a line</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">선을 넘다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">basic manners</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">기본적인 예의</td></tr>
+                  <tr><td class="p-4"><b class="text-white">predict</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">예상하다 / 예측하다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">foresee</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">예견하다 / 내다보다</td></tr>
+              </tbody></table>
+          </section>
+
+          <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <h3 class="text-teal-400 font-bold">stand beside someone</h3>
+                  <p class="text-sm text-slate-300">어려운 상황에서도 누군가를 변함없이 지지하고 곁을 지켜준다는 뜻이에요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <h3 class="text-teal-400 font-bold">cross a line</h3>
+                  <p class="text-sm text-slate-300">도덕적, 사회적, 또는 관계에서의 용인될 수 있는 한계를 넘어섰을 때 사용하는 표현이에요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <h3 class="text-teal-400 font-bold">basic manners</h3>
+                  <p class="text-sm text-slate-300">상대방에 대한 최소한의 매너나 기본적인 예의를 의미해요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <h3 class="text-teal-400 font-bold">predict</h3>
+                  <p class="text-sm text-slate-300">앞으로 일어날 일이나 결과를 미리 추측하거나 말하는 것을 뜻해요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <h3 class="text-teal-400 font-bold">foresee</h3>
+                  <p class="text-sm text-slate-300">미래에 일어날 상황이나 위험 등을 미리 내다보거나 예견하는 것을 의미해요.</p>
+              </div>
+          </section>
+
+          <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+              <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                  <p class="mb-6"><b class="text-teal-400 font-bold block mb-2">The Introduction</b>Nari and James have been married for six years. When Nari becomes seriously ill, doctors discover that James could be a suitable kidney donor. But he refuses to donate. Nari's family calls him selfish, and their marriage begins to fall apart. James insists there's a reason he cannot go through with the operation.</p>
+
+                  <p class="mb-6"><b class="text-teal-400 font-bold block mb-2">Her Side — Nari</b>When you're in a relationship, you expect your partner to <b class="highlight quiz-target" data-ans="stand beside" data-kor="곁을 지키다">stand beside</b> you when things get difficult.</p>
+                  <p class="mb-6">That's what marriage means to me.</p>
+                  <p class="mb-6">Six months ago, my kidneys started failing. Doctors told me I might need a transplant.</p>
+                  <p class="mb-6">James was tested and turned out to be a possible donor.</p>
+                  <p class="mb-6">I cried with relief.</p>
+                  <p class="mb-6">But when I asked him about the operation, he said no.</p>
+                  <p class="mb-6">I thought he was joking.</p>
+                  <p class="mb-6">He explained that he was afraid of surgery and worried about his future health.</p>
+                  <p class="mb-6">I understood his fear, but I was terrified of dying.</p>
+                  <p class="mb-6">My mother begged him to reconsider.</p>
+                  <p class="mb-6">He refused.</p>
+                  <p class="mb-6">Then he told me, "You can't expect me to risk my life just because we're married."</p>
+                  <p class="mb-6">I couldn't believe it.</p>
+                  <p class="mb-6">I told him he'd <b class="highlight quiz-target" data-ans="crossed a line" data-kor="선을 넘다">crossed a line</b>.</p>
+                  <p class="mb-6">He didn't even come to my next hospital appointment.</p>
+                  <p class="mb-6">When I confronted him, he said he needed some space.</p>
+                  <p class="mb-6">Some space? While his wife was fighting for her life?</p>
+                  <p class="mb-6">I told him that showing up for your sick wife was just <b class="highlight quiz-target" data-ans="basic manners" data-kor="기본적인 예의">basic manners</b>.</p>
+                  <p class="mb-6">My family said I should divorce him.</p>
+                  <p class="mb-6">I never thought I could <b class="highlight quiz-target" data-ans="predict" data-kor="예상하다">predict</b> the end of my marriage from a hospital bed.</p>
+                  <p class="mb-6">But James says I'm hiding something important.</p>
+
+                  <p class="mb-6"><b class="text-teal-400 font-bold block mb-2">His Side — James</b>Nari is right. I refused to donate my kidney.</p>
+                  <p class="mb-6">But she hasn't explained why.</p>
+                  <p class="mb-6">Three years ago, Nari became pregnant.</p>
+                  <p class="mb-6">I was excited about becoming a father.</p>
+                  <p class="mb-6">Then I discovered she'd been having an affair with my best friend.</p>
+                  <p class="mb-6">She admitted the baby might not be mine.</p>
+                  <p class="mb-6">I was devastated.</p>
+                  <p class="mb-6">Eventually, she ended the pregnancy. She told me she'd made the decision because she wasn't ready to become a mother.</p>
+                  <p class="mb-6">I stayed with her because I loved her.</p>
+                  <p class="mb-6">But the affair destroyed my trust.</p>
+                  <p class="mb-6">Last year, I discovered she was secretly contacting the same man.</p>
+                  <p class="mb-6">She promised they were just friends.</p>
+                  <p class="mb-6">I didn't believe her.</p>
+                  <p class="mb-6">When Nari became ill, I wanted to support her. I paid for treatments, took time off work, and helped her find specialists.</p>
+                  <p class="mb-6">But donating a kidney is a permanent decision with medical risks.</p>
+                  <p class="mb-6">I couldn't <b class="highlight quiz-target" data-ans="foresee" data-kor="예견하다">foresee</b> how it might affect my own health.</p>
+                  <p class="mb-6">And here's what Nari hasn't mentioned.</p>
+                  <p class="mb-6">During an argument, she told me, "You owe me. If you really loved me, you'd do this."</p>
+                  <p class="mb-6">She said refusing would prove I'd never forgiven her.</p>
+                  <p class="mb-6">That was when I realized she was using my guilt to pressure me.</p>
+                  <p class="mb-6">I know she's frightened. I don't blame her for wanting to survive.</p>
+                  <p class="mb-6">But does being married mean I have to give up part of my body?</p>
+                  <p class="mb-6">I should've been more honest about my feelings, and I shouldn't have missed her appointment.</p>
+                  <p class="mb-6">But I don't think anyone should be forced to become an organ donor.</p>
+
+                  <p class="mb-6"><b class="text-teal-400 font-bold block mb-2">⚖️ Who's to Blame?</b>Was James wrong to refuse to donate his kidney when his wife's life was at risk? Does Nari's past betrayal justify his decision, or should those issues be kept separate? Was Nari wrong to pressure him, and what responsibility does James still have toward her as her husband?</p>
+              </div>
+              <hr class="border-white/10">
+              <div class="text-slate-400 italic leading-relaxed space-y-6">
+                  <p><b class="text-slate-300 font-bold not-italic block mb-2">사건 소개</b>나리와 제임스는 결혼한 지 6년 된 부부입니다. 나리가 심각한 병에 걸리자, 의사들은 제임스가 적합한 신장 기증자가 될 가능성이 있다고 말합니다. 하지만 제임스는 기증을 거부합니다. 나리의 가족은 그를 이기적이라고 비난하고, 두 사람의 결혼 생활은 무너지기 시작합니다. 제임스는 수술을 받을 수 없는 이유가 있다고 주장합니다.</p>
+
+                  <p><b class="text-slate-300 font-bold not-italic block mb-2">나리의 입장</b>연애하거나 결혼한 사이라면 힘든 일이 생겼을 때 상대방이 <b class="highlight">곁을 지켜 줄 거라고</b> 기대하잖아요.</p>
+                  <p>저에게 결혼이란 그런 거예요.</p>
+                  <p>6개월 전, 제 신장 기능이 나빠지기 시작했어요. 의사들은 신장 이식이 필요할 수도 있다고 했어요.</p>
+                  <p>제임스가 검사를 받았는데, 기증자가 될 가능성이 있다고 했어요.</p>
+                  <p>너무 안심돼서 눈물이 났어요.</p>
+                  <p>그런데 수술에 대해 물어보자 제임스는 거절했어요.</p>
+                  <p>농담인 줄 알았어요.</p>
+                  <p>수술이 무섭고 앞으로 자기 건강이 걱정된다고 설명했어요.</p>
+                  <p>두려운 마음은 이해했지만, 저는 죽을까 봐 너무 무서웠어요.</p>
+                  <p>엄마가 제임스에게 다시 생각해 달라고 애원했어요.</p>
+                  <p>하지만 거절했어요.</p>
+                  <p>그러더니 이렇게 말했어요.</p>
+                  <p>"결혼했다는 이유만으로 내 목숨을 걸라고 할 수는 없잖아."</p>
+                  <p>믿을 수가 없었어요.</p>
+                  <p>저는 제임스가 <b class="highlight">선을 넘었다고</b> 말했어요.</p>
+                  <p>제임스는 다음 병원 진료에도 오지 않았어요.</p>
+                  <p>제가 따지자 혼자만의 시간이 필요하다고 했어요.</p>
+                  <p>혼자만의 시간이요? 아내가 목숨을 걸고 병과 싸우고 있는데요?</p>
+                  <p>저는 아픈 아내의 병원 진료에 함께 가는 건 <b class="highlight">기본적인 예의라고</b> 했어요.</p>
+                  <p>가족들은 이혼하라고 했어요.</p>
+                  <p>병원 침대에 누워 결혼 생활의 끝을 <b class="highlight">예상하게</b> 될 줄은 몰랐어요.</p>
+                  <p>하지만 제임스는 제가 중요한 사실을 숨기고 있다고 해요.</p>
+
+                  <p><b class="text-slate-300 font-bold not-italic block mb-2">제임스의 입장</b>나리 말이 맞아요. 저는 신장 기증을 거절했어요.</p>
+                  <p>하지만 나리는 그 이유를 설명하지 않았어요.</p>
+                  <p>3년 전, 나리가 임신했어요.</p>
+                  <p>저는 아버지가 된다는 생각에 정말 기뻤어요.</p>
+                  <p>그런데 나리가 제 가장 친한 친구와 바람을 피우고 있었다는 사실을 알게 됐어요.</p>
+                  <p>나리는 아이가 제 아이가 아닐 수도 있다고 인정했어요.</p>
+                  <p>정말 충격이었어요.</p>
+                  <p>결국 나리는 임신을 중단했어요. 아직 엄마가 될 준비가 되지 않아서 내린 결정이라고 했어요.</p>
+                  <p>저는 나리를 사랑했기 때문에 곁에 남았어요.</p>
+                  <p>하지만 그 외도로 신뢰가 완전히 무너졌어요.</p>
+                  <p>작년에는 나리가 그 남자와 몰래 연락하고 있다는 사실을 알게 됐어요.</p>
+                  <p>나리는 그냥 친구 사이라고 약속했어요.</p>
+                  <p>하지만 믿을 수 없었어요.</p>
+                  <p>나리가 아프기 시작했을 때 저는 도와주고 싶었어요. 치료비를 내고, 직장에서 휴가를 내고, 전문의를 찾는 것도 도왔어요.</p>
+                  <p>하지만 신장을 기증하는 건 의료적 위험이 따르는 영구적인 결정이에요.</p>
+                  <p>앞으로 제 건강에 어떤 영향을 미칠지 <b class="highlight">예측할 수</b> 없었어요.</p>
+                  <p>그리고 나리가 말하지 않은 사실이 있어요.</p>
+                  <p>말다툼을 하던 중 나리가 이렇게 말했어요.</p>
+                  <p>"당신은 나한테 빚진 게 있어. 정말 날 사랑한다면 이렇게 해 줘야지."</p>
+                  <p>기증을 거부하면 저를 용서한 적이 없다는 증거라고 했어요.</p>
+                  <p>그때 나리가 제 죄책감을 이용해서 저를 압박하고 있다는 걸 깨달았어요.</p>
+                  <p>나리가 두렵다는 건 알아요. 살고 싶어 하는 마음을 탓하지 않아요.</p>
+                  <p>하지만 결혼했다고 해서 제 몸의 일부를 포기해야 하는 걸까요?</p>
+                  <p>제 감정에 대해 좀 더 솔직했어야 했고, 병원 진료에 빠지지 말았어야 했어요.</p>
+                  <p>하지만 누구도 장기 기증을 강요받아서는 안 된다고 생각해요.</p>
+
+                  <p><b class="text-slate-300 font-bold not-italic block mb-2">⚖️ 누구의 잘못일까요?</b>아내의 생명이 위험한 상황에서 제임스가 신장 기증을 거부한 것은 잘못일까요? 나리의 과거 배신이 그의 결정을 정당화할 수 있을까요, 아니면 두 문제는 별개로 봐야 할까요? 나리가 기증을 압박한 것은 잘못일까요? 남편으로서 제임스에게는 여전히 어떤 책임이 있을까요?</p>
+              </div>
+          </section>
+
+      </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "1161200.m4a";
+</script>
+      <script src="wordbank-utils.js"></script>
+  </body>
+  </html>

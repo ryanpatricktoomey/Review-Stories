@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+      <title>Review Note | The Woman at the Funeral</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+      <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+      </style>
+</head>
+<body class="p-4 md:p-12">
+      <div class="max-w-4xl mx-auto space-y-8">
+
+          <header class="text-center space-y-4">
+              <div class="flex items-center justify-center gap-4">
+                  <span class="text-5xl">🥀</span>
+                  <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Woman at the Funeral</h1>
+              </div>
+              <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+          </header>
+
+          <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+              <div class="flex items-center justify-between px-2">
+                  <div class="flex items-center gap-3">
+                      <span class="text-xl">🎧</span>
+                      <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                  </div>
+                  <div class="flex gap-2">
+                      <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          <span class="text-lg">↺</span> 5s
+                      </button>
+                      <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          5s <span class="text-lg">↻</span>
+                      </button>
+                  </div>
+              </div>
+              <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+          </div>
+
+          <div class="flex justify-center">
+              <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+          </div>
+
+          <section class="glass rounded-3xl overflow-hidden shadow-xl">
+              <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                  <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+              </div>
+              <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                  <tr><td class="p-4"><b class="text-white">things happen</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">살다 보면 이런저런 일이 생기기 마련이다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">it's a shame</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">안타깝다 / 유감이다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">funeral</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">장례식</td></tr>
+                  <tr><td class="p-4"><b class="text-white">can be excused</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">이해해 줄 수 있다 / 용서받을 수 있다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">cut my losses</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">손해를 더 보기 전에 관계를 정리하다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">cut him off</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그와 연락이나 관계를 끊다</td></tr>
+              </tbody></table>
+          </section>
+
+          <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <h3 class="text-teal-400 font-bold">things happen</h3>
+                  <p class="text-sm text-slate-300">예상치 못한 일이 생길 수 있다는 뜻이지만, 심각한 상황에서는 무책임하게 들릴 수 있어요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <h3 class="text-teal-400 font-bold">it's a shame</h3>
+                  <p class="text-sm text-slate-300">'부끄럽다'보다 '안타깝다', '유감이다'라는 뜻으로 자주 사용해요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <h3 class="text-teal-400 font-bold">can be excused</h3>
+                  <p class="text-sm text-slate-300">잘못된 행동이라도 특별한 사정이 있으면 이해하거나 용서할 수 있다는 뜻이에요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <h3 class="text-teal-400 font-bold">cut my losses</h3>
+                  <p class="text-sm text-slate-300">더 큰 손해를 보기 전에 관계나 상황에서 빠져나오는 것이에요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <h3 class="text-teal-400 font-bold">cut him off</h3>
+                  <p class="text-sm text-slate-300">연락이나 관계를 완전히 끊는다는 뜻이에요.</p>
+              </div>
+          </section>
+
+          <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+              <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                  <p class="mb-6"><b class="text-teal-400 font-bold block mb-2">The Introduction</b>Jiyoung and Minho have been married for five years. When Jiyoung's father dies, Minho promises to support her. But on the day of the <b class="highlight">funeral</b>, he disappears. Hours later, Jiyoung discovers that he was meeting a mysterious woman at a hotel. She demands a divorce. Minho insists the truth is far worse than she imagines.</p>
+
+                  <p class="mb-6"><b class="text-teal-400 font-bold block mb-2">Her Side — Jiyoung</b>My father treated Minho like his own son. He even helped us buy our apartment.</p>
+                  <p class="mb-6">So when Dad died, I expected Minho to be beside me at the <b class="highlight">funeral</b>.</p>
+                  <p class="mb-6">Instead, he disappeared for four hours.</p>
+                  <p class="mb-6">He wasn't answering his phone. When he finally returned, he said he'd needed some time alone.</p>
+                  <p class="mb-6">Then my cousin showed me a photo.</p>
+                  <p class="mb-6">Minho was entering a hotel with a young woman. His hand was on her shoulder.</p>
+                  <p class="mb-6">When I confronted him, he admitted meeting her but refused to explain who she was.</p>
+                  <p class="mb-6">"<b class="highlight quiz-target" data-ans="Things happen" data-kor="이런저런 일이 생기다">Things happen</b> that you don't understand," he said.</p>
+                  <p class="mb-6">I was furious.</p>
+                  <p class="mb-6">He looked at me and added, "I know <b class="highlight quiz-target" data-ans="it's a shame" data-kor="안타깝다">it's a shame</b> that I wasn't there."</p>
+                  <p class="mb-6">A shame? My father was dead, and my husband was meeting another woman!</p>
+                  <p class="mb-6">I told him that nothing he said <b class="highlight quiz-target" data-ans="could be excused" data-kor="용서받을 수 있다">could be excused</b>.</p>
+                  <p class="mb-6">My sister told me to <b class="highlight quiz-target" data-ans="cut my losses" data-kor="손해를 줄이다">cut my losses</b> before he hurt me further.</p>
+                  <p class="mb-6">I decided to <b class="highlight quiz-target" data-ans="cut him off" data-kor="관계/연락을 끊다">cut him off</b> and contacted a divorce lawyer.</p>
+                  <p class="mb-6">Then Minho told me something unbelievable.</p>
+                  <p class="mb-6">He said the woman was my father's daughter.</p>
+
+                  <p class="mb-6"><b class="text-teal-400 font-bold block mb-2">His Side — Minho</b>Jiyoung's father wasn't the man she thought he was.</p>
+                  <p class="mb-6">Three years ago, a young woman named Sumin contacted me. She said she was Jiyoung's half-sister.</p>
+                  <p class="mb-6">Her mother had been involved with Jiyoung's father for years.</p>
+                  <p class="mb-6">At first, I didn't believe her. But she showed me photographs, messages, and a DNA test.</p>
+                  <p class="mb-6">I confronted my father-in-law.</p>
+                  <p class="mb-6">He admitted everything.</p>
+                  <p class="mb-6">Then he offered me fifty million won to keep quiet.</p>
+                  <p class="mb-6">I refused. But he reminded me that he'd helped us buy our apartment. He threatened to tell Jiyoung I'd borrowed money from him and never repaid it.</p>
+                  <p class="mb-6">That part was true.</p>
+                  <p class="mb-6">I had secretly borrowed money after losing my job. I was ashamed and hadn't told my wife.</p>
+                  <p class="mb-6">So I stayed silent.</p>
+                  <p class="mb-6">On the day of the <b class="highlight">funeral</b>, Sumin called me from a hotel near the <b class="highlight">funeral</b> hall. She wanted to attend but was terrified of meeting Jiyoung's family.</p>
+                  <p class="mb-6">I went to speak with her. She was crying, and I stayed longer than I'd planned.</p>
+                  <p class="mb-6">I should've told Jiyoung the truth years ago.</p>
+                  <p class="mb-6">But her father had threatened me, and I was afraid of losing my marriage.</p>
+                  <p class="mb-6">I know I was wrong to hide everything.</p>
+                  <p class="mb-6">Still, Sumin had lost her father too. Didn't she deserve someone to comfort her?</p>
+                  <p class="mb-6">And Jiyoung's father created this situation in the first place.</p>
+
+                  <p class="mb-6"><b class="text-teal-400 font-bold block mb-2">⚖️ Who's to Blame?</b>Was Minho wrong to hide the truth about Jiyoung's family, even if revealing it could have destroyed her relationship with her father? Was Jiyoung justified in demanding a divorce, or should she have given Minho a chance to explain? Who bears the greatest responsibility?</p>
+              </div>
+              <hr class="border-white/10">
+              <div class="text-slate-400 italic leading-relaxed space-y-6">
+                  <p><b class="text-slate-300 font-bold not-italic block mb-2">사건 소개</b>지영과 민호는 결혼한 지 5년 된 부부입니다. 지영의 아버지가 돌아가시자 민호는 아내의 곁을 지키겠다고 약속합니다. 하지만 <b class="highlight">장례식</b> 당일, 민호가 갑자기 사라집니다. 몇 시간 뒤, 지영은 남편이 호텔에서 의문의 여성을 만났다는 사실을 알게 됩니다. 지영은 이혼을 요구하지만, 민호는 진실이 지영의 상상보다 훨씬 끔찍하다고 주장합니다.</p>
+
+                  <p><b class="text-slate-300 font-bold not-italic block mb-2">지영의 입장</b>아버지는 민호를 친아들처럼 대해 주셨어요. 심지어 저희가 아파트를 살 때도 도와주셨죠.</p>
+                  <p>그래서 아버지가 돌아가셨을 때, 당연히 민호가 <b class="highlight">장례식</b> 내내 제 곁에 있을 거라고 생각했어요.</p>
+                  <p>그런데 민호가 네 시간 동안 사라졌어요.</p>
+                  <p>전화도 받지 않았어요. 겨우 돌아왔을 때는 혼자만의 시간이 필요했다고 하더라고요.</p>
+                  <p>그러다 사촌이 사진 한 장을 보여 줬어요.</p>
+                  <p>민호가 젊은 여자와 호텔에 들어가는 사진이었어요. 그 여자의 어깨에 손까지 올리고 있었죠.</p>
+                  <p>제가 따지자 민호는 여자를 만난 건 인정했지만, 누구인지는 설명하지 않았어요.</p>
+                  <p>"네가 이해하지 못하는 <b class="highlight">일도 생기는 거야</b>."</p>
+                  <p>너무 화가 났어요.</p>
+                  <p>그러더니 "내가 자리를 비운 건 <b class="highlight">안타깝게</b> 생각해"라고 하더라고요.</p>
+                  <p>안타깝다고요? 아버지가 돌아가셨는데 남편은 다른 여자를 만나고 있었잖아요!</p>
+                  <p>저는 어떤 변명으로도 <b class="highlight">용서받을 수 없는</b> 행동이라고 말했어요.</p>
+                  <p>언니는 더 상처받기 전에 <b class="highlight">관계를 정리하라고</b> 했어요.</p>
+                  <p>저는 민호와 <b class="highlight">연락을 끊고</b> 이혼 전문 변호사에게 연락했어요.</p>
+                  <p>그런데 민호가 믿을 수 없는 말을 했어요.</p>
+                  <p>그 여자가 제 아버지의 딸이라는 거예요.</p>
+
+                  <p><b class="text-slate-300 font-bold not-italic block mb-2">민호의 입장</b>지영의 아버지는 지영이 생각하는 그런 분이 아니었어요.</p>
+                  <p>3년 전, 수민이라는 젊은 여자가 저에게 연락했어요. 자신이 지영의 이복자매라고 했죠.</p>
+                  <p>수민의 어머니는 오랫동안 지영의 아버지와 관계를 맺어 왔다는 거예요.</p>
+                  <p>처음에는 믿지 않았어요. 하지만 사진과 메시지, DNA 검사 결과까지 보여 줬어요.</p>
+                  <p>저는 장인어른을 찾아가 따졌어요.</p>
+                  <p>장인어른은 모든 사실을 인정하셨어요.</p>
+                  <p>그러더니 입을 다무는 조건으로 5천만 원을 주겠다고 하셨어요.</p>
+                  <p>저는 거절했어요. 하지만 장인어른은 아파트를 살 때 도와줬다는 사실을 상기시키셨어요. 제가 돈을 빌리고 갚지 않았다는 사실을 지영에게 말하겠다고 협박하셨죠.</p>
+                  <p>그건 사실이었어요.</p>
+                  <p>실직했을 때 몰래 돈을 빌렸거든요. 부끄러워서 아내에게 말하지 않았어요.</p>
+                  <p>그래서 결국 입을 다무는 쪽을 선택했어요.</p>
+                  <p><b class="highlight">장례식</b> 당일, 수민이 <b class="highlight">장례식장</b> 근처 호텔에서 전화했어요. 장례식에 참석하고 싶지만 지영의 가족을 마주할 자신이 없다고 했어요.</p>
+                  <p>저는 수민을 만나러 갔어요. 수민은 울고 있었고, 생각보다 오래 함께 있게 됐어요.</p>
+                  <p>몇 년 전에 지영에게 진실을 말했어야 했어요.</p>
+                  <p>하지만 장인어른의 협박이 두려웠고, 결혼 생활을 잃을까 봐 무서웠어요.</p>
+                  <p>모든 사실을 숨긴 건 제 잘못이라는 걸 알아요.</p>
+                  <p>하지만 수민도 아버지를 잃었잖아요. 누군가 위로해 줄 사람은 필요하지 않았을까요?</p>
+                  <p>그리고 애초에 이 상황을 만든 건 지영의 아버지였어요.</p>
+
+                  <p><b class="text-slate-300 font-bold not-italic block mb-2">⚖️ 누구의 잘못일까요?</b>진실을 밝히면 지영과 아버지의 관계가 무너질 수도 있었다고 해도, 민호가 가족의 비밀을 숨긴 것은 잘못일까요? 지영이 이혼을 요구한 것은 정당할까요, 아니면 민호에게 설명할 기회를 줬어야 할까요? 누구에게 가장 큰 책임이 있을까요?</p>
+              </div>
+          </section>
+
+      </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "116630.m4a";
+</script>
+      <script src="wordbank-utils.js"></script>
+  </body>
+  </html>

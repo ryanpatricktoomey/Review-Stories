@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+      <title>Review Note | The Wife Who Stole the Jackpot</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+      <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+      </style>
+</head>
+<body class="p-4 md:p-12">
+      <div class="max-w-4xl mx-auto space-y-8">
+
+          <header class="text-center space-y-4">
+              <div class="flex items-center justify-center gap-4">
+                  <span class="text-5xl">💰</span>
+                  <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Wife Who Stole the Jackpot</h1>
+              </div>
+              <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+          </header>
+
+          <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+              <div class="flex items-center justify-between px-2">
+                  <div class="flex items-center gap-3">
+                      <span class="text-xl">🎧</span>
+                      <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                  </div>
+                  <div class="flex gap-2">
+                      <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          <span class="text-lg">↺</span> 5s
+                      </button>
+                      <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          5s <span class="text-lg">↻</span>
+                      </button>
+                  </div>
+              </div>
+              <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+          </div>
+
+          <div class="flex justify-center">
+              <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+          </div>
+
+          <section class="glass rounded-3xl overflow-hidden shadow-xl">
+              <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                  <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+              </div>
+              <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                  <tr><td class="p-4"><b class="text-white">make up</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">화해하다 / 지어내다 / 구성하다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">in the first place</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">애초에 / 처음부터</td></tr>
+                  <tr><td class="p-4"><b class="text-white">loser</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">찌질이 / 패배자 / 한심한 사람</td></tr>
+                  <tr><td class="p-4"><b class="text-white">made assumptions</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">지레짐작했다 / 확인하지 않고 단정했다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">lay your claim</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">자신의 권리나 소유권을 주장하다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">finders keepers</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">주운 사람이 임자</td></tr>
+                  <tr><td class="p-4"><b class="text-white">morally responsible</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">도덕적으로 책임이 있는</td></tr>
+                  <tr><td class="p-4"><b class="text-white">have a gun to your head</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">강요받아 선택의 여지가 없는 상황에 있다</td></tr>
+              </tbody></table>
+          </section>
+
+          <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <h3 class="text-teal-400 font-bold">make up</h3>
+                  <p class="text-sm text-slate-300">연인 사이에서 '화해하다'라는 뜻으로 자주 쓰여요. make up a story는 이야기를 지어내다는 뜻이에요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <h3 class="text-teal-400 font-bold">in the first place</h3>
+                  <p class="text-sm text-slate-300">문제가 시작된 원인이나 처음부터 잘못된 선택을 지적할 때 쓰는 '애초에'라는 표현이에요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <h3 class="text-teal-400 font-bold">lay your claim</h3>
+                  <p class="text-sm text-slate-300">자기 권리나 소유권을 주장한다는 뜻이에요. lay claim to something이 일반적인 형태예요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <h3 class="text-teal-400 font-bold">finders keepers</h3>
+                  <p class="text-sm text-slate-300">'주운 사람이 임자'라는 구어체 표현이에요. 법적인 소유권을 의미하지는 않아요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <h3 class="text-teal-400 font-bold">morally responsible</h3>
+                  <p class="text-sm text-slate-300">법적 책임과 별개로 도덕적으로 책임이 있다는 뜻이에요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                  <h3 class="text-teal-400 font-bold">have a gun to your head</h3>
+                  <p class="text-sm text-slate-300">누군가 강제로 시키는 상황을 비유적으로 나타내요. Nobody had a gun to your head.는 '누가 억지로 시킨 것도 아니잖아'라는 뜻이에요.</p>
+              </div>
+          </section>
+
+          <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+              <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                  <p class="mb-6"><b class="text-teal-400 font-bold block mb-2">The Introduction</b>After twelve years of marriage, Hyejin and Paul are struggling financially. Then Paul wins a lottery jackpot worth three billion won. But before he can claim the prize, the winning ticket disappears. A week later, his wife files for divorce and announces that the money belongs to her. Paul calls her a thief. Hyejin says he's lucky she didn't leave him sooner.</p>
+
+                  <p class="mb-6"><b class="text-teal-400 font-bold block mb-2">His Side — Paul</b>I've bought lottery tickets every Saturday for ten years.</p>
+                  <p class="mb-6">Hyejin always complained that I was wasting money.</p>
+                  <p class="mb-6">Then I finally won.</p>
+                  <p class="mb-6">Three billion won!</p>
+                  <p class="mb-6">I put the ticket in my desk drawer and called my brother to celebrate.</p>
+                  <p class="mb-6">The next morning, it was gone.</p>
+                  <p class="mb-6">Hyejin told me she'd found it and taken it somewhere safe.</p>
+                  <p class="mb-6">Then she disappeared.</p>
+                  <p class="mb-6">A week later, I received divorce papers.</p>
+                  <p class="mb-6">My lawyer discovered that Hyejin had submitted the ticket and claimed the prize.</p>
+                  <p class="mb-6">When I confronted her, she said, "<b class="highlight quiz-target" data-ans="Finders keepers" data-kor="주운 사람이 임자">Finders keepers</b>."</p>
+                  <p class="mb-6">I couldn't believe it.</p>
+                  <p class="mb-6">She said she'd used her own money to buy the ticket, so she had the right to <b class="highlight quiz-target" data-ans="lay claim to" data-kor="소유권을 주장하다">lay claim to</b> the winnings.</p>
+                  <p class="mb-6">That's ridiculous!</p>
+                  <p class="mb-6">Yes, I'd borrowed money from our joint account that week. But I bought the ticket myself.</p>
+                  <p class="mb-6">Hyejin says she wants to divorce me because I'm a selfish <b class="highlight quiz-target" data-ans="loser" data-kor="찌질이">loser</b>.</p>
+                  <p class="mb-6">She refuses to <b class="highlight quiz-target" data-ans="make up" data-kor="화해하다">make up</b> or even discuss sharing the money.</p>
+                  <p class="mb-6">I worked hard for years. Doesn't that count for anything?</p>
+
+                  <p class="mb-6"><b class="text-teal-400 font-bold block mb-2">Her Side — Hyejin</b>Paul says he worked hard.</p>
+                  <p class="mb-6">What he doesn't mention is that he lost his job eight months ago and never told me.</p>
+                  <p class="mb-6">Every morning, he put on a suit and pretended to go to work.</p>
+                  <p class="mb-6">Meanwhile, he was secretly withdrawing money from our savings.</p>
+                  <p class="mb-6">I discovered everything when the bank called about an overdue loan.</p>
+                  <p class="mb-6">Paul had borrowed forty million won using my signature.</p>
+                  <p class="mb-6">He'd forged it.</p>
+                  <p class="mb-6">When I confronted him, he admitted he'd been gambling online.</p>
+                  <p class="mb-6">The lottery tickets weren't harmless entertainment. They were part of a serious gambling problem.</p>
+                  <p class="mb-6">I told him to get help.</p>
+                  <p class="mb-6">He refused and said I was overreacting.</p>
+                  <p class="mb-6">Then I found the winning ticket in his drawer.</p>
+                  <p class="mb-6">I knew he'd hide the money and leave me with the debt.</p>
+                  <p class="mb-6">So I took it.</p>
+                  <p class="mb-6">Was I <b class="highlight quiz-target" data-ans="morally responsible" data-kor="도덕적으로 책임이 있는">morally responsible</b> for telling him? Maybe.</p>
+                  <p class="mb-6">But he wasn't honest with me <b class="highlight quiz-target" data-ans="in the first place" data-kor="애초에">in the first place</b>.</p>
+                  <p class="mb-6">And here's what Paul hasn't mentioned.</p>
+                  <p class="mb-6">Two days before the lottery draw, I found messages between him and another woman.</p>
+                  <p class="mb-6">He'd promised to leave me as soon as he had enough money.</p>
+                  <p class="mb-6">He says I <b class="highlight quiz-target" data-ans="made assumptions" data-kor="지레짐작했다">made assumptions</b> about their relationship.</p>
+                  <p class="mb-6">But one message said, "Once I get the money, we'll finally be together."</p>
+                  <p class="mb-6">Nobody <b class="highlight quiz-target" data-ans="had a gun to his head" data-kor="강요하지 않았다">had a gun to his head</b>. He made those choices himself.</p>
+                  <p class="mb-6">I know taking the ticket without telling him was wrong.</p>
+                  <p class="mb-6">But why should I trust a man who forged my signature, gambled away our savings, and planned to abandon me?</p>
+
+                  <p class="mb-6"><b class="text-teal-400 font-bold block mb-2">⚖️ Who's to Blame?</b>Was Hyejin justified in taking the lottery ticket to protect herself, or did she cross a line by secretly claiming the winnings? Does Paul's dishonesty make him mainly responsible for the breakdown of their marriage? Who has the stronger moral claim to the money, and what would be a fair outcome?</p>
+              </div>
+              <hr class="border-white/10">
+              <div class="text-slate-400 italic leading-relaxed space-y-6">
+                  <p><b class="text-slate-300 font-bold not-italic block mb-2">사건 소개</b>결혼 12년 차인 혜진과 폴은 경제적으로 어려움을 겪고 있습니다. 그러던 어느 날, 폴이 30억 원짜리 로또에 당첨됩니다. 하지만 당첨금을 수령하기도 전에 복권이 사라집니다. 일주일 뒤, 아내 혜진이 이혼 소송을 제기하며 당첨금은 자기 것이라고 선언합니다. 폴은 아내를 도둑이라고 비난하지만, 혜진은 진작 떠나지 않은 것만으로도 다행인 줄 알라고 말합니다.</p>
+
+                  <p><b class="text-slate-300 font-bold not-italic block mb-2">폴의 입장</b>저는 10년 동안 매주 토요일마다 복권을 샀어요.</p>
+                  <p>혜진은 항상 돈 낭비라고 불평했죠.</p>
+                  <p>그런데 드디어 당첨됐어요.</p>
+                  <p>30억 원이요!</p>
+                  <p>저는 복권을 책상 서랍에 넣고 형에게 전화해서 기쁨을 나눴어요.</p>
+                  <p>그런데 다음 날 아침 복권이 사라졌어요.</p>
+                  <p>혜진은 자기가 발견해서 안전한 곳에 보관했다고 했어요.</p>
+                  <p>그러더니 사라졌어요.</p>
+                  <p>일주일 뒤, 이혼 서류가 도착했어요.</p>
+                  <p>변호사를 통해 혜진이 복권을 제출하고 당첨금을 청구했다는 사실을 알게 됐어요.</p>
+                  <p>제가 따지자 혜진은 "<b class="highlight">주운 사람이 임자지</b>"라고 했어요.</p>
+                  <p>믿을 수가 없었어요.</p>
+                  <p>자기 돈으로 산 복권이니 당첨금에 대한 <b class="highlight">권리를 주장할 수 있다고</b> 했어요.</p>
+                  <p>말도 안 되죠!</p>
+                  <p>그 주에 공동 계좌에서 돈을 빌린 건 맞아요. 하지만 복권은 제가 직접 샀어요.</p>
+                  <p>혜진은 제가 이기적인 <b class="highlight">찌질이라서</b> 이혼하고 싶다고 해요.</p>
+                  <p><b class="highlight">화해할</b> 생각도 없고, 당첨금을 나누는 문제조차 이야기하려 하지 않아요.</p>
+                  <p>저도 오랫동안 열심히 일했어요. 그건 아무 의미도 없는 건가요?</p>
+
+                  <p><b class="text-slate-300 font-bold not-italic block mb-2">혜진의 입장</b>폴은 자기가 열심히 일했다고 하죠.</p>
+                  <p>하지만 8개월 전에 실직하고도 저에게 말하지 않았다는 사실은 빼놓고 있어요.</p>
+                  <p>매일 아침 정장을 입고 출근하는 척했어요.</p>
+                  <p>그러면서 몰래 저축한 돈을 빼 쓰고 있었죠.</p>
+                  <p>은행에서 연체된 대출금 때문에 전화가 왔을 때 모든 사실을 알게 됐어요.</p>
+                  <p>폴은 제 서명을 이용해 4천만 원을 대출받았어요.</p>
+                  <p>제 서명을 위조한 거예요.</p>
+                  <p>제가 따지자 온라인 도박을 해 왔다고 인정했어요.</p>
+                  <p>복권은 단순한 취미가 아니었어요. 심각한 도박 문제의 일부였던 거죠.</p>
+                  <p>저는 도움을 받으라고 했어요.</p>
+                  <p>하지만 폴은 거절하면서 제가 과민 반응한다고 했어요.</p>
+                  <p>그러다 폴의 서랍에서 당첨 복권을 발견했어요.</p>
+                  <p>폴이 돈을 숨기고 빚은 저에게 떠넘긴 채 떠날 거라는 걸 알았어요.</p>
+                  <p>그래서 복권을 가져갔어요.</p>
+                  <p><b class="highlight">도덕적으로</b> 폴에게 말할 <b class="highlight">책임이</b> 있었냐고요? 어쩌면요.</p>
+                  <p>하지만 <b class="highlight">애초에</b> 저에게 정직하지 않았던 건 폴이에요.</p>
+                  <p>그리고 폴이 말하지 않은 사실이 또 있어요.</p>
+                  <p>복권 추첨 이틀 전, 폴과 다른 여자가 주고받은 메시지를 발견했어요.</p>
+                  <p>폴은 돈이 충분히 생기면 저를 떠나겠다고 약속했더라고요.</p>
+                  <p>폴은 제가 두 사람의 관계를 <b class="highlight">지레짐작했다고</b> 해요.</p>
+                  <p>하지만 메시지 하나에는 이렇게 적혀 있었어요.</p>
+                  <p>"돈만 생기면 드디어 우리 함께할 수 있어."</p>
+                  <p>누가 <b class="highlight">머리에 총을 겨누고 강요한 것도</b> 아니잖아요. 본인이 스스로 선택한 거예요.</p>
+                  <p>저에게 말하지 않고 복권을 가져간 건 잘못이라는 걸 알아요.</p>
+                  <p>하지만 제 서명을 위조하고, 저축한 돈을 도박으로 날리고, 저를 버릴 계획까지 세운 남자를 어떻게 믿을 수 있겠어요?</p>
+
+                  <p><b class="text-slate-300 font-bold not-italic block mb-2">⚖️ 누구의 잘못일까요?</b>혜진이 자신을 보호하기 위해 복권을 가져간 것은 정당한 행동일까요, 아니면 몰래 당첨금을 청구하면서 선을 넘은 걸까요? 폴의 거짓말과 배신 때문에 결혼 생활이 무너진 책임은 주로 폴에게 있을까요? 당첨금에 대한 도덕적 권리는 누구에게 더 크며, 어떤 해결책이 공평할까요?</p>
+              </div>
+          </section>
+
+      </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "1161020.m4a";
+</script>
+      <script src="wordbank-utils.js"></script>
+  </body>
+  </html>

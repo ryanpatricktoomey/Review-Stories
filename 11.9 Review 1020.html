@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+      <title>Review Note | The People Who Give Abandoned Animals a Second Chance</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+      <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+      </style>
+</head>
+<body class="p-4 md:p-12">
+      <div class="max-w-4xl mx-auto space-y-8">
+
+          <header class="text-center space-y-4">
+              <div class="flex items-center justify-center gap-4">
+                  <span class="text-5xl">🐾</span>
+                  <h1 class="text-3xl md:text-4xl font-extrabold text-white">The People Who Give Abandoned Animals a Second Chance</h1>
+              </div>
+              <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+          </header>
+
+          <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+              <div class="flex items-center justify-between px-2">
+                  <div class="flex items-center gap-3">
+                      <span class="text-xl">🎧</span>
+                      <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                  </div>
+                  <div class="flex gap-2">
+                      <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          <span class="text-lg">↺</span> 5s
+                      </button>
+                      <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          5s <span class="text-lg">↻</span>
+                      </button>
+                  </div>
+              </div>
+              <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+          </div>
+
+          <div class="flex justify-center">
+              <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+          </div>
+
+          <section class="glass rounded-3xl overflow-hidden shadow-xl">
+              <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                  <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+              </div>
+              <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                  <tr><td class="p-4"><b class="text-white">28 degrees</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">28도</td></tr>
+                  <tr><td class="p-4"><b class="text-white">got it back in no time</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">금방 되찾았다, 순식간에 회복했다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">stars aligned</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">모든 상황이 절묘하게 맞아떨어졌다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">bedside manner</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">의사나 의료진이 환자를 대하는 태도</td></tr>
+                  <tr><td class="p-4"><b class="text-white">pure</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">순수한, 순전한</td></tr>
+                  <tr><td class="p-4"><b class="text-white">bitter</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">씁쓸한, 원망에 찬, 냉소적인</td></tr>
+                  <tr><td class="p-4"><b class="text-white">resentment</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">원망, 억울함에서 생기는 분노</td></tr>
+                  <tr><td class="p-4"><b class="text-white">twisted</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">뒤틀린, 왜곡된, 비뚤어진</td></tr>
+                  <tr><td class="p-4"><b class="text-white">go on an adventure</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">모험을 떠나다</td></tr>
+              </tbody></table>
+          </section>
+
+          <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-400">
+                  <h3 class="font-bold text-teal-300 text-lg mb-2">got it back in no time</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">In no time은 '아주 빨리, 금방'이라는 뜻이에요. Get something back은 잃어버린 물건뿐 아니라 자신감, 건강, 평정심 등을 되찾을 때도 사용해요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-400">
+                  <h3 class="font-bold text-teal-300 text-lg mb-2">stars aligned</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">여러 조건이 운 좋게 딱 맞아떨어졌다는 비유적인 표현이에요. Everything fell into place와 비슷해요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-400">
+                  <h3 class="font-bold text-teal-300 text-lg mb-2">bedside manner</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">의료진이 환자를 대할 때 보여주는 친절함, 공감 능력, 의사소통 방식 등을 뜻해요. 실제로 침대 옆에서만 사용하는 표현은 아니에요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-400">
+                  <h3 class="font-bold text-teal-300 text-lg mb-2">bitter / resentment</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">Bitter는 힘든 경험 때문에 원망하거나 냉소적으로 변한 상태를 묘사할 수 있어요. Resentment는 부당한 대우를 받았다고 느낄 때 쌓이는 원망이에요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-400">
+                  <h3 class="font-bold text-teal-300 text-lg mb-2">twisted</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">물리적으로 뒤틀린 상태뿐 아니라 생각이나 관점이 왜곡되거나 비뚤어진 상태에도 사용해요.</p>
+              </div>
+          </section>
+
+          <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+              <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                  <p class="mb-6">You know who I think deserves much more recognition in Korea? The people who work at animal shelters.</p>
+                  <p class="mb-6">Seriously, I have enormous respect for these workers.</p>
+                  <p class="mb-6">We often see cute videos of rescued dogs finding loving families, but we rarely think about the people who made those happy endings possible.</p>
+                  <p class="mb-6">Imagine working at an animal shelter during a Korean summer. It's <b class="highlight quiz-target" data-ans="28 degrees" data-kor="28도">28 degrees</b> outside, the humidity is terrible, and you've got dozens of frightened animals that need feeding, cleaning, exercise, and medical attention.</p>
+                  <p class="mb-6">And you can't simply take a break whenever you feel tired. Those animals depend on you.</p>
+                  <p class="mb-6">That's <b class="highlight quiz-target" data-ans="no small feat" data-kor="보통 일이 아닌">no small feat</b>!</p>
+                  <p class="mb-6">What really impresses me is how these workers deal with animals that have experienced neglect or abuse. Some dogs are terrified of people. Others become aggressive because they've learned that humans can't be trusted.</p>
+                  <p class="mb-6">A rescued dog might be so frightened that it refuses to leave its cage. But a patient shelter worker spends weeks sitting nearby, speaking gently, and gradually building trust.</p>
+                  <p class="mb-6">Then, one day, the dog approaches them voluntarily.</p>
+                  <p class="mb-6">It might seem like a tiny achievement, but imagine how meaningful that moment must feel.</p>
+                  <p class="mb-6">And sometimes an animal that has lost its confidence <b class="highlight quiz-target" data-ans="gets it back in no time" data-kor="금방 되찾는다">gets it back in no time</b> once it finally feels safe.</p>
+                  <p class="mb-6">I think that's incredible.</p>
+                  <p class="mb-6">These workers also need something similar to a doctor's <b class="highlight quiz-target" data-ans="bedside manner" data-kor="환자를 대하는 태도">bedside manner</b>. They have to recognize fear, respond calmly, and make frightened animals feel comfortable without forcing interaction.</p>
+                  <p class="mb-6">And the emotional challenges must be enormous.</p>
+                  <p class="mb-6">Imagine rescuing a dog that's been badly mistreated. It would be understandable to feel <b class="highlight quiz-target" data-ans="bitter" data-kor="씁쓸한">bitter</b> about the way some people treat animals. You might even develop <b class="highlight quiz-target" data-ans="resentment" data-kor="원망">resentment</b> toward irresponsible owners.</p>
+                  <p class="mb-6">But these workers can't let those emotions turn into a <b class="highlight quiz-target" data-ans="twisted" data-kor="비뚤어진">twisted</b> view of humanity.</p>
+                  <p class="mb-6">They have to remember that there are also wonderful people who genuinely want to help.</p>
+                  <p class="mb-6">Sometimes, when a rescued animal finds the perfect family, it feels as though the <b class="highlight quiz-target" data-ans="stars aligned" data-kor="모든 상황이 맞아떨어졌다">stars aligned</b>. The right people visited at exactly the right moment, and everything worked out.</p>
+                  <p class="mb-6">But those happy endings aren't just <b class="highlight quiz-target" data-ans="pure" data-kor="순전한">pure</b> luck.</p>
+                  <p class="mb-6">They're the result of enormous patience, dedication, and hard work.</p>
+                  <p class="mb-6">And here's something I especially admire: these workers aren't simply trying to keep animals alive. They want them to enjoy life.</p>
+                  <p class="mb-6">They want a frightened dog to become confident enough to <b class="highlight quiz-target" data-ans="go on an adventure" data-kor="모험을 떠나다">go on an adventure</b> with its new family, explore a park, or simply relax on the sofa without feeling afraid.</p>
+                  <p class="mb-6">I have to <b class="highlight quiz-target" data-ans="hand it to them" data-kor="인정할 수밖에 없다">hand it to them</b>. That's a beautiful goal.</p>
+                  <p class="mb-6">We often admire people who achieve impressive things for themselves.</p>
+                  <p class="mb-6">But I think there's something especially admirable about people who dedicate their lives to helping creatures that can't even say thank you.</p>
+                  <p class="mb-6">So <b class="highlight quiz-target" data-ans="hats off to" data-kor="~에게 경의를 표합니다">hats off to</b> Korea's animal shelter workers.</p>
+                  <p class="mb-6">They deserve far more recognition than they receive.</p>
+              </div>
+              <hr class="border-white/10">
+              <div class="text-slate-400 italic leading-relaxed space-y-6">
+                  <p class="mb-6">한국에서 훨씬 더 많은 인정을 받아야 한다고 생각하는 사람들이 누군지 아세요? 바로 동물보호소에서 일하는 분들이에요.</p>
+                  <p class="mb-6">진심으로 저는 이분들을 정말 존경해요.</p>
+                  <p class="mb-6">우리는 구조된 강아지가 사랑이 넘치는 가족을 만나는 귀여운 영상을 자주 보잖아요. 하지만 그런 행복한 결말을 가능하게 만든 사람들에 대해서는 별로 생각하지 않아요.</p>
+                  <p class="mb-6">한국의 여름철에 동물보호소에서 일한다고 상상해 보세요. 바깥 기온은 <b class="highlight">28도</b>이고 습도는 엄청나게 높은데, 먹이를 주고, 청소하고, 운동시키고, 건강까지 돌봐야 하는 겁먹은 동물들이 수십 마리나 있는 거예요.</p>
+                  <p class="mb-6">게다가 피곤하다고 마음대로 쉴 수도 없어요. 그 동물들이 여러분에게 의지하고 있으니까요.</p>
+                  <p class="mb-6">이거 정말 <b class="highlight">보통 일이 아니잖아요!</b></p>
+                  <p class="mb-6">제가 특히 감탄하는 건 이분들이 방치되거나 학대받은 동물들을 돌보는 방식이에요. 어떤 개들은 사람을 극도로 무서워하고, 또 어떤 개들은 인간을 믿을 수 없다는 걸 배웠기 때문에 공격적으로 행동하기도 해요.</p>
+                  <p class="mb-6">구조된 개 한 마리가 너무 겁에 질려서 우리 밖으로 나오려고 하지 않을 수도 있어요. 하지만 인내심 있는 보호소 직원은 몇 주 동안 곁에 앉아 부드럽게 말을 걸고 조금씩 신뢰를 쌓아 가죠.</p>
+                  <p class="mb-6">그러다가 어느 날, 그 개가 스스로 직원에게 다가오는 거예요.</p>
+                  <p class="mb-6">아주 작은 성과처럼 보일 수도 있지만, 그 순간이 얼마나 뜻깊을지 상상해 보세요.</p>
+                  <p class="mb-6">그리고 어떤 동물들은 마침내 안전하다고 느끼게 되면 잃어버렸던 자신감을 <b class="highlight">순식간에 되찾기도 해</b>요.</p>
+                  <p class="mb-6">저는 그게 정말 놀랍다고 생각해요.</p>
+                  <p class="mb-6">이분들에게는 의사가 <b class="highlight">환자를 대할 때 보여주는 따뜻한 태도</b>와 비슷한 능력도 필요해요. 동물의 두려움을 알아차리고, 침착하게 반응하고, 억지로 다가가지 않으면서 겁먹은 동물이 편안함을 느끼도록 해야 하죠.</p>
+                  <p class="mb-6">그리고 감정적으로 겪는 어려움도 엄청날 거예요.</p>
+                  <p class="mb-6">심한 학대를 당한 개를 구조한다고 상상해 보세요. 일부 사람들이 동물을 대하는 방식에 <b class="highlight">원망</b>과 <b class="highlight">씁쓸함</b>을 느끼는 건 충분히 이해할 만한 일이에요. 무책임한 주인들에 대한 <b class="highlight">분노</b>가 쌓일 수도 있겠죠.</p>
+                  <p class="mb-6">하지만 이분들은 그런 감정 때문에 인간 전체를 <b class="highlight">비뚤어진</b> 시선으로 바라보게 되어서는 안 돼요.</p>
+                  <p class="mb-6">진심으로 동물을 돕고 싶어 하는 훌륭한 사람들도 있다는 사실을 기억해야 하니까요.</p>
+                  <p class="mb-6">때로는 구조된 동물이 완벽한 가족을 만나면 <b class="highlight">모든 조건이 운명처럼 맞아떨어진</b> 것처럼 느껴지기도 해요. 딱 맞는 사람들이 정확히 적절한 순간에 찾아왔고, 모든 일이 잘 풀린 거죠.</p>
+                  <p class="mb-6">하지만 그런 행복한 결말이 단순히 <b class="highlight">순전한</b> 운이 좋아서 생기는 건 아니에요.</p>
+                  <p class="mb-6">엄청난 인내심과 헌신, 그리고 노력의 결과예요.</p>
+                  <p class="mb-6">그리고 제가 특히 존경하는 점이 하나 더 있어요. 이분들은 단순히 동물들을 살아 있게 하는 데만 관심이 있는 게 아니에요. 동물들이 삶을 즐기기를 바라죠.</p>
+                  <p class="mb-6">겁먹었던 강아지가 자신감을 되찾아 새로운 가족과 함께 <b class="highlight">모험을 떠나고</b>, 공원을 탐험하거나, 두려움 없이 소파에서 편안하게 쉴 수 있기를 바라는 거예요.</p>
+                  <p class="mb-6">정말 <b class="highlight">인정할 수밖에 없어요</b>. 너무나 아름다운 목표라고 생각해요.</p>
+                  <p class="mb-6">우리는 스스로 대단한 성취를 이룬 사람들을 존경하곤 하죠.</p>
+                  <p class="mb-6">하지만 저는 고맙다는 말조차 할 수 없는 존재들을 돕는 데 자신의 삶을 바치는 사람들에게는 특별히 존경할 만한 무언가가 있다고 생각해요.</p>
+                  <p class="mb-6">그러니 한국의 모든 동물보호소 직원분들께 <b class="highlight">경의를 표합니다</b>.</p>
+                  <p class="mb-6">이분들은 지금보다 훨씬 더 많은 인정을 받을 자격이 있어요.</p>
+              </div>
+          </section>
+
+      </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "1191020.m4a";
+</script>
+      <script src="wordbank-utils.js"></script>
+  </body>
+  </html>

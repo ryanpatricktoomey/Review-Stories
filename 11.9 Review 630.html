@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+      <title>Review Note | The People Who Protect Our Children Before School Even Starts</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+      <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+      </style>
+</head>
+<body class="p-4 md:p-12">
+      <div class="max-w-4xl mx-auto space-y-8">
+
+          <header class="text-center space-y-4">
+              <div class="flex items-center justify-center gap-4">
+                  <span class="text-5xl">🚸</span>
+                  <h1 class="text-3xl md:text-4xl font-extrabold text-white">The People Who Protect Our Children Before School Even Starts</h1>
+              </div>
+              <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+          </header>
+
+          <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+              <div class="flex items-center justify-between px-2">
+                  <div class="flex items-center gap-3">
+                      <span class="text-xl">🎧</span>
+                      <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                  </div>
+                  <div class="flex gap-2">
+                      <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          <span class="text-lg">↺</span> 5s
+                      </button>
+                      <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                          5s <span class="text-lg">↻</span>
+                      </button>
+                  </div>
+              </div>
+              <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+          </div>
+
+          <div class="flex justify-center">
+              <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+          </div>
+
+          <section class="glass rounded-3xl overflow-hidden shadow-xl">
+              <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                  <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+              </div>
+              <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                  <tr><td class="p-4"><b class="text-white">closed down the school</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">학교를 폐쇄했다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">shut down</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">운영을 중단하다, 문을 닫다</td></tr>
+                  <tr><td class="p-4"><b class="text-white">closed permanently</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">영구적으로 폐쇄된</td></tr>
+                  <tr><td class="p-4"><b class="text-white">Rated R</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">청소년 관람 제한 등급인 (미국 영화 등급)</td></tr>
+                  <tr><td class="p-4"><b class="text-white">restricted</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">제한된, 제한되는</td></tr>
+                  <tr><td class="p-4"><b class="text-white">PG</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">부모의 지도가 권장되는 영화 등급</td></tr>
+                  <tr><td class="p-4"><b class="text-white">parental guidance</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">부모의 지도, 보호자의 지도</td></tr>
+                  <tr><td class="p-4"><b class="text-white">graphic</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">(묘사가) 노골적이고 생생한, 적나라한</td></tr>
+                  <tr><td class="p-4"><b class="text-white">graphic scenes</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">잔인하거나 충격적인 장면들</td></tr>
+                  <tr><td class="p-4"><b class="text-white">good point</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">좋은 지적이에요, 일리 있는 말이에요</td></tr>
+                  <tr><td class="p-4"><b class="text-white">puberty</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">사춘기</td></tr>
+                  <tr><td class="p-4"><b class="text-white">hail</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">우박</td></tr>
+              </tbody></table>
+          </section>
+
+          <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-400">
+                  <h3 class="font-bold text-teal-300 text-lg mb-2">close down / shut down</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">둘 다 운영을 중단한다는 뜻이지만, 반드시 영구 폐쇄를 의미하지는 않아요. Closed permanently라고 하면 완전히 문을 닫았다는 의미가 명확해져요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-400">
+                  <h3 class="font-bold text-teal-300 text-lg mb-2">Rated R / restricted</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">미국 영화 등급에서 R은 Restricted를 의미해요. 17세 미만은 부모나 성인 보호자를 동반해야 관람할 수 있어요. 한국의 청소년 관람불가 등급과는 규정이 달라요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-400">
+                  <h3 class="font-bold text-teal-300 text-lg mb-2">PG / parental guidance</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">PG는 보호자의 지도가 권장된다는 뜻이에요. 반드시 성인과 동반해야 한다는 의미는 아니에요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-400">
+                  <h3 class="font-bold text-teal-300 text-lg mb-2">graphic / graphic scenes</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">Graphic은 단순히 자세하다는 의미를 넘어, 폭력이나 부상 등을 불편할 만큼 적나라하게 보여준다는 뜻으로 자주 쓰여요.</p>
+              </div>
+              <div class="glass p-5 rounded-2xl border-l-4 border-teal-400">
+                  <h3 class="font-bold text-teal-300 text-lg mb-2">good point</h3>
+                  <p class="text-slate-300 text-sm leading-relaxed">상대방의 의견이 타당하다는 것을 인정할 때 쓰는 자연스러운 대화 표현이에요.</p>
+              </div>
+          </section>
+
+          <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+              <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                  <p class="mb-6">Can we talk about the people who help children cross the street outside elementary schools in Korea? Because I genuinely think these people deserve so much more respect than they get.</p>
+                  <p class="mb-6">I'm talking about the <b class="highlight quiz-target" data-ans="crossing guards" data-kor="교통안전 지도원들">crossing guards</b> who stand near busy intersections wearing bright safety vests, holding flags, and watching hundreds of children make their way to school.</p>
+                  <p class="mb-6">Think about what they're actually responsible for. Every morning, they're dealing with impatient drivers, distracted children, delivery motorcycles, and parents trying to drop their kids off as quickly as possible. One child suddenly runs toward the road. A car starts turning without checking the crosswalk. Someone parks where they shouldn't.</p>
+                  <p class="mb-6">And somehow, these workers have to pay attention to everything.</p>
+                  <p class="mb-6">That's <b class="highlight quiz-target" data-ans="no small feat" data-kor="보통 일이 아닌">no small feat</b>!</p>
+                  <p class="mb-6">What really impresses me is their patience. Imagine standing outside in freezing temperatures, heavy rain, or even <b class="highlight quiz-target" data-ans="hail" data-kor="우박">hail</b>, knowing that you can't afford to lose concentration. Most people would be thinking about getting indoors. These people are thinking about whether a seven-year-old can safely cross the street.</p>
+                  <p class="mb-6">I have to <b class="highlight quiz-target" data-ans="hand it to them" data-kor="인정할 수밖에 없다">hand it to them</b>. Their dedication is incredible.</p>
+                  <p class="mb-6">And here's something else we tend to <b class="highlight quiz-target" data-ans="overlook" data-kor="놓치다">overlook</b>. Children don't always understand danger. Younger kids can be impulsive, and even older students sometimes walk around staring at their phones. Crossing guards have to anticipate mistakes before they happen.</p>
+                  <p class="mb-6">Someone might say, "Well, shouldn't parents be responsible for teaching their children road safety?"</p>
+                  <p class="mb-6"><b class="highlight quiz-target" data-ans="Good point" data-kor="좋은 지적이에요">Good point</b>. Of course they should! But teaching children about safety and actually protecting them in unpredictable traffic are two different things.</p>
+                  <p class="mb-6">Schools can establish rules, and cities can introduce <b class="highlight quiz-target" data-ans="restricted" data-kor="제한된">restricted</b> speed limits in school zones. But rules and signs alone cannot replace an attentive human being who notices a child about to step into traffic.</p>
+                  <p class="mb-6">What I respect most about these workers is their sense of responsibility. They do something incredibly important without expecting applause, recognition, or even a thank-you.</p>
+                  <p class="mb-6">And let's be clear: when people talk about protecting the next generation, they usually mention teachers, doctors, or parents. Those people absolutely deserve respect.</p>
+                  <p class="mb-6">But what about the person standing in the cold at 8 a.m., making sure those children arrive at school alive and unharmed?</p>
+                  <p class="mb-6">I think we need to give these workers much more credit.</p>
+                  <p class="mb-6">Their work might look simple from a distance, but their attention, patience, and commitment make a real difference.</p>
+                  <p class="mb-6">So <b class="highlight quiz-target" data-ans="hats off to" data-kor="~에게 경의를 표합니다">hats off to</b> Korea's school crossing guards.</p>
+                  <p class="mb-6">The next time you see one, don't just walk past.</p>
+                  <p class="mb-6">Give them a smile. Say thank you.</p>
+                  <p class="mb-6">They've earned it.</p>
+              </div>
+              <hr class="border-white/10">
+              <div class="text-slate-400 italic leading-relaxed space-y-6">
+                  <p class="mb-6">한국 초등학교 앞에서 아이들이 길을 안전하게 건널 수 있도록 도와주시는 분들에 대해 이야기해 볼까요? 저는 진심으로 이분들이 지금보다 훨씬 더 많은 존경을 받아야 한다고 생각해요.</p>
+                  <p class="mb-6">밝은색 안전 조끼를 입고 깃발을 든 채, 수백 명의 아이들이 등교하는 모습을 지켜보며 바쁜 교차로 근처에 서 계시는 <b class="highlight">교통안전 지도원분들</b> 말이에요.</p>
+                  <p class="mb-6">이분들이 실제로 어떤 일을 책임지고 있는지 생각해 보세요. 매일 아침 성급한 운전자들, 주의가 산만한 아이들, 배달 오토바이, 그리고 최대한 빨리 아이를 내려주려는 학부모들까지 상대해야 해요. 어떤 아이는 갑자기 도로 쪽으로 뛰어나가고, 자동차는 횡단보도를 제대로 확인하지 않은 채 우회전을 시작하고, 누군가는 주차하면 안 되는 곳에 차를 세우죠.</p>
+                  <p class="mb-6">그런데도 이분들은 어떻게든 그 모든 상황을 주의 깊게 살펴야 해요.</p>
+                  <p class="mb-6">이거 정말 <b class="highlight">보통 일이 아니잖아요!</b></p>
+                  <p class="mb-6">제가 특히 감탄하는 건 이분들의 인내심이에요. 영하의 추위나 폭우, 심지어 <b class="highlight">우박</b>이 내리는 날에도 밖에 서 있어야 한다고 상상해 보세요. 한순간도 집중력을 잃어서는 안 되는 상황에서 말이에요. 대부분의 사람이라면 얼른 실내로 들어갈 생각을 하겠죠. 하지만 이분들은 일곱 살짜리 아이가 무사히 길을 건널 수 있을지를 생각하고 있어요.</p>
+                  <p class="mb-6">정말 <b class="highlight">인정할 수밖에 없어요</b>. 이분들의 헌신은 대단합니다.</p>
+                  <p class="mb-6">그리고 우리가 쉽게 <b class="highlight">놓치는</b> 사실이 하나 더 있어요. 아이들은 위험을 항상 제대로 이해하는 게 아니에요. 어린아이들은 충동적으로 행동할 수 있고, 나이가 좀 더 많은 학생들도 휴대전화만 쳐다보며 걸어 다니는 경우가 있어요. 교통안전 지도원들은 실수가 일어나기 전에 미리 예상해야 하죠.</p>
+                  <p class="mb-6">누군가는 이렇게 말할 수도 있어요. "아이들에게 교통안전을 가르치는 건 부모의 책임 아닌가요?"</p>
+                  <p class="mb-6"><b class="highlight">좋은 지적이에요</b>. 물론 부모에게 책임이 있죠! 하지만 아이들에게 안전에 대해 가르치는 것과 예측하기 어려운 교통 상황에서 실제로 아이들을 보호하는 건 완전히 다른 일이에요.</p>
+                  <p class="mb-6">학교는 규칙을 만들 수 있고, 지방자치단체는 어린이보호구역의 차량 속도를 <b class="highlight">제한할</b> 수 있어요. 하지만 규칙과 표지판만으로는 도로에 발을 내딛으려는 아이를 알아차리는 세심한 사람의 역할을 대신할 수 없어요.</p>
+                  <p class="mb-6">제가 이분들을 가장 존경하는 이유는 바로 책임감이에요. 박수나 인정, 심지어 감사 인사조차 기대하지 않으면서 정말 중요한 일을 하고 계시거든요.</p>
+                  <p class="mb-6">그리고 분명히 해 두고 싶은 게 있어요. 사람들은 다음 세대를 보호하는 일을 이야기할 때 보통 교사나 의사, 부모를 떠올려요. 물론 그분들도 존경받을 자격이 충분해요.</p>
+                  <p class="mb-6">하지만 아침 8시, 추운 날씨 속에 서서 아이들이 다치지 않고 무사히 학교에 도착하도록 지켜 주는 사람들은 어떨까요?</p>
+                  <p class="mb-6">저는 우리가 이분들의 공로를 훨씬 더 많이 인정해 줘야 한다고 생각해요.</p>
+                  <p class="mb-6">멀리서 보면 단순한 일처럼 보일 수도 있지만, 이분들의 세심함과 인내심, 헌신은 실제로 큰 차이를 만들어 내요.</p>
+                  <p class="mb-6">그러니 한국의 모든 교통안전 지도원분들께 <b class="highlight">경의를 표합니다</b>.</p>
+                  <p class="mb-6">다음에 이분들을 보게 된다면 그냥 지나치지 마세요.</p>
+                  <p class="mb-6">미소를 지어 주세요. 감사하다고 말해 주세요.</p>
+                  <p class="mb-6">그분들은 충분히 그럴 자격이 있으니까요.</p>
+              </div>
+          </section>
+
+      </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "119630.m4a";
+</script>
+      <script src="wordbank-utils.js"></script>
+  </body>
+  </html>

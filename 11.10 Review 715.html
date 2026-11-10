@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Life I Was Supposed to Have</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+      :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+      body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+      .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+      .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+      input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+      input:focus::placeholder { opacity: 0 !important; }
+      .mystery-cell { transition: color 0.3s; }
+      .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+      .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+      .highlight { color: var(--teal); font-weight: 700; }
+      .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+      audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🪞</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Life I Was Supposed to Have</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">sick with envy</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">질투가 날 정도로 부럽다 / 몹시 부러워하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">green with envy</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">부러워서 배가 아프다 / 질투가 날 정도로 부럽다</td></tr>
+                <tr><td class="p-4"><b class="text-white">relatives</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">친척들</td></tr>
+                <tr><td class="p-4"><b class="text-white">a work in progress</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">아직 발전하거나 개선해 나가는 중인 사람 또는 일</td></tr>
+                <tr><td class="p-4"><b class="text-white">laugh track</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">(시트콤 등의) 녹음된 웃음소리 / 인위적인 웃음 효과</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">sick with envy / green with envy</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">둘 다 남이 가진 것이나 성공을 몹시 부러워한다는 표현이에요. Sick with envy는 질투 때문에 괴로울 정도라는 감정을 강하게 전달하고, green with envy는 조금 더 관용적이고 때로는 장난스럽게 사용하기도 해요. 실제로 아프거나 얼굴이 초록색이 된다는 뜻은 아니에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">a work in progress</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">원래는 아직 완성되지 않은 작업이나 프로젝트를 말해요. 사람에게 사용하면 아직 부족한 점이 있지만 배우고 성장하는 과정에 있다는 뜻이에요. 다만 상황에 따라 스스로의 부족함을 인정하는 표현으로도 들릴 수 있어요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">laugh track</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">시트콤에서 재미있는 장면이 나올 때 들리는 미리 녹음된 관객의 웃음소리예요. 일상에서도 어떤 상황이 너무 뻔하거나 우스워서 마치 시트콤 같다고 느낄 때 비유적으로 사용할 수 있어요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">I turned thirty-six last month, and I'm embarrassed to admit how much I still care about what other people think of me.</p>
+                <p class="mb-6">Tonight, I went to dinner with my <b class="highlight quiz-target" data-ans="relatives" data-kor="친척들">relatives</b> for my cousin's birthday.</p>
+                <p class="mb-6">My cousin is two years younger than me. She just bought a beautiful apartment with her husband, and they're expecting their second child. She also got promoted recently.</p>
+                <p class="mb-6">I love her. I really do.</p>
+                <p class="mb-6">But when she showed us pictures of her apartment, I was practically <b class="highlight quiz-target" data-ans="green with envy" data-kor="부러워서 배가 아프다">green with envy</b>.</p>
+                <p class="mb-6">Everyone kept telling her how proud they were.</p>
+                <p class="mb-6">My aunt turned to me and asked, "So, how's everything going with you?"</p>
+                <p class="mb-6">I said, "Good! Just busy with work."</p>
+                <p class="mb-6">That's what I always say.</p>
+                <p class="mb-6">The truth is, I'm still renting a tiny apartment. I'm single, and my career hasn't gone the way I expected. I have a decent job, but I don't feel particularly successful.</p>
+                <p class="mb-6">Then my uncle asked if I was seeing anyone.</p>
+                <p class="mb-6">I laughed and said, "Not seriously."</p>
+                <p class="mb-6">He smiled. "Well, you're not getting any younger."</p>
+                <p class="mb-6">Everyone laughed.</p>
+                <p class="mb-6">For a second, I wished there were a <b class="highlight quiz-target" data-ans="laugh track" data-kor="웃음 효과음">laugh track</b> playing in the background. At least then I could pretend this was a bad sitcom instead of my actual life.</p>
+                <p class="mb-6">On the way home, I opened Instagram.</p>
+                <p class="mb-6">Big mistake.</p>
+                <p class="mb-6">An old university friend had posted pictures from her vacation in Italy. Another friend had announced that she'd started her own business.</p>
+                <p class="mb-6">I felt <b class="highlight quiz-target" data-ans="sick with envy" data-kor="질투가 날 정도로 부럽다">sick with envy</b>.</p>
+                <p class="mb-6">I know how ugly that sounds.</p>
+                <p class="mb-6">These are people I genuinely like. I should be happy for them. And part of me is.</p>
+                <p class="mb-6">But another part keeps asking, What have I been doing with my life?</p>
+                <p class="mb-6">I keep measuring myself against people who seem to have everything figured out.</p>
+                <p class="mb-6">Sometimes I wonder whether I'm falling short because I haven't worked hard enough or because I'm simply not cut out for the life I imagined.</p>
+                <p class="mb-6">Last week, my therapist told me to stop treating my life like a competition.</p>
+                <p class="mb-6">She said, "You're a <b class="highlight quiz-target" data-ans="work in progress" data-kor="성장하고 있는 과정에 있는">work in progress</b>, just like everyone else."</p>
+                <p class="mb-6">I nodded, but I didn't find it particularly comforting.</p>
+                <p class="mb-6">I'm thirty-six. How long am I supposed to be a work in progress?</p>
+                <p class="mb-6">The worst part is that I don't even know whether I actually want marriage, children, or a bigger apartment.</p>
+                <p class="mb-6">I just know that everyone seems to expect those things from me.</p>
+                <p class="mb-6">And somewhere along the way, I started expecting them from myself.</p>
+                <p class="mb-6">My cousin sent me a message a few minutes ago.</p>
+                <p class="mb-6">"I'm so glad you came tonight. Love you!"</p>
+                <p class="mb-6">I typed, "Love you too!"</p>
+                <p class="mb-6">Then I deleted it.</p>
+                <p class="mb-6">I don't know why.</p>
+                <p class="mb-6">I'll answer her tomorrow.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">내가 살고 있어야 했던 인생<br>11월 10일 — 밤 11시 26분</p>
+                <p class="mb-6">지난달에 서른여섯 살이 됐다. 그런데 아직도 남들이 나를 어떻게 생각하는지 이렇게까지 신경 쓴다는 사실이 부끄럽다.</p>
+                <p class="mb-6">오늘 밤 사촌의 생일을 축하하러 <b class="highlight">친척들과</b> 저녁을 먹었다.</p>
+                <p class="mb-6">사촌은 나보다 두 살 어리다. 얼마 전 남편과 함께 멋진 아파트를 샀고, 둘째 아이도 임신 중이다. 최근에는 승진까지 했다.</p>
+                <p class="mb-6">나는 그 애를 사랑한다. 정말이다.</p>
+                <p class="mb-6">하지만 사촌이 아파트 사진을 보여 줬을 때, 솔직히 <b class="highlight">배가 아플 정도로 부러웠다</b>.</p>
+                <p class="mb-6">모두가 얼마나 자랑스러운지 모른다며 칭찬했다.</p>
+                <p class="mb-6">그러다 이모가 나를 돌아보며 물었다.</p>
+                <p class="mb-6">"그래서 넌 요즘 어떻게 지내?"</p>
+                <p class="mb-6">나는 말했다.</p>
+                <p class="mb-6">"잘 지내요! 그냥 회사 일이 좀 바빠요."</p>
+                <p class="mb-6">내가 항상 하는 말이다.</p>
+                <p class="mb-6">사실 나는 아직도 작은 아파트에 월세로 살고 있다. 미혼이고, 직장 생활도 내가 기대했던 방향으로 흘러가지 않았다. 직장은 나쁘지 않지만, 딱히 성공했다는 느낌도 들지 않는다.</p>
+                <p class="mb-6">그러자 삼촌이 만나는 사람은 있냐고 물었다.</p>
+                <p class="mb-6">나는 웃으며 대답했다.</p>
+                <p class="mb-6">"진지하게 만나는 사람은 없어요."</p>
+                <p class="mb-6">삼촌은 미소를 지었다.</p>
+                <p class="mb-6">"너도 이제 나이가 적지 않잖아."</p>
+                <p class="mb-6">모두가 웃었다.</p>
+                <p class="mb-6">순간 배경에서 시트콤의 <b class="highlight">웃음 효과음이라도</b> 흘러나왔으면 좋겠다고 생각했다. 적어도 그러면 이게 내 실제 인생이 아니라 형편없는 시트콤이라고 생각할 수 있을 테니까.</p>
+                <p class="mb-6">집에 오는 길에 인스타그램을 열었다.</p>
+                <p class="mb-6">큰 실수였다.</p>
+                <p class="mb-6">대학교 친구가 이탈리아 여행 사진을 올려놓았다. 다른 친구는 자기 사업을 시작했다는 소식을 전했다.</p>
+                <p class="mb-6"><b class="highlight">질투가 날 정도로 부러웠다</b>.</p>
+                <p class="mb-6">이런 말이 얼마나 못나게 들리는지 나도 안다.</p>
+                <p class="mb-6">나는 그 사람들을 진심으로 좋아한다. 당연히 그들의 행복을 기뻐해야 한다. 실제로 내 마음 한편에서는 기쁘기도 하다.</p>
+                <p class="mb-6">하지만 또 다른 한편에서는 계속 이런 질문이 떠오른다.</p>
+                <p class="mb-6">나는 지금까지 내 인생에서 대체 뭘 한 걸까?</p>
+                <p class="mb-6">나는 모든 걸 다 이룬 것처럼 보이는 사람들과 끊임없이 나 자신을 비교한다.</p>
+                <p class="mb-6">가끔은 내가 충분히 노력하지 않아서 기대에 못 미치는 건지, 아니면 애초에 내가 꿈꿨던 삶을 살아갈 능력이 없는 사람인지 궁금해진다.</p>
+                <p class="mb-6">지난주 상담 선생님은 내 인생을 경쟁처럼 생각하지 말라고 했다.</p>
+                <p class="mb-6">"누구나 아직 <b class="highlight">성장하고 있는 과정에 있어요</b>. 당신도 마찬가지예요."</p>
+                <p class="mb-6">나는 고개를 끄덕였지만, 그 말이 특별히 위로가 되지는 않았다.</p>
+                <p class="mb-6">나는 서른여섯 살이다. 도대체 언제까지 성장하는 과정에 있어야 하는 걸까?</p>
+                <p class="mb-6">가장 괴로운 건 내가 정말로 결혼이나 아이, 더 큰 아파트를 원하는지조차 모르겠다는 것이다.</p>
+                <p class="mb-6">그저 주변 사람들이 모두 나에게 그런 것들을 기대하는 것처럼 느껴질 뿐이다.</p>
+                <p class="mb-6">그리고 언제부터인가 나 자신도 그런 것들을 당연히 기대하기 시작했다.</p>
+                <p class="mb-6">몇 분 전에 사촌에게 메시지가 왔다.</p>
+                <p class="mb-6">"오늘 와 줘서 너무 좋았어. 사랑해!"</p>
+                <p class="mb-6">나는 답장을 썼다.</p>
+                <p class="mb-6">"나도 사랑해!"</p>
+                <p class="mb-6">그러고는 지웠다.</p>
+                <p class="mb-6">왜 그랬는지 모르겠다.</p>
+                <p class="mb-6">내일 답장해야겠다.</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "1110715.m4a";
+</script>
+      <script src="wordbank-utils.js"></script>
+  </body>
+  </html>

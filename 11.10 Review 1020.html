@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Business I Was Supposed to Be Good At</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+      :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+      body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+      .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+      .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+      input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+      input:focus::placeholder { opacity: 0 !important; }
+      .mystery-cell { transition: color 0.3s; }
+      .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+      .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+      .highlight { color: var(--teal); font-weight: 700; }
+      .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+      audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🍺</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Business I Was Supposed to Be Good At</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">got snowed on</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">눈을 맞았다 / 밖에 있다가 눈이 내렸다</td></tr>
+                <tr><td class="p-4"><b class="text-white">as time went by</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">시간이 지나면서</td></tr>
+                <tr><td class="p-4"><b class="text-white">doing my role</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">내 역할을 수행하는 것 / 내 역할을 하는 것</td></tr>
+                <tr><td class="p-4"><b class="text-white">manual labor</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">육체노동 / 몸을 쓰는 일</td></tr>
+                <tr><td class="p-4"><b class="text-white">on my own</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">혼자 힘으로 / 다른 사람의 도움 없이</td></tr>
+                <tr><td class="p-4"><b class="text-white">went there looking like this</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">이런 모습으로 거기에 갔다</td></tr>
+                <tr><td class="p-4"><b class="text-white">bland</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">싱거운 / 맛이 밋밋한</td></tr>
+                <tr><td class="p-4"><b class="text-white">less salty</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">덜 짠</td></tr>
+                <tr><td class="p-4"><b class="text-white">spent grains</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">(맥주 양조 후 남은) 맥아 찌꺼기</td></tr>
+                <tr><td class="p-4"><b class="text-white">lees</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">(와인이나 맥주 등의) 발효 후 바닥에 가라앉은 침전물</td></tr>
+                <tr><td class="p-4"><b class="text-white">make yourself sick</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">스스로 몸을 상하게 하다 / 무리해서 아프게 되다</td></tr>
+                <tr><td class="p-4"><b class="text-white">work yourself to death</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">몸이 망가질 정도로 일하다 / 죽도록 일하다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">got snowed on</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">눈이 내리는 동안 밖에 있어서 눈을 맞았다는 뜻이에요. It snowed는 단순히 눈이 왔다는 사실을 말하지만, I got snowed on은 내가 직접 눈을 맞았다는 경험을 강조해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">doing my role</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">뜻은 통하지만, 실제 대화에서는 doing my job, fulfilling my responsibilities, playing my part가 더 자연스러운 경우가 많아요. 특히 자신이 맡은 책임을 다한다는 의미라면 doing my part도 좋아요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">on my own</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">문맥에 따라 '혼자서' 또는 '누구의 도움도 받지 않고'라는 뜻이에요. I live on my own은 혼자 산다는 뜻이고, I built it on my own은 혼자 힘으로 만들었다는 뜻이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">spent grains / lees</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">둘 다 양조 과정에서 남는 부산물이지만 서로 달라요. Spent grains는 맥주를 만들 때 곡물에서 당분을 추출하고 남은 찌꺼기이고, lees는 발효나 숙성 과정에서 바닥에 가라앉는 효모 등의 침전물이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">make yourself sick / work yourself to death</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">두 표현 모두 지나친 행동이 건강을 해칠 수 있다는 의미로 사용해요. 특히 work yourself to death는 실제로 죽는다는 뜻이 아니라, 쉬지 않고 지나치게 열심히 일한다는 과장된 관용 표현이에요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">I used to think that owning a brewery would make me feel successful.</p>
+                <p class="mb-6">I was wrong.</p>
+                <p class="mb-6">Three years ago, I quit my office job and opened a small craft brewery. I had spent years making beer at home, and my friends kept telling me I should turn my hobby into a business.</p>
+                <p class="mb-6">I thought I had what it took.</p>
+                <p class="mb-6">Now I'm not so sure.</p>
+                <p class="mb-6">This morning, I arrived at the brewery before seven. It had started snowing, and I <b class="highlight quiz-target" data-ans="got snowed on" data-kor="눈을 맞았다">got snowed on</b> while carrying supplies from my car.</p>
+                <p class="mb-6">My hands were freezing, my back hurt, and I still had twelve hours of work ahead of me.</p>
+                <p class="mb-6">People imagine that owning a brewery means tasting beer and talking to customers.</p>
+                <p class="mb-6">They don't see the <b class="highlight quiz-target" data-ans="manual labor" data-kor="육체노동">manual labor</b>.</p>
+                <p class="mb-6">Cleaning tanks, moving heavy bags of grain, dealing with <b class="highlight quiz-target" data-ans="spent grains" data-kor="맥아 찌꺼기">spent grains</b> and <b class="highlight quiz-target" data-ans="lees" data-kor="발효 침전물">lees</b>, fixing equipment that breaks at the worst possible moment.</p>
+                <p class="mb-6">I do most of it <b class="highlight quiz-target" data-ans="on my own" data-kor="혼자 힘으로">on my own</b> because I can't afford more employees.</p>
+                <p class="mb-6">At first, I loved the challenge. But <b class="highlight quiz-target" data-ans="as time went by" data-kor="시간이 지나면서">as time went by</b>, I started wondering whether I was actually cut out for running a business.</p>
+                <p class="mb-6">Today, a customer complained that our newest beer tasted <b class="highlight quiz-target" data-ans="bland" data-kor="맛이 밋밋한">bland</b>.</p>
+                <p class="mb-6">Another said it should be <b class="highlight quiz-target" data-ans="less salty" data-kor="덜 짠">less salty</b>.</p>
+                <p class="mb-6">I thanked them both and promised to look into it.</p>
+                <p class="mb-6">Then I went into the storage room and stood there for five minutes, staring at the shelves.</p>
+                <p class="mb-6">I couldn't stop thinking about how much money I'd spent developing that recipe.</p>
+                <p class="mb-6">At lunchtime, a restaurant owner came to discuss stocking our beer. I had flour on my jacket from carrying grain bags and a stain on my trousers.</p>
+                <p class="mb-6">I actually <b class="highlight quiz-target" data-ans="went there looking like this" data-kor="이런 모습으로 거기에 갔다">went there looking like this</b>.</p>
+                <p class="mb-6">Halfway through our conversation, he asked how many barrels we could produce each month.</p>
+                <p class="mb-6">I gave him a number.</p>
+                <p class="mb-6">Then I immediately wondered if I'd promised too much.</p>
+                <p class="mb-6">I keep second-guessing myself, even when I'm just <b class="highlight quiz-target" data-ans="doing my role" data-kor="내 역할을 수행하는 것">doing my role</b> as the owner.</p>
+                <p class="mb-6">My wife called around six and asked whether I'd eaten.</p>
+                <p class="mb-6">I hadn't.</p>
+                <p class="mb-6">She told me I was going to <b class="highlight quiz-target" data-ans="make myself sick" data-kor="스스로 몸을 상하게 하다">make myself sick</b>.</p>
+                <p class="mb-6">"You're going to <b class="highlight quiz-target" data-ans="work yourself to death" data-kor="몸이 망가질 정도로 일하다">work yourself to death</b> if you keep this up," she said.</p>
+                <p class="mb-6">I told her things would get easier once business improved.</p>
+                <p class="mb-6">I've been saying that for three years.</p>
+                <p class="mb-6">Tonight, I checked our bank account.</p>
+                <p class="mb-6">We have enough money to pay the employees this month, but I'm not sure about next month.</p>
+                <p class="mb-6">Tomorrow, I have a meeting with the bank.</p>
+                <p class="mb-6">I haven't told my wife.</p>
+                <p class="mb-6">She thinks we're finally doing better.</p>
+                <p class="mb-6">I don't know how to tell her that I might have built a business I don't know how to run.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">내가 잘할 줄 알았던 사업<br>11월 10일 — 밤 11시 17분</p>
+                <p class="mb-6">예전에는 양조장을 운영하면 성공한 사람이라는 기분이 들 줄 알았다.</p>
+                <p class="mb-6">내 생각은 틀렸다.</p>
+                <p class="mb-6">3년 전, 나는 회사를 그만두고 작은 수제 맥주 양조장을 열었다. 오랫동안 집에서 맥주를 만들어 왔고, 친구들은 내 취미를 사업으로 발전시켜 보라고 계속 권했다.</p>
+                <p class="mb-6">나는 나에게 그럴 능력이 있다고 생각했다.</p>
+                <p class="mb-6">지금은 잘 모르겠다.</p>
+                <p class="mb-6">오늘 아침에는 일곱 시도 되기 전에 양조장에 도착했다. 눈이 내리기 시작했고, 차에서 물품을 옮기는 동안 <b class="highlight">눈을 맞았다</b>.</p>
+                <p class="mb-6">손은 얼어붙을 것 같았고, 허리는 아팠다. 그런데도 앞으로 열두 시간이나 더 일해야 했다.</p>
+                <p class="mb-6">사람들은 양조장을 운영한다는 것이 맥주를 맛보고 손님들과 이야기하는 일이라고 생각한다.</p>
+                <p class="mb-6">그 뒤에 숨겨진 <b class="highlight">육체노동은</b> 보지 못한다.</p>
+                <p class="mb-6">탱크를 청소하고, 무거운 곡물 포대를 옮기고, 맥주를 만들고 남은 곡물 <b class="highlight">찌꺼기와</b> 발효 <b class="highlight">침전물을</b> 처리하고, 꼭 최악의 순간에 고장 나는 장비를 수리하는 일 말이다.</p>
+                <p class="mb-6">직원을 더 고용할 여유가 없어서 이런 일 대부분을 <b class="highlight">혼자 한다</b>.</p>
+                <p class="mb-6">처음에는 그런 도전이 좋았다. 하지만 <b class="highlight">시간이 지나면서</b> 내가 정말 사업을 운영할 만한 사람인지 의심하기 시작했다.</p>
+                <p class="mb-6">오늘 한 손님은 새로 출시한 맥주가 <b class="highlight">맛이 밋밋하다고</b> 불평했다.</p>
+                <p class="mb-6">다른 손님은 좀 <b class="highlight">덜 짰으면</b> 좋겠다고 했다.</p>
+                <p class="mb-6">나는 두 사람 모두에게 감사하다고 말하고 확인해 보겠다고 약속했다.</p>
+                <p class="mb-6">그러고는 창고로 들어가 5분 동안 선반만 바라보며 서 있었다.</p>
+                <p class="mb-6">그 맥주 제조법을 개발하는 데 얼마나 많은 돈을 썼는지 머릿속에서 떠나지 않았다.</p>
+                <p class="mb-6">점심때는 우리 맥주를 납품받는 문제를 논의하려고 식당 주인이 찾아왔다. 나는 곡물 포대를 나르느라 재킷에 밀가루 같은 가루가 묻어 있었고 바지에도 얼룩이 있었다.</p>
+                <p class="mb-6">정말 <b class="highlight">그 꼴로</b> 미팅에 들어갔다.</p>
+                <p class="mb-6">대화 도중 그가 한 달에 맥주를 몇 배럴이나 생산할 수 있냐고 물었다.</p>
+                <p class="mb-6">나는 숫자를 말해 주었다.</p>
+                <p class="mb-6">그러고는 곧바로 내가 감당할 수 없는 약속을 한 건 아닌지 걱정하기 시작했다.</p>
+                <p class="mb-6">나는 사장으로서 <b class="highlight">내 역할을 수행할</b> 때조차 끊임없이 내 판단을 의심한다.</p>
+                <p class="mb-6">저녁 여섯 시쯤 아내에게 전화가 왔다. 밥은 먹었냐고 물었다.</p>
+                <p class="mb-6">아직 먹지 못했다.</p>
+                <p class="mb-6">아내는 그러다 <b class="highlight">몸이 상하겠다고</b> 했다.</p>
+                <p class="mb-6">"계속 그렇게 일하다가는 <b class="highlight">몸 망가져</b>."</p>
+                <p class="mb-6">나는 사업이 나아지면 좀 편해질 거라고 말했다.</p>
+                <p class="mb-6">3년째 같은 말을 하고 있다.</p>
+                <p class="mb-6">오늘 밤 은행 계좌를 확인했다.</p>
+                <p class="mb-6">이번 달 직원들 월급을 줄 돈은 충분하다. 하지만 다음 달은 잘 모르겠다.</p>
+                <p class="mb-6">내일 은행과 미팅이 있다.</p>
+                <p class="mb-6">아내에게는 아직 말하지 않았다.</p>
+                <p class="mb-6">아내는 이제야 사업이 좀 나아지고 있다고 생각한다.</p>
+                <p class="mb-6">내가 운영할 능력도 없는 사업을 벌여 놓은 것 같다는 말을 아내에게 어떻게 해야 할지 모르겠다.</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "11101020.m4a";
+</script>
+      <script src="wordbank-utils.js"></script>
+  </body>
+  </html>

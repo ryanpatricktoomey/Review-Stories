@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Mother Everyone Comes to for Advice</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+      :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+      body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+      .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+      .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+      input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+      input:focus::placeholder { opacity: 0 !important; }
+      .mystery-cell { transition: color 0.3s; }
+      .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+      .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+      .highlight { color: var(--teal); font-weight: 700; }
+      .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+      audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">📓</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Mother Everyone Comes to for Advice</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">below zero</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">영하의 / 0도 아래로</td></tr>
+                <tr><td class="p-4"><b class="text-white">brainwash</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">세뇌하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">gets on my nerves</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">신경을 거슬리게 하다 / 짜증 나게 하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">rubs me the wrong way</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">왠지 불편하게 느껴지다 / 거슬리다</td></tr>
+                <tr><td class="p-4"><b class="text-white">acquaintances</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">지인들 / 얼굴만 아는 사이</td></tr>
+                <tr><td class="p-4"><b class="text-white">feel a wall between us</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">우리 사이에 벽이 느껴지다 / 거리감이 느껴지다</td></tr>
+                <tr><td class="p-4"><b class="text-white">a lot of pressure</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">큰 압박감 / 많은 부담</td></tr>
+                <tr><td class="p-4"><b class="text-white">overwhelming</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">감당하기 벅찬 / 압도적인</td></tr>
+                <tr><td class="p-4"><b class="text-white">wear many hats</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">여러 역할을 동시에 맡다 / 다양한 일을 해내다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">gets on my nerves / rubs me the wrong way</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">둘 다 상대방 때문에 불편함을 느끼는 표현이지만 차이가 있어요. Gets on my nerves는 반복되는 행동 때문에 짜증이 나는 것이고, rubs me the wrong way는 특별한 이유를 설명하기 어려워도 상대의 말이나 태도가 왠지 거슬리는 느낌이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">brainwash</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">단순히 설득한다는 뜻보다 강해요. 특정 생각을 반복적으로 주입해 다른 방식으로 생각하기 어렵게 만든다는 뜻이에요. 일상에서는 농담이나 과장으로도 사용해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">feel a wall between us</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">실제 벽이 아니라 심리적인 거리감을 말해요. 친하게 지내고 싶지만 서로 마음을 열지 못하거나 편하게 대화하지 못할 때 사용할 수 있어요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">wear many hats</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">한 사람이 여러 역할이나 책임을 동시에 맡는다는 관용 표현이에요. 직장뿐 아니라 가정생활에서도 자연스럽게 사용할 수 있어요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">below zero</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">실제 기온을 표현할 때 쓰지만, My confidence was below zero처럼 자신감이 거의 없다는 뜻으로 과장해서 표현할 수도 있어요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">I spent twenty minutes crying in the bathroom tonight. My husband thinks I was taking a shower.</p>
+                <p class="mb-6">It started at the school parents' meeting this morning. Outside, the temperature was <b class="highlight quiz-target" data-ans="below zero" data-kor="영하의">below zero</b>, and I was already exhausted before I even arrived.</p>
+                <p class="mb-6">I've somehow become the mother everyone asks for advice. I organize school events, remember everyone's birthdays, and always know which teacher to contact. People tell me I'm amazing because I can <b class="highlight quiz-target" data-ans="wear so many hats" data-kor="여러 역할을 동시에 맡다">wear so many hats</b>.</p>
+                <p class="mb-6">The truth is, I have no idea how I ended up being this person.</p>
+                <p class="mb-6">Today, one mother said, "You always seem so organized. How do you do it?"</p>
+                <p class="mb-6">I smiled and told her I just plan ahead.</p>
+                <p class="mb-6">What I didn't tell her was that I'd forgotten to prepare my daughter's lunch that morning. She had to buy something at the school store because of me.</p>
+                <p class="mb-6">Then another mother started complaining about parents who don't make enough effort.</p>
+                <p class="mb-6">"Some people just aren't serious about their children's education," she said.</p>
+                <p class="mb-6">Something about her attitude <b class="highlight quiz-target" data-ans="rubbed me the wrong way" data-kor="왠지 불편하게 느껴지다">rubbed me the wrong way</b>. But what really <b class="highlight quiz-target" data-ans="got on my nerves" data-kor="신경을 거슬리게 하다">got on my nerves</b> was that everyone nodded in agreement.</p>
+                <p class="mb-6">I nodded too.</p>
+                <p class="mb-6">That's the part I hate most.</p>
+                <p class="mb-6">Sometimes I feel like I've been <b class="highlight quiz-target" data-ans="brainwashed" data-kor="세뇌당한">brainwashed</b> into believing that being a good mother means never making mistakes.</p>
+                <p class="mb-6">After the meeting, a few mothers invited me for coffee. We're friendly, but we're really just <b class="highlight quiz-target" data-ans="acquaintances" data-kor="지인들">acquaintances</b>. They talk about their children's achievements, their husbands' promotions, and their family vacations.</p>
+                <p class="mb-6">I sit there wondering whether I'm the only one who feels completely out of my depth.</p>
+                <p class="mb-6">There's <b class="highlight quiz-target" data-ans="a lot of pressure" data-kor="큰 압박감">a lot of pressure</b> to seem like I have everything under control. Some days, it's <b class="highlight quiz-target" data-ans="overwhelming" data-kor="감당하기 벅찬">overwhelming</b>.</p>
+                <p class="mb-6">I even <b class="highlight quiz-target" data-ans="feel a wall between us" data-kor="우리 사이에 벽이 느껴지다">feel a wall between us</b>, although I'm probably the one building it.</p>
+                <p class="mb-6">Tonight, my daughter asked why I always seem angry lately.</p>
+                <p class="mb-6">I told her I was just tired.</p>
+                <p class="mb-6">She said, "You don't have to do everything, Mom."</p>
+                <p class="mb-6">I wanted to tell her that I know.</p>
+                <p class="mb-6">Instead, I reminded her to finish her homework.</p>
+                <p class="mb-6">Now she's asleep, and I'm sitting here wondering if I'm even cut out to be the kind of mother she needs.</p>
+                <p class="mb-6">Tomorrow, I have to bring snacks for twenty-four children.</p>
+                <p class="mb-6">I haven't bought them yet.</p>
+                <p class="mb-6">And for some reason, that's the thing I'm most worried about right now.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">모두가 조언을 구하는 엄마<br>11월 10일 — 밤 11시 48분</p>
+                <p class="mb-6">오늘 밤 화장실에서 20분 동안 울었다. 남편은 내가 샤워하는 줄 안다.</p>
+                <p class="mb-6">모든 일은 오늘 아침 학교 학부모 모임에서 시작됐다. 밖은 <b class="highlight">영하의</b> 날씨였고, 나는 모임 장소에 도착하기도 전에 이미 지쳐 있었다.</p>
+                <p class="mb-6">어쩌다 보니 나는 다른 엄마들이 모두 조언을 구하는 사람이 되어 버렸다. 학교 행사를 준비하고, 사람들의 생일을 기억하고, 어떤 일이 있을 때 어느 선생님께 연락해야 하는지도 늘 알고 있다. 사람들은 내가 <b class="highlight">여러 역할을 척척 해낸다며</b> 대단하다고 말한다.</p>
+                <p class="mb-6">사실 나는 내가 어떻게 이런 사람이 되었는지도 모르겠다.</p>
+                <p class="mb-6">오늘 한 엄마가 말했다.</p>
+                <p class="mb-6">"항상 정말 체계적으로 하시는 것 같아요. 어떻게 그렇게 하세요?"</p>
+                <p class="mb-6">나는 웃으면서 미리 계획을 세우는 것뿐이라고 대답했다.</p>
+                <p class="mb-6">하지만 오늘 아침 딸아이의 점심을 준비하는 걸 깜빡했다는 말은 하지 않았다. 나 때문에 아이는 학교 매점에서 뭔가를 사 먹어야 했다.</p>
+                <p class="mb-6">그러자 다른 엄마가 자녀 교육에 충분히 신경 쓰지 않는 부모들에 대해 불평하기 시작했다.</p>
+                <p class="mb-6">"어떤 부모들은 자녀 교육을 진지하게 생각하지 않는 것 같아요."</p>
+                <p class="mb-6">그 엄마의 태도가 <b class="highlight">왠지 거슬렸다</b>. 하지만 정말 <b class="highlight">짜증이 났던 건</b> 다른 엄마들이 모두 그 말에 동의하며 고개를 끄덕였다는 사실이었다.</p>
+                <p class="mb-6">나도 고개를 끄덕였다.</p>
+                <p class="mb-6">내가 가장 싫은 건 바로 그런 내 모습이다.</p>
+                <p class="mb-6">가끔은 좋은 엄마가 되려면 절대 실수해서는 안 된다는 생각을 누군가에게 <b class="highlight">세뇌당한</b> 것 같다.</p>
+                <p class="mb-6">모임이 끝나고 몇몇 엄마들이 커피를 마시러 가자고 했다. 서로 친절하게 대하지만, 사실 우리는 그냥 <b class="highlight">아는 사이일</b> 뿐이다. 그들은 자녀들의 성취, 남편의 승진, 가족 여행에 관해 이야기한다.</p>
+                <p class="mb-6">나는 그 자리에 앉아서 모든 일이 감당하기 벅차다고 느끼는 사람이 나뿐인지 생각한다.</p>
+                <p class="mb-6">모든 일을 완벽하게 해내고 있는 것처럼 보여야 한다는 <b class="highlight">부담감이</b> 크다. 어떤 날은 그 압박감이 정말 <b class="highlight">감당하기 어렵다</b>.</p>
+                <p class="mb-6">심지어 그 엄마들과 나 사이에 <b class="highlight">벽이 느껴진다</b>. 사실 그 벽을 쌓고 있는 사람은 나일지도 모른다.</p>
+                <p class="mb-6">오늘 밤 딸아이가 요즘 왜 그렇게 화가 나 있는 것처럼 보이냐고 물었다.</p>
+                <p class="mb-6">나는 그냥 피곤해서 그렇다고 대답했다.</p>
+                <p class="mb-6">그러자 아이가 말했다.</p>
+                <p class="mb-6">"엄마, 모든 걸 다 할 필요는 없잖아."</p>
+                <p class="mb-6">나도 알고 있다고 말해 주고 싶었다.</p>
+                <p class="mb-6">하지만 대신 숙제나 마저 하라고 했다.</p>
+                <p class="mb-6">이제 딸아이는 잠들었고, 나는 여기 앉아서 과연 내가 아이에게 필요한 엄마가 될 자질이 있는 사람인지 생각하고 있다.</p>
+                <p class="mb-6">내일은 아이 스물네 명이 먹을 간식을 가져가야 한다.</p>
+                <p class="mb-6">아직 사지도 못했다.</p>
+                <p class="mb-6">그런데 이상하게도 지금 내가 가장 걱정하는 건 바로 그 일이다.</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "1110630.m4a";
+</script>
+      <script src="wordbank-utils.js"></script>
+  </body>
+  </html>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | A Perfectly Reasonable Explanation for Leaving You at the Airport</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+      :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+      body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+      .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+      .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+      input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+      input:focus::placeholder { opacity: 0 !important; }
+      .mystery-cell { transition: color 0.3s; }
+      .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+      .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+      .highlight { color: var(--teal); font-weight: 700; }
+      .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+      audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🍁</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">A Perfectly Reasonable Explanation for Leaving You at the Airport</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">20,000 steps</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">2만 보</td></tr>
+                <tr><td class="p-4"><b class="text-white">leaf peeping</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">단풍 구경</td></tr>
+                <tr><td class="p-4"><b class="text-white">20 minutes have past</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">20분이 지났다 (올바른 표현: 20 minutes have passed)</td></tr>
+                <tr><td class="p-4"><b class="text-white">leave someone on read</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">메시지를 읽고도 답장하지 않다</td></tr>
+                <tr><td class="p-4"><b class="text-white">leave someone on unread</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">메시지를 읽지 않은 채 두다</td></tr>
+                <tr><td class="p-4"><b class="text-white">shameless</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">뻔뻔한, 부끄러운 줄 모르는</td></tr>
+                <tr><td class="p-4"><b class="text-white">bold</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">대담한, 배짱 있는</td></tr>
+                <tr><td class="p-4"><b class="text-white">bold-faced lie</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">뻔뻔한 거짓말, 새빨간 거짓말</td></tr>
+                <tr><td class="p-4"><b class="text-white">witty</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">재치 있는, 말솜씨가 좋은</td></tr>
+                <tr><td class="p-4"><b class="text-white">sharp</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">눈치가 빠른, 예리한</td></tr>
+                <tr><td class="p-4"><b class="text-white">clever</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">영리한, 기발한</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-400">
+                <h3 class="text-teal-400 font-bold mb-1">leaf peeping</h3>
+                <p class="text-slate-300 text-sm">특히 미국에서 가을 단풍을 감상하러 다니는 활동을 뜻하는 재미있는 표현이에요. 단풍 구경을 하는 사람은 leaf peeper라고도 해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-400">
+                <h3 class="text-teal-400 font-bold mb-1">leave someone on read / unread</h3>
+                <p class="text-slate-300 text-sm">On read는 메시지를 읽었지만 답하지 않은 상태, unread는 아예 읽지 않은 상태예요. 일상적으로는 leave someone's message unread도 자연스러워요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-400">
+                <h3 class="text-teal-400 font-bold mb-1">bold / shameless</h3>
+                <p class="text-slate-300 text-sm">Bold는 상황에 따라 '용감한'이라는 칭찬이 되기도 하고 '뻔뻔할 정도로 대담한'이라는 비판이 되기도 해요. Shameless는 부끄러워해야 할 상황에서도 전혀 부끄러워하지 않는다는 뜻이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-400">
+                <h3 class="text-teal-400 font-bold mb-1">bold-faced lie</h3>
+                <p class="text-slate-300 text-sm">사실이 아닌 걸 알면서도 당당하게 하는 뻔뻔한 거짓말이에요. Bald-faced lie라고도 해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-400">
+                <h3 class="text-teal-400 font-bold mb-1">witty / sharp / clever</h3>
+                <p class="text-slate-300 text-sm">Witty는 말이나 유머에 재치가 있는 것, sharp는 상황을 빠르게 파악하는 것, clever는 머리를 잘 써서 영리하게 행동하는 것을 강조해요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Dear Jennifer,</p>
+                <p class="mb-6">Before you accuse me of abandoning you at the airport for six hours, I would appreciate it if you considered the full circumstances.</p>
+                <p class="mb-6">In my defense, I left home at 9 a.m. with every intention of picking you up. Unfortunately, several unexpected events occurred, none of which were entirely under my control.</p>
+                <p class="mb-6">First, I stopped at a park for some <b class="highlight quiz-target" data-ans="leaf peeping" data-kor="단풍 구경">leaf peeping</b>. This was not a selfish decision. As you know, autumn lasts only a few weeks, and I believe we all have a responsibility to appreciate nature while we can.</p>
+                <p class="mb-6">The thing is, the trees were particularly beautiful that morning. I intended to spend five minutes taking photographs. However, after <b class="highlight quiz-target" data-ans="20 minutes had passed" data-kor="20분이 지나고 나서야">20 minutes had passed</b>, I realized that the best trees were farther down the path.</p>
+                <p class="mb-6">Naturally, I continued walking.</p>
+                <p class="mb-6">By noon, I had taken <b class="highlight quiz-target" data-ans="20,000 steps" data-kor="2만 보">20,000 steps</b>. Turning back at that point would have meant wasting a perfectly good personal fitness achievement.</p>
+                <p class="mb-6">Now, regarding your 47 messages.</p>
+                <p class="mb-6">You claim that I deliberately <b class="highlight quiz-target" data-ans="left you on read" data-kor="읽고 답장하지 않았다">left you on read</b>. This is only partly accurate. I read your first message, but I <b class="highlight quiz-target" data-ans="left the remaining messages unread" data-kor="읽지 않은 상태로 두었다">left the remaining messages unread</b> because I was concerned that checking my phone too often might distract me from my surroundings.</p>
+                <p class="mb-6">You may consider this irresponsible. I consider it a commitment to personal safety.</p>
+                <p class="mb-6">At 2 p.m., I finally reached my car, only to discover that it had been towed away.</p>
+                <p class="mb-6">To be fair, the parking sign said "TWO-HOUR PARKING," but it never explained what would happen if someone experienced an unusually meaningful connection with nature.</p>
+                <p class="mb-6">I called the towing company. The employee was neither <b class="highlight quiz-target" data-ans="witty" data-kor="재치도 없었고">witty</b> nor particularly <b class="highlight quiz-target" data-ans="sharp" data-kor="눈치가 빠른">sharp</b>, and she failed to appreciate my <b class="highlight quiz-target" data-ans="clever" data-kor="기발한">clever</b> argument that time limits should make exceptions for seasonal beauty.</p>
+                <p class="mb-6">She called my explanation a <b class="highlight quiz-target" data-ans="bold-faced lie" data-kor="뻔뻔한 거짓말">bold-faced lie</b>.</p>
+                <p class="mb-6">That was unfair. A lie requires an intention to deceive. I genuinely believed the park would be less interesting.</p>
+                <p class="mb-6">At 5 p.m., I received your message calling me <b class="highlight quiz-target" data-ans="shameless" data-kor="뻔뻔하다고">shameless</b>.</p>
+                <p class="mb-6">I prefer the word <b class="highlight quiz-target" data-ans="bold" data-kor="대담하다">bold</b>.</p>
+                <p class="mb-6">I'm not saying I handled everything perfectly, but consider the alternatives. Had I picked you up as planned, neither of us would have learned anything about parking regulations, seasonal tourism, or the importance of comfortable walking shoes.</p>
+                <p class="mb-6">Finally, you mentioned that you had to pay $180 for a taxi.</p>
+                <p class="mb-6">I suggest we consider this an investment in your independence.</p>
+                <p class="mb-6">I trust this explanation settles the matter.</p>
+                <p class="mb-6">With confidence in your understanding,</p>
+                <p class="mb-6">Your brother,<br>Michael</p>
+                <p class="mb-6">P.S. I have attached 63 photographs of the trees. Please examine them before forming your final opinion.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">제니퍼에게,</p>
+                <p class="mb-6">내가 너를 공항에 여섯 시간 동안 버려두었다고 비난하기 전에, 당시의 모든 상황을 충분히 고려해 주었으면 한다.</p>
+                <p class="mb-6">일단 내 입장에서 설명하자면, 나는 오전 9시에 너를 데리러 가겠다는 확고한 의지를 가지고 집을 나섰다. 하지만 안타깝게도 여러 가지 예상치 못한 사건이 발생했고, 그중 어느 것도 전적으로 내 통제하에 있지는 않았다.</p>
+                <p class="mb-6">우선 나는 <b class="highlight">단풍 구경</b>을 하려고 공원에 잠깐 들렀다. 이것은 이기적인 결정이 아니었다. 너도 알다시피 가을은 고작 몇 주밖에 지속되지 않는다. 그리고 나는 우리 모두가 자연을 감상할 수 있을 때 충분히 감상해야 할 책임이 있다고 믿는다.</p>
+                <p class="mb-6">문제는 그날 아침 나무들이 유난히 아름다웠다는 것이다. 처음에는 딱 5분만 사진을 찍을 생각이었다. 하지만 <b class="highlight">20분이 지나고 나서야</b> 더 멋진 나무들이 산책로 저쪽에 있다는 사실을 깨달았다.</p>
+                <p class="mb-6">당연히 나는 계속 걸었다.</p>
+                <p class="mb-6">정오가 되었을 때 나는 이미 <b class="highlight">2만 보</b>를 걸은 상태였다. 그 시점에서 돌아가는 것은 훌륭한 개인 운동 성과를 스스로 낭비하는 일이었을 것이다.</p>
+                <p class="mb-6">이제 네가 보낸 47개의 메시지에 대해 이야기해 보자.</p>
+                <p class="mb-6">너는 내가 고의로 네 메시지를 <b class="highlight">읽고 답장하지 않았다</b>고 주장한다. 하지만 그건 부분적으로만 사실이다. 첫 번째 메시지는 읽었다. 그러나 나머지 메시지들은 <b class="highlight">읽지 않은 상태로 두었다</b>. 휴대전화를 너무 자주 확인하다 보면 주변 환경에 주의를 기울이지 못할 수도 있다고 우려했기 때문이다.</p>
+                <p class="mb-6">너는 이것을 무책임하다고 생각할지 모른다. 하지만 나는 이것을 개인 안전을 위한 노력이라고 생각한다.</p>
+                <p class="mb-6">오후 2시에 마침내 차로 돌아왔을 때, 나는 차가 견인되어 사라졌다는 사실을 발견했다.</p>
+                <p class="mb-6">공평하게 말하자면, 주차 표지판에는 '2시간 주차'라고 적혀 있었다. 하지만 누군가 자연과 유난히 뜻깊은 교감을 나누게 될 경우 어떻게 되는지에 대해서는 아무런 설명도 없었다.</p>
+                <p class="mb-6">나는 견인 업체에 전화를 걸었다. 직원은 <b class="highlight">재치도 없었고</b> 특별히 <b class="highlight">눈치가 빠른</b> 사람도 아니었다. 계절의 아름다움을 감상하는 사람에게는 주차 시간 제한의 예외를 인정해야 한다는 나의 <b class="highlight">기발한</b> 논리를 전혀 이해하지 못했다.</p>
+                <p class="mb-6">그 직원은 내 설명을 <b class="highlight">뻔뻔한 거짓말</b>이라고 불렀다.</p>
+                <p class="mb-6">그건 부당했다. 거짓말이 성립하려면 상대방을 속이려는 의도가 있어야 한다. 나는 정말로 그 공원이 그렇게까지 흥미롭지는 않을 것이라고 믿었다.</p>
+                <p class="mb-6">오후 5시에 나는 네가 나를 <b class="highlight">뻔뻔하다고</b> 부르는 메시지를 받았다.</p>
+                <p class="mb-6">나는 '<b class="highlight">대담하다</b>'라는 표현을 더 선호한다.</p>
+                <p class="mb-6">내가 모든 상황에 완벽하게 대처했다고 주장하는 것은 아니다. 하지만 다른 가능성을 생각해 보자. 내가 계획대로 너를 데리러 갔다면, 우리 둘 중 누구도 주차 규정이나 계절 관광, 편안한 운동화의 중요성에 대해 아무것도 배우지 못했을 것이다.</p>
+                <p class="mb-6">마지막으로, 너는 택시비로 180달러를 지불해야 했다는 이야기를 했다.</p>
+                <p class="mb-6">나는 이것을 네 독립심을 기르기 위한 투자로 생각할 것을 제안한다.</p>
+                <p class="mb-6">이 설명으로 모든 문제가 해결되었으리라 믿는다.</p>
+                <p class="mb-6">네가 충분히 이해해 줄 것이라는 확신을 담아,</p>
+                <p class="mb-6">너의 오빠,<br>마이클</p>
+                <p class="mb-6">추신: 나무 사진 63장을 첨부했다. 최종적인 판단을 내리기 전에 반드시 사진들을 자세히 살펴보기 바란다.</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "1111630.m4a";
+</script>
+      <script src="wordbank-utils.js"></script>
+  </body>
+  </html>

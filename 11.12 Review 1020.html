@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | A King in His Own Mind</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+      :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+      body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+      .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+      .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+      input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+      input:focus::placeholder { opacity: 0 !important; }
+      .mystery-cell { transition: color 0.3s; }
+      .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+      .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+      .highlight { color: var(--teal); font-weight: 700; }
+      .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+      audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🪣</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">A King in His Own Mind</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">slave</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">노예</td></tr>
+                <tr><td class="p-4"><b class="text-white">how much they struggled</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그들이 얼마나 힘들게 살았는지 / 얼마나 고생했는지</td></tr>
+                <tr><td class="p-4"><b class="text-white">grown up</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">다 자란, 어른이 된</td></tr>
+                <tr><td class="p-4"><b class="text-white">prehistoric</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">선사 시대의</td></tr>
+                <tr><td class="p-4"><b class="text-white">dialog</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">대화, 대화문</td></tr>
+                <tr><td class="p-4"><b class="text-white">persuade</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">설득하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">give someone a little push</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">누군가를 살짝 밀어주다 / 행동하도록 등을 떠밀다</td></tr>
+                <tr><td class="p-4"><b class="text-white">elements</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">요소들, 구성 요소들</td></tr>
+                <tr><td class="p-4"><b class="text-white">disproved</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">틀렸음이 입증된, 반박된</td></tr>
+                <tr><td class="p-4"><b class="text-white">pointless</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">무의미한, 해 봐야 소용없는</td></tr>
+                <tr><td class="p-4"><b class="text-white">futile</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">헛된, 아무리 노력해도 소용없는</td></tr>
+                <tr><td class="p-4"><b class="text-white">fate</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">운명</td></tr>
+                <tr><td class="p-4"><b class="text-white">if it's meant to happen it will happen</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">일어날 운명이라면 결국 일어날 거야</td></tr>
+                <tr><td class="p-4"><b class="text-white">whatever will be will be</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">될 일은 결국 되게 되어 있어 / 될 대로 되겠지</td></tr>
+                <tr><td class="p-4"><b class="text-white">fatalist</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">운명론자</td></tr>
+                <tr><td class="p-4"><b class="text-white">warlike people</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">호전적인 사람들, 전쟁을 좋아하는 사람들</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">grown up</h3>
+                <p class="text-slate-300 text-sm leading-relaxed"><i>Grow up</i>은 성장하다, <i>grown-up</i>은 어른이라는 뜻이에요. <i>I've grown up</i>은 '나는 이제 다 컸다'라는 의미예요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">give someone a little push</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">상대방이 망설이는 일을 하도록 용기를 주거나 살짝 부추기는 표현이에요. 상황에 따라 실제로 미는 동작도 뜻해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">disproved</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">어떤 주장이 단순히 의심받는 것을 넘어, 증거에 의해 틀렸다고 밝혀졌다는 뜻이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">pointless / futile</h3>
+                <p class="text-slate-300 text-sm leading-relaxed"><i>Pointless</i>는 할 이유나 가치가 없다는 의미이고, <i>futile</i>은 노력해도 원하는 결과를 얻을 수 없다는 의미예요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">fate / fatalist</h3>
+                <p class="text-slate-300 text-sm leading-relaxed"><i>Fate</i>는 운명, <i>fatalist</i>는 운명은 이미 정해져 있으며 바꾸기 어렵다고 믿는 사람이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">if it's meant to happen it will happen</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">어떤 일이 일어날 운명이라면 결국 일어난다는 뜻이에요. 일반적으로 <i>If it's meant to happen, it will happen</i>처럼 쉼표를 사용해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">whatever will be will be</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">미래에 어떤 일이 생길지는 통제할 수 없으니 결과를 받아들이자는 표현이에요. 보통 <i>Whatever will be, will be</i>로 적어요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">warlike people</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">싸우거나 전쟁을 벌이려는 성향이 강한 사람들을 가리켜요. 실제 대화에서는 문맥에 따라 <i>aggressive people</i>이나 <i>people who are always looking for a fight</i>가 더 자연스러울 수 있어요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Daniel was a <b class="highlight quiz-target" data-ans="grown-up" data-kor="다 큰">grown-up</b> man who hated his life.</p>
+                <p class="mb-6">He cleaned public toilets at a train station. His salary was terrible, his manager was unpleasant, and he couldn't imagine doing the same job for another thirty years.</p>
+                <p class="mb-6">Every evening, he watched documentaries about history.</p>
+                <p class="mb-6">"People in the Middle Ages knew almost nothing," he told his friend Mark. "Imagine how powerful I'd be with modern knowledge."</p>
+                <p class="mb-6">Mark disagreed.</p>
+                <p class="mb-6">"You have no idea <b class="highlight quiz-target" data-ans="how much they struggled" data-kor="얼마나 고생했는지">how much they struggled</b> just to survive. You couldn't last a week without electricity."</p>
+                <p class="mb-6">Daniel laughed.</p>
+                <p class="mb-6">"People survived in <b class="highlight quiz-target" data-ans="prehistoric" data-kor="선사 시대의">prehistoric</b> times. I'm sure I could manage the Middle Ages."</p>
+                <p class="mb-6">Mark tried to <b class="highlight quiz-target" data-ans="persuade" data-kor="설득하다">persuade</b> him that knowing about technology wasn't the same as understanding it.</p>
+                <p class="mb-6">But Daniel refused to listen.</p>
+                <p class="mb-6">When he discovered an experimental time machine at a science exhibition, he decided to test his theory.</p>
+                <p class="mb-6">He traveled to 12th-century England and convinced a guard to take him to a local lord.</p>
+                <p class="mb-6">"I know the secrets of future technology," Daniel announced. "I can make you incredibly powerful."</p>
+                <p class="mb-6">The lord asked him to explain how to build a better weapon.</p>
+                <p class="mb-6">Daniel described guns but couldn't explain the <b class="highlight quiz-target" data-ans="elements" data-kor="성분">elements</b> needed to make gunpowder.</p>
+                <p class="mb-6">He mentioned electricity but couldn't explain how to generate it.</p>
+                <p class="mb-6">The lord grew impatient.</p>
+                <p class="mb-6">"Can you actually make anything?"</p>
+                <p class="mb-6">"Not without modern equipment."</p>
+                <p class="mb-6">"Then your knowledge is <b class="highlight quiz-target" data-ans="pointless" data-kor="아무 소용없는">pointless</b> to me."</p>
+                <p class="mb-6">Daniel's confidence had been thoroughly <b class="highlight quiz-target" data-ans="disproved" data-kor="틀렸음이 드러난">disproved</b> by his inability to demonstrate a single invention.</p>
+                <p class="mb-6">The lord ordered him to work for his food.</p>
+                <p class="mb-6">Daniel tried farming, repairing tools, and caring for horses. Every attempt was <b class="highlight quiz-target" data-ans="futile" data-kor="헛수고">futile</b>.</p>
+                <p class="mb-6">Eventually, a servant learned that Daniel had cleaned toilets in his own time.</p>
+                <p class="mb-6">"Excellent. You can empty the waste pits."</p>
+                <p class="mb-6">Daniel protested, but he had no money, no useful skills, and nowhere else to go.</p>
+                <p class="mb-6">He wasn't a <b class="highlight quiz-target" data-ans="slave" data-kor="노예">slave</b>, but he had little choice if he wanted food and shelter.</p>
+                <p class="mb-6">Every morning, he carried buckets of human waste out of the castle.</p>
+                <p class="mb-6">His time machine had stopped working, and he couldn't repair it.</p>
+                <p class="mb-6">One afternoon, an older servant noticed Daniel staring miserably at a bucket.</p>
+                <p class="mb-6">"What's wrong with you?"</p>
+                <p class="mb-6">"I thought I could change my <b class="highlight quiz-target" data-ans="fate" data-kor="운명">fate</b>," Daniel replied.</p>
+                <p class="mb-6">The servant shrugged.</p>
+                <p class="mb-6">"I'm a <b class="highlight quiz-target" data-ans="fatalist" data-kor="운명론자">fatalist</b>. <b class="highlight quiz-target" data-ans="Whatever will be, will be" data-kor="될 일은 결국 되게 되어 있지">Whatever will be, will be</b>."</p>
+                <p class="mb-6">Daniel shook his head.</p>
+                <p class="mb-6">"That's easy for you to say."</p>
+                <p class="mb-6">"Why?"</p>
+                <p class="mb-6">"Because you don't know what a flushing toilet is."</p>
+                <p class="mb-6">The servant looked confused.</p>
+                <p class="mb-6">Daniel sighed.</p>
+                <p class="mb-6">"Never mind."</p>
+                <p class="mb-6">He picked up the bucket and returned to work.</p>
+                <p class="mb-6">He had traveled centuries into the past because he believed he deserved a better life.</p>
+                <p class="mb-6">Now he was doing the same job under much worse conditions.</p>
+                <p class="mb-6">And for the first time, he understood just how much he'd depended on inventions he couldn't begin to explain.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <h3 class="text-xl font-bold text-slate-300 not-italic">마음속에서만 왕이었던 남자</h3>
+                <p class="mb-6">다니엘은 자기 인생이 싫은 <b class="highlight">다 큰</b> 어른이었다.</p>
+                <p class="mb-6">그는 기차역에서 공중화장실을 청소했다. 월급은 형편없었고, 관리자는 불쾌한 사람이었으며, 앞으로 30년 동안 같은 일을 한다는 것은 상상조차 하기 싫었다.</p>
+                <p class="mb-6">매일 저녁 그는 역사 다큐멘터리를 봤다.</p>
+                <p class="mb-6">"중세 사람들은 아는 게 거의 없었잖아." 그는 친구 마크에게 말했다. "내가 현대 지식을 가지고 그 시대로 간다면 얼마나 강력한 사람이 될지 상상해 봐."</p>
+                <p class="mb-6">마크는 동의하지 않았다.</p>
+                <p class="mb-6">"그 사람들이 살아남기 위해 <b class="highlight">얼마나 고생했는지</b> 넌 몰라. 넌 전기 없이는 일주일도 못 버틸걸."</p>
+                <p class="mb-6">다니엘은 웃었다.</p>
+                <p class="mb-6">"<b class="highlight">선사 시대</b>에도 사람들은 살아남았잖아. 중세 정도는 나도 충분히 버틸 수 있어."</p>
+                <p class="mb-6">마크는 기술이 존재한다는 사실을 아는 것과 그 기술을 이해하는 것은 다르다고 다니엘을 <b class="highlight">설득하려</b> 했다.</p>
+                <p class="mb-6">하지만 다니엘은 듣지 않았다.</p>
+                <p class="mb-6">어느 날 과학 전시회에서 실험용 타임머신을 발견한 그는 자신의 이론을 시험해 보기로 결심했다.</p>
+                <p class="mb-6">그는 12세기 영국으로 시간여행을 떠나 경비병을 설득해 지방 영주에게 데려가 달라고 했다.</p>
+                <p class="mb-6">"저는 미래 기술의 비밀을 알고 있습니다." 다니엘이 선언했다. "영주님을 엄청나게 강력한 사람으로 만들어 드릴 수 있습니다."</p>
+                <p class="mb-6">영주는 더 좋은 무기를 만드는 방법을 설명해 보라고 했다.</p>
+                <p class="mb-6">다니엘은 총에 관해 설명했지만, 화약을 만드는 데 필요한 <b class="highlight">성분</b>은 설명하지 못했다.</p>
+                <p class="mb-6">전기에 관해서도 이야기했지만, 전기를 생산하는 방법은 설명하지 못했다.</p>
+                <p class="mb-6">영주는 점점 짜증이 났다.</p>
+                <p class="mb-6">"자네가 실제로 만들 수 있는 건 뭐가 있나?"</p>
+                <p class="mb-6">"현대식 장비가 없으면 만들 수 없습니다."</p>
+                <p class="mb-6">"그렇다면 자네 지식은 나에게 <b class="highlight">아무 소용이 없군</b>."</p>
+                <p class="mb-6">다니엘은 발명품을 단 하나도 실제로 보여 주지 못했고, 그가 가졌던 자신감이 <b class="highlight">근거 없었다는 사실은 확실히 드러났다</b>.</p>
+                <p class="mb-6">영주는 다니엘에게 먹을 것을 얻으려면 일을 하라고 명령했다.</p>
+                <p class="mb-6">다니엘은 농사도 지어 보고, 도구도 수리해 보고, 말도 돌봐 봤다. 하지만 모든 시도가 <b class="highlight">헛수고</b>였다.</p>
+                <p class="mb-6">결국 한 하인이 다니엘이 원래 살던 시대에 화장실을 청소했다는 사실을 알게 되었다.</p>
+                <p class="mb-6">"훌륭하군. 그럼 오물 구덩이를 비우면 되겠네."</p>
+                <p class="mb-6">다니엘은 항의했지만, 돈도 없고 쓸 만한 기술도 없었으며 달리 갈 곳도 없었다.</p>
+                <p class="mb-6">그는 <b class="highlight">노예</b>는 아니었지만, 먹을 것과 잠자리를 얻으려면 선택의 여지가 거의 없었다.</p>
+                <p class="mb-6">매일 아침 그는 사람의 배설물이 담긴 양동이를 성 밖으로 날랐다.</p>
+                <p class="mb-6">타임머신은 작동을 멈췄고, 그는 그걸 고칠 수도 없었다.</p>
+                <p class="mb-6">어느 날 오후, 나이 든 하인 한 명이 다니엘이 비참한 표정으로 양동이를 바라보는 것을 발견했다.</p>
+                <p class="mb-6">"무슨 일인가?"</p>
+                <p class="mb-6">"제 <b class="highlight">운명</b>을 바꿀 수 있을 줄 알았어요." 다니엘이 대답했다.</p>
+                <p class="mb-6">하인은 어깨를 으쓱했다.</p>
+                <p class="mb-6">"나는 <b class="highlight">운명론자</b>야. <b class="highlight">될 일은 결국 되게 되어 있지</b>."</p>
+                <p class="mb-6">다니엘은 고개를 저었다.</p>
+                <p class="mb-6">"그런 말은 쉽게 할 수 있겠죠."</p>
+                <p class="mb-6">"왜?"</p>
+                <p class="mb-6">"당신은 수세식 변기가 뭔지 모르니까요."</p>
+                <p class="mb-6">하인은 어리둥절한 표정을 지었다.</p>
+                <p class="mb-6">다니엘은 한숨을 쉬었다.</p>
+                <p class="mb-6">"아무것도 아닙니다."</p>
+                <p class="mb-6">그는 양동이를 집어 들고 다시 일하러 갔다.</p>
+                <p class="mb-6">다니엘은 자신이 더 나은 삶을 살 자격이 있다고 믿었기 때문에 수백 년 전으로 시간여행을 떠났다.</p>
+                <p class="mb-6">그런데 이제는 훨씬 더 열악한 환경에서 똑같은 일을 하고 있었다.</p>
+                <p class="mb-6">그리고 생애 처음으로, 자신이 설명조차 제대로 할 수 없는 발명품들에 얼마나 의존하며 살아왔는지 깨달았다.</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "11121020.m4a";
+</script>
+    <script src="wordbank-utils.js"></script>
+</body>
+</html>

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Genius Who Couldn't Build a Telescope</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+      :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+      body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+      .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+      .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+      input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+      input:focus::placeholder { opacity: 0 !important; }
+      .mystery-cell { transition: color 0.3s; }
+      .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+      .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+      .highlight { color: var(--teal); font-weight: 700; }
+      .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+      audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🔭</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Genius Who Couldn't Build a Telescope</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">Saturn</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">토성</td></tr>
+                <tr><td class="p-4"><b class="text-white">telescope</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">망원경</td></tr>
+                <tr><td class="p-4"><b class="text-white">Jack the Ripper</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">잭 더 리퍼 (19세기 런던의 연쇄살인범에게 붙여진 별명)</td></tr>
+                <tr><td class="p-4"><b class="text-white">invisibility cloak</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">투명 망토</td></tr>
+                <tr><td class="p-4"><b class="text-white">generation gap</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">세대 차이</td></tr>
+                <tr><td class="p-4"><b class="text-white">cannibal</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">식인종, 사람을 잡아먹는 사람</td></tr>
+                <tr><td class="p-4"><b class="text-white">Black Death</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">흑사병</td></tr>
+                <tr><td class="p-4"><b class="text-white">plague</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">페스트, 역병, 심각한 전염병</td></tr>
+                <tr><td class="p-4"><b class="text-white">pestilence</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">치명적인 전염병, 역병</td></tr>
+                <tr><td class="p-4"><b class="text-white">pest</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">해충, 성가신 사람</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">Jack the Ripper</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">1888년 런던에서 일어난 연쇄살인 사건의 범인을 가리키는 별명이에요. 실제 신원은 밝혀지지 않았어요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">invisibility cloak</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">입으면 모습이 보이지 않게 되는 가상의 망토예요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">generation gap</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">서로 다른 세대 사이의 사고방식이나 가치관 차이를 뜻해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">cannibal</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">사람의 살을 먹는 사람을 뜻해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">Black Death</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">14세기 유럽을 비롯한 여러 지역에서 엄청난 인명 피해를 일으킨 페스트 대유행을 가리켜요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">plague / pestilence</h3>
+                <p class="text-slate-300 text-sm leading-relaxed"><i>Plague</i>는 특히 페스트를 뜻할 수 있고, <i>pestilence</i>는 역병을 뜻하는 고풍스럽거나 문학적인 표현이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">pest</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">해충뿐 아니라 귀찮게 구는 사람에게도 쓸 수 있어요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Daniel cleaned public toilets at a train station, and he was convinced he deserved a better life.</p>
+                <p class="mb-6">He loved watching documentaries about history and space. Whenever he saw people using primitive tools, he laughed.</p>
+                <p class="mb-6">"If I could visit the past, I'd become rich in a week," he told his coworkers. "I'd introduce modern technology and live like a king."</p>
+                <p class="mb-6">When Daniel found an experimental time machine, he traveled to England in 1340.</p>
+                <p class="mb-6">He soon persuaded a local lord to hear his extraordinary claims.</p>
+                <p class="mb-6">"I know secrets about the universe," Daniel announced. "For example, <b class="highlight quiz-target" data-ans="Saturn" data-kor="토성">Saturn</b> has enormous rings around it."</p>
+                <p class="mb-6">The lord looked interested.</p>
+                <p class="mb-6">"How do you know?"</p>
+                <p class="mb-6">"Scientists have seen them through a <b class="highlight quiz-target" data-ans="telescope" data-kor="망원경">telescope</b>."</p>
+                <p class="mb-6">"Then make me one so I can see them too."</p>
+                <p class="mb-6">Daniel hesitated.</p>
+                <p class="mb-6">"I don't know how to make the lenses."</p>
+                <p class="mb-6">The lord frowned.</p>
+                <p class="mb-6">Daniel quickly changed the subject.</p>
+                <p class="mb-6">"I also know about a terrible disease that's going to spread across Europe."</p>
+                <p class="mb-6">"What disease?"</p>
+                <p class="mb-6">"The <b class="highlight quiz-target" data-ans="Black Death" data-kor="흑사병">Black Death</b>. It's a deadly <b class="highlight quiz-target" data-ans="plague" data-kor="페스트">plague</b>. Millions of people will die."</p>
+                <p class="mb-6">The lord became alarmed.</p>
+                <p class="mb-6">"Can you prevent it?"</p>
+                <p class="mb-6">"People should wash their hands and avoid contact with sick people."</p>
+                <p class="mb-6">"Will that be enough?"</p>
+                <p class="mb-6">"No. We need proper sanitation, medical care, and effective treatments."</p>
+                <p class="mb-6">"Excellent. Show my physician how to provide them."</p>
+                <p class="mb-6">Daniel knew that modern medicine could treat many infections, but he couldn't manufacture antibiotics or explain how to produce them.</p>
+                <p class="mb-6">"You're telling me a great <b class="highlight quiz-target" data-ans="pestilence" data-kor="역병">pestilence</b> is coming," the lord said, "but you cannot tell me how to stop it?"</p>
+                <p class="mb-6">"Not exactly."</p>
+                <p class="mb-6">The lord ordered Daniel to stay and prove his usefulness.</p>
+                <p class="mb-6">Daniel tried working in the kitchen but couldn't prepare a meal over an open fire. He damaged a tool while helping a carpenter and couldn't control a horse.</p>
+                <p class="mb-6">After several days, the servants considered him a useless <b class="highlight quiz-target" data-ans="pest" data-kor="귀찮은 사람">pest</b>.</p>
+                <p class="mb-6">Eventually, the head servant asked what kind of work Daniel had done in his own time.</p>
+                <p class="mb-6">"I cleaned toilets," Daniel admitted.</p>
+                <p class="mb-6">The servant smiled.</p>
+                <p class="mb-6">"Then you can empty our privies."</p>
+                <p class="mb-6">Daniel spent the following morning carrying buckets of human waste out of the castle.</p>
+                <p class="mb-6">He hated every second.</p>
+                <p class="mb-6">That evening, he returned to his time machine, but it refused to start.</p>
+                <p class="mb-6">He was trapped in the 14th century, only a few years before the plague he had warned everyone about.</p>
+                <p class="mb-6">He knew what was coming, but he couldn't do much to protect himself.</p>
+                <p class="mb-6">And until then, he had to keep cleaning toilets.</p>
+                <p class="mb-6">Without gloves.</p>
+                <p class="mb-6">Without disinfectant.</p>
+                <p class="mb-6">And without a single flush.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <h3 class="text-xl font-bold text-slate-300 not-italic">망원경도 만들 줄 모르는 천재</h3>
+                <p class="mb-6">다니엘은 기차역에서 공중화장실을 청소했고, 자신은 더 나은 삶을 살 자격이 있다고 굳게 믿었다.</p>
+                <p class="mb-6">그는 역사와 우주에 관한 다큐멘터리를 즐겨 봤다. 원시적인 도구를 사용하는 옛날 사람들을 볼 때마다 웃었다.</p>
+                <p class="mb-6">"내가 과거를 방문할 수 있다면 일주일 만에 부자가 될 거야." 그는 동료들에게 말했다. "현대 기술을 소개하고 왕처럼 살면 되지."</p>
+                <p class="mb-6">다니엘은 실험용 타임머신을 발견하자 1340년 영국으로 향했다.</p>
+                <p class="mb-6">얼마 지나지 않아 그는 한 지방 영주를 설득해 자신의 놀라운 이야기를 들어 달라고 했다.</p>
+                <p class="mb-6">"저는 우주의 비밀을 알고 있습니다." 다니엘이 선언했다. "예를 들어 <b class="highlight">토성</b> 주위에는 거대한 고리가 있습니다."</p>
+                <p class="mb-6">영주는 관심을 보였다.</p>
+                <p class="mb-6">"그걸 어떻게 아는가?"</p>
+                <p class="mb-6">"과학자들이 <b class="highlight">망원경</b>으로 관찰했거든요."</p>
+                <p class="mb-6">"그럼 나도 볼 수 있게 망원경을 하나 만들어 보게."</p>
+                <p class="mb-6">다니엘은 머뭇거렸다.</p>
+                <p class="mb-6">"렌즈를 만드는 방법은 모릅니다."</p>
+                <p class="mb-6">영주는 미간을 찌푸렸다.</p>
+                <p class="mb-6">다니엘은 재빨리 화제를 바꿨다.</p>
+                <p class="mb-6">"유럽 전역에 퍼질 끔찍한 질병에 대해서도 알고 있습니다."</p>
+                <p class="mb-6">"무슨 질병인가?"</p>
+                <p class="mb-6">"<b class="highlight">흑사병</b>입니다. 치명적인 <b class="highlight">페스트</b>죠. 수백만 명이 죽게 됩니다."</p>
+                <p class="mb-6">영주는 불안해졌다.</p>
+                <p class="mb-6">"그 병을 막을 수 있나?"</p>
+                <p class="mb-6">"사람들은 손을 씻고 아픈 사람과의 접촉을 피해야 합니다."</p>
+                <p class="mb-6">"그걸로 충분한가?"</p>
+                <p class="mb-6">"아니요. 적절한 위생 시설과 의료 서비스, 효과적인 치료법이 필요합니다."</p>
+                <p class="mb-6">"훌륭하군. 내 주치의에게 그 방법을 알려 주게."</p>
+                <p class="mb-6">다니엘은 현대 의학으로 많은 감염병을 치료할 수 있다는 사실은 알았다. 하지만 항생제를 만들 수도 없었고, 제조 방법을 설명할 수도 없었다.</p>
+                <p class="mb-6">"자네는 끔찍한 <b class="highlight">역병</b>이 다가온다고 말하면서 그걸 막는 방법은 알려 줄 수 없다는 건가?" 영주가 물었다.</p>
+                <p class="mb-6">"정확히는 그렇습니다."</p>
+                <p class="mb-6">영주는 다니엘에게 성에 머물면서 자신이 쓸모 있는 사람이라는 것을 증명하라고 명령했다.</p>
+                <p class="mb-6">다니엘은 부엌에서 일을 해 봤지만, 맨불을 이용해 음식을 만들지 못했다. 목수를 도와주다가 도구를 망가뜨렸고, 말도 제대로 다루지 못했다.</p>
+                <p class="mb-6">며칠이 지나자 하인들은 그를 쓸모없이 <b class="highlight">귀찮기만 한 사람</b>으로 여겼다.</p>
+                <p class="mb-6">마침내 하인장이 다니엘에게 원래 시대에는 무슨 일을 했는지 물었다.</p>
+                <p class="mb-6">"화장실을 청소했습니다." 다니엘이 인정했다.</p>
+                <p class="mb-6">하인장이 미소를 지었다.</p>
+                <p class="mb-6">"그럼 우리 성의 변소를 비우면 되겠군."</p>
+                <p class="mb-6">다니엘은 다음 날 아침 내내 사람의 배설물이 담긴 양동이를 성 밖으로 날랐다.</p>
+                <p class="mb-6">매 순간이 끔찍했다.</p>
+                <p class="mb-6">그날 저녁, 다니엘은 타임머신으로 돌아갔지만 기계는 작동하지 않았다.</p>
+                <p class="mb-6">그는 14세기, 자신이 경고했던 전염병이 퍼지기 불과 몇 년 전의 세상에 갇혀 버렸다.</p>
+                <p class="mb-6">무슨 일이 다가오는지는 알았지만 자신을 보호하기 위해 할 수 있는 일은 별로 없었다.</p>
+                <p class="mb-6">그리고 그때까지는 화장실 청소를 계속해야 했다.</p>
+                <p class="mb-6">장갑도 없이.</p>
+                <p class="mb-6">소독약도 없이.</p>
+                <p class="mb-6">그리고 물 한 번 내릴 수도 없이.</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "1112715.m4a";
+</script>
+    <script src="wordbank-utils.js"></script>
+</body>
+</html>

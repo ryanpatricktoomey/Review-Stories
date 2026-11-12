@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Man Who Knew Everything</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+      :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+      body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+      .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+      .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+      input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+      input:focus::placeholder { opacity: 0 !important; }
+      .mystery-cell { transition: color 0.3s; }
+      .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+      .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+      .highlight { color: var(--teal); font-weight: 700; }
+      .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+      audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">👑</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Man Who Knew Everything</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">major religion</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">주요 종교, 세계적으로 영향력이 큰 종교</td></tr>
+                <tr><td class="p-4"><b class="text-white">ancestors</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">조상, 선조</td></tr>
+                <tr><td class="p-4"><b class="text-white">intrigued</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">호기심이 생긴, 흥미를 느낀</td></tr>
+                <tr><td class="p-4"><b class="text-white">intrigue</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">흥미를 끌다, 호기심을 자극하다 / 음모, 권모술수</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">intrigued</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">단순히 재미있다는 뜻을 넘어, 뭔가 신기하거나 수수께끼 같아서 더 알고 싶은 상태예요. <i>I'm intrigued by the idea</i>처럼 사용할 수 있어요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">intrigue</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">동사로는 '호기심을 자극하다', 명사로는 '음모, 권모술수'라는 뜻도 있어요. 특히 <i>political intrigue</i>는 '정치적 음모나 권력 다툼'을 의미해요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">ancestors</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">부모나 조부모뿐 아니라 훨씬 이전 세대의 조상들까지 가리켜요. 반대말은 <i>descendants</i>(후손)이에요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Daniel hated cleaning toilets.</p>
+                <p class="mb-6">He worked at a busy train station, earned very little money, and spent most evenings complaining about his life.</p>
+                <p class="mb-6">His favorite hobby was watching documentaries about history.</p>
+                <p class="mb-6">He was especially <b class="highlight quiz-target" data-ans="intrigued" data-kor="호기심을 느낀">intrigued</b> by medieval Europe. The castles, kings, wars, and political <b class="highlight quiz-target" data-ans="intrigue" data-kor="음모">intrigue</b> fascinated him.</p>
+                <p class="mb-6">"Think about our <b class="highlight quiz-target" data-ans="ancestors" data-kor="조상들">ancestors</b>," he told his friend Mark. "They didn't have electricity, modern medicine, or computers. If I could travel back in time, I'd be the smartest person alive."</p>
+                <p class="mb-6">Mark wasn't convinced.</p>
+                <p class="mb-6">"Knowing those things exist doesn't mean you know how to make them."</p>
+                <p class="mb-6">"How complicated can it be?"</p>
+                <p class="mb-6">When Daniel discovered an experimental time machine at a science exhibition, he decided to find out.</p>
+                <p class="mb-6">He traveled to 12th-century England and persuaded a guard to take him before a local lord.</p>
+                <p class="mb-6">"I come from the distant future," Daniel announced. "I can make you the most powerful man in England."</p>
+                <p class="mb-6">The lord was immediately interested.</p>
+                <p class="mb-6">"How?"</p>
+                <p class="mb-6">"With inventions your people haven't even imagined."</p>
+                <p class="mb-6">Daniel described electric lights, guns, and antibiotics.</p>
+                <p class="mb-6">The lord listened carefully.</p>
+                <p class="mb-6">"Can you make these things?"</p>
+                <p class="mb-6">"Well, I'd need the right materials."</p>
+                <p class="mb-6">"Tell my craftsmen what you need."</p>
+                <p class="mb-6">Daniel hesitated.</p>
+                <p class="mb-6">He knew guns used gunpowder, but he couldn't remember its ingredients. He knew electricity could power lights, but he had no idea how to generate it.</p>
+                <p class="mb-6">The lord grew suspicious.</p>
+                <p class="mb-6">"Perhaps you're here to spread some strange new religion."</p>
+                <p class="mb-6">"No! I'm here to help you."</p>
+                <p class="mb-6">"Then make something useful."</p>
+                <p class="mb-6">Daniel couldn't.</p>
+                <p class="mb-6">The lord decided to test whether Daniel could do ordinary work.</p>
+                <p class="mb-6">Unfortunately, he couldn't repair a cart, chop wood properly, or even start a fire.</p>
+                <p class="mb-6">After several disastrous days, the head servant asked about Daniel's previous occupation.</p>
+                <p class="mb-6">"I cleaned toilets," Daniel admitted.</p>
+                <p class="mb-6">The servant smiled.</p>
+                <p class="mb-6">"Excellent. Our waste pits need emptying."</p>
+                <p class="mb-6">The following morning, Daniel was carrying buckets of human waste outside the castle.</p>
+                <p class="mb-6">There were no rubber gloves, disinfectants, or flushing toilets.</p>
+                <p class="mb-6">Even worse, his time machine had stopped working.</p>
+                <p class="mb-6">He was trapped.</p>
+                <p class="mb-6">One afternoon, the lord approached him.</p>
+                <p class="mb-6">"You said people in the future have toilets that remove waste automatically."</p>
+                <p class="mb-6">"Yes, my lord."</p>
+                <p class="mb-6">"Could you build one?"</p>
+                <p class="mb-6">Daniel remembered pressing the flush button thousands of times.</p>
+                <p class="mb-6">"I know how to use one."</p>
+                <p class="mb-6">"Then explain how it works."</p>
+                <p class="mb-6">Daniel looked at the bucket in his hands.</p>
+                <p class="mb-6">"I don't know."</p>
+                <p class="mb-6">The lord shook his head and walked away.</p>
+                <p class="mb-6">Daniel had traveled centuries into the past because he believed modern knowledge would make him powerful.</p>
+                <p class="mb-6">Instead, he'd discovered how little he actually understood about the world he'd left behind.</p>
+                <p class="mb-6">And he was still cleaning toilets.</p>
+                <p class="mb-6">Only now, he couldn't flush them.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <h3 class="text-xl font-bold text-slate-300 not-italic">모든 것을 아는 남자</h3>
+                <p class="mb-6">다니엘은 화장실 청소가 싫었다.</p>
+                <p class="mb-6">그는 사람들로 붐비는 기차역에서 일했고, 돈도 거의 벌지 못했으며, 대부분의 저녁 시간을 자기 인생에 대한 불평으로 보냈다.</p>
+                <p class="mb-6">그가 가장 좋아하는 취미는 역사 다큐멘터리를 보는 것이었다.</p>
+                <p class="mb-6">특히 중세 유럽에 큰 <b class="highlight">호기심을 느꼈다</b>. 성과 왕, 전쟁, 정치적 <b class="highlight">음모</b>와 권력 다툼이 그를 매료시켰다.</p>
+                <p class="mb-6">"우리 <b class="highlight">조상들</b>을 생각해 봐." 그는 친구 마크에게 말했다. "그 사람들은 전기도, 현대 의학도, 컴퓨터도 없었잖아. 내가 과거로 시간여행을 할 수 있다면 세상에서 가장 똑똑한 사람이 될 거야."</p>
+                <p class="mb-6">마크는 확신하지 못했다.</p>
+                <p class="mb-6">"그런 것들이 존재한다는 걸 안다고 해서 만드는 방법까지 아는 건 아니잖아."</p>
+                <p class="mb-6">"그게 뭐 얼마나 복잡하겠어?"</p>
+                <p class="mb-6">어느 날 다니엘은 과학 전시회에서 실험용 타임머신을 발견했고, 직접 확인해 보기로 했다.</p>
+                <p class="mb-6">그는 12세기 영국으로 시간여행을 떠나 경비병을 설득해 지방 영주 앞으로 데려가 달라고 했다.</p>
+                <p class="mb-6">"저는 먼 미래에서 왔습니다." 다니엘이 선언했다. "영주님을 영국에서 가장 강력한 사람으로 만들어 드릴 수 있습니다."</p>
+                <p class="mb-6">영주는 즉시 관심을 보였다.</p>
+                <p class="mb-6">"어떻게?"</p>
+                <p class="mb-6">"이곳 사람들은 상상도 하지 못한 발명품들을 이용해서요."</p>
+                <p class="mb-6">다니엘은 전등과 총, 항생제에 관해 설명했다.</p>
+                <p class="mb-6">영주는 주의 깊게 들었다.</p>
+                <p class="mb-6">"그런 것들을 만들 수 있나?"</p>
+                <p class="mb-6">"음, 적절한 재료가 필요합니다."</p>
+                <p class="mb-6">"내 장인들에게 필요한 재료를 알려 주게."</p>
+                <p class="mb-6">다니엘은 머뭇거렸다.</p>
+                <p class="mb-6">그는 총에 화약이 사용된다는 것은 알았지만, 화약에 어떤 재료가 들어가는지는 기억하지 못했다. 전기로 전등을 켤 수 있다는 것은 알았지만, 전기를 생산하는 방법은 전혀 몰랐다.</p>
+                <p class="mb-6">영주는 점점 의심스러워졌다.</p>
+                <p class="mb-6">"혹시 자네는 이상한 새로운 종교를 퍼뜨리러 온 건 아닌가?"</p>
+                <p class="mb-6">"아닙니다! 도와드리러 왔습니다."</p>
+                <p class="mb-6">"그럼 쓸모 있는 걸 하나 만들어 보게."</p>
+                <p class="mb-6">다니엘은 그러지 못했다.</p>
+                <p class="mb-6">영주는 다니엘이 평범한 일이라도 할 수 있는지 시험해 보기로 했다.</p>
+                <p class="mb-6">하지만 다니엘은 수레를 수리할 수도, 장작을 제대로 팰 수도, 심지어 불을 피울 수도 없었다.</p>
+                <p class="mb-6">재앙 같은 며칠이 지난 뒤, 하인장이 다니엘에게 원래 무슨 일을 했는지 물었다.</p>
+                <p class="mb-6">"화장실을 청소했습니다." 다니엘이 인정했다.</p>
+                <p class="mb-6">하인장이 미소를 지었다.</p>
+                <p class="mb-6">"훌륭하군. 우리 성의 오물 구덩이를 비워야 하거든."</p>
+                <p class="mb-6">다음 날 아침, 다니엘은 사람의 배설물이 담긴 양동이를 성 밖으로 나르고 있었다.</p>
+                <p class="mb-6">고무장갑도, 소독약도, 수세식 변기도 없었다.</p>
+                <p class="mb-6">설상가상으로 타임머신마저 작동을 멈췄다.</p>
+                <p class="mb-6">그는 과거에 갇혀 버렸다.</p>
+                <p class="mb-6">어느 날 오후, 영주가 다니엘에게 다가왔다.</p>
+                <p class="mb-6">"자네는 미래에 배설물을 자동으로 없애 주는 변기가 있다고 했지?"</p>
+                <p class="mb-6">"그렇습니다, 영주님."</p>
+                <p class="mb-6">"그걸 만들 수 있겠나?"</p>
+                <p class="mb-6">다니엘은 자신이 수천 번도 넘게 물 내리는 버튼을 눌렀던 기억을 떠올렸다.</p>
+                <p class="mb-6">"사용하는 방법은 압니다."</p>
+                <p class="mb-6">"그럼 어떻게 작동하는지 설명해 보게."</p>
+                <p class="mb-6">다니엘은 손에 든 양동이를 바라보았다.</p>
+                <p class="mb-6">"모르겠습니다."</p>
+                <p class="mb-6">영주는 고개를 저으며 돌아섰다.</p>
+                <p class="mb-6">다니엘은 현대 지식이 자신을 강력한 사람으로 만들어 줄 거라고 믿었기 때문에 수백 년 전으로 시간여행을 떠났다.</p>
+                <p class="mb-6">하지만 그가 떠나온 세상에 대해 자신이 실제로 얼마나 아는 것이 없는지만 깨닫게 되었다.</p>
+                <p class="mb-6">그리고 여전히 화장실 청소를 하고 있었다.</p>
+                <p class="mb-6">다만 이제는 물을 내릴 수도 없었다.</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "11121020.m4a";
+</script>
+    <script src="wordbank-utils.js"></script>
+</body>
+</html>

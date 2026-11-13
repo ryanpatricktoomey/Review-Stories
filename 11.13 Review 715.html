@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | Why Are We Hardest on the People Who Do the Most?</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+      :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+      body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+      .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+      .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+      input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+      input:focus::placeholder { opacity: 0 !important; }
+      .mystery-cell { transition: color 0.3s; }
+      .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+      .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+      .highlight { color: var(--teal); font-weight: 700; }
+      .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+      audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🪞</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">Why Are We Hardest on the People Who Do the Most?</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">so hard on me</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">나에게 너무 엄격하게 굴다 / 나만 너무 심하게 몰아붙이다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-3xl p-6 space-y-2 md:col-span-2">
+                <h3 class="text-teal-400 font-bold text-lg">be hard on someone</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">be hard on someone은 누군가를 엄격하게 대하거나, 지나치게 비판하거나, 다른 사람보다 더 높은 기준을 적용한다는 뜻이에요.</p>
+                <p class="text-slate-300 text-sm leading-relaxed"><em>Why are you being so hard on me?</em>는 단순히 상대방이 엄격하다는 말이 아니라, 자신이 부당하게 비판받거나 대우받고 있다고 느낄 때도 사용할 수 있어요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Imagine two employees, David and Mark.</p>
+                <p class="mb-6">David is one of the most reliable people in the office. He arrives early, finishes his work on time, and helps coworkers whenever they're struggling.</p>
+                <p class="mb-6">Mark is different. He's often late, misses deadlines, and occasionally forgets important tasks.</p>
+                <p class="mb-6">One morning, both arrive fifteen minutes late.</p>
+                <p class="mb-6">Their manager looks disappointed when David walks in.</p>
+                <p class="mb-6">"David, I expected better from you. You're supposed to set an example."</p>
+                <p class="mb-6">When Mark arrives a few minutes later, the manager simply says, "Morning, Mark."</p>
+                <p class="mb-6">David is confused.</p>
+                <p class="mb-6">"Why are you being <b class="highlight quiz-target" data-ans="so hard on me" data-kor="저한테만 그렇게 엄격하게">so hard on me</b>? We were both late."</p>
+                <p class="mb-6">The manager replies, "Because I know you're capable of better."</p>
+                <p class="mb-6">At first, this might sound reasonable. But think about what just happened.</p>
+                <p class="mb-6">The employee who usually follows the rules receives criticism. The employee who regularly breaks them gets a free pass.</p>
+                <p class="mb-6">And the explanation is that the first employee is more responsible.</p>
+                <h3 class="text-2xl font-bold text-white mt-8 mb-4">The Hidden Cost of Being Reliable</h3>
+                <p class="mb-6">This happens in families, schools, and workplaces.</p>
+                <p class="mb-6">The child who always gets good grades is criticized for getting a B, while a struggling student gets praised for achieving the same result.</p>
+                <p class="mb-6">The employee who consistently works hard is expected to take on additional responsibilities, while less reliable coworkers are given easier tasks.</p>
+                <p class="mb-6">The family member who always helps with housework gets criticized for forgetting to do the dishes, while someone who rarely helps gets praised for washing a single plate.</p>
+                <p class="mb-6">Funny how being dependable can sometimes mean being held to a higher standard.</p>
+                <h3 class="text-2xl font-bold text-white mt-8 mb-4">But Isn't It Reasonable to Expect More?</h3>
+                <p class="mb-6">To be fair, different expectations aren't necessarily unfair.</p>
+                <p class="mb-6">A manager might expect more from an experienced employee than from someone who has just started. Parents might encourage a high-achieving child because they know what that child is capable of.</p>
+                <p class="mb-6">There's a difference, however, between encouraging someone to reach their potential and punishing them for being reliable.</p>
+                <p class="mb-6">When people constantly receive more criticism precisely because they usually do well, they may eventually wonder why they should keep trying so hard.</p>
+                <p class="mb-6">Perhaps the real question is this:</p>
+                <p class="mb-6">Are we holding responsible people to higher standards because we believe in them?</p>
+                <p class="mb-6">Or have we simply become so comfortable with their effort that we've stopped appreciating it?</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <h3 class="text-xl font-bold text-slate-300 not-italic mb-4">왜 우리는 가장 열심히 하는 사람에게 가장 엄격할까?</h3>
+                <p class="mb-6">두 명의 직장인 데이비드와 마크를 상상해 보세요.</p>
+                <p class="mb-6">데이비드는 사무실에서 가장 믿음직한 직원 중 한 명입니다. 일찍 출근하고, 일을 제시간에 끝내고, 동료들이 어려움을 겪을 때마다 도와줍니다.</p>
+                <p class="mb-6">반면 마크는 다릅니다. 자주 지각하고, 마감일을 놓치고, 가끔 중요한 업무를 잊어버리기도 합니다.</p>
+                <p class="mb-6">어느 날 아침, 두 사람 모두 15분 늦게 출근합니다.</p>
+                <p class="mb-6">데이비드가 들어오자 매니저는 실망한 표정을 짓습니다.</p>
+                <p class="mb-6">"데이비드, 자네한테는 더 나은 모습을 기대했는데. 다른 직원들에게 모범이 되어야 하잖아."</p>
+                <p class="mb-6">몇 분 뒤 마크가 도착하자 매니저는 그저 "좋은 아침, 마크"라고 인사합니다.</p>
+                <p class="mb-6">데이비드는 이해할 수 없습니다.</p>
+                <p class="mb-6">"왜 <b class="highlight">저한테만 그렇게 엄격하게</b> 구세요? 저희 둘 다 지각했잖아요."</p>
+                <p class="mb-6">매니저가 대답합니다.</p>
+                <p class="mb-6">"자네는 더 잘할 수 있는 사람이라는 걸 아니까."</p>
+                <p class="mb-6">처음에는 그럴듯하게 들릴 수도 있습니다. 하지만 방금 무슨 일이 일어났는지 생각해 보세요.</p>
+                <p class="mb-6">평소에 규칙을 잘 지키는 직원은 비판받았습니다. 반면 규칙을 자주 어기는 직원은 아무런 지적 없이 넘어갔습니다.</p>
+                <p class="mb-6">그 이유가 첫 번째 직원이 더 책임감 있는 사람이기 때문이라는 겁니다.</p>
+                <h3 class="text-xl font-bold text-slate-300 not-italic mt-8 mb-4">믿음직한 사람이 치르는 숨겨진 대가</h3>
+                <p class="mb-6">이런 일은 가정, 학교, 직장 어디에서나 일어납니다.</p>
+                <p class="mb-6">항상 좋은 성적을 받는 아이는 B를 받았다고 혼나지만, 공부에 어려움을 겪는 학생은 같은 성적을 받고 칭찬받습니다.</p>
+                <p class="mb-6">꾸준히 열심히 일하는 직원에게는 추가 업무가 당연하게 주어지는 반면, 덜 믿음직한 동료들에게는 더 쉬운 일이 배정됩니다.</p>
+                <p class="mb-6">항상 집안일을 돕는 가족은 설거지를 한 번 깜빡했다고 비판받지만, 거의 돕지 않는 사람은 접시 하나만 씻어도 칭찬받습니다.</p>
+                <p class="mb-6">참 희한하죠. 믿음직한 사람이라는 이유로 오히려 더 높은 기준을 적용받을 수 있다니요.</p>
+                <h3 class="text-xl font-bold text-slate-300 not-italic mt-8 mb-4">하지만 더 많은 것을 기대하는 게 합리적이지 않을까?</h3>
+                <p class="mb-6">공평하게 생각해 보면, 서로 다른 기대를 갖는 것이 반드시 불공평한 것은 아닙니다.</p>
+                <p class="mb-6">매니저는 신입 직원보다 경력직 직원에게 더 많은 것을 기대할 수 있습니다. 부모도 자녀의 능력을 알기 때문에 더 높은 목표를 향해 노력하도록 격려할 수 있습니다.</p>
+                <p class="mb-6">하지만 누군가가 잠재력을 발휘하도록 격려하는 것과, 믿음직하다는 이유로 불이익을 주는 것은 다릅니다.</p>
+                <p class="mb-6">평소에 잘한다는 이유만으로 계속 더 많은 비판을 받는다면, 그 사람은 결국 왜 이렇게까지 열심히 노력해야 하는지 의문을 품을지도 모릅니다.</p>
+                <p class="mb-6">어쩌면 진짜 질문은 이것일 겁니다.</p>
+                <p class="mb-6">우리는 책임감 있는 사람들의 능력을 믿기 때문에 더 높은 기준을 적용하는 걸까요?</p>
+                <p class="mb-6">아니면 그 사람들의 노력이 너무 당연해져서 이제는 고마워할 줄 모르게 된 걸까요?</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "1113715.m4a";
+</script>
+    <script src="wordbank-utils.js"></script>
+</body>
+</html>

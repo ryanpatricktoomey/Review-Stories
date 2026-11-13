@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | Why Is a Father Babysitting His Own Child?</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+      :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+      body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+      .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+      .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+      input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+      input:focus::placeholder { opacity: 0 !important; }
+      .mystery-cell { transition: color 0.3s; }
+      .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+      .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+      .highlight { color: var(--teal); font-weight: 700; }
+      .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+      audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">👨‍👧</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">Why Is a Father Babysitting His Own Child?</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">give them more grace</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그들을 좀 더 너그럽게 이해해 주다</td></tr>
+                <tr><td class="p-4"><b class="text-white">far-right</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">극우 성향의, 극우파의</td></tr>
+                <tr><td class="p-4"><b class="text-white">taken aback</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">깜짝 놀란, 당황한</td></tr>
+                <tr><td class="p-4"><b class="text-white">patriarchy</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">가부장제, 남성 중심의 사회 구조</td></tr>
+                <tr><td class="p-4"><b class="text-white">paternity leave</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">아빠의 출산·육아휴가, 배우자 출산휴가</td></tr>
+                <tr><td class="p-4"><b class="text-white">messy writing</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">지저분한 글씨, 정돈되지 않은 글</td></tr>
+                <tr><td class="p-4"><b class="text-white">side by side</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">나란히, 나란히 놓고 비교하며</td></tr>
+                <tr><td class="p-4"><b class="text-white">gender neutral</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">성별에 관계없이 적용되는, 성중립적인</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">give them more grace</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">상대방의 실수나 부족함을 조금 더 너그럽게 이해하고 받아들여 주자는 뜻이에요. 단순히 용서하는 것보다 공감과 배려의 의미가 강해요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">far-right</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">정치적으로 극우 성향을 뜻해요. 일반적인 보수 성향을 의미하는 conservative보다 훨씬 강한 표현이에요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">taken aback</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">예상하지 못한 말이나 행동 때문에 순간적으로 놀라거나 당황하는 것. I was taken aback by his comment처럼 자주 사용해요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">patriarchy</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">남성이 사회적·가정적 권력을 더 많이 갖는 구조를 가리켜요. 특정 남성 개인의 태도뿐 아니라 사회 제도와 문화에 대해서도 사용할 수 있어요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">side by side</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">두 가지를 나란히 놓고 직접 비교하는 상황에도 사용해요. Compare the two reports side by side처럼 표현할 수 있어요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">gender neutral</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">성별에 따라 구분하거나 차별하지 않는다는 뜻이에요. 형용사로는 gender-neutral처럼 하이픈을 사용하는 경우가 많아요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Imagine a father sitting in a café with his three-year-old daughter.</p>
+                <p class="mb-6">He's helping her eat a sandwich while answering her endless questions.</p>
+                <p class="mb-6">An older woman approaches their table.</p>
+                <p class="mb-6">"What a wonderful father you are!" she says. "Your wife is so lucky!"</p>
+                <p class="mb-6">The father smiles politely.</p>
+                <p class="mb-6">Now imagine a mother doing exactly the same thing.</p>
+                <p class="mb-6">Would anyone stop to congratulate her?</p>
+                <p class="mb-6">Probably not.</p>
+                <p class="mb-6">In fact, someone might wonder why she brought such a noisy child to a café.</p>
+                <p class="mb-6">This is one of the strangest double standards in modern parenting: fathers can be praised for doing things that mothers are simply expected to do.</p>
+                <h3 class="text-2xl font-bold text-white mt-8 mb-4">When Doing Your Job Makes You a Hero</h3>
+                <p class="mb-6">Consider <b class="highlight quiz-target" data-ans="paternity leave" data-kor="아빠의 출산·육아휴가">paternity leave</b>.</p>
+                <p class="mb-6">When a man takes several months off work to care for his newborn baby, coworkers may praise him for being a devoted father.</p>
+                <p class="mb-6">But when a woman takes time off after having a baby, people may question whether she's serious about her career.</p>
+                <p class="mb-6">Some people are even <b class="highlight quiz-target" data-ans="taken aback" data-kor="깜짝 놀라는">taken aback</b> when a father says he's the main caregiver.</p>
+                <p class="mb-6">The interesting thing is that this double standard can hurt men, too.</p>
+                <p class="mb-6">A father who wants to spend more time with his children may be treated as unusual. People might assume he isn't ambitious or that his wife controls him.</p>
+                <p class="mb-6">Traditional ideas about the <b class="highlight quiz-target" data-ans="patriarchy" data-kor="가부장제">patriarchy</b> can create expectations that limit both parents.</p>
+                <h3 class="text-2xl font-bold text-white mt-8 mb-4">The Double Standard Hidden in Our Language</h3>
+                <p class="mb-6">Even the words we use reveal our assumptions.</p>
+                <p class="mb-6">People sometimes say a father is "babysitting" when he's looking after his own children.</p>
+                <p class="mb-6">But we rarely describe a mother doing the same thing as babysitting.</p>
+                <p class="mb-6">Put those two descriptions <b class="highlight quiz-target" data-ans="side by side" data-kor="나란히 놓고 비교해">side by side</b>.</p>
+                <p class="mb-6">One suggests that caring for children is a father's temporary responsibility. The other suggests it's simply a mother's job.</p>
+                <p class="mb-6">The same problem appears in other areas.</p>
+                <p class="mb-6">A child's <b class="highlight quiz-target" data-ans="messy writing" data-kor="글씨가 지저분하면">messy writing</b> might be dismissed as typical boy behavior, while a girl with equally untidy handwriting might be told to be more careful.</p>
+                <p class="mb-6">We may think we're judging individual behavior, but sometimes we're applying expectations based on gender.</p>
+                <h3 class="text-2xl font-bold text-white mt-8 mb-4">Is Treating Everyone the Same Always Fair?</h3>
+                <p class="mb-6">Not necessarily.</p>
+                <p class="mb-6">Mothers and fathers may have different physical needs after childbirth. Different circumstances can justify different treatment.</p>
+                <p class="mb-6">But shouldn't the basic expectation of being a responsible parent be <b class="highlight quiz-target" data-ans="gender neutral" data-kor="성별과 관계없이 같아야">gender neutral</b>?</p>
+                <p class="mb-6">Interestingly, conversations about gender roles can become political very quickly. Some <b class="highlight quiz-target" data-ans="far-right" data-kor="극우 성향의">far-right</b> commentators defend traditional family roles, while others argue that parents should be free to divide responsibilities according to their own circumstances.</p>
+                <p class="mb-6">Yet this issue doesn't have to be about choosing a political side.</p>
+                <p class="mb-6">We could simply start by asking whether we're judging parents fairly.</p>
+                <p class="mb-6">Perhaps we should <b class="highlight quiz-target" data-ans="give fathers more grace" data-kor="아빠들이 조금 더 너그럽게 이해해">give fathers more grace</b> when they're learning to care for their children, without treating basic parenting as an extraordinary achievement.</p>
+                <p class="mb-6">And perhaps we should give mothers more recognition for work that has long been taken for granted.</p>
+                <p class="mb-6">After all, if a father deserves applause for taking his child to the park, shouldn't a mother deserve the same?</p>
+                <p class="mb-6">Or maybe neither of them needs applause.</p>
+                <p class="mb-6">Maybe they're just being parents.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <h3 class="text-xl font-bold text-slate-300 not-italic mb-4">아빠가 자기 아이를 돌보는데 왜 '베이비시팅'이라고 할까?</h3>
+                <p class="mb-6">세 살짜리 딸과 함께 카페에 앉아 있는 아빠를 상상해 보세요.</p>
+                <p class="mb-6">아빠는 딸이 샌드위치를 먹는 것을 도와주면서 끝없이 쏟아지는 질문에 대답하고 있습니다.</p>
+                <p class="mb-6">그때 나이 지긋한 여성이 테이블로 다가옵니다.</p>
+                <p class="mb-6">"정말 훌륭한 아빠시네요! 아내분은 정말 복 받으셨어요!"</p>
+                <p class="mb-6">아빠는 예의 바르게 미소를 짓습니다.</p>
+                <p class="mb-6">이제 엄마가 정확히 똑같은 일을 하고 있다고 상상해 보세요.</p>
+                <p class="mb-6">누군가 다가와서 칭찬할까요?</p>
+                <p class="mb-6">아마 그렇지 않을 겁니다.</p>
+                <p class="mb-6">오히려 왜 이렇게 시끄러운 아이를 카페에 데려왔는지 의아하게 생각하는 사람이 있을지도 모릅니다.</p>
+                <p class="mb-6">이것은 현대 육아에서 나타나는 가장 이상한 이중잣대 중 하나입니다. 엄마들이 당연히 해야 한다고 여겨지는 일을 아빠들이 하면 칭찬받을 수 있다는 것이죠.</p>
+                <h3 class="text-xl font-bold text-slate-300 not-italic mt-8 mb-4">당연한 일을 했는데 영웅이 되는 순간</h3>
+                <p class="mb-6"><b class="highlight">아빠의 출산·육아휴가</b>를 생각해 보세요.</p>
+                <p class="mb-6">남성이 갓 태어난 아기를 돌보려고 몇 달 동안 일을 쉬면 동료들은 헌신적인 아빠라며 칭찬할 수 있습니다.</p>
+                <p class="mb-6">하지만 여성이 출산 후 휴가를 사용하면, 어떤 사람들은 그 여성이 정말 직장 생활에 진지한지 의문을 제기하기도 합니다.</p>
+                <p class="mb-6">아빠가 자신이 아이의 주 양육자라고 말하면 <b class="highlight">깜짝 놀라는</b> 사람들도 있습니다.</p>
+                <p class="mb-6">흥미로운 점은 이러한 이중잣대가 남성에게도 불이익을 줄 수 있다는 것입니다.</p>
+                <p class="mb-6">아이와 더 많은 시간을 보내고 싶어 하는 아빠를 이상하게 바라보는 사람이 있을 수 있습니다. 야망이 부족하다거나 아내에게 휘둘린다고 생각할 수도 있죠.</p>
+                <p class="mb-6"><b class="highlight">가부장제</b>에 관한 전통적인 생각은 부모 양쪽 모두를 제한하는 기대를 만들 수 있습니다.</p>
+                <h3 class="text-xl font-bold text-slate-300 not-italic mt-8 mb-4">우리가 사용하는 말에 숨어 있는 이중잣대</h3>
+                <p class="mb-6">우리가 사용하는 단어에도 고정관념이 드러납니다.</p>
+                <p class="mb-6">사람들은 아빠가 자기 아이를 돌볼 때 가끔 '베이비시팅을 한다'고 표현합니다.</p>
+                <p class="mb-6">하지만 엄마가 똑같은 일을 할 때는 거의 그렇게 표현하지 않죠.</p>
+                <p class="mb-6">두 표현을 <b class="highlight">나란히 놓고 비교해</b> 보세요.</p>
+                <p class="mb-6">한쪽은 아이를 돌보는 일이 아빠의 일시적인 책임이라는 느낌을 줍니다. 반면 다른 쪽은 그저 엄마가 당연히 해야 하는 일처럼 느껴지죠.</p>
+                <p class="mb-6">이런 문제는 다른 영역에서도 나타납니다.</p>
+                <p class="mb-6">남자아이의 <b class="highlight">글씨가 지저분하면</b> 남자아이들은 원래 그렇다며 넘어갈 수 있지만, 똑같이 글씨가 지저분한 여자아이에게는 좀 더 신경 써서 쓰라고 말할 수도 있습니다.</p>
+                <p class="mb-6">우리는 개인의 행동을 판단한다고 생각하지만, 사실은 성별에 따른 기대를 적용하고 있을 때도 있습니다.</p>
+                <h3 class="text-xl font-bold text-slate-300 not-italic mt-8 mb-4">모두를 똑같이 대하는 것이 언제나 공평할까?</h3>
+                <p class="mb-6">꼭 그렇지는 않습니다.</p>
+                <p class="mb-6">출산 후 엄마와 아빠의 신체적 필요는 다를 수 있습니다. 서로 다른 상황이라면 다른 대우가 정당할 수도 있죠.</p>
+                <p class="mb-6">하지만 책임감 있는 부모가 되어야 한다는 기본적인 기대는 <b class="highlight">성별과 관계없이 같아야</b> 하지 않을까요?</p>
+                <p class="mb-6">흥미롭게도 성 역할에 관한 대화는 금방 정치적인 논쟁으로 이어지기도 합니다. 일부 <b class="highlight">극우 성향의</b> 논객들은 전통적인 가족 내 역할을 옹호하는 반면, 다른 사람들은 부모가 각자의 상황에 맞게 책임을 나눌 자유가 있어야 한다고 주장합니다.</p>
+                <p class="mb-6">하지만 이 문제가 반드시 정치적인 편을 선택하는 문제일 필요는 없습니다.</p>
+                <p class="mb-6">그저 우리가 부모들을 공평하게 평가하고 있는지 질문하는 것부터 시작할 수 있습니다.</p>
+                <p class="mb-6">어쩌면 우리는 <b class="highlight">아빠들이</b> 육아를 배우는 과정에서 <b class="highlight">조금 더 너그럽게 이해해</b> 주되, 기본적인 육아를 특별히 대단한 업적인 것처럼 대하지는 말아야 할지도 모릅니다.</p>
+                <p class="mb-6">그리고 오랫동안 당연하게 여겨졌던 엄마들의 노력도 더 많이 인정해야 할 것입니다.</p>
+                <p class="mb-6">생각해 보면, 아빠가 아이를 공원에 데려갔다고 박수받을 자격이 있다면 엄마도 똑같이 박수받아야 하지 않을까요?</p>
+                <p class="mb-6">아니면 둘 다 박수를 받을 필요가 없는지도 모릅니다.</p>
+                <p class="mb-6">그저 부모로서 해야 할 일을 하고 있는 것일 테니까요.</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "1113845.m4a";
+</script>
+    <script src="wordbank-utils.js"></script>
+</body>
+</html>

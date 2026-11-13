@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | Rules Are Rules! (Unless I Break Them)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+      :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+      body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+      .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+      .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+      input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+      input:focus::placeholder { opacity: 0 !important; }
+      .mystery-cell { transition: color 0.3s; }
+      .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+      .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+      .highlight { color: var(--teal); font-weight: 700; }
+      .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+      audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">😤</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">Rules Are Rules! (Unless I Break Them)</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">annual evaluation</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">연례 인사 평가, 연간 업무 평가</td></tr>
+                <tr><td class="p-4"><b class="text-white">when I first started working there</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">제가 그곳에서 처음 일하기 시작했을 때</td></tr>
+                <tr><td class="p-4"><b class="text-white">golden parachute</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">고위 임원이 퇴직할 때 받는 거액의 보상금</td></tr>
+                <tr><td class="p-4"><b class="text-white">get rid of</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">없애다, 제거하다, 해고하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">be lenient</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">관대하게 대하다, 너그럽게 봐주다</td></tr>
+                <tr><td class="p-4"><b class="text-white">be understanding</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">사정을 이해해 주다</td></tr>
+                <tr><td class="p-4"><b class="text-white">give him the benefit of the doubt</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">일단 그 사람을 믿어 주다, 좋게 해석해 주다</td></tr>
+                <tr><td class="p-4"><b class="text-white">assume the best</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">좋은 의도가 있었을 거라고 생각하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">be strict</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">엄격하게 대하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">do as I say not as I do</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">내가 하는 대로 하지 말고, 내가 말하는 대로 해라</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">golden parachute</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">고위 임원이 퇴직하거나 해임될 때 받는 거액의 보상 패키지를 뜻해요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">give someone the benefit of the doubt</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">잘못했는지 확실하지 않을 때 일단 좋게 해석하고 믿어 주는 것이에요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">assume the best</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">상대방에게 나쁜 의도가 있었을 거라고 생각하기보다 좋은 이유가 있었을 거라고 믿는 것이에요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">be lenient</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">규칙이나 처벌을 엄격하게 적용하지 않고 너그럽게 봐주는 것이에요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">do as I say, not as I do</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">자신은 지키지 않는 규칙을 다른 사람에게 지키라고 하는 모순적인 태도를 나타내요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Everybody loves rules. Especially when somebody else is breaking them.</p>
+                <p class="mb-6">Take the people who complain about bad drivers.</p>
+                <p class="mb-6">"These idiots shouldn't be allowed on the road!"</p>
+                <p class="mb-6">But watch what happens when they get a speeding ticket.</p>
+                <p class="mb-6">Suddenly, they have a very important explanation.</p>
+                <p class="mb-6">"I was late for work!"</p>
+                <p class="mb-6">"I was only going a little over the limit!"</p>
+                <p class="mb-6">"The police should be catching real criminals!"</p>
+                <p class="mb-6">Oh, I'm sorry. I didn't realize traffic laws came with a special exception for people who are in a hurry.</p>
+                <h3 class="text-2xl font-bold text-white mt-8 mb-4">The Wonderful World of Selective Punishment</h3>
+                <p class="mb-6">Parents are experts at this.</p>
+                <p class="mb-6">When a teenager lies about where he's going, his father gives him a lecture about honesty.</p>
+                <p class="mb-6">"In this family, we tell the truth!"</p>
+                <p class="mb-6">Three days later, the father tells his wife he spent $50 on golf equipment.</p>
+                <p class="mb-6">He actually spent $500.</p>
+                <p class="mb-6">When she finds the receipt, he explains that he was trying to avoid an argument.</p>
+                <p class="mb-6">So the rule is: Lying is wrong, unless the truth would make your life difficult.</p>
+                <p class="mb-6">Got it.</p>
+                <p class="mb-6">And then there's the school parent who insists teachers should <b class="highlight quiz-target" data-ans="be strict" data-kor="엄격하게 대해야">be strict</b> with students who misbehave.</p>
+                <p class="mb-6">"Kids need consequences!"</p>
+                <p class="mb-6">But when their own child gets caught cheating?</p>
+                <p class="mb-6">"He's under a lot of pressure. Please <b class="highlight quiz-target" data-ans="be understanding" data-kor="사정을 좀 이해해 주세요">be understanding</b>!"</p>
+                <p class="mb-6">Funny how quickly people start asking schools to <b class="highlight quiz-target" data-ans="be lenient" data-kor="관대하게 대해">be lenient</b> when it's their own child in trouble.</p>
+                <h3 class="text-2xl font-bold text-white mt-8 mb-4">Everyone Deserves Understanding. Especially Me.</h3>
+                <p class="mb-6">The same thing happens at work.</p>
+                <p class="mb-6">A manager criticizes an employee during an <b class="highlight quiz-target" data-ans="annual evaluation" data-kor="연례 인사 평가">annual evaluation</b> for missing a deadline.</p>
+                <p class="mb-6">"Professionalism means taking responsibility."</p>
+                <p class="mb-6">But when the manager misses a deadline, it's because the team didn't give him enough support.</p>
+                <p class="mb-6">And when his boss questions his performance?</p>
+                <p class="mb-6">Suddenly, he wants everyone to <b class="highlight quiz-target" data-ans="give him the benefit of the doubt" data-kor="일단 믿어 주기를">give him the benefit of the doubt</b> and <b class="highlight quiz-target" data-ans="assume the best" data-kor="좋게 해석해 주고">assume the best</b> about his intentions.</p>
+                <p class="mb-6">I once heard someone say, "<b class="highlight quiz-target" data-ans="When I first started working there" data-kor="내가 그 회사에 처음 들어갔을 때">When I first started working there</b>, my boss told us mistakes were unacceptable. But he made so many excuses for himself that I lost count."</p>
+                <p class="mb-6">Apparently, accountability is something that flows downward.</p>
+                <p class="mb-6">And when companies announce layoffs to reduce costs, they may <b class="highlight quiz-target" data-ans="get rid of" data-kor="해고하면서">get rid of</b> ordinary employees while executives leave with a <b class="highlight quiz-target" data-ans="golden parachute" data-kor="거액의 퇴직 보상금">golden parachute</b>.</p>
+                <p class="mb-6">Nothing says "We're all making sacrifices" quite like handing someone millions of dollars to leave.</p>
+                <h3 class="text-2xl font-bold text-white mt-8 mb-4">Here's the Part Nobody Likes Admitting</h3>
+                <p class="mb-6">The uncomfortable truth is that most of us aren't against double standards.</p>
+                <p class="mb-6">We're against double standards that don't benefit us.</p>
+                <p class="mb-6">We want strict rules for dangerous drivers, unless we're speeding.</p>
+                <p class="mb-6">We want honesty from our children, unless we're hiding something.</p>
+                <p class="mb-6">We want accountability from employees, unless we're the manager.</p>
+                <p class="mb-6">And when somebody points out the contradiction, we immediately explain why our circumstances are different.</p>
+                <p class="mb-6">Of course, sometimes they really are different. Not every mistake deserves the same punishment.</p>
+                <p class="mb-6">But if your main argument is "My situation is special," here's a useful question:</p>
+                <p class="mb-6">Would you accept the same excuse from someone you don't like?</p>
+                <p class="mb-6">If not, perhaps your real philosophy is simply:</p>
+                <p class="mb-6">"<b class="highlight quiz-target" data-ans="Do as I say, not as I do" data-kor="내가 하는 대로 하지 말고, 내가 말하는 대로 해">Do as I say, not as I do</b>."</p>
+                <p class="mb-6">Which is a surprisingly popular philosophy for something nobody admits to believing.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <h3 class="text-xl font-bold text-slate-300 not-italic mb-4">규칙은 규칙이지! (물론 내가 어겼을 때는 예외지만)</h3>
+                <p class="mb-6">사람들은 누구나 규칙을 좋아합니다. 특히 다른 사람이 그 규칙을 어길 때는 더더욱 그렇죠.</p>
+                <p class="mb-6">운전 못하는 사람들에 대해 불평하는 사람들을 생각해 보세요.</p>
+                <p class="mb-6">"저런 인간들은 운전대를 잡으면 안 돼!"</p>
+                <p class="mb-6">그런데 그 사람이 과속 딱지를 떼면 어떻게 되는지 보세요.</p>
+                <p class="mb-6">갑자기 아주 중요한 이유가 생깁니다.</p>
+                <p class="mb-6">"출근에 늦어서 그랬다고!"</p>
+                <p class="mb-6">"제한속도보다 조금 빨리 달린 것뿐이야!"</p>
+                <p class="mb-6">"경찰은 진짜 범죄자들이나 잡아야지!"</p>
+                <p class="mb-6">아, 죄송합니다. 급한 사람에게는 교통법규가 특별히 적용되지 않는다는 사실을 미처 몰랐네요.</p>
+                <h3 class="text-xl font-bold text-slate-300 not-italic mt-8 mb-4">선택적으로 처벌하는 놀라운 세상</h3>
+                <p class="mb-6">특히 부모들은 이런 걸 정말 잘합니다.</p>
+                <p class="mb-6">십 대 아들이 어디에 가는지 거짓말을 하면 아버지는 정직에 대해 긴 설교를 시작합니다.</p>
+                <p class="mb-6">"우리 집에서는 거짓말하면 안 돼!"</p>
+                <p class="mb-6">사흘 뒤, 아버지는 아내에게 골프 용품을 사는 데 50달러를 썼다고 말합니다.</p>
+                <p class="mb-6">실제로는 500달러를 썼죠.</p>
+                <p class="mb-6">아내가 영수증을 발견하자 아버지는 싸우기 싫어서 그랬다고 설명합니다.</p>
+                <p class="mb-6">그러니까 규칙은 이렇군요. 거짓말은 나쁘다. 단, 진실을 말하면 본인이 곤란해지는 경우는 예외다.</p>
+                <p class="mb-6">잘 알겠습니다.</p>
+                <p class="mb-6">그리고 문제를 일으키는 학생들에게 선생님들이 <b class="highlight">엄격하게 대해야</b> 한다고 주장하는 학부모들도 있습니다.</p>
+                <p class="mb-6">"요즘 애들은 자기 행동에 책임을 져야 해요!"</p>
+                <p class="mb-6">그런데 자기 아이가 부정행위를 하다가 걸리면요?</p>
+                <p class="mb-6">"아이가 요즘 스트레스를 많이 받아요. <b class="highlight">사정을 좀 이해해 주세요</b>!"</p>
+                <p class="mb-6">참 희한하죠. 자기 아이가 문제를 일으키면 학교에 <b class="highlight">관대하게 대해</b> 달라는 부탁이 얼마나 빨리 나오는지요.</p>
+                <h3 class="text-xl font-bold text-slate-300 not-italic mt-8 mb-4">누구나 이해받아야 한다. 특히 나 자신은!</h3>
+                <p class="mb-6">직장에서도 똑같은 일이 일어납니다.</p>
+                <p class="mb-6">매니저는 <b class="highlight">연례 인사 평가</b>에서 마감일을 놓친 직원을 비판합니다.</p>
+                <p class="mb-6">"프로라면 자기 행동에 책임을 져야 합니다."</p>
+                <p class="mb-6">하지만 매니저 자신이 마감일을 놓치면 팀원들이 충분히 도와주지 않았기 때문이라고 합니다.</p>
+                <p class="mb-6">그리고 상사가 자신의 업무 성과에 대해 문제를 제기하면요?</p>
+                <p class="mb-6">갑자기 자신의 의도를 <b class="highlight">좋게 해석해 주고</b>, <b class="highlight">일단 믿어 주기를</b> 바랍니다.</p>
+                <p class="mb-6">예전에 누군가 이렇게 말하는 것을 들은 적이 있습니다.</p>
+                <p class="mb-6">"<b class="highlight">내가 그 회사에 처음 들어갔을 때</b>, 상사는 실수는 절대 용납할 수 없다고 했어. 그런데 정작 본인은 변명을 어찌나 많이 하던지 셀 수도 없더라."</p>
+                <p class="mb-6">아무래도 책임이라는 건 위에서 아래로만 흐르는 모양입니다.</p>
+                <p class="mb-6">또한 기업이 비용 절감을 위해 정리해고를 발표할 때 일반 직원들을 <b class="highlight">해고하면서</b> 고위 임원들에게는 <b class="highlight">거액의 퇴직 보상금</b>을 주기도 합니다.</p>
+                <p class="mb-6">"우리 모두 희생해야 합니다"라는 말을 하면서 누군가에게 회사를 떠나는 대가로 수백만 달러를 주는 것만큼 설득력 있는 장면도 없겠죠.</p>
+                <h3 class="text-xl font-bold text-slate-300 not-italic mt-8 mb-4">아무도 인정하고 싶어 하지 않는 부분</h3>
+                <p class="mb-6">불편한 진실은 우리 대부분이 이중잣대 자체를 반대하는 것은 아니라는 점입니다.</p>
+                <p class="mb-6">우리는 자신에게 도움이 되지 않는 이중잣대를 반대하는 겁니다.</p>
+                <p class="mb-6">위험한 운전자들에게는 엄격한 규칙을 원합니다. 물론 우리가 과속할 때는 예외죠.</p>
+                <p class="mb-6">자녀들에게는 정직을 요구합니다. 물론 우리가 뭔가를 숨기고 있을 때는 예외입니다.</p>
+                <p class="mb-6">직원들에게는 책임감을 요구합니다. 물론 우리가 매니저라면 이야기가 달라지죠.</p>
+                <p class="mb-6">그리고 누군가 이런 모순을 지적하면 즉시 자신의 상황이 왜 다른지 설명하기 시작합니다.</p>
+                <p class="mb-6">물론 실제로 상황이 다를 때도 있습니다. 모든 실수가 똑같은 처벌을 받아야 하는 건 아니니까요.</p>
+                <p class="mb-6">하지만 주된 주장이 "내 상황은 특별해"라는 것뿐이라면, 한 가지 질문을 해 볼 필요가 있습니다.</p>
+                <p class="mb-6">내가 싫어하는 사람이 똑같은 변명을 해도 받아들일 수 있을까요?</p>
+                <p class="mb-6">그렇지 않다면 어쩌면 당신의 진짜 철학은 이것일지도 모릅니다.</p>
+                <p class="mb-6">"<b class="highlight">내가 하는 대로 하지 말고, 내가 말하는 대로 해</b>."</p>
+                <p class="mb-6">아무도 자신이 그런 생각을 한다고 인정하지 않는데도, 놀라울 정도로 많은 사람이 실천하는 철학이죠.</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "11131200.m4a";
+</script>
+    <script src="wordbank-utils.js"></script>
+</body>
+</html>

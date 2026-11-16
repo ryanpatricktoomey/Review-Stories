@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Emergency Treatment Nobody Would Want Today</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+      :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+      body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+      .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+      .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+      input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+      input:focus::placeholder { opacity: 0 !important; }
+      .mystery-cell { transition: color 0.3s; }
+      .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+      .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+      .highlight { color: var(--teal); font-weight: 700; }
+      .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+      audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🛟</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Emergency Treatment Nobody Would Want Today</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">heartburn</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">속쓰림, 가슴이 타는 듯한 느낌</td></tr>
+                <tr><td class="p-4"><b class="text-white">respiratory system</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">호흡기계, 호흡 기관</td></tr>
+                <tr><td class="p-4"><b class="text-white">a shot</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">한 잔 (독한 술), 주사 한 대</td></tr>
+                <tr><td class="p-4"><b class="text-white">circulation</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">혈액순환</td></tr>
+                <tr><td class="p-4"><b class="text-white">just thinking about it</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">생각만 해도</td></tr>
+                <tr><td class="p-4"><b class="text-white">fine dust</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">미세먼지</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-2xl p-5 border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">heartburn</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">직역하면 '심장이 타는 것' 같지만 실제로는 위산 역류 등으로 가슴이 화끈거리는 증상을 뜻해요. 심장 질환을 의미하는 것은 아니에요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">a shot</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">술을 작은 잔으로 한 잔 마시는 것 또는 주사 한 대를 의미해요. 문맥에 따라 뜻이 달라져요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">circulation</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">여기서는 혈액이 몸 전체를 순환하는 것을 뜻해요. Improve circulation은 '혈액순환을 개선하다'라는 표현이에요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">just thinking about it</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">실제로 경험하지 않아도 상상하거나 생각하는 것만으로 감정이나 신체적 반응이 생길 때 사용해요. 예: I feel sick just thinking about it.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">fine dust</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">미세먼지를 뜻해요. 영어권에서는 대기오염을 이야기할 때 fine particulate matter 또는 PM2.5라는 표현도 자주 사용해요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Imagine walking along the River Thames in London in the late 1700s.</p>
+                <p class="mb-6">Suddenly, someone falls into the freezing water.</p>
+                <p class="mb-6">People rush to pull the person out, but there's a terrible problem. The victim isn't breathing.</p>
+                <p class="mb-6">What would you do?</p>
+                <p class="mb-6">Today, we know that restoring breathing and <b class="highlight quiz-target" data-ans="circulation" data-kor="혈액순환">circulation</b> is essential. A trained rescuer might perform CPR while someone calls for emergency services.</p>
+                <p class="mb-6">But 250 years ago, doctors had some very different ideas.</p>
+                <p class="mb-6">At the time, people believed that warmth and stimulation could bring a seemingly lifeless person back to consciousness.</p>
+                <p class="mb-6">Some rescuers rubbed the victim's body with warm cloths. Others tried applying heat or using strong-smelling substances to stimulate the senses.</p>
+                <p class="mb-6">Giving someone <b class="highlight quiz-target" data-ans="a shot" data-kor="한 잔">a shot</b> of alcohol was also considered helpful in certain medical situations, although giving anything by mouth to an unconscious person is dangerous.</p>
+                <p class="mb-6">Doctors were experimenting with almost anything that might restart the body's functions.</p>
+                <p class="mb-6">In 1774, an organization that later became the Royal Humane Society was established in London to help rescue drowning victims.</p>
+                <p class="mb-6">The society promoted emergency treatment methods and placed rescue equipment near the river.</p>
+                <p class="mb-6">One particularly unusual device was designed to stimulate the body and supposedly help restore breathing.</p>
+                <p class="mb-6">It involved a wooden box containing a pipe, a container for burning material, and a set of bellows.</p>
+                <p class="mb-6">The bellows worked rather like a small pump.</p>
+                <p class="mb-6">Rescuers believed that introducing warm, stimulating vapors into the body might help revive a person who had nearly drowned.</p>
+                <p class="mb-6">Considering how worried we are about <b class="highlight quiz-target" data-ans="fine dust" data-kor="미세먼지">fine dust</b> entering our <b class="highlight quiz-target" data-ans="respiratory system" data-kor="호흡기">respiratory system</b> today, the idea of deliberately introducing smoke into a patient's body sounds questionable.</p>
+                <p class="mb-6">But here's where the treatment becomes truly bizarre.</p>
+                <p class="mb-6">The smoke wasn't supposed to enter through the patient's mouth or nose.</p>
+                <p class="mb-6">It was pumped into the rectum.</p>
+                <p class="mb-6">Yes, doctors were literally blowing tobacco smoke into people's bottoms.</p>
+                <p class="mb-6">The treatment was known as a tobacco smoke enema.</p>
+                <p class="mb-6">And it wasn't just an obscure folk remedy. Medical organizations in Europe actually recommended it.</p>
+                <p class="mb-6">Does your stomach hurt <b class="highlight quiz-target" data-ans="just thinking about it" data-kor="생각만 해도">just thinking about it</b>?</p>
+                <p class="mb-6">The theory was that tobacco smoke could stimulate the intestines and help restart the body's vital functions.</p>
+                <p class="mb-6">But tobacco contains nicotine, which can be toxic in high doses. Introducing it into the body could cause nausea, vomiting, weakness, and potentially dangerous effects on the heart.</p>
+                <p class="mb-6">There was also no reliable evidence that this method improved survival.</p>
+                <p class="mb-6">Worse, spending precious minutes pumping smoke into a drowning victim could delay more effective attempts to restore breathing.</p>
+                <p class="mb-6">By the nineteenth century, the practice was falling out of favor.</p>
+                <p class="mb-6">And here is the disturbing irony.</p>
+                <p class="mb-6">The people performing this treatment genuinely wanted to save lives.</p>
+                <p class="mb-6">But instead of giving patients the air they desperately needed, they were pumping toxic smoke into the opposite end of their bodies.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">1700년대 후반 런던의 템스강을 따라 걷고 있다고 상상해 보세요.</p>
+                <p class="mb-6">갑자기 누군가가 얼음처럼 차가운 강물에 빠집니다.</p>
+                <p class="mb-6">사람들이 달려가 물에 빠진 사람을 구해 내지만 심각한 문제가 있습니다. 구조된 사람이 숨을 쉬지 않는 것입니다.</p>
+                <p class="mb-6">여러분이라면 어떻게 하시겠어요?</p>
+                <p class="mb-6">오늘날 우리는 호흡과 <b class="highlight">혈액순환</b>을 회복시키는 것이 매우 중요하다는 사실을 알고 있습니다. 훈련받은 구조자가 심폐소생술을 실시하는 동안 다른 사람이 응급 구조를 요청할 수도 있겠죠.</p>
+                <p class="mb-6">하지만 250년 전 의사들은 전혀 다른 생각을 가지고 있었습니다.</p>
+                <p class="mb-6">당시 사람들은 몸을 따뜻하게 하고 자극을 주면 생명이 없는 것처럼 보이는 사람도 의식을 되찾을 수 있다고 믿었습니다.</p>
+                <p class="mb-6">어떤 구조자들은 따뜻한 천으로 환자의 몸을 문질렀습니다. 다른 사람들은 열을 가하거나 강한 냄새가 나는 물질로 감각을 자극하려고 했습니다.</p>
+                <p class="mb-6">특정 의료 상황에서는 독한 술 <b class="highlight">한 잔</b>을 마시게 하는 것도 도움이 된다고 여겨졌습니다. 물론 의식이 없는 사람에게 입으로 무엇이든 먹이는 것은 위험합니다.</p>
+                <p class="mb-6">의사들은 신체 기능을 다시 작동시킬 수 있을 것 같은 거의 모든 방법을 시도하고 있었습니다.</p>
+                <p class="mb-6">1774년, 런던에서는 물에 빠진 사람들을 구조하기 위한 단체가 설립되었습니다. 이 단체는 나중에 왕립인명구조협회(Royal Humane Society)가 되었습니다.</p>
+                <p class="mb-6">협회는 응급처치 방법을 보급하고 강 근처에 구조 장비를 비치했습니다.</p>
+                <p class="mb-6">그중 특히 특이한 장치는 신체를 자극하고 호흡을 회복시키는 데 도움이 된다고 여겨졌습니다.</p>
+                <p class="mb-6">그 장치는 나무 상자 안에 관과 물질을 태우는 용기, 그리고 풀무가 들어 있는 형태였습니다.</p>
+                <p class="mb-6">풀무는 작은 펌프처럼 작동했습니다.</p>
+                <p class="mb-6">구조자들은 따뜻하고 자극적인 증기를 몸속에 넣으면 물에 빠져 거의 죽어가는 사람을 되살릴 수 있을지도 모른다고 믿었습니다.</p>
+                <p class="mb-6">오늘날 우리가 <b class="highlight">미세먼지</b>가 <b class="highlight">호흡기</b>로 들어가는 것을 얼마나 걱정하는지 생각해 보면, 일부러 환자의 몸속에 연기를 넣는다는 발상 자체가 의심스럽게 들립니다.</p>
+                <p class="mb-6">하지만 여기서 이 치료법은 정말 기괴해집니다.</p>
+                <p class="mb-6">연기는 환자의 입이나 코로 들어가는 것이 아니었습니다.</p>
+                <p class="mb-6">항문을 통해 주입되었습니다.</p>
+                <p class="mb-6">맞습니다. 의사들은 말 그대로 사람의 항문에 담배 연기를 불어넣고 있었습니다.</p>
+                <p class="mb-6">이 치료법은 '담배 연기 관장법'이라고 불렸습니다.</p>
+                <p class="mb-6">그리고 이것은 단순히 잘 알려지지 않은 민간요법이 아니었습니다. 유럽의 의료 단체들이 실제로 권장했던 방법이었습니다.</p>
+                <p class="mb-6"><b class="highlight">생각만 해도</b> 배가 아프신가요?</p>
+                <p class="mb-6">당시 이론에 따르면 담배 연기가 장을 자극해서 신체의 중요한 기능을 다시 작동시킬 수 있다고 했습니다.</p>
+                <p class="mb-6">하지만 담배에는 니코틴이 들어 있고, 니코틴은 많은 양에 노출되면 독성을 나타낼 수 있습니다. 니코틴이 몸에 들어가면 메스꺼움, 구토, 쇠약감, 심장에 대한 위험한 영향 등을 일으킬 수 있습니다.</p>
+                <p class="mb-6">게다가 이 방법이 생존율을 높인다는 믿을 만한 근거도 없었습니다.</p>
+                <p class="mb-6">더 심각한 것은 물에 빠진 사람에게 연기를 주입하느라 귀중한 시간을 허비하면 호흡을 회복시키기 위한 더 효과적인 처치를 늦출 수 있다는 점이었습니다.</p>
+                <p class="mb-6">19세기에 들어서면서 이 치료법은 점차 사용되지 않게 되었습니다.</p>
+                <p class="mb-6">그리고 여기에는 섬뜩한 아이러니가 있습니다.</p>
+                <p class="mb-6">이 치료를 시행했던 사람들은 진심으로 생명을 구하고 싶어 했습니다.</p>
+                <p class="mb-6">하지만 환자에게 절실히 필요한 공기를 공급하는 대신, 그들은 몸의 정반대쪽 끝으로 유독한 연기를 주입하</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "11161200.m4a";
+</script>
+    <script src="wordbank-utils.js"></script>
+</body>
+</html>

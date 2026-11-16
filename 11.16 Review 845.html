@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Medicine That Made Patients Drool</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+      :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+      body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+      .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+      .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+      input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+      input:focus::placeholder { opacity: 0 !important; }
+      .mystery-cell { transition: color 0.3s; }
+      .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+      .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+      .highlight { color: var(--teal); font-weight: 700; }
+      .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+      audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">💊</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Medicine That Made Patients Drool</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">concentrate</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">집중하다</td></tr>
+                <tr><td class="p-4"><b class="text-white">induce fever</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">열을 유발하다, 발열을 일으키다</td></tr>
+                <tr><td class="p-4"><b class="text-white">constipation</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">변비</td></tr>
+                <tr><td class="p-4"><b class="text-white">indigestion</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">소화불량</td></tr>
+                <tr><td class="p-4"><b class="text-white">placebo</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">위약, 플라시보</td></tr>
+                <tr><td class="p-4"><b class="text-white">cure-all</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">만병통치약</td></tr>
+                <tr><td class="p-4"><b class="text-white">panacea</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">만병통치약, 모든 문제의 해결책</td></tr>
+                <tr><td class="p-4"><b class="text-white">alliums</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">파속 식물 (마늘, 양파, 부추 등)</td></tr>
+                <tr><td class="p-4"><b class="text-white">saliva</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">침, 타액</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-2xl p-5 border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">induce fever</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">Induce는 어떤 현상이나 반응을 의도적으로 일으킨다는 뜻이에요. 의학에서는 induce labor(분만을 유도하다)처럼 사용해요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">placebo</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">실제 치료 성분이 없는 위약이에요. Placebo effect는 치료받고 있다는 믿음이나 기대 때문에 증상이 나아지는 현상을 말해요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">cure-all / panacea</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">둘 다 만병통치약이라는 뜻이지만, cure-all은 일상적이고 panacea는 조금 더 격식 있는 표현이에요. Panacea는 사회문제 등의 만능 해결책이라는 의미로도 사용해요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">alliums</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">양파, 마늘, 파, 부추 등이 속하는 식물 분류예요. 일상에서는 보통 각각의 이름으로 부릅니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 border border-white/5 space-y-2">
+                <h3 class="text-teal-400 font-bold text-lg">saliva</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">입안에서 만들어지는 침이에요. 침이 과도하게 분비되는 현상은 excessive salivation이라고 해요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">In the past, people tried some truly bizarre ways to cure illnesses.</p>
+                <p class="mb-6">Some believed garlic and onions, plants known as <b class="highlight quiz-target" data-ans="alliums" data-kor="파속 식물">alliums</b>, could fight almost any infection. Others deliberately tried to <b class="highlight quiz-target" data-ans="induce fever" data-kor="열이 나게">induce fever</b>, believing that high temperatures could drive diseases out of the body.</p>
+                <p class="mb-6">Sometimes patients felt better simply because they expected a treatment to work. Today, we call this the <b class="highlight quiz-target" data-ans="placebo" data-kor="플라시보">placebo</b> effect.</p>
+                <p class="mb-6">But imagine taking a medicine that genuinely changes your body, only to discover that the changes are slowly poisoning you.</p>
+                <p class="mb-6">That was the problem with calomel.</p>
+                <p class="mb-6">For centuries, doctors prescribed this white powder, which contained mercury, a highly toxic metal.</p>
+                <p class="mb-6">In the 1800s, calomel was widely used for everything from <b class="highlight quiz-target" data-ans="constipation" data-kor="변비">constipation</b> and <b class="highlight quiz-target" data-ans="indigestion" data-kor="소화불량">indigestion</b> to serious infectious diseases.</p>
+                <p class="mb-6">It was practically a <b class="highlight quiz-target" data-ans="cure-all" data-kor="만병통치약">cure-all</b>, or what people sometimes call a <b class="highlight quiz-target" data-ans="panacea" data-kor="만병통치약">panacea</b>.</p>
+                <p class="mb-6">The logic seemed reasonable at the time.</p>
+                <p class="mb-6">Doctors believed that many illnesses were caused by harmful substances trapped inside the body. If you could force those substances out, the patient might recover.</p>
+                <p class="mb-6">Calomel was a powerful laxative, so it certainly made people go to the bathroom.</p>
+                <p class="mb-6">And when patients experienced dramatic diarrhea, doctors sometimes interpreted it as proof that the treatment was working.</p>
+                <p class="mb-6">But things could get much worse.</p>
+                <p class="mb-6">After repeated doses, some patients developed swollen gums, loose teeth, and painful mouth infections.</p>
+                <p class="mb-6">Then came one of the strangest symptoms.</p>
+                <p class="mb-6">Their mouths began producing enormous amounts of <b class="highlight quiz-target" data-ans="saliva" data-kor="침">saliva</b>.</p>
+                <p class="mb-6">Some patients drooled so badly that they needed containers to collect it.</p>
+                <p class="mb-6">You might expect doctors to stop the treatment immediately.</p>
+                <p class="mb-6">But here's the unbelievable part.</p>
+                <p class="mb-6">For some doctors, excessive salivation was actually a sign that the medicine had reached the desired level of effect.</p>
+                <p class="mb-6">In other words, the more a patient drooled, the more successful the treatment appeared.</p>
+                <p class="mb-6">Meanwhile, mercury poisoning could damage the nervous system. Patients might develop shaking hands, memory problems, personality changes, and difficulty trying to <b class="highlight quiz-target" data-ans="concentrate" data-kor="집중력">concentrate</b>.</p>
+                <p class="mb-6">And this wasn't some mysterious medicine sold only by dishonest traveling salesmen.</p>
+                <p class="mb-6">Respected physicians prescribed it.</p>
+                <p class="mb-6">Even Abraham Lincoln took a mercury-containing medicine called blue mass. Researchers have suggested that it may have contributed to some of his behavioral symptoms, although this cannot be established with certainty.</p>
+                <p class="mb-6">Eventually, doctors learned how dangerous mercury-based treatments could be.</p>
+                <p class="mb-6">The most disturbing part of this story isn't simply that people were given poison as medicine.</p>
+                <p class="mb-6">It's that some doctors saw the symptoms of poisoning and believed they were signs of recovery.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">과거 사람들은 질병을 치료하기 위해 정말 기상천외한 방법들을 시도했습니다.</p>
+                <p class="mb-6">어떤 사람들은 <b class="highlight">파속 식물</b>인 마늘과 양파가 거의 모든 감염을 물리칠 수 있다고 믿었습니다. 또 어떤 사람들은 높은 체온이 질병을 몸 밖으로 몰아낼 수 있다고 믿고 일부러 <b class="highlight">열이 나게</b> 만들기도 했습니다.</p>
+                <p class="mb-6">때로는 환자들이 치료 효과가 있을 것이라고 기대한다는 이유만으로 실제로 증상이 나아졌다고 느끼기도 했습니다. 오늘날 우리는 이것을 <b class="highlight">플라시보</b> 효과라고 부릅니다.</p>
+                <p class="mb-6">하지만 몸에 실제로 변화를 일으키는 약을 먹었는데, 그 변화가 알고 보니 서서히 자신을 중독시키고 있었다면 어떨까요?</p>
+                <p class="mb-6">바로 칼로멜이라는 약의 문제였습니다.</p>
+                <p class="mb-6">수백 년 동안 의사들은 독성이 매우 강한 금속인 수은이 들어 있는 이 흰색 가루를 처방했습니다.</p>
+                <p class="mb-6">1800년대에 칼로멜은 <b class="highlight">변비</b>와 <b class="highlight">소화불량</b>부터 심각한 감염성 질환에 이르기까지 온갖 질병에 널리 사용되었습니다.</p>
+                <p class="mb-6">사실상 <b class="highlight">만병통치약</b>이나 다름없었습니다.</p>
+                <p class="mb-6">당시에는 그 원리가 꽤 그럴듯하게 여겨졌습니다.</p>
+                <p class="mb-6">의사들은 많은 질병이 몸 안에 갇힌 해로운 물질 때문에 발생한다고 믿었습니다. 그 물질들을 몸 밖으로 강제로 배출할 수 있다면 환자가 회복될 것이라고 생각했죠.</p>
+                <p class="mb-6">칼로멜은 강력한 설사약이었기 때문에 환자들이 화장실에 가게 만드는 효과만큼은 확실했습니다.</p>
+                <p class="mb-6">그리고 환자들이 심한 설사를 하면 의사들은 그것을 치료가 효과를 발휘하고 있다는 증거로 해석하기도 했습니다.</p>
+                <p class="mb-6">하지만 상황은 훨씬 더 심각해질 수 있었습니다.</p>
+                <p class="mb-6">반복해서 약을 복용한 일부 환자들은 잇몸이 붓고, 치아가 흔들리고, 입안에 고통스러운 염증이 생기기 시작했습니다.</p>
+                <p class="mb-6">그러다가 가장 이상한 증상 중 하나가 나타났습니다.</p>
+                <p class="mb-6">입안에서 엄청난 양의 <b class="highlight">침</b>이 분비되기 시작한 것입니다.</p>
+                <p class="mb-6">어떤 환자들은 침을 너무 심하게 흘려서 그것을 받아낼 용기가 필요할 정도였습니다.</p>
+                <p class="mb-6">당연히 의사들이 즉시 치료를 중단했을 거라고 생각하시겠죠.</p>
+                <p class="mb-6">하지만 믿기 어려운 사실이 하나 있습니다.</p>
+                <p class="mb-6">일부 의사들에게 과도한 침 분비는 오히려 약이 원하는 수준의 효과를 내고 있다는 신호였습니다.</p>
+                <p class="mb-6">다시 말해, 환자가 침을 많이 흘릴수록 치료가 더 성공적으로 진행되고 있다고 여겼던 것입니다.</p>
+                <p class="mb-6">한편 수은 중독은 신경계에도 손상을 줄 수 있었습니다. 환자들은 손 떨림, 기억력 문제, 성격 변화, <b class="highlight">집중력</b> 저하 등을 경험할 수 있었습니다.</p>
+                <p class="mb-6">게다가 이 약은 사기꾼 같은 떠돌이 약장수들만 판매하던 정체불명의 약도 아니었습니다.</p>
+                <p class="mb-6">존경받는 의사들도 이 약을 처방했습니다.</p>
+                <p class="mb-6">심지어 에이브러햄 링컨도 블루 매스라는 수은 함유 약을 복용했습니다. 연구자들은 이 약이 링컨에게 나타난 일부 행동상의 증상에 영향을 미쳤을 가능성을 제기했지만, 확실하게 입증된 것은 아닙니다.</p>
+                <p class="mb-6">결국 의사들은 수은을 이용한 치료법이 얼마나 위험할 수 있는지 알게 되었습니다.</p>
+                <p class="mb-6">이 이야기에서 가장 충격적인 부분은 단순히 사람들이 독성 물질을 약으로 처방받았다는 사실이 아닙니다.</p>
+                <p class="mb-6">일부 의사들이 중독 증상을 직접 보고도 그것을 환자가 회복되고 있다는 신호로 믿었다는 사실입니다.</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "1116845.m4a";
+</script>
+    <script src="wordbank-utils.js"></script>
+</body>
+</html>

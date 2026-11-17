@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Blue Room</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+      :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+      body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+      .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+      .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+      input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+      input:focus::placeholder { opacity: 0 !important; }
+      .mystery-cell { transition: color 0.3s; }
+      .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+      .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+      .highlight { color: var(--teal); font-weight: 700; }
+      .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+      audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🎨</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Blue Room</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">a change of scenery</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">기분 전환, 새로운 환경에서의 변화</td></tr>
+                <tr><td class="p-4"><b class="text-white">became obsessed with</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">~에 푹 빠지게 되었다, 집착하게 되었다</td></tr>
+                <tr><td class="p-4"><b class="text-white">old place</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">예전에 살던 곳, 이전 장소</td></tr>
+                <tr><td class="p-4"><b class="text-white">striking color</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">눈에 확 띄는 색, 강렬하고 인상적인 색</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-6 rounded-2xl space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">A change of scenery</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">꼭 여행을 떠나는 것만 의미하지는 않아요. 평소와 다른 장소나 환경에서 시간을 보내며 기분을 전환한다는 뜻이에요.</p>
+            </div>
+            <div class="glass p-6 rounded-2xl space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">Became obsessed with</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">무언가를 너무 좋아해서 계속 생각하거나 관심을 쏟게 되었다는 뜻이에요. 긍정적인 의미로도, 지나치게 집착한다는 부정적인 의미로도 사용해요.</p>
+            </div>
+            <div class="glass p-6 rounded-2xl space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">Old place</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">문맥에 따라 예전에 살던 집, 전에 다니던 장소, 오래된 가게 등을 뜻할 수 있어요. <i>Our old place</i>는 부부나 가족이 전에 살던 집을 가리킬 때도 자연스럽게 사용해요.</p>
+            </div>
+            <div class="glass p-6 rounded-2xl space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">Striking color</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">단순히 밝은 색이 아니라 강렬하거나 독특해서 즉시 시선을 끄는 색을 말해요. <i>Striking</i>은 외모, 디자인, 풍경 등에도 사용할 수 있어요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">When Julia suggested dinner at Azure, her husband Mark immediately agreed.</p>
+                <p class="mb-6">They had spent the last month packing boxes and arguing about furniture after moving into a new apartment. A fancy dinner sounded like exactly the <b class="highlight quiz-target" data-ans="change of scenery" data-kor="기분 전환">change of scenery</b> they needed.</p>
+                <p class="mb-6">Julia had <b class="highlight quiz-target" data-ans="become obsessed with" data-kor="푹 빠져">become obsessed with</b> Azure after seeing videos of its famous blue dining room. Every influencer seemed to love it.</p>
+                <p class="mb-6">"Look at this place!" she said, showing Mark another photo. "Even the food is blue!"</p>
+                <p class="mb-6">Mark wasn't convinced.</p>
+                <p class="mb-6">"Is blue food supposed to be a good thing?"</p>
+                <p class="mb-6">"Just trust me."</p>
+                <p class="mb-6">When they arrived, the dining room was even bluer than the photographs. Blue walls, blue chairs, blue lighting, and blue flowers filled the restaurant.</p>
+                <p class="mb-6">"Wow," Mark said. "That's certainly a <b class="highlight quiz-target" data-ans="striking color" data-kor="눈에 확 띄는 색">striking color</b>."</p>
+                <p class="mb-6">"Isn't it amazing?" Julia asked.</p>
+                <p class="mb-6">"Absolutely."</p>
+                <p class="mb-6">He felt as though he were sitting inside a giant aquarium.</p>
+                <p class="mb-6">The waiter brought their first course: blue soup served in blue bowls.</p>
+                <p class="mb-6">"It's our signature seafood soup," he explained. "We use natural ingredients to create the color."</p>
+                <p class="mb-6">Julia tasted it.</p>
+                <p class="mb-6">It was cold and extremely salty.</p>
+                <p class="mb-6">"Delicious," she said.</p>
+                <p class="mb-6">Mark tried his.</p>
+                <p class="mb-6">"Very refreshing."</p>
+                <p class="mb-6">He secretly wished he had ordered a hamburger.</p>
+                <p class="mb-6">Next came blue pasta covered in blue cheese sauce.</p>
+                <p class="mb-6">Julia took a bite and immediately reached for her water.</p>
+                <p class="mb-6">"Everything okay?" Mark asked.</p>
+                <p class="mb-6">"Perfect. Just a strong flavor."</p>
+                <p class="mb-6">Mark nodded. "I love strong flavors."</p>
+                <p class="mb-6">He hated blue cheese.</p>
+                <p class="mb-6">The waiter returned.</p>
+                <p class="mb-6">"You seem to be enjoying our signature dishes! Would you like to try the chef's special blue dessert?"</p>
+                <p class="mb-6">"Of course!" Julia said.</p>
+                <p class="mb-6">Mark nodded enthusiastically.</p>
+                <p class="mb-6">Neither wanted to disappoint the other.</p>
+                <p class="mb-6">A few minutes later, the waiter brought two enormous plates of blue ice cream topped with blue jelly.</p>
+                <p class="mb-6">Julia stared at hers.</p>
+                <p class="mb-6">Mark stared at his.</p>
+                <p class="mb-6">"That's a lot of blue," he said.</p>
+                <p class="mb-6">Julia laughed nervously.</p>
+                <p class="mb-6">"Very artistic."</p>
+                <p class="mb-6">They each took a spoonful.</p>
+                <p class="mb-6">The ice cream tasted like seaweed.</p>
+                <p class="mb-6">Mark put down his spoon.</p>
+                <p class="mb-6">"Julia, can I ask you something?"</p>
+                <p class="mb-6">"Sure."</p>
+                <p class="mb-6">"Do you actually like this restaurant?"</p>
+                <p class="mb-6">"Of course! Why?"</p>
+                <p class="mb-6">"Because you've barely eaten anything."</p>
+                <p class="mb-6">Julia looked at her plate.</p>
+                <p class="mb-6">"Neither have you."</p>
+                <p class="mb-6">Mark sighed.</p>
+                <p class="mb-6">"Okay. I think it's a bit overhyped."</p>
+                <p class="mb-6">Julia stared at him.</p>
+                <p class="mb-6">"Seriously?"</p>
+                <p class="mb-6">"Yeah. The food is strange, the lighting hurts my eyes, and I can't even tell what I'm eating."</p>
+                <p class="mb-6">Julia suddenly started laughing.</p>
+                <p class="mb-6">"Thank goodness! I thought you loved it!"</p>
+                <p class="mb-6">"I thought YOU loved it!"</p>
+                <p class="mb-6">"I only wanted to come because everyone online said it was amazing!"</p>
+                <p class="mb-6">Mark shook his head.</p>
+                <p class="mb-6">"Honestly, I preferred that little restaurant near our <b class="highlight quiz-target" data-ans="old place" data-kor="예전 집">old place</b>."</p>
+                <p class="mb-6">Julia smiled.</p>
+                <p class="mb-6">"The one with the terrible chairs?"</p>
+                <p class="mb-6">"Exactly."</p>
+                <p class="mb-6">"And the amazing noodles?"</p>
+                <p class="mb-6">"Exactly."</p>
+                <p class="mb-6">Julia grabbed her phone.</p>
+                <p class="mb-6">"Let's see if they're still open."</p>
+                <p class="mb-6">As she searched, Mark looked around the blue dining room.</p>
+                <p class="mb-6">"One question, though."</p>
+                <p class="mb-6">"What?"</p>
+                <p class="mb-6">"Do you think our tongues are blue?"</p>
+                <p class="mb-6">Julia stuck out her tongue.</p>
+                <p class="mb-6">Mark burst out laughing.</p>
+                <p class="mb-6">They were both bright blue.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <h3 class="text-xl font-bold text-slate-200 not-italic mb-4">파란 방</h3>
+                <p class="mb-6">줄리아가 애저라는 레스토랑에서 저녁을 먹자고 제안했을 때, 남편 마크는 곧바로 동의했다.</p>
+                <p class="mb-6">두 사람은 새 아파트로 이사하면서 지난 한 달 동안 짐을 싸고 가구 문제로 다투느라 정신이 없었다. 근사한 저녁 식사는 그들에게 꼭 필요한 <b class="highlight">기분 전환</b>이 될 것 같았다.</p>
+                <p class="mb-6">줄리아는 유명한 파란색 식당 내부를 보여 주는 영상을 본 뒤 애저에 <b class="highlight">푹 빠져</b> 있었다. 모든 인플루언서가 이곳을 좋아하는 것 같았다.</p>
+                <p class="mb-6">"여기 좀 봐!" 줄리아가 사진을 또 보여 주며 말했다. "음식까지 파란색이야!"</p>
+                <p class="mb-6">마크는 확신이 서지 않았다.</p>
+                <p class="mb-6">"음식이 파란색인 게 좋은 거야?"</p>
+                <p class="mb-6">"그냥 날 믿어."</p>
+                <p class="mb-6">식당에 도착하자 내부는 사진보다 훨씬 더 파랬다. 파란 벽, 파란 의자, 파란 조명, 파란 꽃이 식당을 가득 채우고 있었다.</p>
+                <p class="mb-6">"와." 마크가 말했다. "정말 <b class="highlight">눈에 확 띄는 색</b>이네."</p>
+                <p class="mb-6">"대단하지?" 줄리아가 물었다.</p>
+                <p class="mb-6">"그럼."</p>
+                <p class="mb-6">마크는 마치 거대한 수족관 안에 앉아 있는 것 같았다.</p>
+                <p class="mb-6">웨이터가 첫 번째 코스를 가져왔다. 파란 그릇에 담긴 파란 수프였다.</p>
+                <p class="mb-6">"저희 대표 해산물 수프입니다." 웨이터가 설명했다. "천연 재료를 사용해 색을 냈습니다."</p>
+                <p class="mb-6">줄리아가 맛을 보았다.</p>
+                <p class="mb-6">차갑고 엄청나게 짰다.</p>
+                <p class="mb-6">"맛있네요." 그녀가 말했다.</p>
+                <p class="mb-6">마크도 맛보았다.</p>
+                <p class="mb-6">"아주 상쾌하네요."</p>
+                <p class="mb-6">속으로는 햄버거를 주문했으면 좋았겠다고 생각했다.</p>
+                <p class="mb-6">다음으로 파란 치즈 소스를 덮은 파란 파스타가 나왔다.</p>
+                <p class="mb-6">줄리아는 한입 먹자마자 물을 집어 들었다.</p>
+                <p class="mb-6">"괜찮아?" 마크가 물었다.</p>
+                <p class="mb-6">"완벽해. 그냥 맛이 좀 강해서."</p>
+                <p class="mb-6">마크가 고개를 끄덕였다.</p>
+                <p class="mb-6">"난 맛이 강한 음식이 좋아."</p>
+                <p class="mb-6">사실 그는 블루치즈를 싫어했다.</p>
+                <p class="mb-6">웨이터가 돌아왔다.</p>
+                <p class="mb-6">"저희 대표 요리들을 즐기고 계신 것 같네요! 셰프의 특별한 파란색 디저트도 드셔 보시겠어요?"</p>
+                <p class="mb-6">"물론이죠!" 줄리아가 말했다.</p>
+                <p class="mb-6">마크도 열정적으로 고개를 끄덕였다.</p>
+                <p class="mb-6">두 사람 모두 상대방을 실망시키고 싶지 않았다.</p>
+                <p class="mb-6">몇 분 뒤, 웨이터가 파란 젤리를 올린 파란 아이스크림을 커다란 접시에 담아 두 개 가져왔다.</p>
+                <p class="mb-6">줄리아는 자기 접시를 빤히 바라보았다.</p>
+                <p class="mb-6">마크도 자기 접시를 바라보았다.</p>
+                <p class="mb-6">"파란색이 정말 많네." 마크가 말했다.</p>
+                <p class="mb-6">줄리아가 어색하게 웃었다.</p>
+                <p class="mb-6">"정말 예술적이야."</p>
+                <p class="mb-6">두 사람은 각각 한 숟가락씩 먹었다.</p>
+                <p class="mb-6">아이스크림에서 미역 맛이 났다.</p>
+                <p class="mb-6">마크는 숟가락을 내려놓았다.</p>
+                <p class="mb-6">"줄리아, 하나만 물어봐도 돼?"</p>
+                <p class="mb-6">"물론이지."</p>
+                <p class="mb-6">"너 정말 이 식당 마음에 들어?"</p>
+                <p class="mb-6">"당연하지! 왜?"</p>
+                <p class="mb-6">"음식을 거의 안 먹었잖아."</p>
+                <p class="mb-6">줄리아는 자기 접시를 내려다보았다.</p>
+                <p class="mb-6">"너도 마찬가지잖아."</p>
+                <p class="mb-6">마크가 한숨을 쉬었다.</p>
+                <p class="mb-6">"좋아. 솔직히 여긴 좀 과대평가된 것 같아."</p>
+                <p class="mb-6">줄리아는 그를 빤히 바라보았다.</p>
+                <p class="mb-6">"진짜?"</p>
+                <p class="mb-6">"응. 음식은 이상하고, 조명 때문에 눈이 아프고, 내가 뭘 먹고 있는지도 모르겠어."</p>
+                <p class="mb-6">줄리아가 갑자기 웃음을 터뜨렸다.</p>
+                <p class="mb-6">"다행이다! 난 네가 좋아하는 줄 알았어!"</p>
+                <p class="mb-6">"난 네가 좋아하는 줄 알았지!"</p>
+                <p class="mb-6">"난 그냥 온라인에서 다들 대단하다고 하니까 와 보고 싶었던 거야!"</p>
+                <p class="mb-6">마크가 고개를 저었다.</p>
+                <p class="mb-6">"솔직히 난 우리 <b class="highlight">예전 집</b> 근처에 있던 작은 식당이 더 좋았어."</p>
+                <p class="mb-6">줄리아가 미소를 지었다.</p>
+                <p class="mb-6">"의자가 끔찍했던 그 식당?"</p>
+                <p class="mb-6">"맞아."</p>
+                <p class="mb-6">"국수는 정말 맛있었던 곳?"</p>
+                <p class="mb-6">"바로 거기."</p>
+                <p class="mb-6">줄리아가 휴대폰을 집어 들었다.</p>
+                <p class="mb-6">"아직 영업하는지 확인해 보자."</p>
+                <p class="mb-6">줄리아가 검색하는 동안 마크는 파란 식당 안을 둘러보았다.</p>
+                <p class="mb-6">"그런데 질문 하나만."</p>
+                <p class="mb-6">"뭔데?"</p>
+                <p class="mb-6">"우리 혀도 파랗게 변했을까?"</p>
+                <p class="mb-6">줄리아가 혀를 내밀었다.</p>
+                <p class="mb-6">마크가 웃음을 터뜨렸다.</p>
+                <p class="mb-6">두 사람의 혀는 모두 새파랗게 변해 있었다.</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "11171200.m4a";
+</script>
+    <script src="wordbank-utils.js"></script>
+</body>
+</html>

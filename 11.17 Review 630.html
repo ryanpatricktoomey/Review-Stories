@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | A Night at Lumière</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+      :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+      body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+      .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+      .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+      input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+      input:focus::placeholder { opacity: 0 !important; }
+      .mystery-cell { transition: color 0.3s; }
+      .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+      .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+      .highlight { color: var(--teal); font-weight: 700; }
+      .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+      audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🍽️</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">A Night at Lumière</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">buckwheat</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">메밀</td></tr>
+                <tr><td class="p-4"><b class="text-white">insulated cup</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">보온·보냉 컵, 텀블러</td></tr>
+                <tr><td class="p-4"><b class="text-white">insult</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">모욕하다, 모욕</td></tr>
+                <tr><td class="p-4"><b class="text-white">it's a shame to eat it</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">먹기 아까울 정도야</td></tr>
+                <tr><td class="p-4"><b class="text-white">get sucked in</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">홀려서 빠져들다, 분위기에 휩쓸리다</td></tr>
+                <tr><td class="p-4"><b class="text-white">overpriced</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">가격이 터무니없이 비싼, 제값을 못 하는</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-6 rounded-2xl space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">It's a shame to eat it</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">음식이 너무 예쁘거나 정성스럽게 만들어져서 먹기 아깝다는 뜻이에요. 반드시 슬프거나 안타깝다는 의미는 아니에요.</p>
+            </div>
+            <div class="glass p-6 rounded-2xl space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">Get sucked in</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">광고, 분위기, 이야기 등에 자기도 모르게 빠져들거나 휩쓸리는 것을 말해요. 특히 <i>get sucked in by the hype</i>는 사람들의 호들갑에 혹해서 넘어간다는 느낌이에요.</p>
+            </div>
+            <div class="glass p-6 rounded-2xl space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">Overpriced</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">단순히 비싸다는 <i>expensive</i>와 달리, 실제 가치에 비해 가격이 지나치게 높다는 부정적인 평가가 담겨 있어요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Daniel had been dating Sophie for six months, and tonight he wanted to impress her. He had booked a table at Lumière, a restaurant famous for its beautiful food and three-month waiting list.</p>
+                <p class="mb-6">"I can't believe you got us a reservation!" Sophie said.</p>
+                <p class="mb-6">Daniel smiled. "Everyone says this place is amazing."</p>
+                <p class="mb-6">The first problem appeared when they opened the menus.</p>
+                <p class="mb-6">"Forty dollars for soup?" Daniel whispered.</p>
+                <p class="mb-6">"It's a special experience," Sophie said.</p>
+                <p class="mb-6">Daniel nodded, although he was beginning to suspect the restaurant was seriously <b class="highlight quiz-target" data-ans="overpriced" data-kor="가격을 부풀려 받는">overpriced</b>.</p>
+                <p class="mb-6">Their first course arrived on a huge white plate. In the center sat three tiny pieces of <b class="highlight quiz-target" data-ans="buckwheat" data-kor="메밀">buckwheat</b> covered with flowers.</p>
+                <p class="mb-6">"Oh, it's beautiful!" Sophie said. "<b class="highlight quiz-target" data-ans="It's a shame to eat it" data-kor="먹기 아까울 정도야">It's a shame to eat it</b>!"</p>
+                <p class="mb-6">Daniel stared at his plate. He had skipped lunch.</p>
+                <p class="mb-6">The waiter appeared. "Would you like to hear the story behind the dish?"</p>
+                <p class="mb-6">"Sure," Sophie said enthusiastically.</p>
+                <p class="mb-6">For the next five minutes, the waiter explained how the chef had personally selected every ingredient.</p>
+                <p class="mb-6">Daniel finally took a bite.</p>
+                <p class="mb-6">It tasted like wet cardboard.</p>
+                <p class="mb-6">"Well?" Sophie asked.</p>
+                <p class="mb-6">"Interesting texture," Daniel replied.</p>
+                <p class="mb-6">She frowned. "You don't like it?"</p>
+                <p class="mb-6">"No, no! It's just not what I expected."</p>
+                <p class="mb-6">The second course was a single mushroom sitting in warm water. The waiter described it as "a conversation between the forest and the ocean."</p>
+                <p class="mb-6">Daniel looked at Sophie. "I think the forest forgot to bring dinner."</p>
+                <p class="mb-6">She didn't laugh.</p>
+                <p class="mb-6">"Daniel, you're embarrassing me."</p>
+                <p class="mb-6">"I'm sorry. I didn't mean to <b class="highlight quiz-target" data-ans="insult" data-kor="모욕하려던">insult</b> the chef."</p>
+                <p class="mb-6">"Can you please just enjoy yourself?"</p>
+                <p class="mb-6">Daniel agreed. Unfortunately, the dessert was worse.</p>
+                <p class="mb-6">A waiter brought two empty bowls and poured a spoonful of sweet foam into each.</p>
+                <p class="mb-6">"Where's the actual dessert?" Daniel asked.</p>
+                <p class="mb-6">"That is the dessert, sir."</p>
+                <p class="mb-6">Sophie closed her eyes and tasted it. "Wow. That's incredible."</p>
+                <p class="mb-6">Daniel tasted his. It was okay. Nothing special.</p>
+                <p class="mb-6">Then the bill arrived.</p>
+                <p class="mb-6">Four hundred and eighty dollars.</p>
+                <p class="mb-6">Daniel stared at the number.</p>
+                <p class="mb-6">"Are you okay?" Sophie asked.</p>
+                <p class="mb-6">"Yeah. Just wondering if they accidentally charged us for the furniture."</p>
+                <p class="mb-6">"Daniel!"</p>
+                <p class="mb-6">"I'm kidding!"</p>
+                <p class="mb-6">But Sophie suddenly looked uncomfortable.</p>
+                <p class="mb-6">"Actually, I need to tell you something. I don't really like this place either."</p>
+                <p class="mb-6">Daniel blinked. "What?"</p>
+                <p class="mb-6">"I saw so many amazing reviews online. I guess I <b class="highlight quiz-target" data-ans="got sucked in" data-kor="홀렸나 봐">got sucked in</b>."</p>
+                <p class="mb-6">"Then why did you keep saying everything was incredible?"</p>
+                <p class="mb-6">"Because you spent so much money! I didn't want to hurt your feelings."</p>
+                <p class="mb-6">Daniel stared at her.</p>
+                <p class="mb-6">"I only booked it because I thought you wanted to come!"</p>
+                <p class="mb-6">They sat silently for a moment.</p>
+                <p class="mb-6">Then Sophie started laughing.</p>
+                <p class="mb-6">"Can we please get some real food?"</p>
+                <p class="mb-6">Twenty minutes later, they were sitting in a convenience store, eating instant noodles and drinking tea from Daniel's <b class="highlight quiz-target" data-ans="insulated cup" data-kor="보온 컵">insulated cup</b>.</p>
+                <p class="mb-6">Sophie took a bite and smiled.</p>
+                <p class="mb-6">"Best meal I've had all evening."</p>
+                <p class="mb-6">Daniel raised his paper cup.</p>
+                <p class="mb-6">"And only four dollars."</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <h3 class="text-xl font-bold text-slate-200 not-italic mb-4">뤼미에르에서의 하룻밤</h3>
+                <p class="mb-6">다니엘은 소피와 사귄 지 6개월째였고, 오늘 밤 그녀에게 좋은 인상을 남기고 싶었다. 그는 아름다운 음식과 3개월이나 되는 예약 대기 기간으로 유명한 레스토랑, 뤼미에르에 자리를 예약해 놓았다.</p>
+                <p class="mb-6">"여기 예약했다니 믿을 수가 없어!" 소피가 말했다.</p>
+                <p class="mb-6">다니엘은 미소를 지었다.</p>
+                <p class="mb-6">"다들 여기 정말 대단하다고 하잖아."</p>
+                <p class="mb-6">첫 번째 문제는 메뉴판을 펼쳤을 때 나타났다.</p>
+                <p class="mb-6">"수프가 40달러라고?" 다니엘이 속삭였다.</p>
+                <p class="mb-6">"특별한 경험이잖아." 소피가 말했다.</p>
+                <p class="mb-6">다니엘은 고개를 끄덕였지만, 이 식당이 심각하게 <b class="highlight">가격을 부풀려 받는</b> 곳이 아닐까 하는 의심이 들기 시작했다.</p>
+                <p class="mb-6">첫 번째 코스 요리가 커다란 흰 접시에 담겨 나왔다. 접시 한가운데에는 꽃으로 장식된 아주 작은 <b class="highlight">메밀</b> 요리 세 조각이 놓여 있었다.</p>
+                <p class="mb-6">"와, 너무 예쁘다!" 소피가 말했다. "<b class="highlight">먹기 아까울 정도야</b>!"</p>
+                <p class="mb-6">다니엘은 자기 접시를 빤히 바라보았다. 그는 점심도 거른 상태였다.</p>
+                <p class="mb-6">웨이터가 다가왔다.</p>
+                <p class="mb-6">"이 요리에 담긴 이야기를 들려드릴까요?"</p>
+                <p class="mb-6">"물론이죠!" 소피가 신나게 대답했다.</p>
+                <p class="mb-6">그 후 5분 동안 웨이터는 셰프가 어떻게 모든 재료를 직접 골랐는지 설명했다.</p>
+                <p class="mb-6">마침내 다니엘이 한입 먹었다.</p>
+                <p class="mb-6">젖은 골판지를 씹는 맛이었다.</p>
+                <p class="mb-6">"어때?" 소피가 물었다.</p>
+                <p class="mb-6">"식감이 독특하네." 다니엘이 대답했다.</p>
+                <p class="mb-6">소피가 눈살을 찌푸렸다.</p>
+                <p class="mb-6">"마음에 안 들어?"</p>
+                <p class="mb-6">"아니, 아니! 그냥 내가 예상했던 거랑 좀 달라서."</p>
+                <p class="mb-6">두 번째 코스는 따뜻한 물에 담긴 버섯 한 개였다. 웨이터는 이것을 '숲과 바다의 대화'라고 설명했다.</p>
+                <p class="mb-6">다니엘은 소피를 바라보았다.</p>
+                <p class="mb-6">"숲이 저녁 식사 가져오는 걸 깜빡했나 봐."</p>
+                <p class="mb-6">소피는 웃지 않았다.</p>
+                <p class="mb-6">"다니엘, 나 창피하게 하지 마."</p>
+                <p class="mb-6">"미안해. 셰프를 <b class="highlight">모욕하려던</b> 건 아니었어."</p>
+                <p class="mb-6">"그냥 좀 즐기면 안 돼?"</p>
+                <p class="mb-6">다니엘은 그러겠다고 했다. 하지만 안타깝게도 디저트는 더 심했다.</p>
+                <p class="mb-6">웨이터가 빈 그릇 두 개를 가져와 각각 달콤한 거품을 한 숟가락씩 부어 주었다.</p>
+                <p class="mb-6">"진짜 디저트는 어디 있나요?" 다니엘이 물었다.</p>
+                <p class="mb-6">"그것이 디저트입니다, 손님."</p>
+                <p class="mb-6">소피는 눈을 감고 맛을 보았다.</p>
+                <p class="mb-6">"와. 정말 대단하다."</p>
+                <p class="mb-6">다니엘도 자기 것을 맛보았다.</p>
+                <p class="mb-6">그냥 괜찮았다. 특별할 건 없었다.</p>
+                <p class="mb-6">그때 계산서가 나왔다.</p>
+                <p class="mb-6">480달러.</p>
+                <p class="mb-6">다니엘은 금액을 빤히 바라보았다.</p>
+                <p class="mb-6">"괜찮아?" 소피가 물었다.</p>
+                <p class="mb-6">"응. 그냥 우리한테 가구 값까지 실수로 청구한 건가 싶어서."</p>
+                <p class="mb-6">"다니엘!"</p>
+                <p class="mb-6">"농담이야!"</p>
+                <p class="mb-6">그런데 갑자기 소피의 표정이 불편해 보였다.</p>
+                <p class="mb-6">"사실 나도 할 말이 있어. 나도 여기 별로 마음에 안 들어."</p>
+                <p class="mb-6">다니엘은 눈을 깜빡였다.</p>
+                <p class="mb-6">"뭐라고?"</p>
+                <p class="mb-6">"온라인에서 좋은 후기를 너무 많이 봤거든. 나도 그 분위기에 <b class="highlight">홀렸나 봐</b>."</p>
+                <p class="mb-6">"그럼 왜 계속 모든 게 대단하다고 했어?"</p>
+                <p class="mb-6">"네가 돈을 그렇게 많이 썼잖아! 네 기분 상하게 하고 싶지 않았어."</p>
+                <p class="mb-6">다니엘은 소피를 빤히 바라보았다.</p>
+                <p class="mb-6">"난 네가 오고 싶어 하는 줄 알고 예약한 건데!"</p>
+                <p class="mb-6">두 사람은 잠시 말없이 앉아 있었다.</p>
+                <p class="mb-6">그러다가 소피가 웃음을 터뜨렸다.</p>
+                <p class="mb-6">"우리 제발 진짜 음식 좀 먹으러 가면 안 될까?"</p>
+                <p class="mb-6">20분 후, 두 사람은 편의점에 앉아 컵라면을 먹으며 다니엘의 <b class="highlight">보온 컵</b>에 담긴 차를 마시고 있었다.</p>
+                <p class="mb-6">소피가 라면을 한입 먹고 미소 지었다.</p>
+                <p class="mb-6">"오늘 저녁 먹은 것 중에 이게 제일 맛있어."</p>
+                <p class="mb-6">다니엘이 종이컵을 들어 올렸다.</p>
+                <p class="mb-6">"그런데 겨우 4달러야."</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "1117630.m4a";
+</script>
+    <script src="wordbank-utils.js"></script>
+</body>
+</html>

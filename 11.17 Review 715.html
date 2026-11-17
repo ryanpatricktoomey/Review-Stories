@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Reservation Everyone Wanted</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+      :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+      body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+      .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+      .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+      input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+      input:focus::placeholder { opacity: 0 !important; }
+      .mystery-cell { transition: color 0.3s; }
+      .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+      .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+      .highlight { color: var(--teal); font-weight: 700; }
+      .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+      audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🍽️</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Reservation Everyone Wanted</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">I ended up trying it</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">결국 먹어 봤어 / 결국 해 봤어</td></tr>
+                <tr><td class="p-4"><b class="text-white">tourist trap</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">관광객을 상대로 바가지를 씌우는 곳</td></tr>
+                <tr><td class="p-4"><b class="text-white">red bean</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">팥</td></tr>
+                <tr><td class="p-4"><b class="text-white">at some point</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">언젠가, 어느 순간에</td></tr>
+                <tr><td class="p-4"><b class="text-white">from some point</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">어느 시점부터 (문맥에 따라 표현을 다듬어야 함)</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-6 rounded-2xl space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">I ended up trying it</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">처음부터 그럴 생각은 아니었지만, 상황이 그렇게 흘러가 결국 먹거나 경험하게 되었다는 뜻이에요. <i>end up + -ing</i> 형태로 다양하게 활용할 수 있어요.</p>
+            </div>
+            <div class="glass p-6 rounded-2xl space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">Tourist trap</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">관광객에게 인기가 있지만 가격이 지나치게 비싸거나 실제 경험이 기대 이하인 식당, 상점, 관광지 등을 말해요.</p>
+            </div>
+            <div class="glass p-6 rounded-2xl space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">At some point</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">'어느 순간에', '언젠가'라는 뜻이에요. 과거의 특정하지 않은 순간이나 미래의 불확실한 시점을 가리킬 수 있어요.</p>
+            </div>
+            <div class="glass p-6 rounded-2xl space-y-2">
+                <h3 class="text-amber-400 font-bold text-lg">From some point</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">'어느 시점부터'라고 말하고 싶을 때는 보통 <i>from some point on</i>보다는 <b>from that point on</b>, <b>at some point, ... started ...</b> 같은 표현이 더 자연스러워요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Emma had spent three weeks trying to get a reservation at Maison Blanc, the most talked-about restaurant in the city.</p>
+                <p class="mb-6">When she finally succeeded, her boyfriend, Alex, was thrilled.</p>
+                <p class="mb-6">"This place is supposed to be incredible," he said. "My coworkers won't stop talking about it."</p>
+                <p class="mb-6">Emma smiled. She had already seen the menu online and thought it looked ridiculously expensive. But Alex seemed excited, so she kept quiet.</p>
+                <p class="mb-6">When they arrived, a long line of people was taking photos outside.</p>
+                <p class="mb-6">"Is this a restaurant or a <b class="highlight quiz-target" data-ans="tourist trap" data-kor="관광객 상대로 바가지 씌우는 곳">tourist trap</b>?" Alex joked.</p>
+                <p class="mb-6">Emma laughed nervously. "Let's give it a chance."</p>
+                <p class="mb-6">Their first course was a single oyster served inside a glass box filled with smoke.</p>
+                <p class="mb-6">The waiter lifted the lid dramatically.</p>
+                <p class="mb-6">Alex stared at it.</p>
+                <p class="mb-6">"Wow. That's... impressive."</p>
+                <p class="mb-6">Emma nodded, although the smell reminded her of a barbecue that had gone wrong.</p>
+                <p class="mb-6">"Very artistic," she said.</p>
+                <p class="mb-6">The next dish was a tiny piece of fish covered in purple sauce. It tasted surprisingly sweet.</p>
+                <p class="mb-6">"Do you like it?" Alex asked.</p>
+                <p class="mb-6">"Absolutely," Emma lied. "What about you?"</p>
+                <p class="mb-6">"Love it."</p>
+                <p class="mb-6">Neither finished the dish.</p>
+                <p class="mb-6">Then dessert arrived: a delicate sculpture made from <b class="highlight quiz-target" data-ans="red bean" data-kor="팥">red bean</b> cream, chocolate, and edible flowers.</p>
+                <p class="mb-6">Emma normally hated red bean desserts, but the waiter explained that it was the chef's signature creation.</p>
+                <p class="mb-6">"I wasn't going to eat the whole thing, but <b class="highlight quiz-target" data-ans="I ended up trying it" data-kor="결국 먹어 보긴 했어">I ended up trying it</b>," she said after taking a bite.</p>
+                <p class="mb-6">"Well?"</p>
+                <p class="mb-6">"It's... unusual."</p>
+                <p class="mb-6">Alex tasted his dessert and immediately reached for his water.</p>
+                <p class="mb-6">"Pretty rich," he managed.</p>
+                <p class="mb-6"><b class="highlight quiz-target" data-ans="At some point" data-kor="어느 순간">At some point</b>, Emma noticed Alex checking his phone under the table.</p>
+                <p class="mb-6">"Are you bored?"</p>
+                <p class="mb-6">"No! Just checking something for work."</p>
+                <p class="mb-6">But she caught a glimpse of his screen. He was searching for nearby burger restaurants.</p>
+                <p class="mb-6">"Alex?"</p>
+                <p class="mb-6">He quickly put his phone away.</p>
+                <p class="mb-6">"What?"</p>
+                <p class="mb-6">"Are you looking for burgers?"</p>
+                <p class="mb-6">He stared at her.</p>
+                <p class="mb-6">"Maybe."</p>
+                <p class="mb-6">Emma burst out laughing.</p>
+                <p class="mb-6">"Thank goodness. I thought I was the only one!"</p>
+                <p class="mb-6">Alex looked confused.</p>
+                <p class="mb-6">"You don't like this place?"</p>
+                <p class="mb-6">"Not particularly. I think it's completely overrated."</p>
+                <p class="mb-6">"Then why did you keep saying everything was amazing?"</p>
+                <p class="mb-6">"Because you were so excited!"</p>
+                <p class="mb-6">Alex shook his head.</p>
+                <p class="mb-6">"I was only excited because you spent three weeks trying to book it!"</p>
+                <p class="mb-6">Emma covered her face.</p>
+                <p class="mb-6">"Seriously?"</p>
+                <p class="mb-6">"Seriously."</p>
+                <p class="mb-6"><b class="highlight quiz-target" data-ans="From that point on" data-kor="그때부터">From that point on</b>, they stopped pretending.</p>
+                <p class="mb-6">When the waiter asked whether they'd enjoyed their meal, Alex smiled politely.</p>
+                <p class="mb-6">"It was certainly an experience."</p>
+                <p class="mb-6">Outside, Emma checked the burger restaurant Alex had found.</p>
+                <p class="mb-6">"Only five minutes away."</p>
+                <p class="mb-6">"Perfect," Alex said.</p>
+                <p class="mb-6">Then Emma noticed something.</p>
+                <p class="mb-6">"The burgers are twenty-eight dollars each."</p>
+                <p class="mb-6">Alex sighed.</p>
+                <p class="mb-6">"Let's just get convenience-store sandwiches."</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <h3 class="text-xl font-bold text-slate-200 not-italic mb-4">모두가 가고 싶어 하는 레스토랑</h3>
+                <p class="mb-6">엠마는 도시에서 가장 화제가 되는 레스토랑인 메종 블랑을 예약하려고 3주 동안 애썼다.</p>
+                <p class="mb-6">마침내 예약에 성공하자 남자친구 알렉스는 무척 기뻐했다.</p>
+                <p class="mb-6">"여기 정말 대단한 곳이라던데. 회사 동료들이 이 식당 얘기를 멈추질 않아."</p>
+                <p class="mb-6">엠마는 미소를 지었다. 이미 온라인에서 메뉴를 봤는데 가격이 터무니없이 비싸다고 생각했다. 하지만 알렉스가 신나 보였기 때문에 아무 말도 하지 않았다.</p>
+                <p class="mb-6">식당에 도착하자 사람들이 밖에서 사진을 찍으려고 길게 줄을 서 있었다.</p>
+                <p class="mb-6">"여기 식당이야, 아니면 <b class="highlight">관광객 상대로 바가지 씌우는 곳</b>이야?" 알렉스가 농담했다.</p>
+                <p class="mb-6">엠마는 어색하게 웃었다.</p>
+                <p class="mb-6">"일단 한번 가 보자."</p>
+                <p class="mb-6">첫 번째 코스는 연기가 가득 찬 유리 상자 안에 담긴 굴 한 개였다.</p>
+                <p class="mb-6">웨이터가 극적으로 뚜껑을 들어 올렸다.</p>
+                <p class="mb-6">알렉스는 그것을 빤히 바라보았다.</p>
+                <p class="mb-6">"와. 이거... 대단하네."</p>
+                <p class="mb-6">엠마도 고개를 끄덕였다. 사실 냄새는 뭔가 잘못된 바비큐를 떠올리게 했지만 말이다.</p>
+                <p class="mb-6">"정말 예술적이네." 그녀가 말했다.</p>
+                <p class="mb-6">다음 요리는 보라색 소스가 덮인 작은 생선 한 조각이었다. 놀랍게도 달콤한 맛이 났다.</p>
+                <p class="mb-6">"맛있어?" 알렉스가 물었다.</p>
+                <p class="mb-6">"당연하지." 엠마가 거짓말했다. "넌 어때?"</p>
+                <p class="mb-6">"완전 좋아."</p>
+                <p class="mb-6">둘 다 음식을 다 먹지 않았다.</p>
+                <p class="mb-6">그때 디저트가 나왔다. <b class="highlight">팥</b> 크림과 초콜릿, 식용 꽃으로 만든 섬세한 조형물이었다.</p>
+                <p class="mb-6">엠마는 원래 팥 디저트를 싫어했지만, 웨이터는 이것이 셰프의 대표작이라고 설명했다.</p>
+                <p class="mb-6">"다 먹을 생각은 없었는데, <b class="highlight">결국 먹어 보긴 했어</b>." 엠마가 한입 먹고 말했다.</p>
+                <p class="mb-6">"어때?"</p>
+                <p class="mb-6">"독특하네..."</p>
+                <p class="mb-6">알렉스도 디저트를 맛보더니 곧바로 물을 집어 들었다.</p>
+                <p class="mb-6">"맛이 꽤 진하네." 그가 겨우 말했다.</p>
+                <p class="mb-6"><b class="highlight">어느 순간</b> 엠마는 알렉스가 테이블 아래에서 휴대폰을 확인하고 있다는 것을 알아차렸다.</p>
+                <p class="mb-6">"지루해?"</p>
+                <p class="mb-6">"아니! 그냥 회사 일 좀 확인하는 거야."</p>
+                <p class="mb-6">하지만 엠마는 그의 화면을 힐끗 보았다. 그는 근처 햄버거 가게를 검색하고 있었다.</p>
+                <p class="mb-6">"알렉스?"</p>
+                <p class="mb-6">그가 재빨리 휴대폰을 치웠다.</p>
+                <p class="mb-6">"왜?"</p>
+                <p class="mb-6">"너 햄버거 찾고 있어?"</p>
+                <p class="mb-6">알렉스는 엠마를 빤히 바라보았다.</p>
+                <p class="mb-6">"어쩌면."</p>
+                <p class="mb-6">엠마가 웃음을 터뜨렸다.</p>
+                <p class="mb-6">"다행이다. 나만 그런 줄 알았어!"</p>
+                <p class="mb-6">알렉스는 어리둥절한 표정을 지었다.</p>
+                <p class="mb-6">"너 여기 마음에 안 들어?"</p>
+                <p class="mb-6">"별로. 완전히 과대평가된 곳인 것 같아."</p>
+                <p class="mb-6">"그럼 왜 계속 모든 게 대단하다고 했어?"</p>
+                <p class="mb-6">"네가 그렇게 신나 있었잖아!"</p>
+                <p class="mb-6">알렉스가 고개를 저었다.</p>
+                <p class="mb-6">"난 네가 3주 동안 예약하려고 애썼으니까 신났던 거야!"</p>
+                <p class="mb-6">엠마는 두 손으로 얼굴을 가렸다.</p>
+                <p class="mb-6">"진짜?"</p>
+                <p class="mb-6">"진짜."</p>
+                <p class="mb-6"><b class="highlight">그때부터</b> 두 사람은 더 이상 좋아하는 척하지 않았다.</p>
+                <p class="mb-6">웨이터가 식사는 즐거우셨냐고 묻자 알렉스는 예의 바르게 미소를 지었다.</p>
+                <p class="mb-6">"확실히 특별한 경험이었어요."</p>
+                <p class="mb-6">식당 밖에서 엠마는 알렉스가 찾아 놓은 햄버거 가게를 확인했다.</p>
+                <p class="mb-6">"여기서 5분밖에 안 걸리네."</p>
+                <p class="mb-6">"완벽해." 알렉스가 말했다.</p>
+                <p class="mb-6">그때 엠마가 무언가를 발견했다.</p>
+                <p class="mb-6">"햄버거가 하나에 28달러야."</p>
+                <p class="mb-6">알렉스가 한숨을 쉬었다.</p>
+                <p class="mb-6">"그냥 편의점 샌드위치나 먹자."</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "1117715.m4a";
+</script>
+    <script src="wordbank-utils.js"></script>
+</body>
+</html>

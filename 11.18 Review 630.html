@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | Five Things to Guess</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+      :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+      body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+      .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+      .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+      input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+      input:focus::placeholder { opacity: 0 !important; }
+      .mystery-cell { transition: color 0.3s; }
+      .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+      .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+      .highlight { color: var(--teal); font-weight: 700; }
+      .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+      audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🧩</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">Five Things to Guess</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">helps prevent hair loss</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">탈모 예방에 도움이 된다</td></tr>
+                <tr><td class="p-4"><b class="text-white">glass noodles</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">당면</td></tr>
+                <tr><td class="p-4"><b class="text-white">synthetic leather</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">인조 가죽</td></tr>
+                <tr><td class="p-4"><b class="text-white">streetcar / tram</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">노면전차, 트램</td></tr>
+                <tr><td class="p-4"><b class="text-white">slippery</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">미끄러운</td></tr>
+                <tr><td class="p-4"><b class="text-white">squishy</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">말랑말랑한</td></tr>
+                <tr><td class="p-4"><b class="text-white">tender</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">부드러운, 연한</td></tr>
+                <tr><td class="p-4"><b class="text-white">appetizing</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">먹음직스러운</td></tr>
+                <tr><td class="p-4"><b class="text-white">slimy</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">미끈미끈한, 끈적한</td></tr>
+                <tr><td class="p-4"><b class="text-white">delicate</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">섬세한, 연약한</td></tr>
+                <tr><td class="p-4"><b class="text-white">delicacy</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">진미, 특별한 별미</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-1">
+                <h3 class="text-teal-400 font-bold text-sm">slippery / slimy</h3>
+                <p class="text-slate-300 text-sm">Slippery는 미끄러지기 쉬운 상태, slimy는 점액처럼 미끈거리는 느낌이에요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-1">
+                <h3 class="text-teal-400 font-bold text-sm">squishy / tender</h3>
+                <p class="text-slate-300 text-sm">Squishy는 눌렀을 때 말랑한 느낌이고, tender는 특히 고기가 질기지 않고 부드러운 상태예요.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border border-white/5 space-y-1">
+                <h3 class="text-teal-400 font-bold text-sm">delicate / delicacy</h3>
+                <p class="text-slate-300 text-sm">Delicate는 섬세하거나 연약하다는 뜻이고, delicacy는 특별한 별미를 뜻해요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">1.<br>It's something that can turn a relaxing shower into an unpleasant cleaning job. You probably don't notice it until water starts collecting around your feet. Even people who use expensive products that supposedly <b class="highlight quiz-target" data-ans="help prevent hair loss" data-kor="탈모 예방에 도움이 된다">help prevent hair loss</b> may experience this problem. It's usually hidden beneath a small metal cover, and removing it often involves pulling out something that looks like a disgusting little animal.<br>What is it?</p>
+                <p class="mb-6">2.<br>This is something people often enjoy together, especially when the weather is cold. The ingredients arrive looking quite ordinary, but they become much more <b class="highlight quiz-target" data-ans="appetizing" data-kor="먹음직스러운">appetizing</b> after a few minutes. You might add vegetables, meat, mushrooms, or <b class="highlight quiz-target" data-ans="glass noodles" data-kor="당면">glass noodles</b>. The meat should become <b class="highlight quiz-target" data-ans="tender" data-kor="부드러운">tender</b>, although leaving it too long can ruin the texture. The biggest danger is getting so distracted by conversation that everything disappears into the bubbling liquid.<br>What is it?</p>
+                <p class="mb-6">3.<br>This is a place where you might discover something beautiful for almost nothing, or pay far too much for somebody else's mistake. You could find an elegant jacket made of <b class="highlight quiz-target" data-ans="synthetic leather" data-kor="인조 가죽">synthetic leather</b>, a <b class="highlight quiz-target" data-ans="delicate" data-kor="섬세한">delicate</b> vase, or a perfectly good chair. Nothing is guaranteed to be available in your size or preferred color. The secret is to inspect everything carefully, because some problems only become obvious after you've paid.<br>What kind of shop is it?</p>
+                <p class="mb-6">4.<br>This is something travelers often purchase because they believe it will save them money. It can be especially useful in cities where public transportation is expensive. Depending on the location, it may allow you to use buses, trains, or a <b class="highlight quiz-target" data-ans="streetcar" data-kor="노면전차">streetcar</b> or <b class="highlight quiz-target" data-ans="tram" data-kor="트램">tram</b> without buying separate tickets. Some versions also include admission to popular attractions. The problem is that people sometimes spend more time trying to get their money's worth than actually enjoying their vacation.<br>What is it?</p>
+                <p class="mb-6">5.<br>This creature isn't particularly attractive, and touching it might make you uncomfortable. Its body can feel <b class="highlight quiz-target" data-ans="squishy" data-kor="말랑말랑한">squishy</b>, <b class="highlight quiz-target" data-ans="slippery" data-kor="미끄러운">slippery</b>, or even <b class="highlight quiz-target" data-ans="slimy" data-kor="미끈미끈한">slimy</b>. It moves slowly along the ocean floor and doesn't look like a typical animal. Surprisingly, it's considered a <b class="highlight quiz-target" data-ans="delicacy" data-kor="특별한 별미">delicacy</b> in several Asian countries. Some people enjoy its unusual texture, while others wonder why anyone would voluntarily put something resembling a wet rubber tube into their mouth.<br>What is it?<br>Well, how many did you get?</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">1.<br>편안한 샤워 시간을 불쾌한 청소 시간으로 바꿀 수 있는 것이에요. 발 주변에 물이 고이기 시작하기 전까지는 별로 신경 쓰지 않을 수도 있어요. <b class="highlight">탈모 예방에 도움이 된다</b>고 알려진 비싼 제품을 사용하는 사람들도 이런 문제를 경험할 수 있죠. 보통 작은 금속 덮개 아래에 숨겨져 있고, 제거하려면 역겹게 생긴 작은 동물 같은 것을 끄집어내야 하는 경우가 많아요.<br>무엇일까요?</p>
+                <p class="mb-6">2.<br>특히 날씨가 추울 때 사람들이 함께 즐기는 음식이에요. 재료들은 처음에는 평범해 보이지만 몇 분이 지나면 훨씬 <b class="highlight">먹음직스러워져요</b>. 채소, 고기, 버섯, <b class="highlight">당면</b> 등을 넣을 수 있어요. 고기는 <b class="highlight">부드러워져야</b> 하지만 너무 오래 두면 식감이 나빠질 수 있죠. 가장 큰 위험은 대화에 정신이 팔려 모든 재료가 끓는 국물 속으로 사라져 버리는 거예요.<br>무엇일까요?</p>
+                <p class="mb-6">3.<br>거의 돈을 들이지 않고 아름다운 물건을 발견할 수도 있고, 다른 사람이 저지른 실수에 지나치게 많은 돈을 지불할 수도 있는 가게예요. <b class="highlight">인조 가죽</b>으로 만든 우아한 재킷이나 <b class="highlight">섬세한</b> 꽃병, 멀쩡한 의자를 발견할 수도 있죠. 원하는 크기나 색상의 물건이 반드시 있다는 보장은 없어요. 중요한 건 모든 물건을 꼼꼼하게 확인하는 거예요. 어떤 문제는 돈을 지불한 뒤에야 드러나니까요.<br>어떤 가게일까요?</p>
+                <p class="mb-6">4.<br>여행자들이 돈을 아낄 수 있다고 생각해서 자주 구입하는 물건이에요. 특히 대중교통비가 비싼 도시에서 유용할 수 있어요. 지역에 따라 버스, 기차, <b class="highlight">노면전차</b> 등을 별도의 표 없이 이용할 수 있게 해 줘요. 일부 제품에는 인기 관광지 입장권도 포함돼요. 문제는 사람들이 휴가를 즐기는 것보다 본전을 뽑으려고 애쓰는 데 더 많은 시간을 보내기도 한다는 거예요.<br>무엇일까요?</p>
+                <p class="mb-6">5.<br>그다지 매력적으로 생기지 않았고, 만지면 불편한 느낌이 들 수도 있는 생물이에요. 몸이 <b class="highlight">말랑말랑하거나</b> <b class="highlight">미끄럽거나</b> 심지어 <b class="highlight">미끈미끈하게</b> 느껴질 수도 있어요. 바다 밑바닥을 천천히 움직이며 일반적인 동물처럼 보이지 않아요. 놀랍게도 아시아의 여러 나라에서는 <b class="highlight">특별한 별미</b>로 여겨져요. 독특한 식감을 좋아하는 사람도 있지만, 왜 누군가가 젖은 고무관처럼 생긴 것을 자발적으로 입에 넣는지 이해하지 못하는 사람도 있어요.<br>무엇일까요?</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "1118630.m4a";
+</script>
+    <script src="wordbank-utils.js"></script>
+</body>
+</html>

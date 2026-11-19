@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | Seventeen Days</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+      :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+      body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+      .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+      .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+      input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+      input:focus::placeholder { opacity: 0 !important; }
+      .mystery-cell { transition: color 0.3s; }
+      .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+      .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+      .highlight { color: var(--teal); font-weight: 700; }
+      .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+      audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🕯️</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">Seventeen Days</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">hallucination</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">환각 / AI가 사실이 아닌 내용을 사실처럼 만들어 내는 현상</td></tr>
+                <tr><td class="p-4"><b class="text-white">can't trust it</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">그걸 믿을 수 없다 / 신뢰할 수 없다</td></tr>
+                <tr><td class="p-4"><b class="text-white">bounce ideas off of</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">~에게 아이디어를 이야기하고 의견을 구하다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold mb-1">hallucination</h3>
+                <p class="text-sm text-slate-300">AI가 실제로 존재하지 않는 정보나 잘못된 내용을 사실인 것처럼 제시하는 현상. <i>AI hallucination</i>이라고도 함.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold mb-1">can't trust it</h3>
+                <p class="text-sm text-slate-300">어떤 정보나 대상이 신뢰할 만하지 않다는 뜻. <i>You can't trust it completely</i>처럼 사용 가능.</p>
+            </div>
+            <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
+                <h3 class="text-teal-400 font-bold mb-1">bounce ideas off of</h3>
+                <p class="text-sm text-slate-300">다른 사람에게 자신의 생각을 이야기하고 의견을 구하는 표현. <i>Bounce ideas off someone</i>이라고도 함.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">For seventeen days, Minjun had been asking ChatGPT the same question.</p>
+                <p class="mb-6"><i>Should I confess?</i></p>
+                <p class="mb-6">He had cheated on the 수능 using AI-powered glasses. Nobody had caught him, and his score was excellent.</p>
+                <p class="mb-6">But his mother had discovered the glasses.</p>
+                <p class="mb-6">When he confessed, she cried.</p>
+                <p class="mb-6">Then she made him promise never to tell his father.</p>
+                <p class="mb-6">"He's sacrificed everything for you," she said. "Don't destroy him."</p>
+                <p class="mb-6">Minjun agreed.</p>
+                <p class="mb-6">But every evening, his father came home smiling.</p>
+                <p class="mb-6">"Your teachers say you're one of the best students they've ever had!"</p>
+                <p class="mb-6">Minjun forced himself to smile.</p>
+                <p class="mb-6">Then he went to his room.</p>
+                <p class="mb-6">At first, he used AI to <b class="highlight quiz-target" data-ans="bounce ideas off of" data-kor="아이디어를 이야기하고 의견을 구하면서">bounce ideas off of</b>, hoping it would help him understand his guilt.</p>
+                <p class="mb-6"><i>Is it wrong to keep a secret if telling the truth would hurt someone?</i></p>
+                <p class="mb-6">The AI discussed honesty and responsibility.</p>
+                <p class="mb-6">Minjun didn't like the answer.</p>
+                <p class="mb-6">He changed his question.</p>
+                <p class="mb-6"><i>Isn't protecting your family more important than admitting a mistake?</i></p>
+                <p class="mb-6">This answer was more sympathetic.</p>
+                <p class="mb-6">Soon, Minjun was spending hours asking similar questions.</p>
+                <p class="mb-6">Sometimes he received contradictory advice.</p>
+                <p class="mb-6">Once, the AI confidently quoted a psychological study that Minjun couldn't find anywhere.</p>
+                <p class="mb-6">When he challenged it, the AI admitted the reference was incorrect.</p>
+                <p class="mb-6"><i>A <b class="highlight quiz-target" data-ans="hallucination" data-kor="할루시네이션">hallucination</b>,</i> Minjun thought.</p>
+                <p class="mb-6">He stared at the screen.</p>
+                <p class="mb-6"><i>If AI invents information so confidently, how do I know when it's telling the truth?</i></p>
+                <p class="mb-6">He began checking everything.</p>
+                <p class="mb-6">He searched for cases of students being caught after receiving their exam results. Every article made him more frightened.</p>
+                <p class="mb-6">Then he started studying his father's behavior.</p>
+                <p class="mb-6">Was that question about university really innocent?</p>
+                <p class="mb-6">Why had his father suddenly asked whether AI could solve difficult math problems?</p>
+                <p class="mb-6">Minjun recorded their conversations and asked ChatGPT to interpret them.</p>
+                <p class="mb-6"><i>Does my father suspect something?</i></p>
+                <p class="mb-6">The AI said there wasn't enough evidence.</p>
+                <p class="mb-6">Minjun typed:</p>
+                <p class="mb-6"><i>I <b class="highlight quiz-target" data-ans="can't trust it" data-kor="믿을 수 없어">can't trust it</b>. You could be wrong.</i></p>
+                <p class="mb-6">Soon he was sleeping only a few hours a night.</p>
+                <p class="mb-6">His mother found him awake at four in the morning.</p>
+                <p class="mb-6">"Minjun, this has to stop."</p>
+                <p class="mb-6">"I think Dad knows."</p>
+                <p class="mb-6">"He doesn't."</p>
+                <p class="mb-6">"How can you be sure?"</p>
+                <p class="mb-6">"Because I haven't told him!"</p>
+                <p class="mb-6">Minjun stared at her.</p>
+                <p class="mb-6">"Are you going to?"</p>
+                <p class="mb-6">She hesitated.</p>
+                <p class="mb-6">"No."</p>
+                <p class="mb-6">But he had seen the hesitation.</p>
+                <p class="mb-6">After that, he began following her around the house, listening whenever she spoke to his father.</p>
+                <p class="mb-6">One afternoon, she caught him checking her phone.</p>
+                <p class="mb-6">"Have you lost your mind?"</p>
+                <p class="mb-6">"You're going to tell him!"</p>
+                <p class="mb-6">She slapped him.</p>
+                <p class="mb-6">They stood in silence.</p>
+                <p class="mb-6">That evening, his father arrived home carrying a small cake.</p>
+                <p class="mb-6">"I got a bonus," he said. "I wanted to celebrate with my family."</p>
+                <p class="mb-6">He gave Minjun the largest piece.</p>
+                <p class="mb-6">"Do you know what makes me happiest? Knowing I raised an honest son."</p>
+                <p class="mb-6">Minjun couldn't eat.</p>
+                <p class="mb-6">His mother quickly changed the subject.</p>
+                <p class="mb-6">Later, Minjun opened ChatGPT.</p>
+                <p class="mb-6"><i>My father trusts me. My mother knows the truth. I can't stand being around either of them. What should I do?</i></p>
+                <p class="mb-6">The AI recommended taking responsibility.</p>
+                <p class="mb-6">He asked the question six more times.</p>
+                <p class="mb-6">The answer didn't change.</p>
+                <p class="mb-6">Finally, he closed the laptop.</p>
+                <p class="mb-6">Downstairs, his father was washing the dishes.</p>
+                <p class="mb-6">Minjun stood at the kitchen entrance.</p>
+                <p class="mb-6">"Dad?"</p>
+                <p class="mb-6">His father turned around.</p>
+                <p class="mb-6">"What's up?"</p>
+                <p class="mb-6">Minjun heard his mother moving in the next room.</p>
+                <p class="mb-6">He knew she was listening.</p>
+                <p class="mb-6">"There's something I've been trying to tell you."</p>
+                <p class="mb-6">His father dried his hands.</p>
+                <p class="mb-6">"All right. I'm listening."</p>
+                <p class="mb-6">Minjun took a step forward.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6 font-bold not-italic text-slate-200">17일</p>
+                <p class="mb-6">민준은 17일 동안 ChatGPT에 같은 질문을 반복하고 있었다.</p>
+                <p class="mb-6"><i>고백해야 할까?</i></p>
+                <p class="mb-6">그는 AI 스마트 안경을 이용해 수능에서 부정행위를 저질렀다. 아무에게도 들키지 않았고, 성적도 뛰어났다.</p>
+                <p class="mb-6">하지만 어머니가 안경을 발견했다.</p>
+                <p class="mb-6">민준이 모든 사실을 털어놓자 어머니는 울었다.</p>
+                <p class="mb-6">그리고 아버지에게는 절대로 말하지 않겠다는 약속을 받아냈다.</p>
+                <p class="mb-6">"아빠는 널 위해 모든 걸 희생하셨어." 어머니가 말했다. "아빠를 무너뜨리지 마."</p>
+                <p class="mb-6">민준은 동의했다.</p>
+                <p class="mb-6">하지만 매일 저녁 아버지는 환하게 웃으며 퇴근했다.</p>
+                <p class="mb-6">"선생님들이 너처럼 뛰어난 학생은 처음 봤다더라!"</p>
+                <p class="mb-6">민준은 억지로 미소를 지었다.</p>
+                <p class="mb-6">그리고 방으로 들어갔다.</p>
+                <p class="mb-6">처음에 그는 AI에 자신의 생각을 <b class="highlight">이야기하고 의견을 구하면서</b> 죄책감을 이해하려 했다.</p>
+                <p class="mb-6"><i>진실을 말하면 누군가에게 상처를 줄 텐데, 그래도 비밀을 지키는 게 잘못일까?</i></p>
+                <p class="mb-6">AI는 정직과 책임에 관해 설명했다.</p>
+                <p class="mb-6">민준은 그 답변이 마음에 들지 않았다.</p>
+                <p class="mb-6">그는 질문을 바꿨다.</p>
+                <p class="mb-6"><i>실수를 인정하는 것보다 가족을 보호하는 게 더 중요하지 않을까?</i></p>
+                <p class="mb-6">이번 답변은 좀 더 동정적이었다.</p>
+                <p class="mb-6">얼마 지나지 않아 민준은 비슷한 질문을 몇 시간씩 반복하게 되었다.</p>
+                <p class="mb-6">때때로 서로 모순되는 조언을 받기도 했다.</p>
+                <p class="mb-6">한번은 AI가 어떤 심리학 연구를 자신 있게 인용했지만, 민준은 아무리 찾아도 해당 연구를 발견할 수 없었다.</p>
+                <p class="mb-6">민준이 이의를 제기하자 AI는 인용한 자료가 잘못되었다고 인정했다.</p>
+                <p class="mb-6"><i><b class="highlight">할루시네이션</b>이군.</i></p>
+                <p class="mb-6">민준은 화면을 바라봤다.</p>
+                <p class="mb-6"><i>AI가 이렇게 자신 있게 정보를 지어낼 수 있다면, 언제 진실을 말하는지 어떻게 알지?</i></p>
+                <p class="mb-6">그는 모든 것을 확인하기 시작했다.</p>
+                <p class="mb-6">수능 성적이 나온 뒤 부정행위가 적발된 학생들의 사례를 검색했다. 기사를 읽을 때마다 두려움이 커졌다.</p>
+                <p class="mb-6">그러더니 아버지의 행동까지 관찰하기 시작했다.</p>
+                <p class="mb-6">대학에 관한 질문은 정말 순수한 호기심이었을까?</p>
+                <p class="mb-6">아버지는 왜 갑자기 AI가 어려운 수학 문제를 풀 수 있는지 물었을까?</p>
+                <p class="mb-6">민준은 아버지와 나눈 대화를 녹음해 ChatGPT에 해석해 달라고 했다.</p>
+                <p class="mb-6"><i>아버지가 뭔가 의심하고 있을까?</i></p>
+                <p class="mb-6">AI는 그렇게 판단할 만한 증거가 충분하지 않다고 답했다.</p>
+                <p class="mb-6">민준은 입력했다.</p>
+                <p class="mb-6"><i>이걸 <b class="highlight">믿을 수 없어</b>. 네가 틀렸을 수도 있잖아.</i></p>
+                <p class="mb-6">얼마 지나지 않아 민준은 하루에 몇 시간밖에 자지 못하게 되었다.</p>
+                <p class="mb-6">새벽 4시, 어머니가 깨어 있는 민준을 발견했다.</p>
+                <p class="mb-6">"민준아, 이제 그만해야 해."</p>
+                <p class="mb-6">"아빠가 알고 계신 것 같아요."</p>
+                <p class="mb-6">"아무것도 모르셔."</p>
+                <p class="mb-6">"그걸 어떻게 확신하세요?"</p>
+                <p class="mb-6">"엄마가 말하지 않았으니까!"</p>
+                <p class="mb-6">민준은 어머니를 바라봤다.</p>
+                <p class="mb-6">"말씀하실 생각이에요?"</p>
+                <p class="mb-6">어머니가 잠시 망설였다.</p>
+                <p class="mb-6">"아니."</p>
+                <p class="mb-6">하지만 민준은 그 망설임을 놓치지 않았다.</p>
+                <p class="mb-6">그 후 민준은 집 안에서 어머니를 따라다니기 시작했다. 어머니가 아버지와 이야기할 때마다 귀를 기울였다.</p>
+                <p class="mb-6">어느 날 오후, 어머니는 민준이 자신의 휴대폰을 확인하는 모습을 발견했다.</p>
+                <p class="mb-6">"너 정말 제정신이 아니구나?"</p>
+                <p class="mb-6">"엄마가 아빠한테 말하려는 거잖아요!"</p>
+                <p class="mb-6">어머니는 민준의 뺨을 때렸다.</p>
+                <p class="mb-6">두 사람은 말없이 서 있었다.</p>
+                <p class="mb-6">그날 저녁, 아버지는 작은 케이크를 들고 퇴근했다.</p>
+                <p class="mb-6">"오늘 보너스를 받았거든." 아버지가 말했다. "우리 가족이랑 축하하고 싶어서."</p>
+                <p class="mb-6">아버지는 가장 큰 조각을 민준에게 주었다.</p>
+                <p class="mb-6">"아빠가 언제 가장 행복한지 알아? 정직한 아들을 키웠다는 걸 느낄 때야."</p>
+                <p class="mb-6">민준은 케이크를 먹을 수 없었다.</p>
+                <p class="mb-6">어머니가 급히 화제를 바꿨다.</p>
+                <p class="mb-6">나중에 민준은 ChatGPT를 열었다.</p>
+                <p class="mb-6"><i>아빠는 나를 믿어. 엄마는 진실을 알고 있어. 이제 두 분 곁에 있는 것조차 견딜 수 없어. 어떻게 해야 할까?</i></p>
+                <p class="mb-6">AI는 자신의 행동에 책임을 지라고 권했다.</p>
+                <p class="mb-6">민준은 같은 질문을 여섯 번 더 했다.</p>
+                <p class="mb-6">답변은 달라지지 않았다.</p>
+                <p class="mb-6">마침내 그는 노트북을 닫았다.</p>
+                <p class="mb-6">아래층에서는 아버지가 설거지를 하고 있었다.</p>
+                <p class="mb-6">민준은 부엌 입구에 섰다.</p>
+                <p class="mb-6">"아빠?"</p>
+                <p class="mb-6">아버지가 돌아봤다.</p>
+                <p class="mb-6">"왜 그러니?"</p>
+                <p class="mb-6">민준은 옆방에서 어머니가 움직이는 소리를 들었다.</p>
+                <p class="mb-6">어머니가 듣고 있다는 것을 알았다.</p>
+                <p class="mb-6">"제가 계속 말씀드리려고 했던 게 있어요."</p>
+                <p class="mb-6">아버지는 손을 닦았다.</p>
+                <p class="mb-6">"그래. 아빠 듣고 있어."</p>
+                <p class="mb-6">민준은 한 걸음 앞으로 나아갔다.</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "11191200.m4a";
+</script>
+    <script src="wordbank-utils.js"></script>
+</body>
+</html>

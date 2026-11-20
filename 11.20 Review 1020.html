@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Pizza That Ruined My Career</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+      :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+      body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+      .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+      .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+      input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+      input:focus::placeholder { opacity: 0 !important; }
+      .mystery-cell { transition: color 0.3s; }
+      .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+      .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+      .highlight { color: var(--teal); font-weight: 700; }
+      .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+      audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🍕</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Pizza That Ruined My Career</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr><td class="p-4"><b class="text-white">short-sleeve shirt</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">반팔 셔츠</td></tr>
+                <tr><td class="p-4"><b class="text-white">mushy</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">물컹물컹한 / 지나치게 무른</td></tr>
+                <tr><td class="p-4"><b class="text-white">half-hearted</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">성의 없는 / 마지못해 하는</td></tr>
+                <tr><td class="p-4"><b class="text-white">fresh out of the oven</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">오븐에서 갓 나온 / 갓 구운</td></tr>
+                <tr><td class="p-4"><b class="text-white">vinegar</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">식초</td></tr>
+                <tr><td class="p-4"><b class="text-white">different tastes</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">서로 다른 취향 / 입맛</td></tr>
+                <tr><td class="p-4"><b class="text-white">anchovy</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">멸치 / 앤초비</td></tr>
+                <tr><td class="p-4"><b class="text-white">took a sip</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">한 모금 마셨다</td></tr>
+                <tr><td class="p-4"><b class="text-white">very generous</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">아주 후한 / 인심이 좋은</td></tr>
+                <tr><td class="p-4"><b class="text-white">serves huge portions</b></td><td class="p-4 text-slate-400 mystery-cell" onclick="revealCell(this)">음식을 아주 푸짐하게 준다</td></tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-2xl p-6 space-y-3 border border-white/5">
+                <h3 class="text-amber-400 font-bold text-lg">1. mushy</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">음식이 너무 익거나 수분이 많아서 물컹물컹해진 상태를 말합니다. <em>Mushy vegetables</em>는 너무 익어 물러진 채소를 뜻합니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-6 space-y-3 border border-white/5">
+                <h3 class="text-amber-400 font-bold text-lg">2. half-hearted</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">진심이나 열의가 부족한 태도를 나타냅니다. <em>A half-hearted compliment</em>는 진심이 담기지 않은 형식적인 칭찬이고, <em>a half-hearted attempt</em>는 별로 노력하지 않은 시도입니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-6 space-y-3 border border-white/5">
+                <h3 class="text-amber-400 font-bold text-lg">3. fresh out of the oven</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">오븐에서 막 꺼내 아직 따뜻한 음식에 쓰는 표현입니다. 빵, 쿠키, 피자 등에 자연스럽게 사용합니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-6 space-y-3 border border-white/5">
+                <h3 class="text-amber-400 font-bold text-lg">4. different tastes</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">사람마다 취향이 다르다는 뜻입니다. 음식뿐 아니라 음악, 패션, 영화 등에도 사용할 수 있습니다. <em>We have different tastes in music.</em>처럼 말할 수 있습니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-6 space-y-3 border border-white/5">
+                <h3 class="text-amber-400 font-bold text-lg">5. serves huge portions</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">식당이나 누군가가 한 번에 많은 양의 음식을 제공한다는 뜻입니다. <em>Portion</em>은 1인분의 양을 뜻하며, <em>generous portions</em>도 비슷하게 사용합니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">At an office party, Ben made the worst mistake of his professional life.</p>
+                <p class="mb-6">He complimented his boss's homemade pizza.</p>
+                <p class="mb-6">The pizza was <b class="highlight quiz-target" data-ans="fresh out of the oven" data-kor="오븐에서 갓 나온">fresh out of the oven</b>, but the crust was wet, the cheese was <b class="highlight quiz-target" data-ans="mushy" data-kor="물컹물컹한">mushy</b>, and the entire thing smelled like <b class="highlight quiz-target" data-ans="vinegar" data-kor="식초">vinegar</b>.</p>
+                <p class="mb-6">Ben noticed several <b class="highlight quiz-target" data-ans="anchovies" data-kor="앤초비">anchovies</b> sticking out of the cheese.</p>
+                <p class="mb-6">"Wow, this is incredible!" he said, offering a <b class="highlight quiz-target" data-ans="half-hearted" data-kor="성의 없는">half-hearted</b> smile.</p>
+                <p class="mb-6">His boss, Linda, looked delighted.</p>
+                <p class="mb-6">"Really? It's my grandmother's secret recipe!"</p>
+                <p class="mb-6">Ben wanted to be polite. "Absolutely. I've never tasted anything like it."</p>
+                <p class="mb-6">That part, at least, was true.</p>
+                <p class="mb-6">Linda was <b class="highlight quiz-target" data-ans="very generous" data-kor="인심이 아주 후한">very generous</b> and always <b class="highlight quiz-target" data-ans="served huge portions" data-kor="음식을 아주 푸짐하게 내주었다">served huge portions</b>. She immediately gave him three more slices.</p>
+                <p class="mb-6">Ben tried to explain that people had <b class="highlight quiz-target" data-ans="different tastes" data-kor="서로 다른 입맛">different tastes</b>, but Linda interrupted.</p>
+                <p class="mb-6">"Don't worry! I'll make your favorite every Friday!"</p>
+                <p class="mb-6">For the next two months, Ben ate her disgusting pizza every Friday. He even pretended to love the unusual <b class="highlight quiz-target" data-ans="anchovy" data-kor="앤초비">anchovy</b>-and-<b class="highlight quiz-target" data-ans="vinegar" data-kor="식초">vinegar</b> sauce.</p>
+                <p class="mb-6">Then Linda made an announcement.</p>
+                <p class="mb-6">"I'm opening a pizza restaurant!"</p>
+                <p class="mb-6">Ben almost choked.</p>
+                <p class="mb-6">"And Ben is going to help me!"</p>
+                <p class="mb-6">He stared at her.</p>
+                <p class="mb-6">"Me?"</p>
+                <p class="mb-6">"Of course! You're my biggest fan!"</p>
+                <p class="mb-6">Ben tried to escape by claiming he had no experience running restaurants.</p>
+                <p class="mb-6">"That's fine!" Linda replied. "You can be my official taste tester!"</p>
+                <p class="mb-6">Soon, Ben was spending his weekends tasting increasingly horrible pizzas.</p>
+                <p class="mb-6">One contained bananas and garlic. Another had boiled eggs, chocolate sauce, and pickles.</p>
+                <p class="mb-6">Linda even named a pizza after him: The Big Ben Special.</p>
+                <p class="mb-6">Things became truly unbearable when she entered a national pizza competition.</p>
+                <p class="mb-6">"Ben, you're going to present our signature pizza to the judges!"</p>
+                <p class="mb-6">The competition was broadcast live on television.</p>
+                <p class="mb-6">Ben stood beside Linda, wearing a ridiculous <b class="highlight quiz-target" data-ans="short-sleeve shirt" data-kor="반팔 셔츠">short-sleeve shirt</b> decorated with tiny pizzas.</p>
+                <p class="mb-6">A judge approached their table.</p>
+                <p class="mb-6">"What's so special about this recipe?"</p>
+                <p class="mb-6">Linda smiled proudly.</p>
+                <p class="mb-6">"Ben can explain! He's been eating it every week for months!"</p>
+                <p class="mb-6">Ben looked at the steaming pizza.</p>
+                <p class="mb-6">Then he <b class="highlight quiz-target" data-ans="took a sip" data-kor="한 모금 마셨다">took a sip</b> of water.</p>
+                <p class="mb-6">He couldn't do this anymore.</p>
+                <p class="mb-6">"IT'S TERRIBLE!" he shouted.</p>
+                <p class="mb-6">The entire room went silent.</p>
+                <p class="mb-6">"THE CHEESE IS WET! THE SAUCE TASTES LIKE <b class="highlight quiz-target" data-ans="VINEGAR" data-kor="식초">VINEGAR</b>! AND WHY ARE THERE <b class="highlight quiz-target" data-ans="ANCHOVIES" data-kor="앤초비">ANCHOVIES</b> ON EVERYTHING?"</p>
+                <p class="mb-6">Linda stared at him.</p>
+                <p class="mb-6">"You... don't like my pizza?"</p>
+                <p class="mb-6">"NO! I'VE NEVER LIKED IT! I WAS JUST TRYING TO BE NICE!"</p>
+                <p class="mb-6">Linda slowly put down her pizza cutter.</p>
+                <p class="mb-6">"Ben," she said quietly, "why didn't you tell me?"</p>
+                <p class="mb-6">"Because you're my boss!"</p>
+                <p class="mb-6">There was a long silence.</p>
+                <p class="mb-6">Then Linda sighed.</p>
+                <p class="mb-6">"Well, that's unfortunate."</p>
+                <p class="mb-6">Ben felt a little relieved.</p>
+                <p class="mb-6">Until she continued.</p>
+                <p class="mb-6">"Because I already quit my job to open the restaurant."</p>
+                <p class="mb-6">Ben closed his eyes.</p>
+                <p class="mb-6">"And," Linda added, "I used your name on the business loan."</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6 font-bold not-italic text-slate-300">🍕 내 직장 생활을 망쳐 버린 피자</p>
+                <p class="mb-6">회사 파티에서 벤은 직장 생활 최악의 실수를 저질렀다.</p>
+                <p class="mb-6">상사가 직접 만든 피자를 칭찬한 것이다.</p>
+                <p class="mb-6">피자는 <b class="highlight">오븐에서 갓 나온</b> 것이었지만 도우는 축축했고, 치즈는 <b class="highlight">물컹물컹했으며</b>, 피자 전체에서 <b class="highlight">식초</b> 냄새가 났다.</p>
+                <p class="mb-6">벤은 치즈 사이로 <b class="highlight">앤초비</b> 몇 마리가 삐져나와 있는 것을 발견했다.</p>
+                <p class="mb-6">"와, 이거 정말 대단하네요!" 그는 <b class="highlight">영혼 없는</b> 미소를 지으며 말했다.</p>
+                <p class="mb-6">상사인 린다는 무척 기뻐했다.</p>
+                <p class="mb-6">"정말? 우리 할머니의 비밀 레시피야!"</p>
+                <p class="mb-6">벤은 예의를 지키고 싶었다.</p>
+                <p class="mb-6">"그럼요. 이런 맛은 처음이에요."</p>
+                <p class="mb-6">적어도 그 말만큼은 사실이었다.</p>
+                <p class="mb-6">린다는 <b class="highlight">인심이 아주 후한</b> 사람이었고, 언제나 <b class="highlight">음식을 엄청나게 푸짐하게 내주었다</b>. 그녀는 즉시 벤에게 피자 세 조각을 더 건넸다.</p>
+                <p class="mb-6">벤은 사람마다 <b class="highlight">입맛이 다르다는</b> 말을 꺼내려 했지만, 린다가 말을 끊었다.</p>
+                <p class="mb-6">"걱정 마! 앞으로 매주 금요일마다 자네가 좋아하는 피자를 만들어 줄게!"</p>
+                <p class="mb-6">그 후 두 달 동안 벤은 매주 금요일마다 그녀의 끔찍한 피자를 먹었다. 심지어 독특한 <b class="highlight">앤초비</b> <b class="highlight">식초</b> 소스까지 정말 좋아하는 척했다.</p>
+                <p class="mb-6">그러던 어느 날 린다가 발표를 했다.</p>
+                <p class="mb-6">"나 피자 가게를 열 거야!"</p>
+                <p class="mb-6">벤은 하마터면 목이 막힐 뻔했다.</p>
+                <p class="mb-6">"그리고 벤이 나를 도와줄 거야!"</p>
+                <p class="mb-6">벤은 그녀를 멍하니 바라보았다.</p>
+                <p class="mb-6">"제가요?"</p>
+                <p class="mb-6">"당연하지! 자네가 내 피자의 열렬한 팬이잖아!"</p>
+                <p class="mb-6">벤은 식당 운영 경험이 전혀 없다는 핑계로 빠져나가려 했다.</p>
+                <p class="mb-6">"괜찮아!" 린다가 대답했다. "공식 시식 담당을 하면 되지!"</p>
+                <p class="mb-6">얼마 지나지 않아 벤은 주말마다 점점 더 끔찍해지는 피자들을 맛보고 있었다.</p>
+                <p class="mb-6">어떤 피자에는 바나나와 마늘이 들어갔고, 다른 피자에는 삶은 달걀, 초콜릿 소스, 피클이 올라갔다.</p>
+                <p class="mb-6">린다는 심지어 벤의 이름을 딴 피자도 만들었다. 이름하여 '빅 벤 스페셜'이었다.</p>
+                <p class="mb-6">상황이 정말 견디기 힘들어진 것은 린다가 전국 피자 대회에 참가하면서부터였다.</p>
+                <p class="mb-6">"벤, 심사위원들한테 우리 대표 피자를 소개해 줘!"</p>
+                <p class="mb-6">대회는 TV로 생중계되었다.</p>
+                <p class="mb-6">벤은 작은 피자 그림들이 잔뜩 그려진 우스꽝스러운 <b class="highlight">반팔 셔츠</b>를 입고 린다 옆에 서 있었다.</p>
+                <p class="mb-6">한 심사위원이 그들의 테이블로 다가왔다.</p>
+                <p class="mb-6">"이 레시피의 특별한 점이 뭔가요?"</p>
+                <p class="mb-6">린다가 자랑스럽게 미소 지었다.</p>
+                <p class="mb-6">"벤이 설명해 줄 거예요! 몇 달 동안 매주 이 피자를 먹었거든요!"</p>
+                <p class="mb-6">벤은 김이 모락모락 나는 피자를 바라보았다.</p>
+                <p class="mb-6">그러고는 물을 <b class="highlight">한 모금 마셨다</b>.</p>
+                <p class="mb-6">더 이상은 못 하겠다고 생각했다.</p>
+                <p class="mb-6">"이 피자 끔찍해요!" 그가 소리쳤다.</p>
+                <p class="mb-6">행사장 전체가 조용해졌다.</p>
+                <p class="mb-6">"치즈는 축축하고! 소스에서는 <b class="highlight">식초</b> 맛이 나고! 대체 왜 모든 피자에 <b class="highlight">앤초비</b>가 들어가는 거예요?"</p>
+                <p class="mb-6">린다는 그를 멍하니 바라보았다.</p>
+                <p class="mb-6">"자네... 내 피자를 좋아하지 않는 거야?"</p>
+                <p class="mb-6">"네! 좋아한 적 한 번도 없어요! 그냥 좋게 대해 드리려고 했던 거예요!"</p>
+                <p class="mb-6">린다는 천천히 피자 커터를 내려놓았다.</p>
+                <p class="mb-6">"벤." 그녀가 조용히 말했다. "왜 진작 말하지 않았어?"</p>
+                <p class="mb-6">"사장님이시잖아요!"</p>
+                <p class="mb-6">긴 침묵이 흘렀다.</p>
+                <p class="mb-6">그러더니 린다가 한숨을 쉬었다.</p>
+                <p class="mb-6">"음, 정말 안됐군."</p>
+                <p class="mb-6">벤은 조금 안도했다.</p>
+                <p class="mb-6">하지만 린다의 말은 끝나지 않았다.</p>
+                <p class="mb-6">"나 이미 식당 열려고 회사를 그만뒀거든."</p>
+                <p class="mb-6">벤은 눈을 감았다.</p>
+                <p class="mb-6">"그리고 말이야." 린다가 덧붙였다. "사업 대출에도 자네 이름을 넣었어."</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans.replace(/'/g, "\'")}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "11201020.m4a";
+</script>
+    <script src="wordbank-utils.js"></script>
+</body>
+</html>

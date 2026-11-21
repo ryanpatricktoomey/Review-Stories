@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 245" role="img" aria-label="Reps">
+<defs>
+ <filter id="chalk" x="-10%" y="-20%" width="120%" height="150%"><feTurbulence type="fractalNoise" baseFrequency=".17" numOctaves="2" seed="8" result="noise"/><feDisplacementMap in="SourceGraphic" in2="noise" scale="1.4" xChannelSelector="R" yChannelSelector="G"/></filter>
+ <marker id="a1" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><path d="M0 0 L7 3.5 L0 7 Z" fill="#a0e98f"/></marker>
+ <marker id="a2" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><path d="M0 0 L7 3.5 L0 7 Z" fill="#79d7fa"/></marker>
+ <marker id="a3" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><path d="M0 0 L7 3.5 L0 7 Z" fill="#cda1ff"/></marker>
+ <marker id="a4" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><path d="M0 0 L7 3.5 L0 7 Z" fill="#ff9cba"/></marker>
+ <marker id="a5" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><path d="M0 0 L7 3.5 L0 7 Z" fill="#ffc37c"/></marker>
+ <marker id="a6" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><path d="M0 0 L7 3.5 L0 7 Z" fill="#ffe470"/></marker>
+</defs>
+<g fill="none" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" filter="url(#chalk)">
+ <path d="M128 72 Q236 5 350 26" stroke="#a0e98f" marker-end="url(#a1)"/>
+ <path d="M388 27 Q508 7 617 72" stroke="#79d7fa" marker-end="url(#a2)"/>
+ <path d="M641 91 Q690 130 629 172" stroke="#cda1ff" marker-end="url(#a3)"/>
+ <path d="M608 191 Q500 232 390 217" stroke="#ff9cba" marker-end="url(#a4)"/>
+ <path d="M365 215 Q250 233 153 191" stroke="#ffc37c" marker-end="url(#a5)"/>
+ <path d="M122 175 Q64 123 119 90" stroke="#ffe470" marker-end="url(#a6)"/>
+</g>
+<g font-family="'Trebuchet MS','Comic Sans MS',cursive" font-style="italic" font-weight="900" font-size="155" filter="url(#chalk)">
+ <text x="173" y="170" fill="#f8a7bd">R</text>
+ <text x="280" y="170" fill="#ffe17d">e</text>
+ <text x="365" y="170" fill="#7dd5fa">p</text>
+ <text x="475" y="170" fill="#cea8f9">s</text>
+</g>
+</svg>

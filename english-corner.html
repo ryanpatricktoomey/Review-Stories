@@ -48,15 +48,18 @@ $('signin').onclick=()=>auth.signInWithPopup(new firebase.auth.GoogleAuthProvide
 $('signout').onclick=()=>auth.signOut().catch(e=>status(e.message));
 $('profile-signin').onclick=()=>$('signin').click();
 $('profile-signout').onclick=()=>$('signout').click();
+// Published activities are readable without signing in. Begin fetching them immediately,
+// instead of waiting for Google auth and the student's profile document.
+listenActivities();
 auth.onAuthStateChanged(async u=>{
-user=u;profile=null;clearSubs();$('signin').classList.toggle('hidden',!!u);$('signout').classList.toggle('hidden',!u);$('account-label').textContent=u?'Signed in with Google':'Browsing as a visitor';
+user=u;profile=null;$('signin').classList.toggle('hidden',!!u);$('signout').classList.toggle('hidden',!u);$('account-label').textContent=u?'Signed in with Google':'Browsing as a visitor';
 $('teacher-link').classList.toggle('hidden',!u||u.uid!==ADMIN_UID);$('profile-card').classList.add('hidden');$('profile-signin').classList.toggle('hidden',!!u);$('profile-signout').classList.toggle('hidden',!u);$('profile-account-label').textContent=u?'Signed in with Google':'Not signed in';
 if(u){try{const snap=await db.collection('publicProfiles').doc(u.uid).get();if(auth.currentUser?.uid!==u.uid)return;if(snap.exists){profile=snap.data();$('nickname').value=profile.nickname||'';$('class-time').value=profile.classTime||'';$('profile-card').querySelector('h2').textContent='Edit your profile';} if(!profile){window.parent===window?location.href='english-corner-profile.html?setup=1':window.parent.postMessage({type:'english-corner-setup-needed'},location.origin)}}catch(e){status('Profile unavailable: '+e.message)}}
 
-listenActivities();
+listenActivities(true);
 });
 $('profile-form').onsubmit=async e=>{e.preventDefault();if(!user)return;const nickname=$('nickname').value.trim(),classTime=$('class-time').value;if(nickname.length<2||nickname.length>30||!['06:30','07:15','08:45','09:30','10:20','12:00'].includes(classTime)){status('Enter a nickname (2–30 characters) and select a class.');return}try{await db.collection('publicProfiles').doc(user.uid).set({nickname,classTime});profile={nickname,classTime};status('Profile saved!');hideProfile();listenActivities()}catch(err){status('Could not save profile: '+err.message)}};
-function listenActivities(){clearSubs();$('activities').replaceChildren(el('p','muted','Loading activities…'));stopActivities=db.collection('activities').where('published','==',true).limit(100).onSnapshot(snap=>{stopResponses.forEach(f=>f());stopResponses=[];$('activities').replaceChildren();if(snap.empty){$('activities').append(el('p','muted','No activities yet. Check back soon!'));return}snap.docs.filter(d=>d.id<=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date())).sort((a,b)=>b.id.localeCompare(a.id)).filter(d=>!targetActivity||d.id===targetActivity).slice(0,isArchive?30:1).forEach(d=>renderActivity(d))},e=>{status('Could not load activities: '+e.message);$('activities').replaceChildren(el('p','muted','Activities unavailable.'))})}
+function listenActivities(keepVisible=false){clearSubs();if(!keepVisible)$('activities').replaceChildren(el('p','muted','Loading activities…'));stopActivities=db.collection('activities').where('published','==',true).limit(100).onSnapshot(snap=>{stopResponses.forEach(f=>f());stopResponses=[];$('activities').replaceChildren();if(snap.empty){$('activities').append(el('p','muted','No activities yet. Check back soon!'));return}snap.docs.filter(d=>d.id<=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date())).sort((a,b)=>b.id.localeCompare(a.id)).filter(d=>!targetActivity||d.id===targetActivity).slice(0,isArchive?30:1).forEach(d=>renderActivity(d))},e=>{status('Could not load activities: '+e.message);$('activities').replaceChildren(el('p','muted','Activities unavailable.'))})}
 function renderPoll(doc,data,box){
  const options=data.options.map(v=>String(v)),voteArea=el('div'),results=el('div','hidden'),note=el('p','muted small');
  box.append(voteArea,results,note);

@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
     <!-- English Corner installable web app; relative URLs also work on GitHub Pages project paths. -->
     <link rel="manifest" href="./manifest.webmanifest">
     <meta name="theme-color" content="#0f172a">
@@ -172,7 +174,7 @@
       });
     </script>
     
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script><script>(function(){const config={apiKey:"AIzaSyAdBI_1FG1JnY-NAopcx6YnApNq7l7OcKA",authDomain:"review-stories-f251f.firebaseapp.com",projectId:"review-stories-f251f",appId:"1:974755614972:web:3e21c5c7ccdfa5f9824779"};if(!firebase.apps.length)firebase.initializeApp(config);let off;firebase.auth().onAuthStateChanged(u=>{if(off)off();document.getElementById("bell-count").textContent="";if(!u)return;off=firebase.firestore().collection("notifications").doc(u.uid).collection("items").where("read","==",false).limit(100).onSnapshot(s=>{document.getElementById("bell-count").textContent=s.empty?"":(s.size===100?"99+":s.size)},()=>{})})})();</script><h2 style="font-size:1.45rem;margin:30px 0 18px;text-align:center;">📚 Review Stories</h2>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script><script>(function(){const config={apiKey:"AIzaSyAdBI_1FG1JnY-NAopcx6YnApNq7l7OcKA",authDomain:"review-stories-f251f.firebaseapp.com",projectId:"review-stories-f251f",appId:"1:974755614972:web:3e21c5c7ccdfa5f9824779"};if(!firebase.apps.length)firebase.initializeApp(config);let off;firebase.auth().onAuthStateChanged(u=>{if(off)off();document.getElementById("bell-count").textContent="";if(!u)return;off=firebase.firestore().collection("notifications").doc(u.uid).collection("items").where("read","==",false).limit(100).onSnapshot(s=>{document.getElementById("bell-count").textContent=s.empty?"":(s.size===100?"99+":s.size)},()=>{})})})();</script><h2 id="review-stories" style="font-size:1.45rem;margin:30px 0 18px;text-align:center;scroll-margin-top:16px;">📚 Review Stories</h2>
     
                    <div class="date-section">
     
@@ -1688,5 +1690,7 @@
 </div>
 
   <script src="wordbank-utils.js"></script>
+    <script src="./reps-push-config.js"></script>
+    <script src="./reps-push.js"></script>
 </body>
 </html>

@@ -161,13 +161,39 @@
 
                                                                                                                                                             
     <section aria-label="The English Corner" style="margin:0 0 22px;">
-      <iframe id="english-corner-embed" src="english-corner.html?embed=1" title="The English Corner: today's English activity" style="width:100%;height:210px;border:0;border-radius:14px;background:#0f172a;display:block;" loading="eager"></iframe>
+      <div id="activity-splash" style="background:#1e293b;border:1px solid #334155;border-radius:18px;padding:18px 16px;min-height:155px;">
+        <h2 style="font-size:1.05rem;margin:0 0 12px;">Today's Activity</h2>
+        <p id="activity-splash-prompt" style="margin:0;color:#cbd5e1;white-space:pre-wrap;overflow-wrap:anywhere">오늘의 활동을 불러오는 중이에요…</p>
+      </div>
+      <iframe id="english-corner-embed" src="english-corner.html?embed=1" title="The English Corner: today's English activity" style="width:100%;height:210px;border:0;border-radius:14px;background:#0f172a;position:absolute;opacity:0;pointer-events:none;" loading="eager"></iframe>
       <a href="english-corner.html?archive=1" style="display:block;text-align:right;color:#7dd3fc;font-size:0.85rem;margin-top:4px;text-decoration:none;">English Corner Archive →</a>
     </section>
     <script>
+      // Show only the previously published PUBLIC activity, never student replies.
+      try {
+        const cached=JSON.parse(localStorage.getItem('reps-public-activity-v1')||'null');
+        const koreaDate=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+        if(cached&&cached.id<=koreaDate&&Date.now()-cached.savedAt<96*60*60*1000){
+          const preview=document.getElementById('activity-splash-prompt');
+          if(preview)preview.textContent=cached.activity.question||'오늘의 활동을 불러오는 중이에요…';
+        }
+      } catch (_) {}
+    </script>
+    <script>
       window.addEventListener('message', function(event) {
-        if (event.origin !== window.location.origin || !event.data || event.data.type !== 'english-corner-height') return;
+        if (event.origin !== window.location.origin || !event.data) return;
         const frame = document.getElementById('english-corner-embed');
+        if(event.source !== frame.contentWindow)return;
+        if(event.data.type === 'english-corner-ready'){
+          const splash=document.getElementById('activity-splash');
+          if(splash)splash.style.display='none';
+          frame.style.position='static';
+          frame.style.opacity='1';
+          frame.style.pointerEvents='auto';
+          frame.style.display='block';
+          return;
+        }
+        if(event.data.type !== 'english-corner-height')return;
         if (frame && event.source === frame.contentWindow && Number.isFinite(event.data.height)) {
           frame.style.height = Math.max(140, Math.min(12000, event.data.height)) + 'px';
         }

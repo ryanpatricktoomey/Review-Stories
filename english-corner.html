@@ -57,7 +57,7 @@ function renderPublicActivities(docs) {
   stopResponses.forEach(f=>f());stopResponses=[];
   const list=docs.filter(d=>d.id<=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date())).sort((a,b)=>b.id.localeCompare(a.id)).filter(d=>!targetActivity||d.id===targetActivity).slice(0,isArchive?30:1);
   $('activities').replaceChildren();
-  if(!list.length){$('activities').append(el('p','muted','No activities yet. Check back soon!'));return;}
+  if(!list.length){$('activities').append(el('p','muted','No activities yet. Check back soon!'));if(isEmbed)window.parent.postMessage({type:'english-corner-ready'},location.origin);return;}
   list.forEach(d=>renderActivity(d));
   if(isEmbed)window.parent.postMessage({type:'english-corner-ready'},location.origin);
 }
@@ -93,7 +93,7 @@ function listenActivities(keepVisible=false){
       }
     }
     renderPublicActivities(snap.docs);
-  },e=>{status('Could not load activities: '+e.message);if(!$('activities').querySelector('article'))$('activities').replaceChildren(el('p','muted','Activities unavailable.'))});
+  },e=>{status('Could not load activities: '+e.message);if(!$('activities').querySelector('article'))$('activities').replaceChildren(el('p','muted','Activities unavailable.'));if(isEmbed)window.parent.postMessage({type:'english-corner-ready'},location.origin)});
 }
 function renderPoll(doc,data,box){
  const options=data.options.map(v=>String(v)),voteArea=el('div'),results=el('div','hidden'),note=el('p','muted small');

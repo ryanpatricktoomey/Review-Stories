@@ -1,8 +1,8 @@
 {
   "id": "./index.html",
-  "name": "The English Corner",
-  "short_name": "English Corner",
-  "description": "Daily English review, class activities, and your personal Word Bank.",
+  "name": "Reps",
+  "short_name": "Reps",
+  "description": "Keep your English active with Review Stories, Word Bank and conversation challenges.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

@@ -7,7 +7,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="Reps">
-    <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png?v=reps-official">
+    <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png?v=reps-sharp">
     <script>
       // No Firebase or lesson data is cached by the service worker.
       if ('serviceWorker' in navigator) {
@@ -99,7 +99,7 @@
     </div>
 
     <div class="install-wrap" id="install-wrap">
-      <button class="install-button" id="install-button" type="button" aria-expanded="false" aria-controls="install-guide"><img class="install-icon-preview" src="./icons/icon-192.png?v=reps-official" alt="" width="48" height="48"><span class="install-button-copy"><span>📲 Reps 앱 설치하기</span><span class="install-button-hint">홈 화면에서 한 번에 영어 복습!</span></span></button>
+      <button class="install-button" id="install-button" type="button" aria-expanded="false" aria-controls="install-guide"><img class="install-icon-preview" src="./icons/icon-192.png?v=reps-sharp" alt="" width="48" height="48"><span class="install-button-copy"><span>📲 Reps 앱 설치하기</span><span class="install-button-hint">홈 화면에서 한 번에 영어 복습!</span></span></button>
       <div class="install-guide" id="install-guide" role="status" aria-live="polite"></div>
     </div>
     <script>
@@ -158,7 +158,7 @@
     </script>
 
                                                                                                                                                             
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script><script>(function(){const config={apiKey:"AIzaSyAdBI_1FG1JnY-NAopcx6YnApNq7l7OcKA",authDomain:"review-stories-f251f.firebaseapp.com",projectId:"review-stories-f251f",appId:"1:974755614972:web:3e21c5c7ccdfa5f9824779"};if(!firebase.apps.length)firebase.initializeApp(config);let off;firebase.auth().onAuthStateChanged(u=>{if(off)off();document.getElementById("bell-count").textContent="";if(!u)return;off=firebase.firestore().collection("notifications").doc(u.uid).collection("items").where("read","==",false).limit(100).onSnapshot(s=>{document.getElementById("bell-count").textContent=s.empty?"":(s.size===100?"99+":s.size)},()=>{})})})();</script><section aria-label="The English Corner" style="margin:0 0 22px;">
+    <section aria-label="The English Corner" style="margin:0 0 22px;">
       <iframe id="english-corner-embed" src="english-corner.html?embed=1" title="The English Corner: today's English activity" style="width:100%;height:210px;border:0;border-radius:14px;background:#0f172a;display:block;" loading="eager"></iframe>
       <a href="english-corner.html?archive=1" style="display:block;text-align:right;color:#7dd3fc;font-size:0.85rem;margin-top:4px;text-decoration:none;">English Corner Archive →</a>
     </section>
@@ -171,7 +171,8 @@
         }
       });
     </script>
-    <h2 style="font-size:1.45rem;margin:30px 0 18px;text-align:center;">📚 Review Stories</h2>
+    
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script><script>(function(){const config={apiKey:"AIzaSyAdBI_1FG1JnY-NAopcx6YnApNq7l7OcKA",authDomain:"review-stories-f251f.firebaseapp.com",projectId:"review-stories-f251f",appId:"1:974755614972:web:3e21c5c7ccdfa5f9824779"};if(!firebase.apps.length)firebase.initializeApp(config);let off;firebase.auth().onAuthStateChanged(u=>{if(off)off();document.getElementById("bell-count").textContent="";if(!u)return;off=firebase.firestore().collection("notifications").doc(u.uid).collection("items").where("read","==",false).limit(100).onSnapshot(s=>{document.getElementById("bell-count").textContent=s.empty?"":(s.size===100?"99+":s.size)},()=>{})})})();</script><h2 style="font-size:1.45rem;margin:30px 0 18px;text-align:center;">📚 Review Stories</h2>
     
                    <div class="date-section">
     

@@ -18,7 +18,7 @@
     if(!supported())return {kind:'unsupported',message:'이 브라우저에서는 푸시 알림을 지원하지 않아요. Reps 앱 또는 최신 Chrome을 사용해 주세요.'};
     if(Notification.permission==='denied')return {kind:'denied',message:'휴대폰 설정에서 Reps 알림 권한을 허용해 주세요.'};
     try{
-      const registration=await navigator.serviceWorker.ready;
+      const registration=await navigator.serviceWorker.register('./sw.js');
       const subscription=await registration.pushManager.getSubscription();
       return subscription?{kind:'on',message:'이 기기에서 복습 자료 알림을 받고 있어요! 🔔',subscription}:{kind:'off',message:'오늘의 복습 자료가 모두 올라오면 알림을 보내드릴게요.'};
     }catch(err){return {kind:'error',message:'알림 설정을 확인할 수 없어요. 다시 시도해 주세요.'}}
@@ -52,7 +52,7 @@
   }
   async function disable(){
     if(!enabled())throw new Error('알림 설정이 아직 준비되지 않았어요.');
-    const registration=await navigator.serviceWorker.ready;
+    const registration=await navigator.serviceWorker.register('./sw.js');
     const subscription=await registration.pushManager.getSubscription();
     if(!subscription)return true;
     await manage('unsubscribe',subscription);

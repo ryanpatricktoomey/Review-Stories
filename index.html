@@ -74,6 +74,13 @@
         .top-action { display:flex; flex:1 1 0; min-width:0; align-items:center; justify-content:center; text-align:center; padding:12px 6px; border-radius:16px; text-decoration:none; font-weight:700; font-size:clamp(0.77rem,3.4vw,1rem); line-height:1.25; white-space:nowrap; }
         .wordbank-action { background:var(--accent); color:var(--bg); }
         .profile-action { background:#334155; color:var(--text); border:1px solid #64748b; }.bell-action{position:relative;display:flex;flex:0 0 45px;width:45px;height:45px;align-items:center;justify-content:center;align-self:center;border-radius:50%;background:#334155;border:1px solid #64748b;color:white;text-decoration:none;font-size:1.3rem}.bell-count{position:absolute;right:-5px;top:-7px;background:#ef4444;color:white;border-radius:20px;padding:1px 5px;font:700 11px system-ui;min-width:18px;text-align:center}.bell-count:empty{display:none}
+
+        /* Small install invitation; hidden after installation and on desktop. */
+        .install-wrap { display:none; margin:-9px 0 23px; }
+        .install-button { width:100%; padding:12px 16px; border:1px solid #38bdf8; border-radius:13px; background:#12324b; color:#e0f2fe; font:700 15px/1.35 system-ui; cursor:pointer; }
+        .install-button:focus-visible { outline:3px solid #f8fafc; outline-offset:2px; }
+        .install-guide { display:none; margin-top:9px; padding:14px; background:#1e293b; border:1px solid #475569; border-radius:13px; font:14px/1.7 system-ui; color:#e2e8f0; }
+        .install-guide a { color:#7dd3fc; }
     </style>
 </head>
 <body>
@@ -86,6 +93,63 @@
         <a class="top-action wordbank-action" href="wordbank.html">💾 My Word Bank</a>
         <a class="top-action profile-action" href="english-corner-profile.html">👤 Manage Profile</a><a class="bell-action" href="english-corner-notifications.html" aria-label="Notifications" title="Notifications">🔔<span class="bell-count" id="bell-count"></span></a>
     </div>
+
+    <div class="install-wrap" id="install-wrap">
+      <button class="install-button" id="install-button" type="button" aria-expanded="false" aria-controls="install-guide">📲 홈 화면에 English Corner 설치하기</button>
+      <div class="install-guide" id="install-guide" role="status" aria-live="polite"></div>
+    </div>
+    <script>
+      (function () {
+        const ua = navigator.userAgent;
+        const isIOS = /iPad|iPhone|iPod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+        const isAndroid = /Android/i.test(ua);
+        const isKakao = /KAKAOTALK/i.test(ua);
+        const isStandalone = () => window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+        const wrap = document.getElementById('install-wrap');
+        const button = document.getElementById('install-button');
+        const guide = document.getElementById('install-guide');
+        let promptEvent = null;
+
+        function refresh() {
+          wrap.style.display = (isIOS || isAndroid) && !isStandalone() ? 'block' : 'none';
+        }
+        function showGuide(message) {
+          guide.textContent = message;
+          guide.style.display = 'block';
+          button.setAttribute('aria-expanded', 'true');
+        }
+        window.addEventListener('beforeinstallprompt', function (event) {
+          event.preventDefault();
+          promptEvent = event;
+          refresh();
+        });
+        window.addEventListener('appinstalled', function () {
+          promptEvent = null;
+          wrap.style.display = 'none';
+        });
+        window.addEventListener('pageshow', refresh);
+        refresh();
+
+        button.addEventListener('click', async function () {
+          if (promptEvent) {
+            const event = promptEvent;
+            promptEvent = null;
+            try { await event.prompt(); await event.userChoice; } catch (e) { /* manual instructions remain available */ }
+            if (!isStandalone()) {
+              showGuide('설치 창이 나타나지 않으면 Chrome 메뉴(⋮) → 홈 화면에 추가 또는 앱 설치를 선택해 주세요.');
+            }
+            return;
+          }
+          if (isKakao) {
+            showGuide('카카오톡 안에서는 바로 설치할 수 없어요. 오른쪽 위 메뉴(⋮) → 다른 브라우저로 열기를 선택한 후, iPhone은 Safari / Android는 Chrome에서 설치해 주세요.');
+          } else if (isIOS) {
+            showGuide('Safari에서 열고 공유 버튼(□↑) → 홈 화면에 추가 → 추가를 선택하세요. 가능한 경우 “웹 앱으로 열기”를 켜 주세요.');
+          } else if (isAndroid) {
+            showGuide('Chrome 메뉴(⋮) → 앱 설치 또는 홈 화면에 추가를 선택하세요.');
+          }
+        });
+      })();
+    </script>
 
                                                                                                                                                             
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script><script>(function(){const config={apiKey:"AIzaSyAdBI_1FG1JnY-NAopcx6YnApNq7l7OcKA",authDomain:"review-stories-f251f.firebaseapp.com",projectId:"review-stories-f251f",appId:"1:974755614972:web:3e21c5c7ccdfa5f9824779"};if(!firebase.apps.length)firebase.initializeApp(config);let off;firebase.auth().onAuthStateChanged(u=>{if(off)off();document.getElementById("bell-count").textContent="";if(!u)return;off=firebase.firestore().collection("notifications").doc(u.uid).collection("items").where("read","==",false).limit(100).onSnapshot(s=>{document.getElementById("bell-count").textContent=s.empty?"":(s.size===100?"99+":s.size)},()=>{})})})();</script><section aria-label="The English Corner" style="margin:0 0 22px;">

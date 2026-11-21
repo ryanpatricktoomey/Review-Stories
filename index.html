@@ -78,7 +78,10 @@
 
         /* Installation help shown to visitors; hidden only in standalone app mode. */
         .install-wrap { display:block; margin:-9px 0 23px; }
-        .install-button { width:100%; padding:12px 16px; border:1px solid #38bdf8; border-radius:13px; background:#12324b; color:#e0f2fe; font:700 15px/1.35 system-ui; cursor:pointer; }
+        .install-button { display:flex; align-items:center; justify-content:center; gap:13px; width:100%; padding:10px 14px; border:1px solid #38bdf8; border-radius:13px; background:#12324b; color:#e0f2fe; font:700 15px/1.35 system-ui; cursor:pointer; text-align:left; }
+        .install-icon-preview { width:48px; height:48px; border-radius:12px; object-fit:cover; flex-shrink:0; }
+        .install-button-copy { display:flex; flex-direction:column; gap:3px; }
+        .install-button-hint { font-size:12px; font-weight:400; color:#bfdbfe; }
         .install-button:focus-visible { outline:3px solid #f8fafc; outline-offset:2px; }
         .install-guide { display:none; margin-top:9px; padding:14px; background:#1e293b; border:1px solid #475569; border-radius:13px; font:14px/1.7 system-ui; color:#e2e8f0; }
         .install-guide a { color:#7dd3fc; }
@@ -97,7 +100,7 @@
     </div>
 
     <div class="install-wrap" id="install-wrap">
-      <button class="install-button" id="install-button" type="button" aria-expanded="false" aria-controls="install-guide">📲 홈 화면에 Reps 설치하기</button>
+      <button class="install-button" id="install-button" type="button" aria-expanded="false" aria-controls="install-guide"><img class="install-icon-preview" src="./icons/icon-192.png" alt="" width="48" height="48"><span class="install-button-copy"><span>📲 Reps 앱 설치하기</span><span class="install-button-hint">홈 화면에서 한 번에 영어 복습!</span></span></button>
       <div class="install-guide" id="install-guide" role="status" aria-live="polite"></div>
     </div>
     <script>

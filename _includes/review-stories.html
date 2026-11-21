@@ -1,7 +1,12 @@
 <section aria-labelledby="review-stories" data-review-view="{{ include.view | default: 'home' }}">
   <h2 id="review-stories">📚 Review Stories</h2>
-  <nav id="review-months" aria-label="Review archive" hidden></nav>
+  {% if include.view == 'archive' %}
+    <nav id="review-months" aria-label="Review archive" hidden></nav>
+  {% endif %}
   <div id="review-lessons"></div>
+  {% unless include.view == 'archive' %}
+    <nav id="review-months" aria-label="Review archive" hidden></nav>
+  {% endunless %}
 </section>
 <script id="review-catalog" type="application/json">
 [

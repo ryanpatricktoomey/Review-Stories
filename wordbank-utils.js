@@ -1,3 +1,10 @@
+// Review pages share this script, including reviews uploaded before Reps was installable.
+if (/^(?:\d{4}-\d{2}-\d{2}|\d{1,2}\.\d{1,2})%20Review%20\d{3,4}\.html$/i.test(location.pathname.split('/').pop())) {
+    const backScript = document.createElement('script');
+    backScript.src = new URL('reps-back.js', document.currentScript.src);
+    document.head.appendChild(backScript);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     // Inject CSS for the Word Bank button
     const style = document.createElement('style');

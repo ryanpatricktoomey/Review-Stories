@@ -1,0 +1,93 @@
+.review-archive-page {
+  margin: 0;
+  padding: 20px;
+  background: #0f172a;
+  color: #f8fafc;
+  font-family: system-ui, sans-serif;
+}
+
+.review-archive-content {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+#review-stories {
+  margin: 30px 0 16px;
+  text-align: center;
+  font-size: 1.45rem;
+  scroll-margin-top: 16px;
+}
+
+#review-months {
+  margin: 0 0 24px;
+}
+
+.review-archive-label {
+  margin: 0 0 8px;
+  font-size: .86rem;
+  font-weight: 700;
+  color: #cbd5e1;
+}
+
+.review-month-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.review-month-link {
+  background: #1e293b;
+  border: 1px solid #475569;
+  border-radius: 10px;
+  color: #bae6fd;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  box-sizing: border-box;
+  padding: 7px 12px;
+  font-size: .85rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.review-month-link[aria-current="page"] {
+  background: #12324b;
+  border-color: #38bdf8;
+  color: #f8fafc;
+}
+
+.date-section {
+  margin-bottom: 30px;
+}
+
+.date-header {
+  display: block;
+  margin: 0 0 12px;
+  padding-bottom: 5px;
+  border-bottom: 2px solid #38bdf8;
+  color: #38bdf8;
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.lesson-link {
+  display: block;
+  margin-bottom: 10px;
+  padding: 18px;
+  border: 1px solid rgba(255, 255, 255, .1);
+  border-radius: 14px;
+  background: #1e293b;
+  color: #f8fafc;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color .2s;
+}
+
+.lesson-link:active,
+.review-month-link:active {
+  background: #334155;
+}
+
+.review-empty {
+  color: #cbd5e1;
+}

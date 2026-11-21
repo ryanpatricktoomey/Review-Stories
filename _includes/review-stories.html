@@ -1,0 +1,16 @@
+<section aria-labelledby="review-stories" data-review-view="{{ include.view | default: 'home' }}">
+  <h2 id="review-stories">📚 Review Stories</h2>
+  <nav id="review-months" aria-label="Review archive" hidden></nav>
+  <div id="review-lessons"></div>
+</section>
+<script id="review-catalog" type="application/json">
+[
+{%- for file in site.static_files -%}
+  {%- if file.extname == '.html' and file.name contains ' Review ' -%}
+    {%- assign root_path = file.name | prepend: '/' -%}
+    {%- if file.path == root_path -%}{{- file.name | jsonify -}},{%- endif -%}
+  {%- endif -%}
+{%- endfor -%}
+null]
+</script>
+<script src="./review-stories.js" defer></script>

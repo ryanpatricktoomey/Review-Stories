@@ -11,8 +11,16 @@
 <div id="options-fields" class="hidden"><label>Answer options (at least 2)</label><div id="option-list"></div><button type="button" id="add-option" class="secondary">+ Add option</button><div id="quiz-fields" class="hidden"><label for="correct">Correct answer</label><select id="correct"></select><label for="explanation">Explanation (optional)</label><textarea id="explanation" maxlength="500"></textarea></div></div>
 <div class="row" style="margin-top:18px"><button type="button" id="preview-button" class="secondary">Preview</button><button type="button" id="draft-button" class="secondary">Save draft</button><button type="submit">Publish / Schedule</button></div><p class="muted">Future dates will appear automatically on their date. Publishing today's activity makes it visible immediately. Saving a draft keeps it private.</p></form>
 <div id="preview" class="card hidden preview"></div></section>
+<section class="card" id="review-push-admin">
+  <h2>📢 Daily Review Notification</h2>
+  <p class="muted">수업 복습 자료를 모두 업로드하고 확인하셨나요? 오늘의 복습 자료가 준비됐다고 알림을 보낼 수 있어요.</p>
+  <p id="review-push-day" class="muted"></p>
+  <p id="review-push-status" role="status" class="muted">Checking notification setup…</p>
+  <button type="button" id="review-push-send" disabled>🔔 Notify Students</button>
+  <p class="muted" style="font-size:.85rem">One announcement per Korea calendar day. Only devices that opted in will receive it.</p>
+</section>
 <section class="card"><h2>Manage activities</h2><div id="activity-list">Loading…</div></section></div></main>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script><script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-functions-compat.js"></script><script src="./reps-push-config.js"></script><script>
 (()=>{
 const config={apiKey:"AIzaSyAdBI_1FG1JnY-NAopcx6YnApNq7l7OcKA",authDomain:"review-stories-f251f.firebaseapp.com",projectId:"review-stories-f251f",storageBucket:"review-stories-f251f.firebasestorage.app",messagingSenderId:"974755614972",appId:"1:974755614972:web:3e21c5c7ccdfa5f9824779"};
 const ADMIN_UID="VWok43w84cbFLVdn7zB9NeTTVbG2";if(!firebase.apps.length)firebase.initializeApp(config);
@@ -21,7 +29,44 @@ const today=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul',year:'num
 $('date').value=today();let stop=null;
 const status=s=>$('status').textContent=s;
 $('signin').onclick=()=>auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(e=>status(e.message));
-auth.onAuthStateChanged(u=>{if(stop){stop();stop=null}const ok=!!u&&u.uid===ADMIN_UID;$('login').classList.toggle('hidden',ok);$('teacher').classList.toggle('hidden',!ok);status(ok?'Signed in as teacher.':u?'This Google account is not authorized as the teacher.':'Sign in with your teacher Google account.');if(ok)listen()});
+auth.onAuthStateChanged(u=>{if(stop){stop();stop=null}const ok=!!u&&u.uid===ADMIN_UID;$('login').classList.toggle('hidden',ok);$('teacher').classList.toggle('hidden',!ok);status(ok?'Signed in as teacher.':u?'This Google account is not authorized as the teacher.':'Sign in with your teacher Google account.');if(ok){listen();loadReviewPushStatus()}else{$('review-push-send').disabled=true}});
+
+// Teacher-only callable functions verify the Firebase Authentication UID on the server.
+const pushCfg=window.REPS_PUSH_CONFIG||{};
+const pushFns=firebase.app().functions(pushCfg.region||'asia-northeast3');
+let reviewSent=false;
+async function loadReviewPushStatus(){
+  const send=$('review-push-send'),line=$('review-push-status'),day=$('review-push-day');
+  day.textContent='Date: '+today();
+  send.disabled=true;
+  if(!pushCfg.enabled||!pushCfg.vapidPublicKey){
+    line.textContent='Push server not yet activated. Firebase deployment and VAPID configuration are required.';
+    return;
+  }
+  line.textContent='Checking whether today’s notification has been sent…';
+  try{
+    const r=await pushFns.httpsCallable('reviewPushStatus')();
+    reviewSent=!!r.data.sent;
+    day.textContent='Date: '+r.data.day;
+    line.textContent=reviewSent?'Notification already started today ('+(r.data.state||'sending')+'). Delivered: '+(r.data.delivered||0)+', failed: '+(r.data.failed||0):'Not sent yet.';
+    send.disabled=reviewSent;
+  }catch(err){line.textContent='Cannot check notification status: '+err.message}
+}
+$('review-push-send').onclick=async()=>{
+  if(auth.currentUser?.uid!==ADMIN_UID||reviewSent)return;
+  if(!confirm('Are all of today’s review files uploaded and checked?\n\nSend one push notification to all subscribed devices?'))return;
+  const button=$('review-push-send'),line=$('review-push-status');
+  button.disabled=true;line.textContent='Sending review-ready alerts…';
+  try{
+    const r=await pushFns.httpsCallable('sendReviewReady')();
+    reviewSent=true;
+    line.textContent='Sent for '+r.data.day+': '+r.data.delivered+' accepted, '+r.data.failed+' failed ('+r.data.total+' subscribed).';
+  }catch(err){
+    line.textContent='Could not confirm delivery: '+err.message+'. Check the Firebase Functions logs before trying again.';
+    await loadReviewPushStatus();
+  }
+};
+
 function addOption(value=''){const list=$('option-list'),row=document.createElement('div');row.className='row option-row';row.style.margin='8px 0';const input=document.createElement('input');input.className='option';input.maxLength=120;input.placeholder='Answer option';input.value=value;input.style.flex='1';input.style.width='auto';const remove=document.createElement('button');remove.type='button';remove.className='secondary';remove.textContent='Remove';remove.onclick=()=>{row.remove();refreshCorrect()};input.oninput=refreshCorrect;row.append(input,remove);list.append(row);refreshCorrect()}
 function refreshCorrect(){const select=$('correct'),previous=select.value;select.replaceChildren();[...document.querySelectorAll('#option-list .option')].forEach((input,i)=>{const option=document.createElement('option');option.value=String(i);option.textContent='Option '+(i+1)+(input.value.trim()?' — '+input.value.trim():'');select.append(option)});if([...select.options].some(o=>o.value===previous))select.value=previous}
 function setOptions(options){$('option-list').replaceChildren();(options.length?options:['','']).forEach(addOption);refreshCorrect()}

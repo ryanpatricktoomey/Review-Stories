@@ -6,7 +6,7 @@ on:
       - main
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -40,6 +40,15 @@ jobs:
               original.resize((size, size), Image.Resampling.LANCZOS).save(icons / filename, optimize=True)
           print("Generated Reps app icons")
           PY
+      - name: Store official app icons in repository
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f icons/icon-192.png icons/icon-512.png icons/apple-touch-icon.png
+          if ! git diff --cached --quiet; then
+            git commit -m "Keep official Reps icons in repository"
+            git push origin HEAD:main
+          fi
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact

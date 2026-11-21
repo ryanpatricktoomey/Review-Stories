@@ -1,7 +1,7 @@
 // English Corner PWA: intentionally conservative caching.
 // Keep all HTML, Firebase auth, Firestore, Word Bank and activity requests on the network.
 // This avoids stale lessons or accidental caching of student data.
-const VERSION = 'english-corner-shell-v3';
+const VERSION = 'english-corner-shell-v4';
 const ASSETS = ['./icons/icon-192.png', './icons/icon-512.png'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(VERSION).then(cache => cache.addAll(ASSETS)));

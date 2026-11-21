@@ -51,8 +51,8 @@
         :root { --bg: #0f172a; --card: #1e293b; --accent: #38bdf8; --text: #f8fafc; }
         body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); padding: 20px; display: flex; flex-direction: column; align-items: center; }
         .container { width: 100%; max-width: 500px; }
-        h1 { font-size: 2.2rem; margin-bottom: 5px; text-align: center; }
-        .reps-subtitle { color:#cbd5e1; text-align:center; margin:0 0 22px; font-size:0.9rem; }
+        .reps-header { display:flex; justify-content:center; align-items:center; margin:0 auto 14px; padding:0; width:100%; }
+        .reps-wordmark { width:100%; max-width:420px; height:auto; display:block; }
         
         .date-section { margin-bottom: 30px; }
         .date-header { font-weight: 800; color: var(--accent); border-bottom: 2px solid var(--accent); padding-bottom: 5px; margin-bottom: 12px; display: block; }
@@ -91,8 +91,7 @@
 
 <div class="container">
 
-    <h1>Reps</h1>
-    <p class="reps-subtitle">영어 복습과 연습을 한곳에서!</p>
+    <h1 class="reps-header"><img class="reps-wordmark" src="./assets/reps-wordmark.svg" alt="Reps" width="420" height="135"></h1>
     
     <div class="top-actions">
         <a class="top-action wordbank-action" href="wordbank.html">💾 My Word Bank</a>

@@ -25,6 +25,15 @@ service cloud.firestore {
         && (!('emoji' in request.resource.data) || (request.resource.data.emoji is string && request.resource.data.emoji in ["😀","😎","🥳","😂","😊","😇","🤩","😍","🤓","😴","😺","🐱","🐶","🐻","🐼","🐰","🦊","🐸","🐯","🦁","🐨","🐧","🐢","🐝","🦋","🐳","🐙","🦄","🌸","🌻","🌷","🌹","🌈","⭐","🌙","☀️","🔥","💎","💖","🍀","🍎","🍓","🍑","🍒","🍋","🍕","🍩","🍪","☕","🍵","🎨","🎵","🎸","🎮","⚽","🏀","🚀","✈️","📚","💡"]));
       allow delete: if signedIn() && request.auth.uid == uid;
     }
+    // Web Push endpoints contain private device subscription keys.
+    // Only the Admin SDK running in Cloud Functions can manage these records.
+    match /reviewPushSubscriptions/{subscriptionId} {
+      allow read, write: if false;
+    }
+    // Teacher sending and status are available only through callable functions.
+    match /reviewPushAnnouncements/{date} {
+      allow read, write: if false;
+    }
     match /notifications/{recipientUid}/items/{notificationId} {
       allow read: if signedIn() && request.auth.uid == recipientUid;
       allow update: if signedIn() && request.auth.uid == recipientUid

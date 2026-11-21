@@ -59,12 +59,13 @@ function renderPublicActivities(docs) {
   $('activities').replaceChildren();
   if(!list.length){$('activities').append(el('p','muted','No activities yet. Check back soon!'));return;}
   list.forEach(d=>renderActivity(d));
+  if(isEmbed)window.parent.postMessage({type:'english-corner-ready'},location.origin);
 }
 if(isEmbed&&!targetActivity){
   try{
-    const cached=JSON.parse(sessionStorage.getItem(cachedKey)||'null');
+    const cached=JSON.parse(localStorage.getItem(cachedKey)||'null');
     const currentDate=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
-    if(cached&&cached.id<=currentDate&&Date.now()-cached.savedAt<12*60*60*1000){
+    if(cached&&cached.id<=currentDate&&Date.now()-cached.savedAt<96*60*60*1000){
       renderPublicActivities([{id:cached.id,data:()=>cached.activity}]);
     }
   }catch(_){}
@@ -88,7 +89,7 @@ function listenActivities(keepVisible=false){
       if(mostRecent){
         const d=mostRecent.data();
         const activity={date:d.date,type:d.type,question:d.question,meaning:d.meaning||'',hint:d.hint||'',options:d.options||[],correctIndex:d.correctIndex,explanation:d.explanation||''};
-        try{sessionStorage.setItem(cachedKey,JSON.stringify({id:mostRecent.id,activity,savedAt:Date.now()}))}catch(_){}
+        try{localStorage.setItem(cachedKey,JSON.stringify({id:mostRecent.id,activity,savedAt:Date.now()}))}catch(_){}
       }
     }
     renderPublicActivities(snap.docs);

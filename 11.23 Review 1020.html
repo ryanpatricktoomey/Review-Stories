@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Cafeteria Disaster</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+      :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+      body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+      .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+      .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+      input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+      input:focus::placeholder { opacity: 0 !important; }
+      .mystery-cell { transition: color 0.3s; }
+      .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+      .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+      .highlight { color: var(--teal); font-weight: 700; }
+      .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+      audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🥪</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Cafeteria Disaster</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-5 font-bold text-teal-400">FIFO</td>
+                    <td class="p-5 text-slate-300 mystery-cell" onclick="revealCell(this)">선입선출 방식</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-5 font-bold text-teal-400">first in first out</td>
+                    <td class="p-5 text-slate-300 mystery-cell" onclick="revealCell(this)">먼저 들어온 것을 먼저 사용하는 원칙</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-5 font-bold text-teal-400">a terrible drunk</td>
+                    <td class="p-5 text-slate-300 mystery-cell" onclick="revealCell(this)">술버릇이 아주 나쁜 사람</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-5 font-bold text-teal-400">in so much pain</td>
+                    <td class="p-5 text-slate-300 mystery-cell" onclick="revealCell(this)">너무 아파서 / 극심한 통증을 겪는</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-5 font-bold text-teal-400">it doesn't hurt</td>
+                    <td class="p-5 text-slate-300 mystery-cell" onclick="revealCell(this)">아프지 않다 / 해 봐서 나쁠 것 없다</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-5 font-bold text-teal-400">pinch</td>
+                    <td class="p-5 text-slate-300 mystery-cell" onclick="revealCell(this)">꼬집다 / 집다 / 소량</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-5 font-bold text-teal-400">cafeteria</td>
+                    <td class="p-5 text-slate-300 mystery-cell" onclick="revealCell(this)">구내식당 / 급식실</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-5 font-bold text-teal-400">blamed me for his mistakes</td>
+                    <td class="p-5 text-slate-300 mystery-cell" onclick="revealCell(this)">자기 실수를 내 탓으로 돌렸다</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-5 font-bold text-teal-400">put the blame on me</td>
+                    <td class="p-5 text-slate-300 mystery-cell" onclick="revealCell(this)">내게 책임을 떠넘기다</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-5 font-bold text-teal-400">numbers game</td>
+                    <td class="p-5 text-slate-300 mystery-cell" onclick="revealCell(this)">숫자 싸움 / 수량이나 확률에 좌우되는 일</td>
+                </tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-6 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                <h3 class="font-bold text-teal-400 text-lg">FIFO / first in first out</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">재고 관리에서 먼저 들어온 물건을 먼저 사용하는 원칙이에요. 단, 안전하지 않은 식품까지 사용하라는 뜻은 아니에요.</p>
+            </div>
+            <div class="glass p-6 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                <h3 class="font-bold text-teal-400 text-lg">a terrible drunk</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">술에 취하면 행동이나 술버릇이 아주 나빠지는 사람이에요.</p>
+            </div>
+            <div class="glass p-6 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                <h3 class="font-bold text-teal-400 text-lg">in so much pain</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">통증이 매우 심한 상태를 강조하는 표현이에요.</p>
+            </div>
+            <div class="glass p-6 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                <h3 class="font-bold text-teal-400 text-lg">pinch</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">요리에서는 a pinch of salt처럼 소량을 집는다는 의미로 자주 사용해요.</p>
+            </div>
+            <div class="glass p-6 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                <h3 class="font-bold text-teal-400 text-lg">it doesn't hurt to</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">'~해 봐서 나쁠 것 없다'는 뜻으로, 실제 통증과 관계없는 표현이에요.</p>
+            </div>
+            <div class="glass p-6 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                <h3 class="font-bold text-teal-400 text-lg">put the blame on me</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">잘못이나 책임을 다른 사람에게 떠넘기는 상황에서 사용해요.</p>
+            </div>
+            <div class="glass p-6 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                <h3 class="font-bold text-teal-400 text-lg">numbers game</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">결과가 시도 횟수, 수량 또는 확률에 크게 좌우되는 상황을 말해요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">On Monday morning, twenty-year-old Eric started his first part-time job at a university <b class="highlight quiz-target" data-ans="cafeteria" data-kor="구내식당">cafeteria</b>.</p>
+                <p class="mb-6">His job was to prepare sandwiches, restock ingredients, and serve lunch to hundreds of students.</p>
+                <p class="mb-6">The pay was minimum wage, but employees received a free meal during their breaks.</p>
+                <p class="mb-6">His supervisor, Dave, was an experienced kitchen worker with a terrible reputation. He often yelled at new employees, and his coworkers said he was <b class="highlight quiz-target" data-ans="a terrible drunk" data-kor="술버릇이 아주 나쁜 사람">a terrible drunk</b> at staff parties.</p>
+                <p class="mb-6">"Listen," Dave said. "We follow <b class="highlight quiz-target" data-ans="FIFO" data-kor="선입선출">FIFO</b> here. You know what that means?"</p>
+                <p class="mb-6">"Not really."</p>
+                <p class="mb-6">"<b class="highlight quiz-target" data-ans="First in, first out" data-kor="선입선출">First in, first out</b>. Use older ingredients before newer ones. But always check the expiration dates."</p>
+                <p class="mb-6">Eric nodded.</p>
+                <p class="mb-6">Dave showed him two containers of cooked chicken.</p>
+                <p class="mb-6">"Use this one first. And make sure you add a <b class="highlight quiz-target" data-ans="pinch" data-kor="한 꼬집">pinch</b> of salt to the sandwich filling."</p>
+                <p class="mb-6">"Got it."</p>
+                <p class="mb-6">By eleven o'clock, the cafeteria was packed.</p>
+                <p class="mb-6">Eric had been on his feet for hours, and the kitchen was unbearably hot.</p>
+                <p class="mb-6">Then Dave rushed over.</p>
+                <p class="mb-6">"We need fifty more chicken sandwiches! Hurry up!"</p>
+                <p class="mb-6">Eric opened the refrigerator.</p>
+                <p class="mb-6">The container Dave had shown him was almost empty. Behind it was a much larger container labeled FRIDAY.</p>
+                <p class="mb-6">Eric hesitated.</p>
+                <p class="mb-6">It was Monday.</p>
+                <p class="mb-6">He checked the label and noticed that the chicken's use-by date had been Sunday.</p>
+                <p class="mb-6">"Dave, this chicken is past its use-by date!"</p>
+                <p class="mb-6">Dave barely looked at it.</p>
+                <p class="mb-6">"It's fine. We need the sandwiches."</p>
+                <p class="mb-6">"But the label says Sunday." </p>
+                <p class="mb-6">Dave snapped at him.</p>
+                <p class="mb-6">"Are you going to argue with me all day? Just make them!"</p>
+                <p class="mb-6">Eric reluctantly used the chicken.</p>
+                <p class="mb-6">Twenty minutes later, a student returned to the counter.</p>
+                <p class="mb-6">"Excuse me. This chicken tastes strange."</p>
+                <p class="mb-6">Another student approached, holding his stomach.</p>
+                <p class="mb-6">"I'm <b class="highlight quiz-target" data-ans="in so much pain" data-kor="너무 아파요">in so much pain</b>. I don't know if it was the sandwich, but I feel terrible."</p>
+                <p class="mb-6">Eric immediately stopped serving the sandwiches.</p>
+                <p class="mb-6">Dave rushed over.</p>
+                <p class="mb-6">"What's going on?"</p>
+                <p class="mb-6">"I think the chicken was bad!"</p>
+                <p class="mb-6">Dave turned toward the cafeteria manager.</p>
+                <p class="mb-6">"He used expired chicken! I told him to check the dates!"</p>
+                <p class="mb-6">Eric couldn't believe it.</p>
+                <p class="mb-6">"You told me to use it!"</p>
+                <p class="mb-6">Dave ignored him.</p>
+                <p class="mb-6">The manager stopped chicken service and contacted the university's food safety officer.</p>
+                <p class="mb-6">When Eric explained what had happened, Dave interrupted.</p>
+                <p class="mb-6">"He's trying to <b class="highlight quiz-target" data-ans="put the blame on me" data-kor="내게 책임을 떠넘기다">put the blame on me</b>!"</p>
+                <p class="mb-6">The manager checked the refrigerator and discovered several incorrectly dated containers.</p>
+                <p class="mb-6">Dave had been responsible for labeling them.</p>
+                <p class="mb-6">"How long has this been happening?" she demanded.</p>
+                <p class="mb-6">Dave shrugged.</p>
+                <p class="mb-6">"We prepare hundreds of meals every day. It's a <b class="highlight quiz-target" data-ans="numbers game" data-kor="숫자 싸움">numbers game</b>. Mistakes happen."</p>
+                <p class="mb-6">"Food safety is not a numbers game!"</p>
+                <p class="mb-6">Dave was immediately suspended.</p>
+                <p class="mb-6">Eric thought he was safe.</p>
+                <p class="mb-6">But then the manager called him into her office.</p>
+                <p class="mb-6">"You knew the chicken was past its use-by date. You should have refused to serve it."</p>
+                <p class="mb-6">"But Dave told me to!"</p>
+                <p class="mb-6">"I understand. But you still served food you believed was unsafe."</p>
+                <p class="mb-6">Eric was fired after five hours.</p>
+                <p class="mb-6">Outside, he called his friend.</p>
+                <p class="mb-6">"My supervisor <b class="highlight quiz-target" data-ans="blamed me for his mistakes" data-kor="자기 실수를 내 탓으로 돌렸다">blamed me for his mistakes</b>!"</p>
+                <p class="mb-6">"That's terrible," his friend said.</p>
+                <p class="mb-6">"I know. And I didn't even get my free lunch."</p>
+                <p class="mb-6">"Well, <b class="highlight quiz-target" data-ans="it doesn't hurt" data-kor="나쁠 건 없잖아">it doesn't hurt</b> to check the dates before you eat something."</p>
+                <p class="mb-6">Eric sighed.</p>
+                <p class="mb-6">"Thanks. That's very helpful."</p>
+                <p class="mb-6">He went home hungry, exhausted, and unemployed.</p>
+                <p class="mb-6">The only thing he'd learned to prepare confidently was his resignation speech.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <h3 class="text-xl font-bold text-slate-200 not-italic">구내식당 대참사</h3>
+                <p class="mb-6">월요일 아침, 스무 살 에릭은 대학교 <b class="highlight">구내식당</b>에서 첫 아르바이트를 시작했다.</p>
+                <p class="mb-6">그의 업무는 샌드위치를 만들고, 식재료를 채워 넣고, 수백 명의 학생들에게 점심을 제공하는 것이었다.</p>
+                <p class="mb-6">시급은 최저임금이었지만 직원들은 쉬는 시간에 무료 식사를 제공받았다.</p>
+                <p class="mb-6">상사인 데이브는 주방에서 오래 일한 직원이었지만 평판이 좋지 않았다. 신입 직원들에게 자주 소리를 질렀고, 동료들 사이에서는 회식 때 <b class="highlight">술버릇이 아주 나쁜 사람</b>으로 알려져 있었다.</p>
+                <p class="mb-6">"잘 들어." 데이브가 말했다. "우리는 <b class="highlight">FIFO</b> 원칙을 따라. 무슨 뜻인지 알아?"</p>
+                <p class="mb-6">"잘 모르겠는데요."</p>
+                <p class="mb-6">"<b class="highlight">선입선출</b>이야. 오래된 식재료부터 먼저 사용하는 거지. 하지만 유통기한은 항상 확인해야 해."</p>
+                <p class="mb-6">에릭은 고개를 끄덕였다.</p>
+                <p class="mb-6">데이브는 조리된 닭고기가 담긴 용기 두 개를 보여주었다.</p>
+                <p class="mb-6">"이걸 먼저 사용해. 그리고 샌드위치 속 재료에 소금을 <b class="highlight">한 꼬집</b> 넣는 것도 잊지 마."</p>
+                <p class="mb-6">"알겠습니다."</p>
+                <p class="mb-6">11시가 되자 구내식당은 학생들로 가득 찼다.</p>
+                <p class="mb-6">에릭은 몇 시간째 서서 일하고 있었고 주방은 견딜 수 없을 만큼 더웠다.</p>
+                <p class="mb-6">그때 데이브가 급히 다가왔다.</p>
+                <p class="mb-6">"치킨 샌드위치 50개 더 필요해! 서둘러!"</p>
+                <p class="mb-6">에릭은 냉장고를 열었다.</p>
+                <p class="mb-6">데이브가 보여준 용기는 거의 비어 있었다. 그 뒤에는 '금요일'이라고 적힌 훨씬 큰 용기가 있었다.</p>
+                <p class="mb-6">에릭은 망설였다.</p>
+                <p class="mb-6">오늘은 월요일이었다.</p>
+                <p class="mb-6">그는 라벨을 확인했고 닭고기의 사용기한이 일요일까지였다는 사실을 발견했다.</p>
+                <p class="mb-6">"데이브, 이 닭고기는 사용기한이 지났는데요!"</p>
+                <p class="mb-6">데이브는 제대로 쳐다보지도 않았다.</p>
+                <p class="mb-6">"괜찮아. 샌드위치가 필요하다고."</p>
+                <p class="mb-6">"하지만 라벨에는 일요일이라고 적혀 있는데요."</p>
+                <p class="mb-6">데이브가 짜증을 냈다.</p>
+                <p class="mb-6">"하루 종일 나랑 말다툼할 거야? 그냥 만들어!"</p>
+                <p class="mb-6">에릭은 마지못해 그 닭고기를 사용했다.</p>
+                <p class="mb-6">20분 후, 한 학생이 계산대로 돌아왔다.</p>
+                <p class="mb-6">"저기요. 이 닭고기 맛이 이상해요."</p>
+                <p class="mb-6">다른 학생도 배를 움켜쥐고 다가왔다.</p>
+                <p class="mb-6">"배가 <b class="highlight">너무 아파요</b>. 샌드위치 때문인지는 모르겠지만 속이 정말 안 좋아요."</p>
+                <p class="mb-6">에릭은 즉시 샌드위치 판매를 중단했다.</p>
+                <p class="mb-6">데이브가 급히 다가왔다.</p>
+                <p class="mb-6">"무슨 일이야?"</p>
+                <p class="mb-6">"닭고기가 상한 것 같아요!"</p>
+                <p class="mb-6">데이브가 구내식당 매니저를 돌아보았다.</p>
+                <p class="mb-6">"얘가 유통기한 지난 닭고기를 썼어요! 분명 날짜 확인하라고 했는데!"</p>
+                <p class="mb-6">에릭은 믿을 수 없었다.</p>
+                <p class="mb-6">"쓰라고 하셨잖아요!"</p>
+                <p class="mb-6">데이브는 에릭을 무시했다.</p>
+                <p class="mb-6">매니저는 치킨 메뉴 판매를 중단하고 대학 식품 안전 담당자에게 연락했다.</p>
+                <p class="mb-6">에릭이 상황을 설명하자 데이브가 말을 끊었다.</p>
+                <p class="mb-6">"<b class="highlight">자기 잘못을 나한테 뒤집어씌우려고</b> 하잖아요!"</p>
+                <p class="mb-6">매니저는 냉장고를 확인했고 날짜가 잘못 표시된 용기 여러 개를 발견했다.</p>
+                <p class="mb-6">날짜를 표시하는 업무는 데이브의 책임이었다.</p>
+                <p class="mb-6">"이런 일이 언제부터 있었던 거예요?" 매니저가 따졌다.</p>
+                <p class="mb-6">데이브는 어깨를 으쓱했다.</p>
+                <p class="mb-6">"매일 수백 인분을 준비하잖아요. 결국 <b class="highlight">숫자 싸움</b>이에요. 실수도 생기는 거죠."</p>
+                <p class="mb-6">"식품 안전은 숫자 싸움이 아니에요!"</p>
+                <p class="mb-6">데이브는 즉시 정직 처분을 받았다.</p>
+                <p class="mb-6">에릭은 이제 자신은 괜찮을 거라고 생각했다.</p>
+                <p class="mb-6">하지만 매니저가 그를 사무실로 불렀다.</p>
+                <p class="mb-6">"사용기한이 지난 걸 알고 있었잖아요. 그 음식을 제공하지 말았어야 해요."</p>
+                <p class="mb-6">"하지만 데이브가 쓰라고 했잖아요!"</p>
+                <p class="mb-6">"알아요. 하지만 안전하지 않다고 생각한 음식을 결국 손님에게 제공했어요."</p>
+                <p class="mb-6">에릭은 다섯 시간 만에 해고됐다.</p>
+                <p class="mb-6">밖으로 나온 그는 친구에게 전화를 걸었다.</p>
+                <p class="mb-6">"상사가 <b class="highlight">자기 실수를 전부 내 탓으로 돌렸어</b>!"</p>
+                <p class="mb-6">"정말 끔찍하다." 친구가 말했다.</p>
+                <p class="mb-6">"그러니까. 게다가 무료 점심도 못 먹었어."</p>
+                <p class="mb-6">"뭐, 먹기 전에 날짜 확인해 봐서 <b class="highlight">나쁠 건 없잖아</b>."</p>
+                <p class="mb-6">에릭은 한숨을 쉬었다.</p>
+                <p class="mb-6">"고맙다. 정말 도움 된다."</p>
+                <p class="mb-6">그는 배고프고 지친 채 실업자가 되어 집으로 돌아갔다.</p>
+                <p class="mb-6">그가 자신 있게 준비할 수 있게 된 유일한 것은 퇴사할 때 할 말뿐이었다.</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "11231020.m4a";
+</script>
+
+    <script src="wordbank-utils.js"></script>
+</body>
+</html>

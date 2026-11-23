@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The T-Shirt Disaster</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+      :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+      body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+      .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+      .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+      input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+      input:focus::placeholder { opacity: 0 !important; }
+      .mystery-cell { transition: color 0.3s; }
+      .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+      .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+      .highlight { color: var(--teal); font-weight: 700; }
+      .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+      audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">👕</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The T-Shirt Disaster</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-5 font-bold text-teal-400">a wise decision</td>
+                    <td class="p-5 text-slate-300 mystery-cell" onclick="revealCell(this)">현명한 결정</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-5 font-bold text-teal-400">merch</td>
+                    <td class="p-5 text-slate-300 mystery-cell" onclick="revealCell(this)">굿즈 / 기념 상품</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-5 font-bold text-teal-400">goods</td>
+                    <td class="p-5 text-slate-300 mystery-cell" onclick="revealCell(this)">상품 / 물품</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-5 font-bold text-teal-400">micromanage</td>
+                    <td class="p-5 text-slate-300 mystery-cell" onclick="revealCell(this)">사소한 일까지 간섭하고 통제하다</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-5 font-bold text-teal-400">dirty joke</td>
+                    <td class="p-5 text-slate-300 mystery-cell" onclick="revealCell(this)">야한 농담 / 음담패설</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-5 font-bold text-teal-400">cashier</td>
+                    <td class="p-5 text-slate-300 mystery-cell" onclick="revealCell(this)">계산원</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-5 font-bold text-teal-400">a nice perk</td>
+                    <td class="p-5 text-slate-300 mystery-cell" onclick="revealCell(this)">꽤 좋은 혜택</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-5 font-bold text-teal-400">send it in for approval</td>
+                    <td class="p-5 text-slate-300 mystery-cell" onclick="revealCell(this)">승인을 받기 위해 제출하다</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-5 font-bold text-teal-400">perfect score</td>
+                    <td class="p-5 text-slate-300 mystery-cell" onclick="revealCell(this)">만점</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-5 font-bold text-teal-400">pulls me back in</td>
+                    <td class="p-5 text-slate-300 mystery-cell" onclick="revealCell(this)">다시 끌어들인다 / 다시 빠져들게 만든다</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-5 font-bold text-teal-400">our biggest concern</td>
+                    <td class="p-5 text-slate-300 mystery-cell" onclick="revealCell(this)">우리의 가장 큰 걱정거리 / 가장 중요한 우려 사항</td>
+                </tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-6 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                <h3 class="font-bold text-teal-400 text-lg">merch</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">merchandise의 줄임말로, 콘서트 티셔츠나 밴드 굿즈처럼 팬들에게 판매하는 상품을 말할 때 자주 사용해요.</p>
+            </div>
+            <div class="glass p-6 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                <h3 class="font-bold text-teal-400 text-lg">micromanage</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">직원에게 일을 맡겨 놓고도 사소한 부분까지 일일이 간섭하는 것을 뜻해요.</p>
+            </div>
+            <div class="glass p-6 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                <h3 class="font-bold text-teal-400 text-lg">send it in for approval</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">디자인이나 문서 등을 정식 승인을 받기 위해 제출한다는 뜻이에요.</p>
+            </div>
+            <div class="glass p-6 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                <h3 class="font-bold text-teal-400 text-lg">perfect score</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">시험뿐 아니라 업무 평가나 품질 검사에서 받은 만점에도 사용할 수 있어요.</p>
+            </div>
+            <div class="glass p-6 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                <h3 class="font-bold text-teal-400 text-lg">pulls me back in</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">벗어나거나 그만두려고 해도 무언가가 다시 끌어당긴다는 표현이에요.</p>
+            </div>
+            <div class="glass p-6 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                <h3 class="font-bold text-teal-400 text-lg">our biggest concern</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">어떤 상황에서 가장 중요하게 걱정하거나 신경 쓰는 문제를 가리켜요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">On Saturday morning, twenty-two-year-old Alex started his first part-time job at a concert <b class="highlight quiz-target" data-ans="merch" data-kor="굿즈">merch</b> shop.</p>
+                <p class="mb-6">The store sold T-shirts, posters, and other <b class="highlight quiz-target" data-ans="goods" data-kor="상품">goods</b> for local bands. It also printed custom shirts for schools and businesses.</p>
+                <p class="mb-6">Alex was hired as a <b class="highlight quiz-target" data-ans="cashier" data-kor="계산원">cashier</b>, but he also had to pack orders and help prepare T-shirts.</p>
+                <p class="mb-6">The pay was minimum wage, but employees could attend concerts for free. Alex thought that was <b class="highlight quiz-target" data-ans="a nice perk" data-kor="꽤 좋은 혜택">a nice perk</b>.</p>
+                <p class="mb-6">Unfortunately, his manager, Tony, loved to <b class="highlight quiz-target" data-ans="micromanage" data-kor="사소한 일까지 간섭하다">micromanage</b> everything.</p>
+                <p class="mb-6">"Don't fold shirts like that. Don't put the posters there. And always double-check custom orders!"</p>
+                <p class="mb-6">By lunchtime, Alex was already exhausted.</p>
+                <p class="mb-6">Then Tony received an urgent order from a nearby elementary school. They needed 200 T-shirts for a festival that evening.</p>
+                <p class="mb-6">Tony opened the design folder.</p>
+                <p class="mb-6">"The school's approved the design, but I need to check the final printing file. When it's ready, <b class="highlight quiz-target" data-ans="send it in for approval" data-kor="승인을 받기 위해 제출하다">send it in for approval</b>. Don't start printing until I confirm it."</p>
+                <p class="mb-6">"Got it."</p>
+                <p class="mb-6">Then Tony left to make a delivery.</p>
+                <p class="mb-6">Alex opened the folder and found two files.</p>
+                <p class="mb-6">SCHOOL_FINAL and SCHOOL_JOKE.</p>
+                <p class="mb-6">He opened the second one out of curiosity.</p>
+                <p class="mb-6">It showed the school's mascot with a <b class="highlight quiz-target" data-ans="dirty joke" data-kor="야한 농담">dirty joke</b> underneath. Apparently, a designer had created it as a prank.</p>
+                <p class="mb-6">Alex laughed and closed it.</p>
+                <p class="mb-6">Then the printer operator called.</p>
+                <p class="mb-6">"Hey! Which file are we printing? We need to get started!"</p>
+                <p class="mb-6">Alex was distracted by a customer at the register.</p>
+                <p class="mb-6">"Just a second!"</p>
+                <p class="mb-6">He hurried back to the computer, selected a file, and sent it directly to the printer without checking the preview.</p>
+                <p class="mb-6">Unfortunately, he'd selected SCHOOL_JOKE.</p>
+                <p class="mb-6">Two hours later, 200 shirts were ready.</p>
+                <p class="mb-6">The printer operator showed Alex the quality inspection sheet.</p>
+                <p class="mb-6">"Print quality: 100 out of 100. A <b class="highlight quiz-target" data-ans="perfect score" data-kor="만점">perfect score</b>!"</p>
+                <p class="mb-6">Alex smiled proudly.</p>
+                <p class="mb-6">Then the school principal arrived.</p>
+                <p class="mb-6">She opened the first box and pulled out a shirt.</p>
+                <p class="mb-6">Her smile disappeared.</p>
+                <p class="mb-6">"What on earth is this?"</p>
+                <p class="mb-6">Alex looked at the shirt.</p>
+                <p class="mb-6">His stomach dropped.</p>
+                <p class="mb-6">The mascot was smiling above a joke that was completely inappropriate for children.</p>
+                <p class="mb-6">"There's been a mistake," Alex whispered.</p>
+                <p class="mb-6">The principal was furious.</p>
+                <p class="mb-6">"<b class="highlight quiz-target" data-ans="Our biggest concern" data-kor="우리의 가장 큰 걱정거리">Our biggest concern</b> was making sure the shirts were appropriate for young children! That's why we insisted on checking the final design!"</p>
+                <p class="mb-6">Tony returned just as she demanded a full refund.</p>
+                <p class="mb-6">"What happened?" he asked.</p>
+                <p class="mb-6">Alex explained everything.</p>
+                <p class="mb-6">"You printed 200 shirts without my approval?"</p>
+                <p class="mb-6">Alex nodded.</p>
+                <p class="mb-6">Tony stared at him.</p>
+                <p class="mb-6">"I gave you one important instruction!"</p>
+                <p class="mb-6">"I'm really sorry."</p>
+                <p class="mb-6">Tony sighed.</p>
+                <p class="mb-6">"We've lost the entire order. I can't keep you."</p>
+                <p class="mb-6">By four o'clock, Alex had been fired.</p>
+                <p class="mb-6">As he collected his things, Tony handed him a free concert ticket.</p>
+                <p class="mb-6">"The band's playing tonight. You can still use this."</p>
+                <p class="mb-6">Alex hesitated.</p>
+                <p class="mb-6">Then he called his friend.</p>
+                <p class="mb-6">"I just got fired."</p>
+                <p class="mb-6">"Seriously? So you're coming home?"</p>
+                <p class="mb-6">"Well, I've got a free concert ticket."</p>
+                <p class="mb-6">His friend laughed.</p>
+                <p class="mb-6">"Every time you say you're going to stop spending your weekends at concerts, something <b class="highlight quiz-target" data-ans="pulls you back in" data-kor="다시 널 끌어들이더라">pulls you back in</b>!"</p>
+                <p class="mb-6">Alex looked at the ticket.</p>
+                <p class="mb-6">Going to the concert seemed like <b class="highlight quiz-target" data-ans="a wise decision" data-kor="현명한 결정">a wise decision</b>.</p>
+                <p class="mb-6">Working at the T-shirt shop definitely hadn't been one.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <h3 class="text-xl font-bold text-slate-200 not-italic">티셔츠 대참사</h3>
+                <p class="mb-6">토요일 아침, 스물두 살 알렉스는 콘서트 <b class="highlight">굿즈</b> 판매점에서 첫 아르바이트를 시작했다.</p>
+                <p class="mb-6">그 가게는 지역 밴드들의 티셔츠, 포스터, 기타 <b class="highlight">상품</b>을 판매했다. 학교나 기업을 위한 맞춤 티셔츠도 제작했다.</p>
+                <p class="mb-6">알렉스는 <b class="highlight">계산원</b>으로 고용됐지만 주문 상품을 포장하고 티셔츠 제작을 돕는 일도 해야 했다.</p>
+                <p class="mb-6">시급은 최저임금이었지만 직원들은 콘서트를 무료로 관람할 수 있었다. 알렉스는 <b class="highlight">꽤 좋은 혜택</b>이라고 생각했다.</p>
+                <p class="mb-6">안타깝게도 매니저 토니는 <b class="highlight">아주 사소한 일까지 간섭하는</b> 것을 좋아했다.</p>
+                <p class="mb-6">"티셔츠 그렇게 접지 마. 포스터 거기에 놓지 마. 그리고 맞춤 주문은 항상 두 번 확인해!"</p>
+                <p class="mb-6">점심시간이 되자 알렉스는 이미 지쳐 있었다.</p>
+                <p class="mb-6">그때 토니에게 근처 초등학교에서 긴급 주문이 들어왔다. 그날 저녁 축제에 사용할 티셔츠 200장이 필요하다는 것이었다.</p>
+                <p class="mb-6">토니는 디자인 폴더를 열었다.</p>
+                <p class="mb-6">"학교에서 디자인은 승인했어. 하지만 최종 인쇄 파일은 내가 확인해야 해. 준비되면 <b class="highlight">승인받을 수 있게 보내</b>. 내가 확인하기 전에는 인쇄하지 마."</p>
+                <p class="mb-6">"알겠습니다."</p>
+                <p class="mb-6">그러고 나서 토니는 배달을 하러 떠났다.</p>
+                <p class="mb-6">알렉스는 폴더를 열고 파일 두 개를 발견했다.</p>
+                <p class="mb-6">SCHOOL_FINAL과 SCHOOL_JOKE였다.</p>
+                <p class="mb-6">그는 호기심에 두 번째 파일을 열어보았다.</p>
+                <p class="mb-6">학교 마스코트 아래에 <b class="highlight">야한 농담</b>이 적혀 있었다. 디자이너 한 명이 장난으로 만든 것 같았다.</p>
+                <p class="mb-6">알렉스는 웃음을 터뜨리고 파일을 닫았다.</p>
+                <p class="mb-6">그때 인쇄 담당 직원이 불렀다.</p>
+                <p class="mb-6">"저기요! 어떤 파일 인쇄해요? 이제 시작해야 하는데!"</p>
+                <p class="mb-6">알렉스는 계산대에 온 손님 때문에 정신이 없었다.</p>
+                <p class="mb-6">"잠깐만요!"</p>
+                <p class="mb-6">그는 서둘러 컴퓨터로 돌아가 파일 하나를 선택하고, 미리보기도 확인하지 않은 채 곧바로 인쇄 담당자에게 보냈다.</p>
+                <p class="mb-6">안타깝게도 SCHOOL_JOKE를 선택한 것이었다.</p>
+                <p class="mb-6">두 시간 후, 티셔츠 200장이 완성됐다.</p>
+                <p class="mb-6">인쇄 담당자가 알렉스에게 품질 검사표를 보여주었다.</p>
+                <p class="mb-6">"인쇄 품질 100점 만점에 100점! <b class="highlight">만점</b>이에요!"</p>
+                <p class="mb-6">알렉스는 자랑스럽게 미소 지었다.</p>
+                <p class="mb-6">그때 교장 선생님이 도착했다.</p>
+                <p class="mb-6">교장 선생님은 첫 번째 상자를 열고 티셔츠 한 장을 꺼냈다.</p>
+                <p class="mb-6">얼굴에서 미소가 사라졌다.</p>
+                <p class="mb-6">"세상에, 이게 대체 뭐죠?"</p>
+                <p class="mb-6">알렉스는 티셔츠를 바라보았다.</p>
+                <p class="mb-6">가슴이 철렁 내려앉았다.</p>
+                <p class="mb-6">마스코트가 환하게 웃고 있었고, 그 아래에는 어린이들에게 전혀 적절하지 않은 농담이 적혀 있었다.</p>
+                <p class="mb-6">"실수가 있었습니다." 알렉스가 작은 목소리로 말했다.</p>
+                <p class="mb-6">교장 선생님은 몹시 화가 났다.</p>
+                <p class="mb-6">"<b class="highlight">저희가 가장 걱정했던 건</b> 어린아이들에게 적절한 티셔츠인지 확인하는 거였어요! 그래서 최종 디자인을 반드시 확인하겠다고 했던 거라고요!"</p>
+                <p class="mb-6">교장 선생님이 전액 환불을 요구하기 시작했을 때 토니가 돌아왔다.</p>
+                <p class="mb-6">"무슨 일이야?" 토니가 물었다.</p>
+                <p class="mb-6">알렉스는 모든 상황을 설명했다.</p>
+                <p class="mb-6">"내 승인도 없이 티셔츠 200장을 인쇄했다고?"</p>
+                <p class="mb-6">알렉스는 고개를 끄덕였다.</p>
+                <p class="mb-6">토니는 그를 빤히 바라보았다.</p>
+                <p class="mb-6">"내가 중요한 지시 하나를 했잖아!"</p>
+                <p class="mb-6">"정말 죄송합니다."</p>
+                <p class="mb-6">토니는 한숨을 쉬었다.</p>
+                <p class="mb-6">"주문을 통째로 날렸어. 더는 자네를 고용할 수 없겠네."</p>
+                <p class="mb-6">오후 4시가 되자 알렉스는 해고됐다.</p>
+                <p class="mb-6">짐을 챙기고 있는데 토니가 무료 콘서트 티켓 한 장을 건넸다.</p>
+                <p class="mb-6">"오늘 밤에 그 밴드 공연 있어. 이건 그냥 써도 돼."</p>
+                <p class="mb-6">알렉스는 망설였다.</p>
+                <p class="mb-6">그러고 나서 친구에게 전화를 걸었다.</p>
+                <p class="mb-6">"나 방금 해고당했어."</p>
+                <p class="mb-6">"진짜? 그럼 집에 오는 거야?"</p>
+                <p class="mb-6">"그게, 무료 콘서트 티켓이 하나 생겼거든."</p>
+                <p class="mb-6">친구가 웃음을 터뜨렸다.</p>
+                <p class="mb-6">"넌 주말마다 콘서트 다니는 거 그만두겠다고 할 때마다 꼭 뭔가가 <b class="highlight">다시 널 끌어들이더라</b>!"</p>
+                <p class="mb-6">알렉스는 티켓을 바라보았다.</p>
+                <p class="mb-6">콘서트에 가는 건 <b class="highlight">현명한 결정</b>인 것 같았다.</p>
+                <p class="mb-6">하지만 그 티셔츠 가게에서 일하기로 한 건 분명 그렇지 않았다.</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "11231200.m4a";
+</script>
+
+    <script src="wordbank-utils.js"></script>
+</body>
+</html>

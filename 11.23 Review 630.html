@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Wrong Winner</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+      :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+      body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+      .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+      .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+      input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+      input:focus::placeholder { opacity: 0 !important; }
+      .mystery-cell { transition: color 0.3s; }
+      .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+      .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+      .highlight { color: var(--teal); font-weight: 700; }
+      .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+      audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🎤</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Wrong Winner</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-5 font-bold text-teal-400">speech contest</td>
+                    <td class="p-5 text-slate-300 mystery-cell" onclick="revealCell(this)">말하기 대회</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-5 font-bold text-teal-400">didn't listen to me</td>
+                    <td class="p-5 text-slate-300 mystery-cell" onclick="revealCell(this)">내 말을 듣지 않았어</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-5 font-bold text-teal-400">developmental issues</td>
+                    <td class="p-5 text-slate-300 mystery-cell" onclick="revealCell(this)">발달상의 어려움 / 발달 문제</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-5 font-bold text-teal-400">a nice perk</td>
+                    <td class="p-5 text-slate-300 mystery-cell" onclick="revealCell(this)">꽤 좋은 혜택</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-5 font-bold text-teal-400">acquaintance</td>
+                    <td class="p-5 text-slate-300 mystery-cell" onclick="revealCell(this)">지인 / 아는 사람</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-5 font-bold text-teal-400">recognize</td>
+                    <td class="p-5 text-slate-300 mystery-cell" onclick="revealCell(this)">알아보다 / 알아차리다</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-5 font-bold text-teal-400">acquire</td>
+                    <td class="p-5 text-slate-300 mystery-cell" onclick="revealCell(this)">습득하다 / 얻다</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-5 font-bold text-teal-400">acquaint yourself</td>
+                    <td class="p-5 text-slate-300 mystery-cell" onclick="revealCell(this)">익숙해지다 / 숙지하다</td>
+                </tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-6 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                <h3 class="font-bold text-teal-400 text-lg">developmental issues</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">언어, 인지, 사회성 등 발달과 관련된 어려움을 말해요.</p>
+            </div>
+            <div class="glass p-6 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                <h3 class="font-bold text-teal-400 text-lg">a nice perk</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">급여 외에 제공되는 좋은 혜택을 뜻해요.</p>
+            </div>
+            <div class="glass p-6 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                <h3 class="font-bold text-teal-400 text-lg">acquaintance</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">친한 친구는 아니지만 알고 지내는 사람이에요.</p>
+            </div>
+            <div class="glass p-6 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                <h3 class="font-bold text-teal-400 text-lg">acquire</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">지식이나 기술을 습득할 때도 사용하는 표현이에요.</p>
+            </div>
+            <div class="glass p-6 rounded-2xl border-l-4 border-teal-500 space-y-2">
+                <h3 class="font-bold text-teal-400 text-lg">acquaint yourself with</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">새로운 시스템이나 규칙 등을 숙지한다는 뜻이에요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">At nineteen, Kevin got a part-time job helping organize a children's <b class="highlight quiz-target" data-ans="speech contest" data-kor="말하기 대회">speech contest</b> at a private English academy.</p>
+                <p class="mb-6">The pay was minimum wage, but employees got free lunch and could leave early after events. Kevin thought that was <b class="highlight quiz-target" data-ans="a nice perk" data-kor="꽤 좋은 혜택">a nice perk</b>.</p>
+                <p class="mb-6">His supervisor, Ms. Park, showed him the scoring program.</p>
+                <p class="mb-6">"First, <b class="highlight quiz-target" data-ans="acquaint yourself with" data-kor="숙지하다">acquaint yourself with</b> the system. You'll enter the judges' scores and prepare the results."</p>
+                <p class="mb-6">"Sounds easy."</p>
+                <p class="mb-6">"Some contestants have <b class="highlight quiz-target" data-ans="developmental issues" data-kor="발달상의 어려움">developmental issues</b> and may need extra time. The judges will handle that. Your job is to enter their scores accurately."</p>
+                <p class="mb-6">Kevin nodded.</p>
+                <p class="mb-6">"And don't publish the results until I check them."</p>
+                <p class="mb-6">"Got it."</p>
+                <p class="mb-6">Unfortunately, Kevin was more interested in his phone than the instructions.</p>
+                <p class="mb-6">The competition began at eleven. Twenty nervous children gave speeches about their families, pets, and dreams.</p>
+                <p class="mb-6">Everything went smoothly until the final round.</p>
+                <p class="mb-6">A boy named Minho scored 98 points. Another contestant, Jisoo, scored 89.</p>
+                <p class="mb-6">Kevin entered the scores correctly but accidentally selected Jisoo's name as the winner.</p>
+                <p class="mb-6">He noticed a large green button labeled PUBLISH RESULTS.</p>
+                <p class="mb-6">"That must be how you finish," he thought.</p>
+                <p class="mb-6">He clicked it.</p>
+                <p class="mb-6">Jisoo's photograph immediately appeared on the enormous screen.</p>
+                <p class="mb-6"><strong>FIRST PLACE: JISOO!</strong></p>
+                <p class="mb-6">The audience burst into applause.</p>
+                <p class="mb-6">Jisoo ran onto the stage, crying with happiness. Her parents started taking photographs.</p>
+                <p class="mb-6">Kevin stared at the computer.</p>
+                <p class="mb-6">"Oh, no."</p>
+                <p class="mb-6">Ms. Park hurried over.</p>
+                <p class="mb-6">"What happened?"</p>
+                <p class="mb-6">"I think I selected the wrong winner."</p>
+                <p class="mb-6">"You published the results?"</p>
+                <p class="mb-6">Kevin nodded.</p>
+                <p class="mb-6">"I specifically told you not to!"</p>
+                <p class="mb-6">"I'm sorry. I wasn't thinking."</p>
+                <p class="mb-6">"You <b class="highlight quiz-target" data-ans="didn't listen to me" data-kor="내 말을 듣지 않았어">didn't listen to me</b>!"</p>
+                <p class="mb-6">Before Kevin could respond, Minho's father approached.</p>
+                <p class="mb-6">"Excuse me. My son scored 98. Why didn't he win?"</p>
+                <p class="mb-6">"There's been a small technical mistake," Kevin explained.</p>
+                <p class="mb-6">Then Jisoo's mother appeared. Kevin immediately <b class="highlight quiz-target" data-ans="recognized" data-kor="알아보다">recognized</b> her as an <b class="highlight quiz-target" data-ans="acquaintance" data-kor="지인">acquaintance</b> of his mother's.</p>
+                <p class="mb-6">"Kevin! Your mother didn't tell me you worked here! Isn't this wonderful?"</p>
+                <p class="mb-6">Kevin couldn't look her in the eye.</p>
+                <p class="mb-6">Ms. Park took the microphone and explained the mistake. The real winner was Minho.</p>
+                <p class="mb-6">Jisoo began crying. Her parents were furious, and several audience members started recording the argument.</p>
+                <p class="mb-6">After the ceremony, Ms. Park called Kevin into her office.</p>
+                <p class="mb-6">"I'm sorry, but we can't keep you."</p>
+                <p class="mb-6">Kevin was fired after four hours.</p>
+                <p class="mb-6">He didn't even get his free lunch.</p>
+                <p class="mb-6">His first job had certainly helped him <b class="highlight quiz-target" data-ans="acquire" data-kor="습득하다 / 쌓다">acquire</b> some workplace experience.</p>
+                <p class="mb-6">Unfortunately, most of it involved learning what happens when you press a button your boss specifically told you not to touch.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <h3 class="text-xl font-bold text-slate-200 not-italic">잘못 발표된 우승자</h3>
+                <p class="mb-6">열아홉 살 케빈은 사설 영어학원에서 어린이 <b class="highlight">말하기 대회</b> 진행을 돕는 아르바이트를 구했다.</p>
+                <p class="mb-6">시급은 최저임금이었지만 직원들은 무료 점심을 제공받았고, 행사가 끝나면 일찍 퇴근할 수도 있었다. 케빈은 <b class="highlight">꽤 좋은 혜택</b>이라고 생각했다.</p>
+                <p class="mb-6">상사인 박 선생님이 채점 프로그램을 보여주었다.</p>
+                <p class="mb-6">"먼저 <b class="highlight">시스템 사용법을 익혀요</b>. 심사위원들의 점수를 입력하고 결과를 준비하면 돼요."</p>
+                <p class="mb-6">"쉬워 보이네요."</p>
+                <p class="mb-6">"참가자 중에는 <b class="highlight">발달상의 어려움</b>이 있어서 시간이 더 필요한 아이들도 있어요. 그런 부분은 심사위원들이 처리할 거예요. 케빈 씨는 점수를 정확하게 입력하면 돼요."</p>
+                <p class="mb-6">케빈은 고개를 끄덕였다.</p>
+                <p class="mb-6">"그리고 제가 확인하기 전에는 결과를 발표하지 마세요."</p>
+                <p class="mb-6">"알겠습니다."</p>
+                <p class="mb-6">안타깝게도 케빈은 설명보다 휴대폰에 더 관심이 있었다.</p>
+                <p class="mb-6">11시에 대회가 시작됐다. 긴장한 어린이 스무 명이 가족, 반려동물, 꿈에 관한 발표를 했다.</p>
+                <p class="mb-6">마지막 라운드까지 모든 일이 순조로웠다.</p>
+                <p class="mb-6">민호라는 남학생이 98점을 받았다. 지수라는 다른 참가자는 89점을 받았다.</p>
+                <p class="mb-6">케빈은 점수를 정확하게 입력했지만, 실수로 지수의 이름을 우승자로 선택했다.</p>
+                <p class="mb-6">그러다 '결과 발표'라고 적힌 커다란 초록색 버튼을 발견했다.</p>
+                <p class="mb-6">'저걸 누르면 끝나는 건가 보네.'</p>
+                <p class="mb-6">케빈은 버튼을 눌렀다.</p>
+                <p class="mb-6">즉시 지수의 사진이 커다란 화면에 나타났다.</p>
+                <p class="mb-6"><strong>1등: 지수!</strong></p>
+                <p class="mb-6">관객들은 큰 박수를 보냈다.</p>
+                <p class="mb-6">지수는 기쁨의 눈물을 흘리며 무대로 달려 나갔다. 부모님은 사진을 찍기 시작했다.</p>
+                <p class="mb-6">케빈은 컴퓨터 화면을 멍하니 바라보았다.</p>
+                <p class="mb-6">"아, 큰일 났다."</p>
+                <p class="mb-6">박 선생님이 급히 다가왔다.</p>
+                <p class="mb-6">"무슨 일이에요?"</p>
+                <p class="mb-6">"우승자를 잘못 선택한 것 같아요."</p>
+                <p class="mb-6">"결과를 발표했어요?"</p>
+                <p class="mb-6">케빈은 고개를 끄덕였다.</p>
+                <p class="mb-6">"분명 누르지 말라고 했잖아요!"</p>
+                <p class="mb-6">"죄송해요. 생각이 짧았어요."</p>
+                <p class="mb-6">"<b class="highlight">제 말을 안 들었잖아요</b>!"</p>
+                <p class="mb-6">케빈이 대답하기도 전에 민호의 아버지가 다가왔다.</p>
+                <p class="mb-6">"저기요. 우리 아들이 98점을 받았는데 왜 우승을 못 했죠?"</p>
+                <p class="mb-6">"작은 기술적인 실수가 있었습니다." 케빈이 설명했다.</p>
+                <p class="mb-6">그때 지수의 어머니가 나타났다. 케빈은 곧바로 그분이 자기 어머니의 <b class="highlight">지인</b>이라는 것을 <b class="highlight">알아보았다</b>.</p>
+                <p class="mb-6">"케빈! 너희 어머니가 여기서 일한다고 얘기 안 하셨는데! 정말 멋지지 않니?"</p>
+                <p class="mb-6">케빈은 차마 그분의 눈을 마주칠 수 없었다.</p>
+                <p class="mb-6">박 선생님은 마이크를 잡고 실수를 설명했다. 진짜 우승자는 민호였다.</p>
+                <p class="mb-6">지수는 울기 시작했다. 부모님은 몹시 화가 났고, 관객 몇 명은 말다툼을 촬영하기 시작했다.</p>
+                <p class="mb-6">시상식이 끝난 뒤 박 선생님은 케빈을 사무실로 불렀다.</p>
+                <p class="mb-6">"미안하지만, 더는 함께 일할 수 없겠어요."</p>
+                <p class="mb-6">케빈은 네 시간 만에 해고됐다.</p>
+                <p class="mb-6">무료 점심도 먹지 못했다.</p>
+                <p class="mb-6">첫 직장 덕분에 직장 경험을 조금은 <b class="highlight">쌓은</b> 셈이었다.</p>
+                <p class="mb-6">안타깝게도 그 경험의 대부분은 상사가 절대 누르지 말라고 한 버튼을 누르면 어떤 일이 벌어지는지 배우는 것이었다.</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "1123630.m4a";
+</script>
+
+    <script src="wordbank-utils.js"></script>
+</body>
+</html>

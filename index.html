@@ -154,7 +154,7 @@
         <p id="activity-splash-prompt" style="margin:0;color:#cbd5e1;white-space:pre-wrap;overflow-wrap:anywhere">오늘의 활동을 불러오는 중이에요…</p>
       </div>
       <iframe id="english-corner-embed" src="english-corner.html?embed=1" title="The English Corner: today's bonus activity" style="width:100%;height:210px;border:0;border-radius:14px;background:#0f172a;position:absolute;opacity:0;pointer-events:none;" loading="eager"></iframe>
-      <a href="english-corner.html?archive=1" style="display:block;text-align:right;color:#7dd3fc;font-size:0.85rem;margin-top:4px;text-decoration:none;">English Corner Archive →</a>
+      <a href="english-corner.html?archive=1" style="display:block;text-align:right;color:#7dd3fc;font-size:0.85rem;margin-top:4px;text-decoration:none;">Bonus Activity Archive →</a>
     </section>
     <script>
       // Show only the previously published PUBLIC activity, never student replies.
@@ -183,7 +183,7 @@
         }
         if(event.data.type !== 'english-corner-height')return;
         if (frame && event.source === frame.contentWindow && Number.isFinite(event.data.height)) {
-          frame.style.height = Math.max(140, Math.min(12000, event.data.height)) + 'px';
+          frame.style.height = Math.max(80, Math.min(12000, event.data.height)) + 'px';
         }
       });
     </script>

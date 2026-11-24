@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | Your Child Deserves a Competitive Advantage</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+      :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+      body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+      .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+      .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+      input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+      input:focus::placeholder { opacity: 0 !important; }
+      .mystery-cell { transition: color 0.3s; }
+      .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+      .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+      .highlight { color: var(--teal); font-weight: 700; }
+      .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+      audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🏫</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">Your Child Deserves a Competitive Advantage</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-4 font-bold text-teal-400">they made me do it</td>
+                    <td class="p-4 text-slate-300 mystery-cell" onclick="revealCell(this)">그들이 나에게 억지로 시켰다</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-4 font-bold text-teal-400">memorize</td>
+                    <td class="p-4 text-slate-300 mystery-cell" onclick="revealCell(this)">암기하다 / 외우다</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-4 font-bold text-teal-400">use it or lose it</td>
+                    <td class="p-4 text-slate-300 mystery-cell" onclick="revealCell(this)">쓰지 않으면 잊어버린다 / 사용하지 않으면 능력이 퇴화한다</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-4 font-bold text-teal-400">penpals</td>
+                    <td class="p-4 text-slate-300 mystery-cell" onclick="revealCell(this)">펜팔 친구들 / 편지를 주고받는 친구들</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-4 font-bold text-teal-400">translate</td>
+                    <td class="p-4 text-slate-300 mystery-cell" onclick="revealCell(this)">번역하다 / 다른 언어로 옮기다</td>
+                </tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-2xl p-5 border-l-4 border-teal-500">
+                <h3 class="font-bold text-teal-400 mb-1">make someone do something</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">누군가에게 어떤 행동을 하게 하거나 강제로 시킨다는 뜻입니다. make 뒤에는 목적어와 동사원형이 옵니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 border-l-4 border-teal-500">
+                <h3 class="font-bold text-teal-400 mb-1">use it or lose it</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">배운 기술이나 지식을 꾸준히 사용하지 않으면 잃게 된다는 뜻입니다. 외국어, 근육, 운동 능력 등 다양한 상황에서 사용됩니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Global Leaders English Academy — Preparing tomorrow's leaders since conception.</p>
+                <p class="mb-6">At Global Leaders English Academy, we believe that childhood offers a limited window of opportunity. Every birthday represents one less year of preparation for the global job market.</p>
+                <p class="mb-6">While other institutions focus on making English enjoyable, we focus on measurable results.</p>
+                <p class="mb-6 font-bold text-teal-400">The First 10,000 Words</p>
+                <p class="mb-6">By their third birthday, our students are expected to have <b class="highlight quiz-target" data-ans="memorized" data-kor="암기한">memorized</b> 10,000 English words, including essential business and legal terminology.</p>
+                <p class="mb-6">Children who are unable to speak are assessed through eye movements. Those who fail to demonstrate sufficient vocabulary knowledge may be required to repeat their second year of life academically.</p>
+                <p class="mb-6 font-bold text-teal-400">Our International Friendship Program</p>
+                <p class="mb-6">We recognize that meaningful relationships can help students put their English to good use.</p>
+                <p class="mb-6">Each student is assigned six international <b class="highlight quiz-target" data-ans="penpals" data-kor="펜팔 친구들">penpals</b>. Children must maintain these friendships regardless of their personal interests. Friendship performance is evaluated monthly based on grammar, vocabulary, and response times.</p>
+                <p class="mb-6">For an additional fee, parents can purchase more academically advanced friends for their children.</p>
+                <p class="mb-6 font-bold text-teal-400">English Beyond the Classroom</p>
+                <p class="mb-6">When it comes to language learning, the principle is simple: <b class="highlight quiz-target" data-ans="use it or lose it" data-kor="사용하지 않으면 잊어버린다">use it or lose it</b>.</p>
+                <p class="mb-6">Our Family Immersion Package ensures that no everyday activity goes to waste. Before breakfast, children must describe the nutritional benefits of their food in English. During family arguments, all participants must communicate exclusively in English.</p>
+                <p class="mb-6">Children wishing to complain about our academy must submit their complaints in English. Complaints written in Korean will not be <b class="highlight quiz-target" data-ans="translated" data-kor="번역되다">translated</b> or considered.</p>
+                <p class="mb-6 font-bold text-teal-400">What Our Students Say</p>
+                <p class="mb-6">“I didn't really want to study English. My parents <b class="highlight quiz-target" data-ans="made me do it" data-kor="억지로 시켰다">made me do it</b>. By the time I was six, I could explain the advantages and disadvantages of various retirement investment plans.”</p>
+                <p class="mb-6">— Jihun, age six</p>
+                <p class="mb-6">We are particularly proud of Jihun's progress. His parents have recently enrolled him in our Advanced Retirement Planning English Course.</p>
+                <p class="mb-6 font-bold text-teal-400">An Investment in Your Child's Future</p>
+                <p class="mb-6">Some parents worry that our programs take things too far. However, we encourage families to consider the long-term consequences of allowing children to spend their free time freely.</p>
+                <p class="mb-6">Our Platinum Package costs ₩120 million annually. Families who spare no expense on their children's education may also qualify for our Residential Immersion Program, which allows students to live at the academy until university admission.</p>
+                <p class="mb-6">Parents are permitted to visit twice a year, provided they pass our English proficiency examination.</p>
+                <p class="mb-6">We look forward to welcoming your family.</p>
+                <p class="mb-6">Applications are now open for children expected to be born in 2028.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">자녀에게 경쟁 우위를 선물하세요</p>
+                <p class="mb-6">글로벌 리더스 영어학원 — 임신 순간부터 미래의 리더를 양성합니다.</p>
+                <p class="mb-6">저희 글로벌 리더스 영어학원은 어린 시절이 제한된 기회의 시기라고 믿습니다. 생일을 한 번 맞이할 때마다 글로벌 취업 시장에 대비할 수 있는 시간이 1년씩 줄어듭니다.</p>
+                <p class="mb-6">다른 교육기관들이 영어를 재미있게 가르치는 데 집중하는 동안, 저희는 측정 가능한 성과에 집중합니다.</p>
+                <p class="mb-6 font-bold text-slate-300 not-italic">첫 10,000단어</p>
+                <p class="mb-6">저희 학생들은 세 번째 생일까지 필수 비즈니스 및 법률 용어를 포함하여 영어 단어 1만 개를 <b class="highlight">암기해야 합니다</b>.</p>
+                <p class="mb-6">아직 말을 하지 못하는 아이들은 눈동자의 움직임을 통해 평가받습니다. 충분한 어휘력을 입증하지 못한 아이들은 학업상 두 살 과정을 다시 이수해야 할 수도 있습니다.</p>
+                <p class="mb-6 font-bold text-slate-300 not-italic">국제 교우 관계 프로그램</p>
+                <p class="mb-6">저희는 의미 있는 인간관계가 학생들이 영어를 유용하게 활용하는 데 도움이 된다는 사실을 잘 알고 있습니다.</p>
+                <p class="mb-6">학생 한 명당 해외 <b class="highlight">펜팔 친구</b> 여섯 명이 배정됩니다. 아이들은 개인적인 관심사와 관계없이 이러한 우정을 유지해야 합니다. 교우 관계 성과는 문법, 어휘력, 답장 속도를 기준으로 매월 평가됩니다.</p>
+                <p class="mb-6">추가 비용을 지불하시면 자녀에게 학업 수준이 더 높은 친구들을 마련해 드립니다.</p>
+                <p class="mb-6 font-bold text-slate-300 not-italic">교실 밖에서도 영어를</p>
+                <p class="mb-6">언어 학습의 원칙은 간단합니다. <b class="highlight">사용하지 않으면 잊어버립니다</b>.</p>
+                <p class="mb-6">저희 가정 몰입 교육 패키지는 일상생활의 어떤 활동도 낭비되지 않도록 보장합니다. 아침 식사 전에는 아이들이 음식의 영양학적 이점을 영어로 설명해야 합니다. 가족끼리 다툴 때도 모든 가족 구성원은 반드시 영어로만 의사소통해야 합니다.</p>
+                <p class="mb-6">저희 학원에 불만을 제기하고 싶은 아이들은 영어로 불만 사항을 제출해야 합니다. 한국어로 작성된 불만 사항은 <b class="highlight">번역하거나</b> 검토하지 않습니다.</p>
+                <p class="mb-6 font-bold text-slate-300 not-italic">학생들의 후기</p>
+                <p class="mb-6">“사실 영어 공부를 하고 싶지는 않았어요. 부모님이 <b class="highlight">억지로 시키셨거든요</b>. 여섯 살이 되었을 때는 다양한 은퇴 자금 투자 상품의 장단점을 설명할 수 있게 됐어요.”</p>
+                <p class="mb-6">— 지훈, 6세</p>
+                <p class="mb-6">저희는 특히 지훈 학생의 발전을 자랑스럽게 생각합니다. 지훈이의 부모님께서는 최근 아이를 고급 은퇴 설계 영어 과정에 등록하셨습니다.</p>
+                <p class="mb-6 font-bold text-slate-300 not-italic">자녀의 미래를 위한 투자</p>
+                <p class="mb-6">일부 부모님들은 저희 프로그램이 너무 지나치다고 걱정하십니다. 하지만 저희는 아이들이 자유 시간을 자유롭게 보내도록 허용했을 때 발생할 장기적인 결과를 고려해 보시기를 권장합니다.</p>
+                <p class="mb-6">저희 플래티넘 패키지의 연간 수강료는 1억 2천만 원입니다. 자녀 교육에 돈을 아끼지 않는 가정은 대학 입학까지 학생이 학원에서 생활할 수 있는 기숙형 몰입 교육 프로그램에 지원할 자격도 얻을 수 있습니다.</p>
+                <p class="mb-6">부모님께서는 저희 영어 능력 시험을 통과하시는 조건으로 연간 두 차례 면회하실 수 있습니다.</p>
+                <p class="mb-6">여러분의 가족을 맞이할 날을 기대하겠습니다.</p>
+                <p class="mb-6">현재 2028년 출생 예정 아동의 입학 신청을 받고 있습니다.</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "1124715.m4a";
+</script>
+
+    <script src="wordbank-utils.js"></script>
+</body>
+</html>

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Worst Financial Advice I've Ever Received</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+      :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+      body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+      .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+      .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+      input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+      input:focus::placeholder { opacity: 0 !important; }
+      .mystery-cell { transition: color 0.3s; }
+      .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+      .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+      .highlight { color: var(--teal); font-weight: 700; }
+      .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+      audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🎙️</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Worst Financial Advice I've Ever Received</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-4 font-bold text-teal-400">the fundamentals</td>
+                    <td class="p-4 text-slate-300 mystery-cell" onclick="revealCell(this)">기본 원리 / 기업의 기초 체력</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-4 font-bold text-teal-400">cyclical</td>
+                    <td class="p-4 text-slate-300 mystery-cell" onclick="revealCell(this)">경기 순환에 따라 변하는 / 주기적인</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-4 font-bold text-teal-400">psychiatrist</td>
+                    <td class="p-4 text-slate-300 mystery-cell" onclick="revealCell(this)">정신건강의학과 의사</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-4 font-bold text-teal-400">on edge</td>
+                    <td class="p-4 text-slate-300 mystery-cell" onclick="revealCell(this)">신경이 곤두선 / 불안하고 초조한</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-4 font-bold text-teal-400">knowledgeable about</td>
+                    <td class="p-4 text-slate-300 mystery-cell" onclick="revealCell(this)">~에 대해 잘 아는 / 지식이 풍부한</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-4 font-bold text-teal-400">now I'm stuck</td>
+                    <td class="p-4 text-slate-300 mystery-cell" onclick="revealCell(this)">이제 이러지도 저러지도 못해 / 이제 물렸어</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-4 font-bold text-teal-400">left holding the bag</td>
+                    <td class="p-4 text-slate-300 mystery-cell" onclick="revealCell(this)">결국 혼자 손해를 떠안게 된</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-4 font-bold text-teal-400">bagholders</td>
+                    <td class="p-4 text-slate-300 mystery-cell" onclick="revealCell(this)">손실을 본 채 투자 자산을 계속 보유하는 사람들 / 물린 투자자들</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-4 font-bold text-teal-400">REIT</td>
+                    <td class="p-4 text-slate-300 mystery-cell" onclick="revealCell(this)">부동산 투자 신탁 / 리츠</td>
+                </tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-2xl p-5 border-l-4 border-teal-500">
+                <h3 class="font-bold text-teal-400 mb-1">the fundamentals</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">투자에서는 기업의 매출, 수익성, 부채, 재무 상태 등 기업의 본질적인 가치를 판단하는 기초 요소를 의미해요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 border-l-4 border-teal-500">
+                <h3 class="font-bold text-teal-400 mb-1">cyclical</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">투자에서는 경기의 호황과 불황에 따라 실적이나 주가가 크게 변하는 산업이나 기업을 설명할 때 사용해요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 border-l-4 border-teal-500">
+                <h3 class="font-bold text-teal-400 mb-1">on edge</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">긴장과 불안 때문에 마음을 편하게 먹지 못하는 상태를 나타내요. I've been on edge all week.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 border-l-4 border-teal-500">
+                <h3 class="font-bold text-teal-400 mb-1">left holding the bag</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">다른 사람들은 빠져나갔지만 자신만 남아서 손해나 책임을 떠안게 되는 상황을 의미해요. 투자뿐만 아니라 일상생활에서도 사용할 수 있어요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 border-l-4 border-teal-500">
+                <h3 class="font-bold text-teal-400 mb-1">bagholders</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">주가가 크게 떨어졌는데도 손실을 확정하지 못하고 계속 보유하는 투자자들을 가리키는 비격식 표현이에요. 약간의 조롱이나 자조적인 뉘앙스가 있어요.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 border-l-4 border-teal-500">
+                <h3 class="font-bold text-teal-400 mb-1">REIT (Real Estate Investment Trust)</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">투자자들의 돈을 모아 부동산 등에 투자하고 그 수익을 투자자들에게 배분하는 투자 구조예요. 일반적으로 '리츠'라고 불러요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6 italic text-slate-400">From the fictional podcast Money &amp; Mistakes</p>
+                <p class="mb-6">Host: Today we're talking to Mark, who's been investing for twenty years. Mark, what's the worst financial advice you've ever received?</p>
+                <p class="mb-6">Mark: How much time have we got? My first investment was based on a conversation I overheard at a barbecue. A guy sounded incredibly <b class="highlight quiz-target" data-ans="knowledgeable about" data-kor="~에 대해 잘 아는">knowledgeable about</b> the airline industry, so I bought shares in an airline company without doing any research.</p>
+                <p class="mb-6">Host: What did he actually do for a living?</p>
+                <p class="mb-6">Mark: He was a dentist. He just travelled a lot.</p>
+                <p class="mb-6">Host: How did that investment go?</p>
+                <p class="mb-6">Mark: Terribly. I didn't understand how <b class="highlight quiz-target" data-ans="cyclical" data-kor="경기 순환에 따라 변하는">cyclical</b> the airline industry could be. I knew nothing about <b class="highlight quiz-target" data-ans="the fundamentals" data-kor="기본적인 재무 상태">the fundamentals</b> of the company. I just thought people would always need to fly.</p>
+                <p class="mb-6">Host: Did you become more risk-averse after that?</p>
+                <p class="mb-6">Mark: For a while. Then my brother-in-law made a killing on crypto, and I got caught up in the hype. He created a group chat where everyone shared screenshots of their profits. I eventually went all in.</p>
+                <p class="mb-6">Host: Oh, no.</p>
+                <p class="mb-6">Mark: When prices started falling, the people who had made the most money quietly cashed out. The rest of us were <b class="highlight quiz-target" data-ans="left holding the bag" data-kor="손해를 떠안게 된">left holding the bag</b>. There are still about thirty <b class="highlight quiz-target" data-ans="bagholders" data-kor="물린 투자자들">bagholders</b> in that group, telling each other to be patient.</p>
+                <p class="mb-6">Host: Are you still holding your crypto?</p>
+                <p class="mb-6">Mark: Unfortunately, yes. I bought near the peak, and <b class="highlight quiz-target" data-ans="now I'm stuck" data-kor="이제 이러지도 저러지도 못해">now I'm stuck</b>. I know the price may never recover, but I can't bring myself to sell.</p>
+                <p class="mb-6">Host: That must be stressful.</p>
+                <p class="mb-6">Mark: My wife told me to see a <b class="highlight quiz-target" data-ans="psychiatrist" data-kor="정신건강의학과 의사">psychiatrist</b> because I was constantly <b class="highlight quiz-target" data-ans="on edge" data-kor="신경이 곤두선">on edge</b>. I'd check prices during dinner, at work and even in the middle of the night.</p>
+                <p class="mb-6">Host: Did you actually go?</p>
+                <p class="mb-6">Mark: Yes. The <b class="highlight quiz-target" data-ans="psychiatrist" data-kor="의사 선생님">psychiatrist</b> asked me whether I'd considered deleting the trading app. That was probably the most useful financial advice I'd received in years.</p>
+                <p class="mb-6">Host: So how do you invest these days?</p>
+                <p class="mb-6">Mark: I invest regularly in index funds, government bonds and a couple of <b class="highlight quiz-target" data-ans="REITs" data-kor="리츠">REITs</b>. I diversify my investments and try not to chase quick profits. It's pretty boring.</p>
+                <p class="mb-6">Host: And are you happier?</p>
+                <p class="mb-6">Mark: Much happier. Although my neighbour recently told me about a company that's supposedly going to revolutionize the battery industry.</p>
+                <p class="mb-6">Host: Please tell me you didn't buy any shares.</p>
+                <p class="mb-6">Mark: No. I asked him about the company's financial performance.</p>
+                <p class="mb-6">Host: What did he say?</p>
+                <p class="mb-6">Mark: He didn't know. Apparently, his dentist had recommended it.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">가상의 팟캐스트 《돈과 실수》 중에서</p>
+                <p class="mb-6">진행자: 오늘은 20년 동안 투자를 해 온 마크 씨와 이야기를 나눠 보겠습니다. 마크 씨, 지금까지 받아 본 최악의 투자 조언은 무엇인가요?</p>
+                <p class="mb-6">마크: 방송 시간이 얼마나 남았죠? 제 첫 투자는 바비큐 파티에서 우연히 들은 대화를 바탕으로 한 것이었어요. 어떤 남자가 항공업계에 대해 <b class="highlight">엄청 잘 아는</b> 것처럼 말하길래, 아무런 조사도 하지 않고 항공사 주식을 샀죠.</p>
+                <p class="mb-6">진행자: 그 사람은 실제로 무슨 일을 했는데요?</p>
+                <p class="mb-6">마크: 치과 의사였어요. 그냥 여행을 많이 다니는 사람이었죠.</p>
+                <p class="mb-6">진행자: 그 투자는 어떻게 됐나요?</p>
+                <p class="mb-6">마크: 완전히 망했죠. 항공업계가 <b class="highlight">경기 변동에 얼마나 민감한지</b> 몰랐어요. 그 회사의 <b class="highlight">기본적인 재무 상태</b>에 대해서도 아무것도 몰랐고요. 그냥 사람들은 언제나 비행기를 타야 한다고 생각했어요.</p>
+                <p class="mb-6">진행자: 그 일 이후로 위험을 좀 더 꺼리게 됐나요?</p>
+                <p class="mb-6">마크: 한동안은 그랬죠. 그러다가 처남이 암호화폐로 대박이 났고, 저도 그 열풍에 휩쓸렸어요. 처남이 단체 채팅방을 만들었는데, 다들 자기 수익을 캡처해서 올렸어요. 결국 저도 가진 돈을 전부 투자했죠.</p>
+                <p class="mb-6">진행자: 이런 세상에.</p>
+                <p class="mb-6">마크: 가격이 떨어지기 시작하자 가장 많은 돈을 번 사람들은 조용히 현금화하고 빠져나갔어요. 나머지 사람들만 <b class="highlight">손해를 떠안게 됐죠</b>. 아직도 그 채팅방에는 <b class="highlight">물린 투자자들</b>이 30명쯤 있는데, 서로 조금만 더 참으라고 하고 있어요.</p>
+                <p class="mb-6">진행자: 아직도 암호화폐를 보유하고 계세요?</p>
+                <p class="mb-6">마크: 안타깝게도 그렇죠. 거의 최고점에서 샀는데 <b class="highlight">이제 이러지도 저러지도 못해요</b>. 가격이 회복되지 않을 수도 있다는 건 알지만, 차마 팔지를 못하겠어요.</p>
+                <p class="mb-6">진행자: 스트레스가 상당하겠네요.</p>
+                <p class="mb-6">마크: 제가 항상 <b class="highlight">신경이 곤두서</b> 있으니까 아내가 <b class="highlight">정신건강의학과 의사</b>를 만나 보라고 했어요. 저녁을 먹을 때도, 직장에서도, 심지어 한밤중에도 시세를 확인했거든요.</p>
+                <p class="mb-6">진행자: 실제로 병원에 갔나요?</p>
+                <p class="mb-6">마크: 네. <b class="highlight">의사 선생님</b>이 주식이나 코인을 거래하는 앱을 삭제해 볼 생각은 안 해 봤냐고 물으시더라고요. 아마 몇 년 동안 받은 투자 조언 중 가장 유용한 조언이었을 거예요.</p>
+                <p class="mb-6">진행자: 그러면 요즘은 어떻게 투자하세요?</p>
+                <p class="mb-6">마크: 인덱스 펀드, 국채, 그리고 <b class="highlight">리츠</b> 몇 개에 정기적으로 투자해요. 분산 투자를 하고 단기 수익만 좇지 않으려고 노력하죠. 꽤 재미없는 방식이에요.</p>
+                <p class="mb-6">진행자: 그래도 더 행복하세요?</p>
+                <p class="mb-6">마크: 훨씬 행복죠. 그런데 얼마 전에 이웃이 배터리 산업에 혁명을 일으킬 거라는 회사 이야기를 해 주더라고요.</p>
+                <p class="mb-6">진행자: 제발 주식을 사지 않았다고 말해 주세요.</p>
+                <p class="mb-6">마크: 안 샀어요. 그 회사의 재무 실적에 대해 물어봤죠.</p>
+                <p class="mb-6">진행자: 뭐라고 하던가요?</p>
+                <p class="mb-6">마크: 모르던데요. 자기 치과 의사가 추천해 줬다더라고요.</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "1124845.m4a";
+</script>
+
+    <script src="wordbank-utils.js"></script>
+</body>
+</html>

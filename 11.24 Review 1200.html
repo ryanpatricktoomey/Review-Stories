@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | Global Leaders English Academy — Childhood Without Wasted Time</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+      :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+      body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+      .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+      .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+      input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+      input:focus::placeholder { opacity: 0 !important; }
+      .mystery-cell { transition: color 0.3s; }
+      .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+      .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+      .highlight { color: var(--teal); font-weight: 700; }
+      .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+      audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🏆</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">Global Leaders English Academy — Childhood Without Wasted Time</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-4 font-bold text-teal-400">unheard of</td>
+                    <td class="p-4 text-slate-300 mystery-cell" onclick="revealCell(this)">전례 없는 / 들어 본 적도 없는</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-4 font-bold text-teal-400">getting worse</td>
+                    <td class="p-4 text-slate-300 mystery-cell" onclick="revealCell(this)">점점 더 심해지는 / 악화되는</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-4 font-bold text-teal-400">drawn to it</td>
+                    <td class="p-4 text-slate-300 mystery-cell" onclick="revealCell(this)">그것에 끌리는 / 자연스럽게 관심이 가는</td>
+                </tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-2xl p-5 border-l-4 border-teal-500">
+                <h3 class="font-bold text-teal-400 mb-1">unheard of</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">단순히 들어 본 적이 없다는 뜻뿐만 아니라, 어떤 일이 매우 이례적이거나 전례가 없다는 의미로 사용됩니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 border-l-4 border-teal-500">
+                <h3 class="font-bold text-teal-400 mb-1">be drawn to something</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">특별히 의식적으로 노력하지 않아도 무언가에 자연스럽게 매력을 느끼거나 끌린다는 뜻입니다. 사람, 취미, 장소, 문화 등에 모두 사용할 수 있습니다.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Other children are getting ahead. Is yours?</p>
+                <p class="mb-6">At Global Leaders English Academy, we believe that every moment of childhood should contribute to future academic and professional success.</p>
+                <p class="mb-6">Competition among young English learners is <b class="highlight quiz-target" data-ans="getting worse" data-kor="더욱 심해지는">getting worse</b> every year. Skills that were once considered impressive in a ten-year-old are now expected of a four-year-old.</p>
+                <p class="mb-6">Our academy offers a complete educational solution for families who refuse to fall behind.</p>
+                <p class="mb-6 font-bold text-teal-400">The English Birth Experience</p>
+                <p class="mb-6">Until recently, conducting a child's first English lesson in the delivery room was virtually <b class="highlight quiz-target" data-ans="unheard of" data-kor="들어 본 적도 없는">unheard of</b>.</p>
+                <p class="mb-6">Our academy has partnered with several private maternity clinics to make this possible. A qualified English instructor will be present during the birth to ensure that the first words your baby hears are in English.</p>
+                <p class="mb-6">Fathers are encouraged to remain silent unless they have completed our pronunciation course.</p>
+                <p class="mb-6 font-bold text-teal-400">Discover Your Child's Natural Interests</p>
+                <p class="mb-6">Some children enjoy music, while others enjoy drawing or playing with animals. Whatever your child is naturally <b class="highlight quiz-target" data-ans="drawn to" data-kor="자연스럽게 끌리는">drawn to</b>, our specialists will find a way to turn it into an English assignment.</p>
+                <p class="mb-6">Children who enjoy dinosaurs will prepare academic presentations on extinction. Children who enjoy cooking will study international food safety regulations.</p>
+                <p class="mb-6">We believe that no personal interest should remain purely recreational.</p>
+                <p class="mb-6 font-bold text-teal-400">The Competitive Family Network</p>
+                <p class="mb-6">Many parents feel pressured to keep up with their neighbours. Our exclusive mobile application makes this considerably easier.</p>
+                <p class="mb-6">Whenever a child in your neighbourhood learns a new English expression, you receive an immediate notification.</p>
+                <p class="mb-6">Parents can respond by purchasing additional vocabulary lessons directly through the app.</p>
+                <p class="mb-6">For families who wish to go all out, our Platinum Membership provides access to the academic records of competing children.</p>
+                <p class="mb-6 font-bold text-teal-400">Making Every Family Occasion Count</p>
+                <p class="mb-6">Our instructors are available to attend birthday parties, weddings, and family holidays.</p>
+                <p class="mb-6">During birthday celebrations, children must deliver a five-minute speech explaining their achievements over the past year. Guests are required to ask follow-up questions in English before any cake is served.</p>
+                <p class="mb-6 font-bold text-teal-400">Tuition and Admissions</p>
+                <p class="mb-6">Annual tuition begins at ₩140 million.</p>
+                <p class="mb-6">We understand that some families may need to make significant sacrifices. Having said that, our financial consultants have helped numerous parents discover the educational value of owning only one kidney.</p>
+                <p class="mb-6">To give your child the best possible head start, we recommend completing the admissions process before starting a family.</p>
+                <p class="mb-6">Your child may not exist yet, but the competition has already begun.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">글로벌 리더스 영어학원 — 낭비되는 시간 없는 어린 시절</p>
+                <p class="mb-6">다른 아이들은 앞서 나가고 있습니다. 당신의 자녀는 어떻습니까?</p>
+                <p class="mb-6">저희 글로벌 리더스 영어학원은 어린 시절의 모든 순간이 미래의 학업 및 직업적 성공에 기여해야 한다고 믿습니다.</p>
+                <p class="mb-6">어린 영어 학습자들 사이의 경쟁은 해마다 <b class="highlight">더욱 심해지고 있습니다</b>. 과거에는 열 살짜리 아이가 갖추면 대단하다고 여겨졌던 능력을 이제는 네 살짜리 아이에게도 기대하고 있습니다.</p>
+                <p class="mb-6">저희 학원은 뒤처지기를 거부하는 가정에 종합적인 교육 솔루션을 제공합니다.</p>
+                <p class="mb-6 font-bold text-slate-300 not-italic">영어와 함께하는 출산 프로그램</p>
+                <p class="mb-6">불과 얼마 전까지만 해도 분만실에서 아이의 첫 영어 수업을 진행한다는 것은 거의 <b class="highlight">들어 본 적도 없는</b> 일이었습니다.</p>
+                <p class="mb-6">저희 학원은 이를 실현하기 위해 여러 민간 산부인과와 협력 관계를 맺었습니다. 자격을 갖춘 영어 강사가 출산 현장에 함께하여 아기가 처음 듣는 말이 영어가 되도록 보장합니다.</p>
+                <p class="mb-6">아버님께서는 저희 발음 교정 과정을 수료하지 않으셨다면 침묵을 유지하실 것을 권장합니다.</p>
+                <p class="mb-6 font-bold text-slate-300 not-italic">자녀의 타고난 관심사를 발견하세요</p>
+                <p class="mb-6">어떤 아이들은 음악을 좋아하고, 어떤 아이들은 그림을 그리거나 동물과 노는 것을 좋아합니다. 자녀가 무엇에 <b class="highlight">자연스럽게 끌리든</b> 저희 전문가들은 그것을 영어 과제로 바꿀 방법을 찾아드립니다.</p>
+                <p class="mb-6">공룡을 좋아하는 아이들은 멸종에 관한 학술 발표를 준비합니다. 요리를 좋아하는 아이들은 국제 식품 안전 규정을 공부합니다.</p>
+                <p class="mb-6">저희는 어떤 개인적인 관심사도 단순한 여가 활동으로 남아 있어서는 안 된다고 믿습니다.</p>
+                <p class="mb-6 font-bold text-slate-300 not-italic">가족 경쟁 네트워크</p>
+                <p class="mb-6">많은 부모님이 이웃에게 뒤처지지 않아야 한다는 압박감을 느낍니다. 저희만의 모바일 애플리케이션은 이를 훨씬 수월하게 만들어 드립니다.</p>
+                <p class="mb-6">동네의 다른 아이가 새로운 영어 표현을 배울 때마다 즉시 알림을 받으실 수 있습니다.</p>
+                <p class="mb-6">부모님께서는 앱을 통해 추가 어휘 수업을 즉시 구매하여 대응하실 수 있습니다.</p>
+                <p class="mb-6">교육에 모든 것을 쏟아붓고자 하는 가정을 위해 플래티넘 멤버십에서는 경쟁 상대인 아이들의 학업 기록을 열람할 수 있는 권한을 제공합니다.</p>
+                <p class="mb-6 font-bold text-slate-300 not-italic">모든 가족 행사를 의미 있게 활용하세요</p>
+                <p class="mb-6">저희 강사진은 생일 파티, 결혼식, 가족여행에도 동행할 수 있습니다.</p>
+                <p class="mb-6">생일잔치에서 아이들은 지난 1년간의 성과를 설명하는 5분짜리 연설을 해야 합니다. 케이크가 제공되기 전에 모든 손님은 영어로 추가 질문을 해야 합니다.</p>
+                <p class="mb-6 font-bold text-slate-300 not-italic">수강료 및 입학 안내</p>
+                <p class="mb-6">연간 수강료는 1억 4천만 원부터 시작합니다.</p>
+                <p class="mb-6">일부 가정에서는 상당한 희생이 필요할 수도 있다는 점을 이해합니다. 그렇긴 하지만 저희 재정 상담 전문가들은 수많은 부모님이 신장을 하나만 가지고 사는 것의 교육적 가치를 발견하도록 도와드렸습니다.</p>
+                <p class="mb-6">자녀에게 최대한 유리한 출발점을 마련해 주기 위해서는 자녀를 갖기 전에 입학 절차를 완료하실 것을 권장합니다.</p>
+                <p class="mb-6">당신의 자녀는 아직 존재하지 않을 수도 있지만, 경쟁은 이미 시작되었습니다.</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "11241200.m4a";
+</script>
+
+    <script src="wordbank-utils.js"></script>
+</body>
+</html>

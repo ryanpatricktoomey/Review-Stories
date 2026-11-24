@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | Welcome to Global Leaders English Academy</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+      :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+      body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+      .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+      .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+      input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+      input:focus::placeholder { opacity: 0 !important; }
+      .mystery-cell { transition: color 0.3s; }
+      .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+      .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+      .highlight { color: var(--teal); font-weight: 700; }
+      .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+      audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🎓</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">Welcome to Global Leaders English Academy</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-4 font-bold text-teal-400">adored me</td>
+                    <td class="p-4 text-slate-300 mystery-cell" onclick="revealCell(this)">나를 정말 좋아했다 / 무척 사랑했다</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-4 font-bold text-teal-400">develop my skills</td>
+                    <td class="p-4 text-slate-300 mystery-cell" onclick="revealCell(this)">내 능력을 키우다 / 실력을 향상시키다</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-4 font-bold text-teal-400">squirm</td>
+                    <td class="p-4 text-slate-300 mystery-cell" onclick="revealCell(this)">몸을 꿈틀거리다 / 불편해서 몸을 꼼지락거리다</td>
+                </tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-2xl p-5 border-l-4 border-teal-500">
+                <h3 class="font-bold text-teal-400 mb-1">adore</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">단순히 like보다 훨씬 강한 표현으로, 누군가를 무척 좋아하거나 사랑한다는 뜻입니다.</p>
+            </div>
+            <div class="glass rounded-2xl p-5 border-l-4 border-teal-500">
+                <h3 class="font-bold text-teal-400 mb-1">squirm</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">가만히 있지 못하고 몸을 움직이는 것을 뜻합니다. 신체적으로 불편할 때뿐만 아니라 민망하거나 당황스러운 상황에서도 사용할 수 있습니다. (squirm with embarrassment: 창피해서 어쩔 줄 몰라 하다.)</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Because birth is already a late start.</p>
+                <p class="mb-6">At Global Leaders English Academy, we understand that parents are worried about their children falling behind. Unfortunately, many parents make the mistake of waiting until their children can speak before introducing them to English.</p>
+                <p class="mb-6">Our research suggests that valuable learning opportunities are being missed during pregnancy.</p>
+                <p class="mb-6 font-bold text-teal-400">Prenatal English Immersion</p>
+                <p class="mb-6">From the 16th week of pregnancy, mothers wear our specially designed English-language audio belt. Each morning, their unborn child receives two hours of vocabulary instruction, followed by listening comprehension exercises.</p>
+                <p class="mb-6">If your baby begins to <b class="highlight quiz-target" data-ans="squirm" data-kor="몸을 꿈틀거리다">squirm</b> during a lesson, there is no need to worry. Our instructors interpret these movements as active participation.</p>
+                <p class="mb-6">For parents who wish to give their children an additional head start, we offer weekend business English sessions.</p>
+                <p class="mb-6 font-bold text-teal-400">The Family Language Management Program</p>
+                <p class="mb-6">Just because your child attends an excellent English academy doesn't mean their home environment is suitable for learning.</p>
+                <p class="mb-6">Our professional language monitors visit your home without warning. Family members caught speaking Korean receive written warnings. Grandparents who repeatedly break the rules may be required to attend intensive English training before visiting their grandchildren.</p>
+                <p class="mb-6">We understand that this may cause some tension within the family. However, educational success sometimes comes at a cost.</p>
+                <p class="mb-6 font-bold text-teal-400">Sleep Is an Opportunity</p>
+                <p class="mb-6">The average three-year-old spends approximately half the day sleeping. We consider this a significant waste of valuable study time.</p>
+                <p class="mb-6">Our English Sleep Immersion Package delivers carefully selected vocabulary directly to your child's bedroom throughout the night. Parents can monitor the number of words their child has been exposed to while unconscious.</p>
+                <p class="mb-6 font-bold text-teal-400">Hear From Our Graduates</p>
+                <p class="mb-6">“My parents absolutely <b class="highlight quiz-target" data-ans="adored me" data-kor="나를 정말 사랑했다">adored me</b>. They spared no expense on my education. While other children were playing outside, I was <b class="highlight quiz-target" data-ans="developing my English skills" data-kor="영어 실력을 키우고 있었다">developing my English skills</b>. By the age of seven, I could successfully negotiate a commercial lease in English.”</p>
+                <p class="mb-6">— Minjun, age eight</p>
+                <p class="mb-6 font-bold text-teal-400">Admissions and Tuition</p>
+                <p class="mb-6">Our complete educational package costs ₩85 million per year. Although some parents initially feel that we are taking things too far, most eventually recognize the importance of keeping up with other families.</p>
+                <p class="mb-6">We also offer financial counselling for parents considering selling their homes.</p>
+                <p class="mb-6">Please note that our regular admissions program is limited to children under three.</p>
+                <p class="mb-6">Parents of older children should contact our Academic Recovery Department immediately.</p>
+                <p class="mb-6">We cannot guarantee that the damage can be reversed, but we will do everything we can.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">태어난 후에 시작하는 것은 이미 늦습니다.</p>
+                <p class="mb-6">글로벌 리더스 영어학원에 오신 것을 환영합니다.</p>
+                <p class="mb-6">저희 글로벌 리더스 영어학원은 자녀가 뒤처질까 봐 걱정하시는 부모님들의 마음을 잘 이해합니다. 안타깝게도 많은 부모님이 아이가 말을 할 수 있을 때까지 기다렸다가 영어를 가르치기 시작하는 실수를 저지릅니다.</p>
+                <p class="mb-6">저희 연구에 따르면 임신 기간에도 소중한 학습 기회가 낭비되고 있습니다.</p>
+                <p class="mb-6 font-bold text-slate-300 not-italic">태아 영어 몰입 교육</p>
+                <p class="mb-6">임신 16주 차부터 산모는 저희가 특별히 설계한 영어 오디오 벨트를 착용합니다. 매일 아침 태아는 두 시간 동안 영어 어휘 수업을 받고, 이어서 듣기 이해력 훈련을 받습니다.</p>
+                <p class="mb-6">수업 중에 아기가 <b class="highlight">몸을 꿈틀거리기</b> 시작하더라도 걱정하실 필요는 없습니다. 저희 강사진은 이러한 움직임을 적극적인 수업 참여로 해석합니다.</p>
+                <p class="mb-6">자녀에게 더욱 유리한 출발점을 마련해 주고 싶은 부모님들을 위해 주말 비즈니스 영어 수업도 제공합니다.</p>
+                <p class="mb-6 font-bold text-slate-300 not-italic">가정 내 언어 관리 프로그램</p>
+                <p class="mb-6">자녀가 훌륭한 영어학원에 다닌다고 해서 가정환경까지 학습에 적합하다는 뜻은 아닙니다.</p>
+                <p class="mb-6">저희 전문 언어 감독관들이 예고 없이 가정을 방문합니다. 한국어를 사용하다 적발된 가족 구성원에게는 서면 경고가 발부됩니다. 규칙을 반복적으로 위반하는 조부모님은 손주를 만나기 전에 집중 영어 교육을 이수해야 할 수도 있습니다.</p>
+                <p class="mb-6">이로 인해 가족 간에 다소 갈등이 생길 수 있다는 점은 이해합니다. 하지만 교육적 성공에는 때때로 대가가 따르는 법입니다.</p>
+                <p class="mb-6 font-bold text-slate-300 not-italic">수면은 기회입니다</p>
+                <p class="mb-6">평균적인 세 살 아이는 하루의 약 절반을 잠을 자며 보냅니다. 저희는 이를 소중한 학습 시간의 상당한 낭비라고 판단합니다.</p>
+                <p class="mb-6">저희 수면 영어 몰입 패키지는 밤새 엄선된 영어 어휘를 자녀의 침실로 직접 전달합니다. 부모님은 자녀가 의식이 없는 동안 얼마나 많은 단어에 노출되었는지 확인하실 수 있습니다.</p>
+                <p class="mb-6 font-bold text-slate-300 not-italic">졸업생 후기</p>
+                <p class="mb-6">“부모님은 <b class="highlight">저를 정말 사랑하셨어요</b>. 제 교육에 돈을 아끼지 않으셨죠. 다른 아이들이 밖에서 놀고 있을 때 저는 <b class="highlight">영어 실력을 키우고 있었어요</b>. 일곱 살이 되었을 때는 영어로 상가 임대 계약 협상까지 성공적으로 진행할 수 있었답니다.”</p>
+                <p class="mb-6">— 민준, 8세</p>
+                <p class="mb-6 font-bold text-slate-300 not-italic">입학 및 수강료 안내</p>
+                <p class="mb-6">저희 종합 교육 패키지의 연간 수강료는 8,500만 원입니다. 처음에는 저희가 너무 지나치다고 생각하시는 부모님들도 계시지만, 대부분 결국 다른 가정에 뒤처지지 않는 것이 얼마나 중요한지 깨닫게 됩니다.</p>
+                <p class="mb-6">주택 매각을 고려하고 계신 부모님들을 위한 재정 상담 서비스도 제공합니다.</p>
+                <p class="mb-6">정규 입학 프로그램은 만 3세 미만의 아동만 지원할 수 있다는 점을 유의해 주시기 바랍니다.</p>
+                <p class="mb-6">그보다 나이가 많은 자녀를 둔 부모님께서는 즉시 저희 학업 회복 지원부에 문의해 주십시오.</p>
+                <p class="mb-6">이미 발생한 손상을 되돌릴 수 있다고 보장해 드릴 수는 없지만, 저희는 최선을 다하겠습니다.</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "1124630.m4a";
+</script>
+
+    <script src="wordbank-utils.js"></script>
+</body>
+</html>

@@ -60,6 +60,20 @@ function renderPublicActivities(docs) {
   $('activities').replaceChildren();
   if(!list.length){$('activities').append(el('p','muted','No activities yet. Check back soon!'));if(isEmbed)window.parent.postMessage({type:'english-corner-ready'},location.origin);return;}
   list.forEach(d=>renderActivity(d));
+  if(isEmbed){
+    const article=$('activities').querySelector('article');
+    if(article){
+      const heading=article.querySelector('h2');
+      const toggle=document.createElement('button');
+      toggle.type='button';toggle.className='secondary small';
+      toggle.style.cssText='width:100%;margin:8px 0 0;text-align:left';
+      const details=document.createElement('div');details.id='bonus-details';
+      while(heading.nextSibling)details.append(heading.nextSibling);
+      article.append(toggle,details);
+      const setOpen=open=>{window.repsBonusOpen=open;details.hidden=!open;toggle.setAttribute('aria-expanded',String(open));toggle.textContent=open?'Hide activity ↑':'Open activity ↓';requestAnimationFrame(()=>window.parent.postMessage({type:'english-corner-height',height:document.body.getBoundingClientRect().height},location.origin))};
+      toggle.setAttribute('aria-controls',details.id);toggle.onclick=()=>setOpen(!window.repsBonusOpen);setOpen(!!window.repsBonusOpen||!!targetActivity);
+    }
+  }
   if(isEmbed)window.parent.postMessage({type:'english-corner-ready'},location.origin);
 }
 if(isEmbed&&!targetActivity){

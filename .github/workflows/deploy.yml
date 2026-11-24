@@ -1,24 +1,14 @@
-name: Deploy to GitHub Pages
+name: Refresh Reps App Icons (manual)
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 
 permissions:
   contents: write
-  pages: write
-  id-token: write
 
-concurrency:
-  group: 'pages'
-  cancel-in-progress: true
 
 jobs:
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  refresh-icons:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -56,25 +46,3 @@ jobs:
             git commit -m "Keep official Reps icons in repository"
             git push origin HEAD:main
           fi
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-      - name: Build Reps pages
-        uses: actions/jekyll-build-pages@v1
-      - name: Verify Pages artifact size
-        run: |
-          du -sh _site
-          find _site -type f -printf '%s %p\n' | sort -nr | head -15 || true
-          python - <<'PY'
-          from pathlib import Path
-          total = sum(p.stat().st_size for p in Path('_site').rglob('*') if p.is_file())
-          print(f"Pages content size: {total/1024**3:.2f} GiB")
-          if total > 1024**3:
-              raise SystemExit("Pages content exceeds GitHub Pages' 1 GiB publishing limit. Audio/review assets need separate hosting or a smaller deployment.")
-          PY
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: './_site'
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4

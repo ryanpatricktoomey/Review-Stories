@@ -44,7 +44,7 @@
     const currentMonth = getCurrentMonth();
     if (renderedMonth === currentMonth) return;
     renderedMonth = currentMonth;
-    const older = Array.from(months.keys()).filter(key => key < currentMonth).sort().reverse();
+    const older = Array.from(months.keys()).filter(key => key <= currentMonth).sort().reverse();
     const requested = new URLSearchParams(location.search).get('month');
     const selected = archive ? (older.includes(requested) ? requested : older[0]) : currentMonth;
     const monthLabel = key => monthFormat.format(new Date(key + '-01T00:00:00Z'));
@@ -56,8 +56,8 @@
 
     const links = create('div', '', 'review-month-links');
     if (archive) {
-      const home = create('a', 'Current month', 'review-month-link');
-      home.href = './index.html#review-stories';
+      const home = create('a', 'Home', 'review-month-link');
+      home.href = './index.html';
       links.append(home);
     }
     for (const key of older) {
@@ -69,11 +69,11 @@
     navigation.hidden = !links.childElementCount;
     navigation.replaceChildren(create('h3', 'Review Archive', 'review-archive-label'), links);
 
-    const days = months.get(selected);
+    const days = archive ? months.get(selected) : new Map(Array.from(months.values()).flatMap(m=>Array.from(m.entries())).filter(([key])=>key<=new Date(Date.now()+9*3600000).toISOString().slice(0,10)).sort((a,b)=>b[0].localeCompare(a[0])).slice(0,1));
     lessons.replaceChildren();
-    if (!archive) lessons.append(create('h3', monthLabel(currentMonth)));
-    if (!days) {
-      lessons.append(create('p', 'No reviews have been posted for this month yet.', 'review-empty'));
+    
+    if (!days || !days.size) {
+      lessons.append(create('p', 'No reviews have been posted yet.', 'review-empty'));
       return;
     }
     for (const dateKey of Array.from(days.keys()).sort().reverse()) {

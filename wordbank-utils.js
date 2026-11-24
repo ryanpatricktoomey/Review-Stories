@@ -13,7 +13,7 @@ if (/^(?:\d{4}-\d{2}-\d{2}|\d{1,2}\.\d{1,2})%20Review%20\d{3,4}\.html$/i.test(lo
     backScript.src = new URL('reps-back.js', document.currentScript.src);
     document.head.appendChild(backScript);
     const chalk = document.createElement('script');
-    chalk.src = new URL('reps-chalk.js?v=3', document.currentScript.src);
+    chalk.src = new URL('reps-chalk.js?v=4', document.currentScript.src);
     document.head.appendChild(chalk);
 }
 
@@ -96,19 +96,6 @@ function saveToWordBank(en, ko, btn) {
         btn.classList.add('saved');
         btn.title = "Saved to Word Bank"; btn.setAttribute('aria-label', btn.title);
         
-        // Optional: show a little confetti or toast notification
-        if (window.confetti) {
-            const rect = btn.getBoundingClientRect();
-            confetti({
-                particleCount: 30,
-                spread: 40,
-                origin: { 
-                    x: (rect.left + rect.width / 2) / window.innerWidth,
-                    y: (rect.top + rect.height / 2) / window.innerHeight
-                },
-                colors: ['#14b8a6', '#f59e0b', '#38bdf8']
-            });
-        }
     } else {
         // If it exists, maybe allow removing it? Or just do nothing.
         // For now, let's allow removing it if they click again.

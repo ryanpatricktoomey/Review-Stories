@@ -5,14 +5,15 @@ const norm=s=>String(s).normalize("NFKC").replace(/[’‘]/g,"'").trim().replac
 let pool=[],dialog,last=-1;
 const el=(tag,text,cls)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n};
 function button(label,fn,cls){const b=el("button",label,cls);b.type="button";b.onclick=fn;return b}
+function decorate(n,key){if(window.repsChalkIcon)n.prepend(window.repsChalkIcon(key),document.createTextNode(" "));return n}
 function show(){if(!pool.length||dialog?.open)return;
 if(!dialog){dialog=el("dialog",undefined,"reps-quiz-dialog");document.body.append(dialog)}
 let i=Math.floor(Math.random()*pool.length);last=i;const q=pool[i];dialog.replaceChildren();
-const close=()=>dialog.close();const head=el("div",undefined,"rq-head");head.append(el("strong","QUICK REPS"),button("×",close,"rq-close"));dialog.append(head,el("p",q.type.replaceAll("_"," ").toUpperCase(),"rq-label"),el("h2",q.prompt));
+const close=()=>dialog.close();const head=el("div",undefined,"rq-head");head.append(decorate(el("strong","QUICK REPS"),"bolt"),button("×",close,"rq-close"));dialog.append(head,el("p",q.type.replaceAll("_"," ").toUpperCase(),"rq-label"),el("h2",q.prompt));
 const area=el("div"),feedback=el("div");dialog.append(area,feedback);
 const skip=button("Skip for now",close,"rq-quiet");dialog.append(skip);
 let answered=false;
-function answer(value){if(answered)return;answered=true;area.querySelectorAll("button,input").forEach(n=>n.disabled=true);skip.remove();const correct=q.answers.some(a=>norm(a)===norm(value));feedback.append(el("h3",correct?"Nicely done!":"Not quite!",correct?"rq-correct":"rq-wrong"));if(!correct)feedback.append(el("p","Answer: "+q.answers[0]));feedback.append(el("p",q.explanation),button("Another rep →",()=>{dialog.close();show()},"rq-primary"),button("That's enough for now",close,"rq-quiet"))}
+function answer(value){if(answered)return;answered=true;area.querySelectorAll("button,input").forEach(n=>n.disabled=true);skip.remove();const correct=q.answers.some(a=>norm(a)===norm(value));feedback.append(decorate(el("h3",correct?"Nicely done!":"Not quite!",correct?"rq-correct":"rq-wrong"),correct?"check":"wrong"));if(!correct)feedback.append(el("p","Answer: "+q.answers[0]));feedback.append(decorate(el("p",q.explanation),"bulb"),decorate(button("Another rep",()=>{dialog.close();show()},"rq-primary"),"refresh"),button("That's enough for now",close,"rq-quiet"))}
 if(q.type==="typing"){const input=el("input");input.placeholder="Type your answer";input.setAttribute("aria-label","Your answer");area.append(input,button("Check answer",()=>{if(input.value.trim())answer(input.value)},"rq-primary"));input.onkeydown=e=>{if(e.key==="Enter"&&input.value.trim())answer(input.value)}}
 else if(q.type==="unscramble"){let chosen=[];const line=el("p","","rq-assembled"),chips=el("div",undefined,"rq-chips");area.append(line,chips);q.words.forEach(w=>{const b=button(w,()=>{chosen.push(w);b.disabled=true;line.textContent=chosen.join(" ")});chips.append(b)});area.append(button("Start over",()=>{chosen=[];line.textContent="";chips.querySelectorAll("button").forEach(b=>b.disabled=false)},"rq-quiet"),button("Check answer",()=>{if(chosen.length===q.words.length)answer(chosen.join(" "))},"rq-primary"))}
 else{const opts=[...q.options];for(let j=opts.length-1;j>0;j--){const k=Math.floor(Math.random()*(j+1));[opts[j],opts[k]]=[opts[k],opts[j]]}opts.forEach(o=>area.append(button(o,()=>answer(o))))}

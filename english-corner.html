@@ -64,14 +64,10 @@ function renderPublicActivities(docs) {
     const article=$('activities').querySelector('article');
     if(article){
       const heading=article.querySelector('h2');
-      const toggle=document.createElement('button');
-      toggle.type='button';toggle.className='secondary small';
-      toggle.style.cssText='width:100%;margin:8px 0 0;text-align:left';
       const details=document.createElement('div');details.id='bonus-details';
       while(heading.nextSibling)details.append(heading.nextSibling);
-      article.append(toggle,details);
-      const setOpen=open=>{window.repsBonusOpen=open;details.hidden=!open;toggle.setAttribute('aria-expanded',String(open));toggle.textContent=open?'Hide activity ↑':'Open activity ↓';requestAnimationFrame(()=>window.parent.postMessage({type:'english-corner-height',height:Math.ceil(document.querySelector('main.wrap').getBoundingClientRect().bottom+window.scrollY+8)},location.origin))};
-      toggle.setAttribute('aria-controls',details.id);toggle.onclick=()=>setOpen(!window.repsBonusOpen);setOpen(!!window.repsBonusOpen||!!targetActivity);
+      article.append(details);
+      requestAnimationFrame(()=>window.parent.postMessage({type:'english-corner-height',height:Math.ceil(document.querySelector('main.wrap').getBoundingClientRect().bottom+window.scrollY+8)},location.origin));
     }
   }
   if(isEmbed)window.parent.postMessage({type:'english-corner-ready'},location.origin);

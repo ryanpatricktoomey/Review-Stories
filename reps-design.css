@@ -33,3 +33,13 @@ button,input,select,textarea{font-family:inherit}
 /* Very restrained surface grain, only on homepage tiles. No extra network request. */
 .container .dashboard-tile,.container .dashboard-links a{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.035'/%3E%3C/svg%3E")}
 @media(max-width:480px){.wrap .card{padding:16px}body:has(#bonus-details) article.card{padding:4px 0;border:0;background:transparent}}
+
+/* Phase 2: tactile response; no motion on reduced-motion devices. */
+.reps-chevron{display:inline-block;transform-origin:center}
+@media(prefers-reduced-motion:no-preference){
+:where(button,.top-action,.lesson-link,.review-month-link,.item):not(:disabled){transition:scale 130ms ease,filter 130ms ease,background-color 160ms ease,border-color 160ms ease}
+:where(button,.top-action,.lesson-link,.review-month-link,.item):not(:disabled):active{scale:.98;filter:brightness(1.12)}
+.reps-chevron{transition:transform 220ms cubic-bezier(.2,.7,.2,1)}
+[aria-expanded="true"]>.reps-chevron{transform:rotate(180deg)}
+}
+@media(prefers-reduced-motion:reduce){.reps-chevron{transition:none}[aria-expanded="true"]>.reps-chevron{transform:rotate(180deg)}.dashboard-tile:active,.dashboard-links a:active{transform:none}}

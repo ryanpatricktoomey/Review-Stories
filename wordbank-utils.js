@@ -34,6 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
             background: rgba(20, 184, 166, 0.4);
             transform: scale(1.05);
         }
+        @media(prefers-reduced-motion:reduce){.wordbank-save-btn{transition:none}.wordbank-save-btn:hover{transform:none}}
         .wordbank-save-btn.saved {
             background: rgba(16, 185, 129, 0.2);
             border-color: rgba(16, 185, 129, 0.4);
@@ -102,6 +103,7 @@ function saveToWordBank(en, ko, btn) {
         bank.push({ en, ko, dateAdded: new Date().toISOString() });
         localStorage.setItem('wordBank', JSON.stringify(bank));
         renderWordBankButton(btn, true);
+        if(!matchMedia('(prefers-reduced-motion: reduce)').matches)btn.querySelector('svg')?.animate?.([{transform:'scale(.8)'},{transform:'scale(1.18)',offset:.55},{transform:'scale(1)'}],{duration:300,easing:'ease-out'});
         btn.classList.add('saved');
         btn.title = "Saved to Word Bank"; btn.setAttribute('aria-label', btn.title);
         

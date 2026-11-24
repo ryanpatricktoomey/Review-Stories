@@ -1,3 +1,12 @@
+function renderWordBankButton(btn, saved) {
+    const color = saved ? '#a8dcca' : '#a7cdf8';
+    const shape = saved ? '<circle cx="12" cy="12" r="9"/><path d="m7 12 3 3 7-7" fill="none"/>' : '<path d="M12 6C8 3 4 4 2.5 5v14c3-1 6-1 9.5 1.5C15.5 18 19 18 21.5 19V5C18 4 15 4 12 6Z"/><path d="M12 6v14M5.5 8.5l3.5 1M15 9.5l3.5-1"/>';
+    btn.innerHTML = '<svg aria-hidden="true" viewBox="0 0 24 24" width="22" height="22" style="display:block;pointer-events:none;color:'+color+'" fill="currentColor" fill-opacity=".13" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round">'+shape+'</svg>';
+    btn.classList.toggle('saved', saved);
+    btn.setAttribute('aria-pressed', String(saved));
+    btn.title = saved ? 'Remove from Word Bank' : 'Save to Word Bank';
+    btn.setAttribute('aria-label', btn.title);
+}
 // Review pages share this script, including reviews uploaded before Reps was installable.
 if (/^(?:\d{4}-\d{2}-\d{2}|\d{1,2}\.\d{1,2})%20Review%20\d{3,4}\.html$/i.test(location.pathname.split('/').pop())) {
     const backScript = document.createElement('script');
@@ -57,13 +66,15 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const btn = document.createElement('button');
             btn.className = `wordbank-save-btn ${isSaved ? 'saved' : ''}`;
-            btn.innerHTML = isSaved ? "✅" : "💾";
+            btn.type = "button";
+            renderWordBankButton(btn, isSaved);
             btn.title = isSaved ? "Saved to Word Bank" : "Save to Word Bank"; btn.setAttribute('aria-label', btn.title);
             
             btn.onclick = (e) => {
                 // Prevent row click events if any
                 e.stopPropagation();
-                saveToWordBank(english, korean, btn);
+                e.preventDefault();
+                try { saveToWordBank(english, korean, btn); } catch (err) { console.error(err); alert("Could not update Word Bank: " + err.message); }
             };
             
             btnCell.appendChild(btn);
@@ -81,7 +92,7 @@ function saveToWordBank(en, ko, btn) {
     if (!exists) {
         bank.push({ en, ko, dateAdded: new Date().toISOString() });
         localStorage.setItem('wordBank', JSON.stringify(bank));
-        btn.innerHTML = "✅";
+        renderWordBankButton(btn, true);
         btn.classList.add('saved');
         btn.title = "Saved to Word Bank"; btn.setAttribute('aria-label', btn.title);
         
@@ -103,7 +114,7 @@ function saveToWordBank(en, ko, btn) {
         // For now, let's allow removing it if they click again.
         bank = bank.filter(w => w.en.toLowerCase() !== en.toLowerCase());
         localStorage.setItem('wordBank', JSON.stringify(bank));
-        btn.innerHTML = "💾";
+        renderWordBankButton(btn, false);
         btn.classList.remove('saved');
         btn.title = "Save to Word Bank"; btn.setAttribute('aria-label', btn.title);
     }

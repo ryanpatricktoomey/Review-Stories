@@ -1,0 +1,35 @@
+/* Reps design system — phase 1. Presentation only; preserve page-specific layout. */
+:root{--reps-bg:#0f172a;--reps-surface:#1e293b;--reps-raised:#334155;--reps-border:#475569;--reps-text:#f8fafc;--reps-muted:#a7b6cb;--reps-blue:#a7cdf8;--reps-mint:#a8dcca;--reps-honey:#f1d395;--reps-lavender:#c9b8ed;--reps-rose:#e9a0a8;--reps-peach:#f2b6a2;--reps-card-radius:16px;--reps-button-radius:12px;--reps-dialog-radius:20px;--reps-font:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--reps-space-1:4px;--reps-space-2:8px;--reps-space-3:12px;--reps-space-4:16px;--reps-space-6:24px;color-scheme:dark}
+body{font-family:var(--reps-font);color:var(--reps-text)}
+button,input,select,textarea{font-family:inherit}
+:where(button,a,input,select,textarea):focus-visible{outline:2px solid var(--reps-blue);outline-offset:3px}
+.wrap h1,.review-archive-page #review-stories,#app header h1{font-size:24px;line-height:1.3;font-weight:650;letter-spacing:-.025em}
+.wrap h2{font-size:19px;line-height:1.4;font-weight:650}
+.wrap .card,.review-archive-page .lesson-link,.container .lesson-link,.container .dashboard-tile,.container .dashboard-links a{border-radius:var(--reps-card-radius);border-color:var(--reps-raised)}
+.wrap .card{padding:20px}
+.wrap a{color:var(--reps-blue)}
+.wrap button:not(.secondary):not(.poll-choice):not(.small):not(.emoji-grid button){background:var(--reps-mint);color:var(--reps-bg);border-radius:var(--reps-button-radius)}
+.wrap button.secondary,.wrap input,.wrap select,.wrap textarea{border-radius:var(--reps-button-radius)}
+.wrap .muted,.wrap .meta,.wrap .empty{color:var(--reps-muted)}
+.wrap .activity-type,.wrap .reply strong{color:var(--reps-mint)}
+.wrap .teacher-name{color:var(--reps-honey)!important}
+.wrap .poll-choice.selected{border-color:var(--reps-mint);background:#193c36}
+.wrap .poll-fill{background:var(--reps-mint)}
+.wrap .poll-result.mine .poll-fill{background:var(--reps-honey)}
+.wrap .item{border-radius:var(--reps-card-radius)}
+.wrap .item.unread{border-color:var(--reps-mint);background:#19343b}
+.date-header{color:var(--reps-blue);border-bottom-color:var(--reps-border)}
+.review-month-link{border-radius:var(--reps-button-radius);color:var(--reps-blue)}
+.review-month-link[aria-current="page"]{border-color:var(--reps-blue);background:#243b50}
+.container .dashboard-tile,.container .dashboard-links a{font-weight:650}
+.reps-quiz-dialog{border-radius:var(--reps-dialog-radius);font-family:var(--reps-font)}
+.reps-quiz-dialog .rq-wrong{color:var(--reps-rose)}
+#app .glass,#signin-screen .glass{background:var(--reps-surface);border:1px solid var(--reps-raised);border-radius:var(--reps-card-radius);backdrop-filter:none;-webkit-backdrop-filter:none}
+#app header .glass{border-radius:999px}
+#app .tab-btn.active{background:var(--reps-mint);color:var(--reps-bg)}
+#app .text-teal-400{color:var(--reps-mint)}
+#app .flashcard{border-color:#48665f;border-radius:var(--reps-card-radius);box-shadow:0 8px 24px #02061733}
+#app .text-slate-400,#signin-screen .text-slate-400{color:var(--reps-muted)}
+/* Very restrained surface grain, only on homepage tiles. No extra network request. */
+.container .dashboard-tile,.container .dashboard-links a{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.035'/%3E%3C/svg%3E")}
+@media(max-width:480px){.wrap .card{padding:16px}body:has(#bonus-details) article.card{padding:4px 0;border:0;background:transparent}}

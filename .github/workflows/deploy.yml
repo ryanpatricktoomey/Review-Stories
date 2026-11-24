@@ -60,6 +60,17 @@ jobs:
         uses: actions/configure-pages@v5
       - name: Build Reps pages
         uses: actions/jekyll-build-pages@v1
+      - name: Verify Pages artifact size
+        run: |
+          du -sh _site
+          find _site -type f -printf '%s %p\n' | sort -nr | head -15 || true
+          python - <<'PY'
+          from pathlib import Path
+          total = sum(p.stat().st_size for p in Path('_site').rglob('*') if p.is_file())
+          print(f"Pages content size: {total/1024**3:.2f} GiB")
+          if total > 1024**3:
+              raise SystemExit("Pages content exceeds GitHub Pages' 1 GiB publishing limit. Audio/review assets need separate hosting or a smaller deployment.")
+          PY
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

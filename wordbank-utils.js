@@ -1,6 +1,6 @@
 function renderWordBankButton(btn, saved) {
     const color = saved ? '#a8dcca' : '#a7cdf8';
-    const shape = saved ? '<circle cx="12" cy="12" r="9"/><path d="m7 12 3 3 7-7" fill="none"/>' : '<path d="M12 6C8 3 4 4 2.5 5v14c3-1 6-1 9.5 1.5C15.5 18 19 18 21.5 19V5C18 4 15 4 12 6Z"/><path d="M12 6v14M5.5 8.5l3.5 1M15 9.5l3.5-1"/>';
+    const shape = saved ? '<circle cx="12" cy="12" r="9"/><path d="m7 12 3 3 7-7" fill="none"/>' : '<path d="M12 6C8 3 4 4 2.5 5v14c3-1 6-1 9.5 1.5C15.5 18 19 18 21.5 19V5C18 4 15 4 12 6Z"/><path d="M12 6v14M5.5 9l3.5 1M16.8 8v7m-3.5-3.5h7"/>';
     btn.innerHTML = '<svg aria-hidden="true" viewBox="0 0 24 24" width="22" height="22" style="display:block;pointer-events:none;color:'+color+'" fill="currentColor" fill-opacity=".13" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round">'+shape+'</svg>';
     btn.classList.toggle('saved', saved);
     btn.setAttribute('aria-pressed', String(saved));
@@ -44,6 +44,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // Find expression rows by looking at tables
     const rows = document.querySelectorAll('table tr');
     
+    for (const table of document.querySelectorAll("table")) {
+        if (!Array.from(table.rows).some(row => row.querySelectorAll("td").length === 2)) continue;
+        const note = document.createElement("p");
+        note.className = "wordbank-save-note";
+        note.style.cssText = "font-size:.8rem;color:#a7b6cb;margin:8px 0 12px;line-height:1.5";
+        note.textContent = "+ 버튼을 눌러 나만의 Word Bank에 표현을 저장하세요!";
+        table.before(note);
+    }
+
     // Get existing word bank from localStorage
     const wordBank = JSON.parse(localStorage.getItem('wordBank') || '[]');
     const savedWords = new Set(wordBank.map(item => item.en.toLowerCase()));

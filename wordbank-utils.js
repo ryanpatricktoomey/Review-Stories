@@ -3,6 +3,9 @@ if (/^(?:\d{4}-\d{2}-\d{2}|\d{1,2}\.\d{1,2})%20Review%20\d{3,4}\.html$/i.test(lo
     const backScript = document.createElement('script');
     backScript.src = new URL('reps-back.js', document.currentScript.src);
     document.head.appendChild(backScript);
+    const chalk = document.createElement('script');
+    chalk.src = new URL('reps-chalk.js?v=3', document.currentScript.src);
+    document.head.appendChild(chalk);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -55,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const btn = document.createElement('button');
             btn.className = `wordbank-save-btn ${isSaved ? 'saved' : ''}`;
             btn.innerHTML = isSaved ? "✅" : "💾";
-            btn.title = isSaved ? "Saved to Word Bank" : "Save to Word Bank";
+            btn.title = isSaved ? "Saved to Word Bank" : "Save to Word Bank"; btn.setAttribute('aria-label', btn.title);
             
             btn.onclick = (e) => {
                 // Prevent row click events if any
@@ -80,7 +83,7 @@ function saveToWordBank(en, ko, btn) {
         localStorage.setItem('wordBank', JSON.stringify(bank));
         btn.innerHTML = "✅";
         btn.classList.add('saved');
-        btn.title = "Saved to Word Bank";
+        btn.title = "Saved to Word Bank"; btn.setAttribute('aria-label', btn.title);
         
         // Optional: show a little confetti or toast notification
         if (window.confetti) {
@@ -102,6 +105,6 @@ function saveToWordBank(en, ko, btn) {
         localStorage.setItem('wordBank', JSON.stringify(bank));
         btn.innerHTML = "💾";
         btn.classList.remove('saved');
-        btn.title = "Save to Word Bank";
+        btn.title = "Save to Word Bank"; btn.setAttribute('aria-label', btn.title);
     }
 }

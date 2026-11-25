@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Millionaire Who Never Was</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🎙️</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Millionaire Who Never Was</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-4 font-bold text-teal-400">moonshot</td>
+                    <td class="p-4 text-slate-300 mystery-cell" onclick="revealCell(this)">성공 가능성은 낮지만 성공하면 엄청난 성과를 낼 수 있는 도전이나 투자</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-4 font-bold text-teal-400">word of mouth</td>
+                    <td class="p-4 text-slate-300 mystery-cell" onclick="revealCell(this)">입소문 / 사람들의 구전</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-4 font-bold text-teal-400">delisted</td>
+                    <td class="p-4 text-slate-300 mystery-cell" onclick="revealCell(this)">상장 폐지된</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-4 font-bold text-teal-400">volatile</td>
+                    <td class="p-4 text-slate-300 mystery-cell" onclick="revealCell(this)">변동성이 큰 / 가격 변동이 심한</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-4 font-bold text-teal-400">go through that again</td>
+                    <td class="p-4 text-slate-300 mystery-cell" onclick="revealCell(this)">그런 일을 다시 겪다</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-4 font-bold text-teal-400">got burned</td>
+                    <td class="p-4 text-slate-300 mystery-cell" onclick="revealCell(this)">큰코다쳤다 / 손해를 봤다</td>
+                </tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-3xl p-6 space-y-2 border border-white/5">
+                <h3 class="text-amber-400 font-bold text-lg">moonshot</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">원래 달 탐사처럼 매우 대담하고 성공하기 어려운 프로젝트를 의미해요. 투자에서는 성공 가능성은 낮지만 성공하면 엄청난 수익을 낼 수 있는 투자를 가리켜요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2 border border-white/5">
+                <h3 class="text-amber-400 font-bold text-lg">word of mouth</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">광고나 공식적인 정보가 아니라 사람들 사이에서 자연스럽게 전달되는 정보를 의미해요. <em class="text-teal-300">I heard about the company through word of mouth.</em></p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2 border border-white/5">
+                <h3 class="text-amber-400 font-bold text-lg">delisted</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">주식이 거래소의 상장 목록에서 제외되어 해당 거래소에서 더 이상 거래할 수 없게 된 상태를 의미해요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2 border border-white/5">
+                <h3 class="text-amber-400 font-bold text-lg">go through that again</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">힘들거나 불쾌했던 경험을 다시 겪는다는 의미로 사용할 수 있어요. 다른 상황에서는 어떤 내용을 다시 검토하거나 설명한다는 뜻도 돼요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2 border border-white/5">
+                <h3 class="text-amber-400 font-bold text-lg">got burned</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">잘못된 판단이나 누군가를 믿었다가 금전적 또는 감정적인 피해를 입었다는 비격식 표현이에요. 투자 외에도 인간관계나 사업에서 사용할 수 있어요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">From the fictional podcast Money & Mistakes</p>
+                <p class="mb-6">Host: Our guest today is Peter, a former restaurant owner who briefly became a millionaire. Peter, what happened?</p>
+                <p class="mb-6">Peter: One of my customers told me about a small company that was developing technology to turn household waste into fuel. He described it as a <b class="highlight quiz-target" data-ans="moonshot" data-kor="성공 가능성은 낮지만 성공하면 엄청난 수익을 낼 수 있는 투자">moonshot</b>. If the technology worked, early investors could make a fortune.</p>
+                <p class="mb-6">Host: Did you do your research?</p>
+                <p class="mb-6">Peter: I watched a promotional video. Does that count?</p>
+                <p class="mb-6">Host: Not really.</p>
+                <p class="mb-6">Peter: Most people in our town heard about the company through <b class="highlight quiz-target" data-ans="word of mouth" data-kor="입소문">word of mouth</b>. Even my accountant had bought shares. I got caught up in the hype and invested nearly all my savings.</p>
+                <p class="mb-6">Host: And the investment actually paid off?</p>
+                <p class="mb-6">Peter: For a while, yes. The share price went up so much that my investment was worth over a million dollars. I started looking at houses by the sea. My wife wanted me to cash out, but I thought selling would be a terrible mistake.</p>
+                <p class="mb-6">Host: Why?</p>
+                <p class="mb-6">Peter: I was afraid of missing out on even bigger profits. The stock was extremely <b class="highlight quiz-target" data-ans="volatile" data-kor="변동성이">volatile</b>, but whenever the price dropped, someone on an online investment forum would tell me it was a buying opportunity.</p>
+                <p class="mb-6">Host: When did things start going seriously wrong?</p>
+                <p class="mb-6">Peter: A journalist visited the company's factory and discovered that it wasn't producing anything commercially. The company was spending millions without generating meaningful revenue.</p>
+                <p class="mb-6">Host: Surely you sold at that point?</p>
+                <p class="mb-6">Peter: No. I convinced myself that the journalist didn't understand the technology. I even bought more shares.</p>
+                <p class="mb-6">Host: Oh, Peter.</p>
+                <p class="mb-6">Peter: Within a year, the company had run out of money, and its shares were <b class="highlight quiz-target" data-ans="delisted" data-kor="상장 폐지됐어요">delisted</b>. My investment eventually became worthless.</p>
+                <p class="mb-6">Host: How did your wife react?</p>
+                <p class="mb-6">Peter: She asked me how much money we actually had left. When I showed her our bank account, she cancelled the appointment we'd made to look at a house by the sea.</p>
+                <p class="mb-6">Host: Do you still invest?</p>
+                <p class="mb-6">Peter: Yes, but I mostly invest in index funds and try to diversify my investments. After <b class="highlight quiz-target" data-ans="getting burned" data-kor="크게 손해를 보고 나니">getting burned</b> so badly, I don't chase quick profits anymore.</p>
+                <p class="mb-6">Host: Would you ever consider putting money into a promising start-up?</p>
+                <p class="mb-6">Peter: Possibly, with a very small amount. I couldn't bear to <b class="highlight quiz-target" data-ans="go through that again" data-kor="그런 일을 다시 겪는 건">go through that again</b>.</p>
+                <p class="mb-6">Host: And what happened to the customer who recommended the company?</p>
+                <p class="mb-6">Peter: He still comes to my restaurant occasionally.</p>
+                <p class="mb-6">Host: I thought you were a former restaurant owner.</p>
+                <p class="mb-6">Peter: I sold it to my brother. I work there now.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">가상의 팟캐스트 《돈과 실수》 중에서</p>
+                <p class="mb-6">진행자: 오늘의 게스트는 한때 잠깐 백만장자가 되었던 전직 식당 주인 피터 씨입니다. 피터 씨, 무슨 일이 있었나요?</p>
+                <p class="mb-6">피터: 손님 한 명이 생활 폐기물을 연료로 바꾸는 기술을 개발하고 있는 작은 회사에 대해 이야기해 줬어요. <b class="highlight">성공 가능성은 낮지만 성공하면 엄청난 수익을 낼 수 있는 투자</b>라고 했죠. 그 기술이 성공하면 초기 투자자들은 큰돈을 벌 수 있다고요.</p>
+                <p class="mb-6">진행자: 충분히 알아보고 투자하셨나요?</p>
+                <p class="mb-6">피터: 홍보 영상 하나 봤는데요. 그것도 조사한 걸로 쳐 주나요?</p>
+                <p class="mb-6">진행자: 딱히 그렇지는 않죠.</p>
+                <p class="mb-6">피터: 우리 동네 사람들 대부분이 <b class="highlight">입소문</b>을 통해 그 회사에 대해 알게 됐어요. 심지어 제 회계사도 그 회사 주식을 샀더라고요. 저도 열풍에 휩쓸려 저축해 둔 돈을 거의 전부 투자했죠.</p>
+                <p class="mb-6">진행자: 그런데 실제로 투자에 성공하셨나요?</p>
+                <p class="mb-6">피터: 한동안은 그랬어요. 주가가 엄청나게 올라서 제 투자금의 가치가 100만 달러를 넘었거든요. 바닷가에 있는 집들을 알아보기 시작했죠. 아내는 현금화하라고 했지만, 저는 그때 파는 것이 엄청난 실수라고 생각했어요.</p>
+                <p class="mb-6">진행자: 왜요?</p>
+                <p class="mb-6">피터: 더 큰 수익을 얻을 기회를 놓칠까 봐 두려웠거든요. 주가의 <b class="highlight">변동성이</b> 엄청났지만, 가격이 떨어질 때마다 온라인 투자 커뮤니티에서는 누군가가 매수 기회라고 했어요.</p>
+                <p class="mb-6">진행자: 언제부터 상황이 심각하게 나빠졌나요?</p>
+                <p class="mb-6">피터: 한 기자가 그 회사의 공장을 방문했는데, 실제로 상업적으로 생산하고 있는 제품이 하나도 없다는 사실을 발견했어요. 회사는 제대로 된 매출도 없이 수백만 달러를 쓰고 있었던 거죠.</p>
+                <p class="mb-6">진행자: 설마 그때는 주식을 파셨겠죠?</p>
+                <p class="mb-6">피터: 아니요. 그 기자가 기술을 제대로 이해하지 못한 거라고 스스로를 설득했어요. 심지어 주식을 더 샀죠.</p>
+                <p class="mb-6">진행자: 아이고, 피터 씨.</p>
+                <p class="mb-6">피터: 1년도 안 돼서 회사의 자금이 바닥났고, 주식은 <b class="highlight">상장 폐지됐어요</b>. 결국 제 투자금은 아무런 가치도 없어졌죠.</p>
+                <p class="mb-6">진행자: 아내분은 어떻게 반응하셨나요?</p>
+                <p class="mb-6">피터: 실제로 우리에게 남은 돈이 얼마나 되는지 물어봤어요. 제가 은행 계좌를 보여 주자 바닷가 집을 보러 가기로 했던 약속을 취소하더라고요.</p>
+                <p class="mb-6">진행자: 지금도 투자하세요?</p>
+                <p class="mb-6">피터: 네. 하지만 주로 인덱스 펀드에 투자하고 분산 투자하려고 노력해요. 그렇게 <b class="highlight">크게 손해를 보고 나니</b> 더 이상 단기 수익만 좇지는 않아요.</p>
+                <p class="mb-6">진행자: 유망한 스타트업에 투자할 생각은 있으세요?</p>
+                <p class="mb-6">피터: 아주 적은 금액이라면 가능할 수도 있죠. <b class="highlight">그런 일을 다시 겪는 건</b> 도저히 못 견딜 것 같아요.</p>
+                <p class="mb-6">진행자: 그 회사를 추천했던 손님은 어떻게 됐나요?</p>
+                <p class="mb-6">피터: 아직도 가끔 식당에 와요.</p>
+                <p class="mb-6">진행자: 전직 식당 주인이라고 하지 않으셨나요?</p>
+                <p class="mb-6">피터: 식당을 남동생에게 팔았어요. 지금은 거기서 직원으로 일하고 있죠.</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "1125715.m4a";
+</script>
+
+    <script src="wordbank-utils.js"></script>
+</body>
+</html>

@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | The Investment Club Nobody Wanted to Leave</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🎙️</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">The Investment Club Nobody Wanted to Leave</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-4 font-bold text-teal-400">that's a relief</td>
+                    <td class="p-4 text-slate-300 mystery-cell" onclick="revealCell(this)">다행이다 / 한시름 놓이네</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-4 font-bold text-teal-400">that's really fortunate</td>
+                    <td class="p-4 text-slate-300 mystery-cell" onclick="revealCell(this)">정말 다행이네 / 정말 운이 좋았네</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-4 font-bold text-teal-400">I'm glad to hear that</td>
+                    <td class="p-4 text-slate-300 mystery-cell" onclick="revealCell(this)">그 말을 들으니 기쁘네 / 다행이네</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-4 font-bold text-teal-400">Good thing...</td>
+                    <td class="p-4 text-slate-300 mystery-cell" onclick="revealCell(this)">~해서 다행이다</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-4 font-bold text-teal-400">blue chip company</td>
+                    <td class="p-4 text-slate-300 mystery-cell" onclick="revealCell(this)">우량 기업</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-4 font-bold text-teal-400">there are no free lunches</td>
+                    <td class="p-4 text-slate-300 mystery-cell" onclick="revealCell(this)">세상에 공짜는 없다</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-4 font-bold text-teal-400">delisted</td>
+                    <td class="p-4 text-slate-300 mystery-cell" onclick="revealCell(this)">상장 폐지된</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-4 font-bold text-teal-400">snowball</td>
+                    <td class="p-4 text-slate-300 mystery-cell" onclick="revealCell(this)">눈덩이처럼 불어나다 / 걷잡을 수 없이 커지다</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-4 font-bold text-teal-400">advice</td>
+                    <td class="p-4 text-slate-300 mystery-cell" onclick="revealCell(this)">조언</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-4 font-bold text-teal-400">cryptocurrency</td>
+                    <td class="p-4 text-slate-300 mystery-cell" onclick="revealCell(this)">암호화폐</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-4 font-bold text-teal-400">doubled my money</td>
+                    <td class="p-4 text-slate-300 mystery-cell" onclick="revealCell(this)">투자금을 두 배로 불렸다</td>
+                </tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-3xl p-6 space-y-2 border border-white/5">
+                <h3 class="text-amber-400 font-bold text-lg">that's a relief / that's really fortunate / I'm glad to hear that / Good thing...</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">모두 긍정적인 상황에 대한 반응이지만 조금씩 차이가 있어요. That's a relief는 걱정이 해소됐을 때, That's really fortunate는 운이 좋았던 상황에서, I'm glad to hear that은 상대방의 좋은 소식을 들었을 때 사용해요. <em class="text-teal-300">Good thing...</em>은 특정 행동이나 상황 덕분에 나쁜 결과를 피했을 때 자주 사용해요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2 border border-white/5">
+                <h3 class="text-amber-400 font-bold text-lg">blue chip company</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">재무 상태가 건전하고 오랜 기간 안정적인 실적과 높은 신뢰도를 쌓아 온 대형 우량 기업을 의미해요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2 border border-white/5">
+                <h3 class="text-amber-400 font-bold text-lg">there are no free lunches</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">아무런 대가나 위험 없이 무언가를 얻을 수는 없다는 의미예요. <em class="text-teal-300">There's no such thing as a free lunch.</em>라는 형태로도 자주 사용해요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2 border border-white/5">
+                <h3 class="text-amber-400 font-bold text-lg">snowball</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">눈덩이가 굴러가면서 커지는 것처럼 문제, 빚, 수익 등이 점점 더 빠르게 커지는 것을 의미해요. 긍정적인 상황과 부정적인 상황 모두에 사용할 수 있어요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2 border border-white/5">
+                <h3 class="text-amber-400 font-bold text-lg">advice</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">셀 수 없는 명사이므로 an advice나 advices라고 하지 않아요. 조언 한 가지는 a piece of advice라고 표현해요.</p>
+            </div>
+            <div class="glass rounded-3xl p-6 space-y-2 border border-white/5">
+                <h3 class="text-amber-400 font-bold text-lg">doubled my money</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">투자한 돈을 두 배로 불렸다는 뜻이에요. 100만 원을 투자해서 총 200만 원이 되었다면 <em class="text-teal-300">I doubled my money.</em>라고 할 수 있어요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">From the fictional podcast Money & Mistakes</p>
+                <p class="mb-6">Host: Our guest today is Helen, who started an investment club with five of her coworkers. How did it all begin?</p>
+                <p class="mb-6">Helen: We each put in $2,000. The original plan was to play it safe and invest in a few <b class="highlight quiz-target" data-ans="blue-chip companies" data-kor="우량 기업">blue-chip companies</b>. We weren't expecting to make a killing.</p>
+                <p class="mb-6">Host: That sounds sensible.</p>
+                <p class="mb-6">Helen: It was, until our coworker Steve announced that he'd <b class="highlight quiz-target" data-ans="doubled his money" data-kor="투자금을 두 배로 불렸다고">doubled his money</b> in three weeks by investing in <b class="highlight quiz-target" data-ans="cryptocurrency" data-kor="암호화폐">cryptocurrency</b>.</p>
+                <p class="mb-6">Host: Did everyone jump on the bandwagon?</p>
+                <p class="mb-6">Helen: Pretty much. Steve started giving us investment <b class="highlight quiz-target" data-ans="advice" data-kor="조언">advice</b>, and before long, we were putting money into companies we'd never heard of.</p>
+                <p class="mb-6">Host: How much research were you doing?</p>
+                <p class="mb-6">Helen: Very little. One woman suggested that we should diversify our investments, but Steve said we'd miss out on huge profits.</p>
+                <p class="mb-6">Host: Did anyone question his strategy?</p>
+                <p class="mb-6">Helen: I did. My husband always says <b class="highlight quiz-target" data-ans="there are no free lunches" data-kor="세상에 공짜는 없다고">there are no free lunches</b>, especially when someone's promising enormous returns with almost no risk. But the other members thought I was being too conservative.</p>
+                <p class="mb-6">Host: What happened to your investments?</p>
+                <p class="mb-6">Helen: Things started to <b class="highlight quiz-target" data-ans="snowball" data-kor="눈덩이처럼 커지기">snowball</b>. We made a small profit, got overconfident and invested even more. Then one of the companies we invested in ran into financial trouble and was eventually <b class="highlight quiz-target" data-ans="delisted" data-kor="상장 폐지됐어요">delisted</b>.</p>
+                <p class="mb-6">Host: Were you using borrowed money?</p>
+                <p class="mb-6">Helen: Fortunately, no. We'd agreed never to borrow money for the club.</p>
+                <p class="mb-6">Host: <b class="highlight quiz-target" data-ans="That's a relief" data-kor="그건 정말 다행이네요">That's a relief</b>.</p>
+                <p class="mb-6">Helen: I also managed to cash out most of my personal investments before the market crashed.</p>
+                <p class="mb-6">Host: <b class="highlight quiz-target" data-ans="That's really fortunate" data-kor="정말 운이 좋으셨네요">That's really fortunate</b>. What about your retirement savings?</p>
+                <p class="mb-6">Helen: I never touched them.</p>
+                <p class="mb-6">Host: <b class="highlight quiz-target" data-ans="I'm glad to hear that" data-kor="그 말을 들으니 다행이네요">I'm glad to hear that</b>.</p>
+                <p class="mb-6">Helen: <b class="highlight quiz-target" data-ans="Good thing" data-kor="다행이었어요">Good thing</b> my husband insisted that we keep our retirement savings separate. Otherwise, things could have been much worse.</p>
+                <p class="mb-6">Host: So did you eventually shut down the investment club?</p>
+                <p class="mb-6">Helen: Well, that was surprisingly difficult. Nobody wanted to take a loss. Everyone kept saying we should wait until we broke even.</p>
+                <p class="mb-6">Host: Including Steve?</p>
+                <p class="mb-6">Helen: Especially Steve. Then, during one of our meetings, we discovered something interesting.</p>
+                <p class="mb-6">Host: What was that?</p>
+                <p class="mb-6">Helen: He hadn't actually invested any of his own money in the club for months. He'd been telling us what to buy while keeping his savings in a fixed deposit.</p>
+                <p class="mb-6">Host: How did he explain that?</p>
+                <p class="mb-6">Helen: He said he was trying to reduce his financial risk.</p>
+                <p class="mb-6">Host: And how did the other members react?</p>
+                <p class="mb-6">Helen: We voted him out of the club. He's responsible for organizing the company Christmas party now.</p>
+                <p class="mb-6">Host: How's that going?</p>
+                <p class="mb-6">Helen: He's already exceeded the budget.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">가상의 팟캐스트 《돈과 실수》 중에서</p>
+                <p class="mb-6">진행자: 오늘의 게스트는 직장 동료 다섯 명과 함께 투자 모임을 만든 헬렌 씨입니다. 어떻게 시작하게 되셨나요?</p>
+                <p class="mb-6">헬렌: 각자 2천 달러씩 냈어요. 원래 계획은 안전하게 몇몇 <b class="highlight">우량 기업</b>에 투자하는 것이었죠. 대박을 기대한 건 아니었어요.</p>
+                <p class="mb-6">진행자: 합리적인 계획이네요.</p>
+                <p class="mb-6">헬렌: 그랬죠. 직장 동료인 스티브가 <b class="highlight">암호화폐</b>에 투자해서 3주 만에 <b class="highlight">투자금을 두 배로 불렸다고</b> 발표하기 전까지는요.</p>
+                <p class="mb-6">진행자: 다들 그 유행에 편승했나요?</p>
+                <p class="mb-6">헬렌: 거의 그랬죠. 스티브가 우리에게 투자 <b class="highlight">조언</b>을 하기 시작했고, 얼마 지나지 않아 우리는 들어 본 적도 없는 회사들에 투자하고 있었어요.</p>
+                <p class="mb-6">진행자: 사전에 충분히 알아보셨나요?</p>
+                <p class="mb-6">헬렌: 거의 안 알아봤어요. 한 여성 회원이 분산 투자를 하자고 제안했는데, 스티브는 그러면 엄청난 수익을 얻을 기회를 놓칠 거라고 했어요.</p>
+                <p class="mb-6">진행자: 그의 투자 전략에 의문을 제기한 사람은 없었나요?</p>
+                <p class="mb-6">헬렌: 제가 그랬어요. 남편은 항상 <b class="highlight">세상에 공짜는 없다고</b> 말하거든요. 특히 누군가가 거의 아무런 위험 없이 엄청난 수익을 얻을 수 있다고 약속할 때는요. 하지만 다른 회원들은 제가 너무 보수적이라고 생각했어요.</p>
+                <p class="mb-6">진행자: 투자 결과는 어땠나요?</p>
+                <p class="mb-6">헬렌: 상황이 <b class="highlight">눈덩이처럼 커지기</b> 시작했어요. 조금 수익을 내고 나니 지나치게 자신감이 생겨서 돈을 더 투자했죠. 그러다가 우리가 투자한 회사 중 하나가 재정난에 빠졌고 결국 <b class="highlight">상장 폐지됐어요</b>.</p>
+                <p class="mb-6">진행자: 돈을 빌려서 투자하셨나요?</p>
+                <p class="mb-6">헬렌: 다행히 아니요. 투자 모임을 위해서는 절대로 돈을 빌리지 않기로 합의했거든요.</p>
+                <p class="mb-6">진행자: <b class="highlight">그건 정말 다행이네요</b>.</p>
+                <p class="mb-6">헬렌: 그리고 시장이 폭락하기 전에 개인적으로 투자했던 자산도 대부분 현금화할 수 있었어요.</p>
+                <p class="mb-6">진행자: <b class="highlight">정말 운이 좋으셨네요</b>. 노후 자금은 어떻게 됐나요?</p>
+                <p class="mb-6">헬렌: 전혀 손대지 않았어요.</p>
+                <p class="mb-6">진행자: <b class="highlight">그 말을 들으니 다행이네요</b>.</p>
+                <p class="mb-6">헬렌: 남편이 노후 자금을 따로 관리해야 한다고 고집해서 <b class="highlight">다행이었어요</b>. 그렇지 않았다면 상황이 훨씬 더 심각했을 수도 있죠.</p>
+                <p class="mb-6">진행자: 결국 투자 모임은 해체하셨나요?</p>
+                <p class="mb-6">헬렌: 그게 의외로 어려웠어요. 아무도 손해를 확정하고 싶어 하지 않았거든요. 다들 본전을 찾을 때까지 기다리자고 했어요.</p>
+                <p class="mb-6">진행자: 스티브도요?</p>
+                <p class="mb-6">헬렌: 특히 스티브가 그랬죠. 그런데 어느 날 모임에서 흥미로운 사실을 발견했어요.</p>
+                <p class="mb-6">진행자: 어떤 사실이었나요?</p>
+                <p class="mb-6">헬렌: 스티브는 사실 몇 달 동안 모임에 자기 돈을 전혀 투자하지 않았더라고요. 우리에게는 어떤 종목을 사라고 조언하면서 정작 자신의 저축은 정기예금에 넣어 두고 있었어요.</p>
+                <p class="mb-6">진행자: 뭐라고 해명하던가요?</p>
+                <p class="mb-6">헬렌: 자신의 재정적 위험을 줄이려고 했다고 하더라고요.</p>
+                <p class="mb-6">진행자: 다른 회원들은 어떻게 반응했나요?</p>
+                <p class="mb-6">헬렌: 투표를 통해 스티브를 모임에서 내보냈어요. 지금은 회사 크리스마스 파티 준비를 담당하고 있어요.</p>
+                <p class="mb-6">진행자: 그건 잘 진행되고 있나요?</p>
+                <p class="mb-6">헬렌: 벌써 예산을 초과했어요.</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "11251200.m4a";
+</script>
+
+    <script src="wordbank-utils.js"></script>
+</body>
+</html>

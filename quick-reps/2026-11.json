@@ -102,7 +102,7 @@
         },
         {
           "type": "true_false",
-          "prompt": "A picky customer is hard to satisfy because they are particular about things.",
+          "prompt": "A “picky customer” is hard to satisfy because they are particular about things.",
           "answers": [
             "True"
           ],
@@ -115,7 +115,7 @@
         },
         {
           "type": "true_false",
-          "prompt": "Being on your feet all day means sitting at a desk all day.",
+          "prompt": "Being “on your feet all day” means sitting at a desk all day.",
           "answers": [
             "False"
           ],
@@ -128,7 +128,7 @@
         },
         {
           "type": "true_false",
-          "prompt": "Payday is the day you receive your wages.",
+          "prompt": "“Payday” is the day you receive your wages.",
           "answers": [
             "True"
           ],
@@ -141,7 +141,7 @@
         },
         {
           "type": "true_false",
-          "prompt": "Mentally exhausting means physically heavy.",
+          "prompt": "“Mentally exhausting” means physically heavy.",
           "answers": [
             "False"
           ],
@@ -377,7 +377,7 @@
         },
         {
           "type": "true_false",
-          "prompt": "If you spend a fortune on lessons, you spend very little money.",
+          "prompt": "If you “spend a fortune” on lessons, you spend very little money.",
           "answers": [
             "False"
           ],
@@ -390,7 +390,7 @@
         },
         {
           "type": "true_false",
-          "prompt": "Worth every penny means the expense was justified.",
+          "prompt": "“Worth every penny” means the expense was justified.",
           "answers": [
             "True"
           ],
@@ -403,7 +403,7 @@
         },
         {
           "type": "true_false",
-          "prompt": "A head start gives you an early advantage.",
+          "prompt": "A “head start” gives you an early advantage.",
           "answers": [
             "True"
           ],
@@ -416,7 +416,7 @@
         },
         {
           "type": "true_false",
-          "prompt": "Miss out on means successfully experience something.",
+          "prompt": "“Miss out on” means successfully experience something.",
           "answers": [
             "False"
           ],
@@ -649,7 +649,7 @@
         },
         {
           "type": "true_false",
-          "prompt": "Diversifying means spreading money across different investments.",
+          "prompt": "“Diversifying” means spreading money across different investments.",
           "answers": [
             "True"
           ],
@@ -662,7 +662,7 @@
         },
         {
           "type": "true_false",
-          "prompt": "Buying at the peak means buying at the lowest price.",
+          "prompt": "“Buying at the peak” means buying at the lowest price.",
           "answers": [
             "False"
           ],
@@ -675,7 +675,7 @@
         },
         {
           "type": "true_false",
-          "prompt": "Making a killing means making a very large profit.",
+          "prompt": "“Making a killing” means making a very large profit.",
           "answers": [
             "True"
           ],
@@ -688,7 +688,7 @@
         },
         {
           "type": "true_false",
-          "prompt": "FOMO is the fear of missing out.",
+          "prompt": "“FOMO” is the fear of missing out.",
           "answers": [
             "True"
           ],
@@ -921,7 +921,7 @@
         },
         {
           "type": "true_false",
-          "prompt": "Must have + past participle expresses a strong deduction about the past.",
+          "prompt": "“Must have + past participle” expresses a strong deduction about the past.",
           "answers": [
             "True"
           ],
@@ -934,7 +934,7 @@
         },
         {
           "type": "true_false",
-          "prompt": "Can't have + past participle expresses a strong belief that something happened.",
+          "prompt": "“Can't have + past participle” expresses a strong belief that something happened.",
           "answers": [
             "False"
           ],
@@ -947,7 +947,7 @@
         },
         {
           "type": "true_false",
-          "prompt": "I bet can be used about future events.",
+          "prompt": "“I bet” can be used about future events.",
           "answers": [
             "True"
           ],
@@ -960,7 +960,7 @@
         },
         {
           "type": "true_false",
-          "prompt": "Come to think of it can introduce a newly remembered clue.",
+          "prompt": "“Come to think of it” can introduce a newly remembered clue.",
           "answers": [
             "True"
           ],
@@ -1196,7 +1196,7 @@
         },
         {
           "type": "true_false",
-          "prompt": "Without giving too much away introduces a description that avoids spoilers.",
+          "prompt": "“Without giving too much away” introduces a description that avoids spoilers.",
           "answers": [
             "True"
           ],
@@ -1209,7 +1209,7 @@
         },
         {
           "type": "true_false",
-          "prompt": "It wasn't really my thing means I absolutely loved it.",
+          "prompt": "“It wasn't really my thing” means I absolutely loved it.",
           "answers": [
             "False"
           ],
@@ -1222,7 +1222,7 @@
         },
         {
           "type": "true_false",
-          "prompt": "I saw myself in the character means I recognized similarities to myself.",
+          "prompt": "“I saw myself in the character” means I recognized similarities to myself.",
           "answers": [
             "True"
           ],
@@ -1235,7 +1235,7 @@
         },
         {
           "type": "true_false",
-          "prompt": "It was pretty heavy always refers to physical weight.",
+          "prompt": "“It was pretty heavy” always refers to physical weight.",
           "answers": [
             "False"
           ],

@@ -42,8 +42,9 @@
   let renderedMonth;
   function render() {
     const currentMonth = getCurrentMonth();
-    if (renderedMonth === currentMonth) return;
-    renderedMonth = currentMonth;
+    const renderKey=archive?currentMonth:new Date(Date.now()+9*3600000).toISOString().slice(0,10);
+    if (renderedMonth === renderKey) return;
+    renderedMonth = renderKey;
     const older = Array.from(months.keys()).filter(key => key <= currentMonth).sort().reverse();
     const requested = new URLSearchParams(location.search).get('month');
     const selected = archive ? (older.includes(requested) ? requested : older[0]) : currentMonth;

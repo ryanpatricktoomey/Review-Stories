@@ -2,6 +2,7 @@
   if (window.self !== window.top) return;
 
   const home = new URL('./index.html', document.currentScript.src);
+  if(!document.querySelector('script[src*="reps-native.js"]')){const s=document.createElement('script');s.src=new URL('reps-native.js?v=1',home);document.head.append(s)}
   const appDirectory = new URL('.', home);
   const isAppPage = url => url.origin === home.origin
     && url.pathname.startsWith(appDirectory.pathname)

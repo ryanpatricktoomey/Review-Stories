@@ -43,3 +43,11 @@ button,input,select,textarea{font-family:inherit}
 [aria-expanded="true"]>.reps-chevron{transform:rotate(180deg)}
 }
 @media(prefers-reduced-motion:reduce){.reps-chevron{transition:none}[aria-expanded="true"]>.reps-chevron{transform:rotate(180deg)}.dashboard-tile:active,.dashboard-links a:active{transform:none}}
+
+/* Phase 4: native viewport and touch handling. */
+:where(button,a,[role=button]){touch-action:manipulation}
+:where(input,textarea,select){scroll-margin-block:20px}
+@media(pointer:coarse){input:not([type=checkbox],[type=radio]),textarea,select{font-size:16px!important}}
+@media(max-width:600px){body:not(:has(#bonus-details)){padding-left:max(12px,env(safe-area-inset-left));padding-right:max(12px,env(safe-area-inset-right));padding-top:max(14px,env(safe-area-inset-top));padding-bottom:max(14px,env(safe-area-inset-bottom))}}
+#shout-panel{max-height:var(--reps-visible-height,100dvh)!important;overscroll-behavior:contain}
+body:has(.reps-quiz-dialog[open]){overflow:hidden}

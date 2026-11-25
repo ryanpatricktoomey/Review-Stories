@@ -137,7 +137,7 @@
                 <div class="text-right"><div class="text-xs text-slate-400">SCORE</div><div id="rush-score" class="text-2xl font-black text-teal-400">0</div></div>
             </div>
             <div class="flex justify-between items-center gap-2">
-                <div id="rush-hearts" class="text-xl" aria-label="Hearts">❤️❤️❤️</div>
+                <div id="rush-hearts" style="display:flex;align-items:center;gap:6px" role="img" aria-label="3 of 5 hearts"></div>
                 <div class="text-amber-400 font-bold text-sm" id="rush-combo">🔥 0 combo</div>
             </div>
             <div class="rush-top bg-slate-900/70 rounded-xl p-3 space-y-2">
@@ -440,7 +440,9 @@
         function updateRushUI() {
             if (!rush) return;
             rushEl('rush-score').textContent=rush.score.toLocaleString();
-            rushEl('rush-hearts').textContent='❤️'.repeat(rush.hearts)+'♡'.repeat(5-rush.hearts);
+            const hearts=rushEl('rush-hearts');
+            hearts.setAttribute('aria-label',rush.hearts+' of 5 hearts');
+            hearts.innerHTML=Array.from({length:5},(_,i)=>'<svg aria-hidden="true" width="25" height="25" viewBox="0 0 24 24" fill="'+(i<rush.hearts?'#fb7185':'none')+'" stroke="'+(i<rush.hearts?'#fda4af':'#64748b')+'" stroke-width="1.7" stroke-linejoin="round"><path d="M12 21S2 14.8 2 8.5C2 3.4 8.3 1.6 12 6c3.7-4.4 10-2.6 10 2.5C22 14.8 12 21 12 21Z"/></svg>').join('');
             rushEl('rush-combo').textContent='🔥 '+rush.combo+' combo';
             rushEl('rush-live-score').textContent=rush.score.toLocaleString()+' pts · '+'❤️'.repeat(rush.hearts);
             rushEl('rush-progress-count').textContent=(rush.correct%10)+' / 10 correct';

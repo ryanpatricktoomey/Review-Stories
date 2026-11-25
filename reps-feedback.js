@@ -1,0 +1,14 @@
+(()=>{"use strict";
+if(window.repsFeedback)return;
+const key="reps-feedback-v1";let prefs={sound:false,vibration:true},ctx,master,voices=[],last=0;
+function read(){try{const p=JSON.parse(localStorage.getItem(key)||"null");if(p)prefs={sound:p.sound===true,vibration:p.vibration!==false}}catch(_){}return {...prefs}}
+function set(name,value){read();prefs[name]=!!value;try{localStorage.setItem(key,JSON.stringify(prefs))}catch(_){}return {...prefs}}
+function unlock(){if(!read().sound)return;try{if(!ctx){const C=window.AudioContext||window.webkitAudioContext;if(!C)return;ctx=new C();master=ctx.createGain();master.gain.value=.28;master.connect(ctx.destination)}if(ctx.state!=="running")ctx.resume().catch(()=>{})}catch(_){}}
+document.addEventListener("pointerdown",unlock,{capture:true,passive:true});document.addEventListener("keydown",unlock,true);
+function voice(o,g,t,d){o.connect(g);g.connect(master);voices.push(o);o.onended=()=>{voices=voices.filter(v=>v!==o);o.disconnect();g.disconnect()};o.start(t);o.stop(t+d+.01)}
+function note(f,t,d,a=.25){for(const [ratio,amp,decay] of [[1,1,1],[3.99,.24,.15],[9.1,.08,.06]]){const o=ctx.createOscillator(),g=ctx.createGain(),dur=Math.max(.025,d*decay);o.frequency.value=f*ratio;g.gain.setValueAtTime(.00001,t);g.gain.exponentialRampToValueAtTime(a*amp,t+.004);g.gain.exponentialRampToValueAtTime(.00001,t+dur);voice(o,g,t,dur)}}
+function knock(t,f,a,d=.06){const n=Math.floor(ctx.sampleRate*d),b=ctx.createBuffer(1,n,ctx.sampleRate),v=b.getChannelData(0);for(let i=0;i<n;i++)v[i]=(Math.random()*2-1)*Math.exp(-i/n*9);const s=ctx.createBufferSource(),filter=ctx.createBiquadFilter(),g=ctx.createGain();s.buffer=b;filter.type="bandpass";filter.frequency.value=f;filter.Q.value=1.5;g.gain.value=a;s.connect(filter);filter.connect(g);g.connect(master);voices.push(s);s.onended=()=>{voices=voices.filter(v=>v!==s);s.disconnect();filter.disconnect();g.disconnect()};s.start(t)}
+const patterns={correct:25,wrong:[20,65,20],save:15,complete:[30,80,45],timeout:50};
+function play(e){const p=read();if(document.hidden)return;if(p.vibration&&patterns[e]&&typeof navigator.vibrate==="function")try{navigator.vibrate(patterns[e])}catch(_){}if(!p.sound)return;unlock();if(!ctx)return;const now=performance.now();if(e==="tap"&&now-last<65)return;last=now;try{for(const v of voices)try{v.stop()}catch(_){}voices=[];const t=ctx.currentTime+.015,n=(f,o,d,a)=>note(f,t+o,d,a);switch(e){case"correct":n(392,0,.12);n(587,.08,.19);break;case"wrong":knock(t,380,.35);knock(t+.09,260,.2);break;case"save":knock(t,900,.25);n(660,.015,.12);break;case"tap":knock(t,1200,.28,.035);break;case"complete":n(392,0,.2);n(494,.12,.2);n(587,.24,.35);n(784,.24,.3,.12);break;case"timeout":n(330,0,.18);n(220,.16,.25);break}}catch(_){}}
+window.repsFeedback={read,set,play};
+})();

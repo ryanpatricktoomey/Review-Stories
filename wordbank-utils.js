@@ -1,3 +1,7 @@
+// Load shared feedback on older review pages without changing their HTML.
+if(!window.repsFeedback&&!document.querySelector('script[src*="reps-feedback.js"]')){
+ const script=document.createElement('script');script.src=new URL('reps-feedback.js?v=1',document.currentScript.src);document.head.appendChild(script);
+}
 function renderWordBankButton(btn, saved) {
     const color = saved ? '#a8dcca' : '#a7cdf8';
     const shape = saved ? '<circle cx="12" cy="12" r="9"/><path d="m7 12 3 3 7-7" fill="none"/>' : '<path d="M12 6C8 3 4 4 2.5 5v14c3-1 6-1 9.5 1.5C15.5 18 19 18 21.5 19V5C18 4 15 4 12 6Z"/><path d="M12 6v14M5.5 9l3.5 1M16.8 8v7m-3.5-3.5h7"/>';
@@ -103,6 +107,7 @@ function saveToWordBank(en, ko, btn) {
         bank.push({ en, ko, dateAdded: new Date().toISOString() });
         localStorage.setItem('wordBank', JSON.stringify(bank));
         renderWordBankButton(btn, true);
+        window.repsFeedback?.play('save');
         if(!matchMedia('(prefers-reduced-motion: reduce)').matches)btn.querySelector('svg')?.animate?.([{transform:'scale(.8)'},{transform:'scale(1.18)',offset:.55},{transform:'scale(1)'}],{duration:300,easing:'ease-out'});
         btn.classList.add('saved');
         btn.title = "Saved to Word Bank"; btn.setAttribute('aria-label', btn.title);

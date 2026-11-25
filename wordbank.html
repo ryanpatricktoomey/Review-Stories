@@ -473,6 +473,7 @@
             showRushResult(message,correct);
         }
         function showRushResult(message,correct) {
+            if(!message.startsWith('⏭️'))window.repsFeedback?.play(message.startsWith('⏰')?'timeout':correct?'correct':'wrong');
             clearInterval(rushClock);
             rushEl('rush-feedback').textContent=message;
             rushEl('rush-feedback').classList.remove('hidden');
@@ -501,7 +502,9 @@
             if (rush.hearts<=0) finishRush(); else nextRushWord();
         }
         async function finishRush() {
-            if (!rush) return;
+            if (!rush || rush.finished) return;
+            rush.finished=true;
+            window.repsFeedback?.play('complete');
             clearRushTimers();
             rushEl('rush-playing').classList.add('hidden');
             rushEl('rush-gameover').classList.remove('hidden');
@@ -519,7 +522,8 @@
             }
         }
     </script>
-  <script src="wordbank-utils.js"></script>
+  <script src="./reps-feedback.js?v=1"></script>
+  <script src="wordbank-utils.js?v=3"></script>
 <script src="./reps-chalk.js?v=1" defer></script>
 </body>
 </html>

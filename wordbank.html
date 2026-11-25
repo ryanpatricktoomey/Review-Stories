@@ -32,6 +32,19 @@
 <link rel="stylesheet" href="./reps-design.css?v=3">
 <script src="./reps-native.js?v=1" defer></script>
 <meta name="theme-color" content="#0f172a">
+<style>
+#reps-remove-dialog{box-sizing:border-box;width:min(360px,calc(100% - 32px));max-height:calc(100dvh - 32px);overflow:auto;margin:auto;padding:24px;border:1px solid #475569;border-radius:20px;background:#1e293b;color:#f8fafc;box-shadow:0 16px 60px #0006;text-align:left}
+#reps-remove-dialog::backdrop{background:#020617b8}
+#reps-remove-dialog h2{font-size:21px;font-weight:700;margin:0 0 16px}
+#reps-remove-dialog .remove-expression{padding:12px 14px;background:#0f172a;border-radius:12px;color:#a8dcca;font-weight:650;overflow-wrap:anywhere}
+#reps-remove-dialog p{font-size:14px;color:#a7b6cb;margin:12px 0 20px}
+#reps-remove-dialog .remove-actions{display:flex;gap:10px}
+#reps-remove-dialog button{flex:1;min-height:48px;border-radius:12px;font-weight:650;font-size:15px}
+#reps-remove-dialog .remove-cancel{background:#334155;color:#f8fafc}
+#reps-remove-dialog .remove-confirm{background:#e9a0a8;color:#30151b}
+#reps-remove-dialog button:disabled{opacity:.5}
+#reps-remove-dialog .remove-error{color:#e9a0a8;margin-bottom:0}
+</style>
 </head>
 <body class="p-4 md:p-8">
 
@@ -298,11 +311,28 @@
         }
 
         async function deleteWord(index) {
-            if (confirm('Remove this word from your Word Bank?')) {
-                wordBank.splice(index, 1);
-                await saveWordBank();
-                renderApp();
-            }
+            const item = wordBank[index];
+            if (!item || document.getElementById('reps-remove-dialog')) return;
+            const modal = document.createElement('dialog');
+            modal.id = 'reps-remove-dialog';
+            modal.setAttribute('aria-labelledby','reps-remove-title');
+            modal.innerHTML = '<h2 id="reps-remove-title">Remove expression?</h2><div class="remove-expression"></div><p>This expression will be removed from your Word Bank.</p><div class="remove-actions"><button type="button" class="remove-cancel" autofocus>Cancel</button><button type="button" class="remove-confirm">Remove</button></div><p class="remove-error" role="alert" hidden></p>';
+            modal.querySelector('.remove-expression').textContent = item.en;
+            const cancel = modal.querySelector('.remove-cancel'), remove = modal.querySelector('.remove-confirm');
+            modal.addEventListener('close',()=>modal.remove(),{once:true});
+            cancel.onclick=()=>modal.close();
+            remove.onclick=async()=>{
+                const i=wordBank.indexOf(item);
+                if(i<0){modal.close();return;}
+                remove.disabled=true;cancel.disabled=true;
+                const preventClose=e=>e.preventDefault();
+                modal.addEventListener('cancel',preventClose);
+                wordBank.splice(i,1);
+                try { await saveWordBank(); renderApp(); modal.close(); }
+                catch(e){ wordBank.splice(i,0,item); const msg=modal.querySelector('.remove-error');msg.textContent='Could not remove this expression. Please try again.';msg.hidden=false;remove.disabled=false;cancel.disabled=false; }
+                finally {modal.removeEventListener('cancel',preventClose);}
+            };
+            document.body.append(modal);modal.showModal();
         }
 
         let maskEn = false, maskKo = false;

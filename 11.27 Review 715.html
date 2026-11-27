@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | Five Stories That Changed My Life for the Worse</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🎥</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">Five Stories That Changed My Life for the Worse</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-5 font-bold text-teal-400">esophagus</td>
+                    <td onclick="revealCell(this)" class="p-5 text-slate-300 mystery-cell">식도</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-5 font-bold text-teal-400">esophageal</td>
+                    <td onclick="revealCell(this)" class="p-5 text-slate-300 mystery-cell">식도의, 식도와 관련된</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-5 font-bold text-teal-400">throat</td>
+                    <td onclick="revealCell(this)" class="p-5 text-slate-300 mystery-cell">목, 목구멍</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-5 font-bold text-teal-400">door hinge</td>
+                    <td onclick="revealCell(this)" class="p-5 text-slate-300 mystery-cell">문 경첩</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-5 font-bold text-teal-400">final</td>
+                    <td onclick="revealCell(this)" class="p-5 text-slate-300 mystery-cell">결승전</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-5 font-bold text-teal-400">semi-final</td>
+                    <td onclick="revealCell(this)" class="p-5 text-slate-300 mystery-cell">준결승전, 4강전</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-5 font-bold text-teal-400">quarter-final</td>
+                    <td onclick="revealCell(this)" class="p-5 text-slate-300 mystery-cell">8강전</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-5 font-bold text-teal-400">tie</td>
+                    <td onclick="revealCell(this)" class="p-5 text-slate-300 mystery-cell">무승부, 동점</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-5 font-bold text-teal-400">penalty kick</td>
+                    <td onclick="revealCell(this)" class="p-5 text-slate-300 mystery-cell">페널티킥</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-5 font-bold text-teal-400">the next...</td>
+                    <td onclick="revealCell(this)" class="p-5 text-slate-300 mystery-cell">그다음의…, 다음…</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-5 font-bold text-teal-400">silver lining</td>
+                    <td onclick="revealCell(this)" class="p-5 text-slate-300 mystery-cell">불행이나 어려움 속에서 발견하는 긍정적인 면</td>
+                </tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-2xl p-6 space-y-2 border border-white/5">
+                <h3 class="text-amber-400 font-bold text-lg">esophagus / esophageal / throat</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">esophagus는 음식물이 위로 이동하는 통로인 ‘식도’이고, esophageal은 이에 해당하는 형용사예요. throat는 일상적으로 목구멍이나 목 안쪽을 가리키는 표현이에요.</p>
+            </div>
+            <div class="glass rounded-2xl p-6 space-y-2 border border-white/5">
+                <h3 class="text-amber-400 font-bold text-lg">tie</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">경기에서 동점이나 무승부를 뜻해요. <em>The game ended in a tie.</em>라고 하면 ‘경기가 무승부로 끝났다’라는 의미예요.</p>
+            </div>
+            <div class="glass rounded-2xl p-6 space-y-2 border border-white/5">
+                <h3 class="text-amber-400 font-bold text-lg">the next...</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">과거의 일을 이야기할 때도 the next morning, the next day, the next week처럼 특정 시점을 기준으로 그다음 날이나 주를 표현할 수 있어요.</p>
+            </div>
+            <div class="glass rounded-2xl p-6 space-y-2 border border-white/5">
+                <h3 class="text-amber-400 font-bold text-lg">silver lining</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">안 좋은 상황에서도 발견할 수 있는 긍정적인 면을 뜻해요. <em>Every cloud has a silver lining.</em>이라는 영어 속담에서 나온 표현이에요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">Some stories inspire us to become better people. Others leave us with expensive hobbies, unreasonable fears, and problems we never had before. Here are five that changed my life.</p>
+                <p class="mb-6">1. House M.D.<br>I was hooked from the start. It follows a brilliant doctor who diagnoses unusual medical conditions.</p>
+                <p class="mb-6">Unfortunately, it turned me into a terrible patient. When I developed a sore <b class="highlight quiz-target" data-ans="throat" data-kor="목, 목구멍">throat</b>, I spent three hours reading about the <b class="highlight quiz-target" data-ans="esophagus" data-kor="식도">esophagus</b> and various <b class="highlight quiz-target" data-ans="esophageal" data-kor="식도의, 식도와 관련된">esophageal</b> disorders.</p>
+                <p class="mb-6"><b class="highlight quiz-target" data-ans="The next" data-kor="그다음의…, 다음…">The next</b> morning, I visited my doctor with a list of possible diseases.</p>
+                <p class="mb-6">He looked at my list, examined me, and told me to drink more water. Apparently, watching medical dramas doesn't count as medical training.</p>
+                <p class="mb-6">2. The Conjuring<br>The movie gave me chills, particularly the scenes involving doors that opened by themselves.</p>
+                <p class="mb-6">When my bedroom door started making strange noises at night, I couldn't stop thinking about the movie.</p>
+                <p class="mb-6">I eventually paid someone to inspect my apartment. He put some oil on the <b class="highlight quiz-target" data-ans="door hinges" data-kor="문 경첩">door hinges</b>, charged me thirty dollars, and left.</p>
+                <p class="mb-6">It was an expensive way to discover that my apartment wasn't haunted.</p>
+                <p class="mb-6">3. Captain Tsubasa<br>This Japanese animated series about soccer pulled me in as a teenager. I loved how ordinary matches became incredibly dramatic.</p>
+                <p class="mb-6">Years later, I joined a local soccer tournament. We won the <b class="highlight quiz-target" data-ans="quarter-final" data-kor="8강전">quarter-final</b> and the <b class="highlight quiz-target" data-ans="semi-final" data-kor="준결승전, 4강전">semi-final</b> and somehow made it to the <b class="highlight quiz-target" data-ans="final" data-kor="결승전">final</b>.</p>
+                <p class="mb-6">The score was <b class="highlight quiz-target" data-ans="tied" data-kor="무승부, 동점">tied</b> when our team was awarded a <b class="highlight quiz-target" data-ans="penalty kick" data-kor="페널티킥">penalty kick</b>. Remembering my childhood hero, I attempted a spectacular shot.</p>
+                <p class="mb-6">The ball went over the goal and into the parking lot.</p>
+                <p class="mb-6">The only <b class="highlight quiz-target" data-ans="silver lining" data-kor="불행이나 어려움 속에서 발견하는 긍정적인 면">silver lining</b> was that it didn't hit anyone's car.</p>
+                <p class="mb-6">4. Tidying Up with Marie Kondo<br>This series changed my perspective on the things I owned. It made me think about how much unnecessary stuff I had accumulated.</p>
+                <p class="mb-6">I spent an entire weekend throwing things away. My apartment looked wonderful.</p>
+                <p class="mb-6">Then winter arrived, and I realized that I'd gotten rid of most of my warm clothes because they hadn't brought me much joy in July.</p>
+                <p class="mb-6">Buying replacements brought me even less joy.</p>
+                <p class="mb-6">5. The Devil Wears Prada<br>I saw myself in the main character, who was struggling to succeed professionally. The movie made me realize that I needed to take my career more seriously.</p>
+                <p class="mb-6">I started dressing better, arriving early, and accepting every additional assignment.</p>
+                <p class="mb-6">Within a month, my colleagues had discovered that they could give me almost any task.</p>
+                <p class="mb-6">My salary remained exactly the same.</p>
+                <p class="mb-6">These stories left a lasting impression on me. I've learned that a story can be deeply inspiring without being particularly useful as a guide to life.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">어떤 이야기는 우리에게 더 나은 사람이 되도록 영감을 준다. 반면 어떤 이야기는 돈이 많이 드는 취미, 비합리적인 두려움, 그리고 원래는 없었던 문제들을 남긴다. 여기 내 인생을 바꿔 놓은 다섯 가지 이야기가 있다.</p>
+                <p class="mb-6">1. 하우스<br>처음부터 푹 빠졌다. 특이한 질병을 진단하는 천재 의사의 이야기다.</p>
+                <p class="mb-6">안타깝게도 이 드라마 때문에 나는 의사들이 상대하기 힘든 환자가 되었다. <b class="highlight">목이</b> 아팠을 때 <b class="highlight">식도</b>와 여러 <b class="highlight">식도</b> 질환에 대해 무려 세 시간 동안 찾아봤다.</p>
+                <p class="mb-6"><b class="highlight">다음</b> 날 아침, 의심되는 질병 목록을 들고 병원에 갔다.</p>
+                <p class="mb-6">의사는 내 목록을 보고 진찰을 한 뒤 물을 더 많이 마시라고 했다. 아무래도 의학 드라마를 보는 것은 의학 교육으로 인정되지 않는 모양이다.</p>
+                <p class="mb-6">2. 컨저링<br>이 영화는 정말 소름이 돋았다. 특히 문이 저절로 열리는 장면들이 그랬다.</p>
+                <p class="mb-6">밤에 침실 문에서 이상한 소리가 나기 시작하자 영화가 계속 머릿속을 떠나지 않았다.</p>
+                <p class="mb-6">결국 돈을 주고 사람을 불러 아파트를 점검하게 했다. 그는 <b class="highlight">문 경첩</b>에 기름을 조금 바르고 30달러를 받은 뒤 떠났다.</p>
+                <p class="mb-6">우리 집에 귀신이 없다는 사실을 알아내는 데 꽤 비싼 대가를 치렀다.</p>
+                <p class="mb-6">3. 캡틴 츠바사<br>십 대 시절, 축구를 소재로 한 이 일본 애니메이션에 완전히 빠져들었다. 평범한 축구 경기가 엄청나게 극적으로 펼쳐지는 것이 좋았다.</p>
+                <p class="mb-6">몇 년 후, 지역 축구 대회에 참가했다. 우리 팀은 <b class="highlight">8강전</b>과 <b class="highlight">준결승전</b>에서 승리했고, 어떻게 하다 보니 <b class="highlight">결승전</b>까지 진출했다.</p>
+                <p class="mb-6"><b class="highlight">동점</b>인 상황에서 우리 팀이 <b class="highlight">페널티킥</b>을 얻었다. 어린 시절의 영웅을 떠올리며 멋진 슛을 시도했다.</p>
+                <p class="mb-6">공은 골대 위를 넘어 주차장으로 날아갔다.</p>
+                <p class="mb-6"><b class="highlight">그나마 다행인 점</b>은 누구의 차에도 맞지 않았다는 것이다.</p>
+                <p class="mb-6">4. 곤도 마리에: 설레지 않으면 버려라<br>이 프로그램은 내가 소유한 물건들에 대한 관점을 바꿔 놓았다. 그동안 얼마나 많은 불필요한 물건을 쌓아 두었는지 생각하게 해 줬다.</p>
+                <p class="mb-6">주말 내내 물건을 버렸다. 집은 정말 깔끔해졌다.</p>
+                <p class="mb-6">그러다 겨울이 찾아왔고, 7월에는 별로 설렘을 주지 않았다는 이유로 따뜻한 옷을 대부분 버렸다는 사실을 깨달았다.</p>
+                <p class="mb-6">새 옷을 사는 일은 더더욱 설레지 않았다.</p>
+                <p class="mb-6">5. 악마는 프라다를 입는다<br>직장에서 성공하기 위해 고군분투하는 주인공에게서 내 모습이 보였다. 이 영화를 보고 내 커리어를 좀 더 진지하게 생각해야겠다고 깨달았다.</p>
+                <p class="mb-6">옷을 더 신경 써서 입고, 일찍 출근하고, 추가 업무도 모두 받아들이기 시작했다.</p>
+                <p class="mb-6">한 달도 지나지 않아 동료들은 나에게 거의 어떤 일이든 떠넘길 수 있다는 사실을 알아차렸다.</p>
+                <p class="mb-6">내 월급은 조금도 달라지지 않았다.</p>
+                <p class="mb-6">이 이야기들은 내게 오래도록 깊은 인상을 남겼다. 하지만 아무리 큰 영감을 주는 이야기라도 실제 인생의 지침으로 삼기에는 그다지 유용하지 않을 수 있다는 것을 배웠다.</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "1127715.m4a";
+</script>
+
+    <script src="wordbank-utils.js"></script>
+</body>
+</html>

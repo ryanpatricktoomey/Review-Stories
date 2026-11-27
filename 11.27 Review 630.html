@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Review Note | Five Stories That Changed My Life for the Worse</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --teal: #14b8a6; --amber: #f59e0b; --slate: #0f172a; }
+        body { background-color: var(--slate); color: #f1f5f9; font-family: 'Inter', sans-serif; -webkit-text-size-adjust: 100%; padding-bottom: 120px; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sticky-audio { position: sticky; top: 1rem; z-index: 50; }
+        input::placeholder { color: rgba(245, 158, 11, 0.4) !important; opacity: 1 !important; transition: opacity 0.2s; font-weight: 500; }
+        input:focus::placeholder { opacity: 0 !important; }
+        .mystery-cell { transition: color 0.3s; }
+        .quiz-hidden { color: transparent !important; user-select: none !important; cursor: pointer; }
+        .quiz-hidden.revealed { color: #cbd5e1 !important; user-select: auto !important; }
+        .highlight { color: var(--teal); font-weight: 700; }
+        .quiz-input { background: transparent; border-bottom: 2px solid var(--amber); outline: none; text-align: center; color: var(--amber); font-weight: bold; padding: 0 4px; -webkit-appearance: none; appearance: none; border-radius: 0; font-size: 18px; }
+        audio::-webkit-media-controls-panel { background-color: rgba(30, 41, 59, 0.9); }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <header class="text-center space-y-4">
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-5xl">🍿</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white">Five Stories That Changed My Life for the Worse</h1>
+            </div>
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-sm">Lesson Review Note</p>
+        </header>
+
+        <div id="audio-ui" class="sticky-audio glass rounded-3xl p-4 border border-teal-500/30 w-full shadow-2xl space-y-3">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="text-xs font-bold text-teal-400 uppercase tracking-tighter">Read to Me</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="skipAudio(-5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        <span class="text-lg">↺</span> 5s
+                    </button>
+                    <button onclick="skipAudio(5)" class="bg-slate-800 hover:bg-teal-900/50 text-teal-400 px-3 py-1.5 rounded-xl text-xs font-black border border-teal-500/20 transition-all active:scale-90 flex items-center gap-1">
+                        5s <span class="text-lg">↻</span>
+                    </button>
+                </div>
+            </div>
+            <audio id="player" controls class="w-full h-10 accent-teal-500"></audio>
+        </div>
+
+        <div class="flex justify-center">
+            <button onclick="toggleQuiz()" id="quizBtn" class="w-full bg-[#f59e0b] hover:bg-amber-600 text-slate-900 font-bold py-4 px-10 rounded-2xl transition-all shadow-lg active:scale-95 text-lg">Quiz Mode 👻</button>
+        </div>
+
+        <section class="glass rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-slate-800/50 p-5 border-b border-white/5 flex items-center gap-2">
+                <span class="text-xl">🔑</span> <h2 class="text-teal-400 font-bold uppercase tracking-wider">Chat Expressions</h2>
+            </div>
+            <table class="w-full text-left"><tbody class="divide-y divide-white/5">
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-5 font-bold text-teal-400">break room</td>
+                    <td onclick="revealCell(this)" class="p-5 text-slate-300 mystery-cell">직원 휴게실</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-5 font-bold text-teal-400">episodes</td>
+                    <td onclick="revealCell(this)" class="p-5 text-slate-300 mystery-cell">(드라마, 방송 등의) 회차, 에피소드</td>
+                </tr>
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="p-5 font-bold text-teal-400">number the stars</td>
+                    <td onclick="revealCell(this)" class="p-5 text-slate-300 mystery-cell">『별을 헤아리며』 (로이스 로리의 소설)</td>
+                </tr>
+            </tbody></table>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass rounded-2xl p-6 space-y-2 border border-white/5">
+                <h3 class="text-amber-400 font-bold text-lg">break room</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">직장에서 직원들이 식사를 하거나 커피를 마시며 휴식을 취하는 공간이에요. 직원들이 함께 사용하는 휴게실을 의미해요.</p>
+            </div>
+            <div class="glass rounded-2xl p-6 space-y-2 border border-white/5">
+                <h3 class="text-amber-400 font-bold text-lg">Number the Stars</h3>
+                <p class="text-slate-300 text-sm leading-relaxed">제2차 세계대전 당시 덴마크를 배경으로, 유대인 친구를 구하려는 소녀의 이야기를 다룬 소설이에요. 제목에서 number는 ‘숫자’가 아니라 ‘수를 세다, 헤아리다’라는 동사로 사용됐어요.</p>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-6 md:p-12 space-y-12 shadow-2xl">
+            <div id="englishStory" class="text-lg md:text-xl leading-relaxed text-slate-200">
+                <p class="mb-6">People often recommend stories that changed their lives. They talk about becoming more adventurous, understanding other people better, or discovering what truly matters. Stories have changed my life, too, although not necessarily for the better.</p>
+                <p class="mb-6">1. Jaws<br>I watched this movie when I was eleven, and it still sticks with me. There's this one scene where people are swimming peacefully, completely unaware of what's beneath them. It gave me chills.</p>
+                <p class="mb-6">For years, I couldn't even relax in a swimming pool. I knew there couldn't possibly be a shark in there, but I always tried to stay close to the edge.</p>
+                <p class="mb-6">2. The Office<br>I was hooked from the start and watched several <b class="highlight quiz-target" data-ans="episodes" data-kor="(드라마, 방송 등의) 회차, 에피소드">episodes</b> every evening. I could really relate to the characters, especially the ones who hated their jobs.</p>
+                <p class="mb-6">Unfortunately, I started thinking of my own workplace as a comedy show. I spent so much time making jokes in the <b class="highlight quiz-target" data-ans="break room" data-kor="직원 휴게실">break room</b> that my manager eventually asked whether I had enough work to do.</p>
+                <p class="mb-6">I haven't been promoted in six years.</p>
+                <p class="mb-6">3. <b class="highlight quiz-target" data-ans="Number the Stars" data-kor="『별을 헤아리며』">Number the Stars</b><br>I read <b class="highlight quiz-target" data-ans="Number the Stars" data-kor="『별을 헤아리며』">Number the Stars</b> in elementary school. It follows a young Danish girl who helps protect her Jewish friend during World War II.</p>
+                <p class="mb-6">It really moved me and made me realize how courageous ordinary people could be.</p>
+                <p class="mb-6">However, it also gave me incredibly high expectations of friendship. Years later, I was deeply disappointed when my best friend wouldn't drive me to the airport at five in the morning. Apparently, he had his limits.</p>
+                <p class="mb-6">4. Rocky<br>What really got me was how hard Rocky trained despite having very little chance of winning.</p>
+                <p class="mb-6">The movie inspired me to start exercising. I bought expensive running shoes, joined a gym, and set my alarm for 4:30 a.m.</p>
+                <p class="mb-6">By Thursday, I was so exhausted that I fell asleep during an important business meeting. My gym membership lasted considerably longer than my motivation.</p>
+                <p class="mb-6">5. The Truman Show<br>The premise is that a man's entire life is secretly being filmed for a television show.</p>
+                <p class="mb-6">It was much deeper than I expected, and I couldn't stop thinking about it.</p>
+                <p class="mb-6">For about a week, whenever something unusually convenient happened, I wondered whether someone had arranged it. My wife found this particularly annoying when she surprised me with a birthday party.</p>
+                <p class="mb-6">Looking back, these stories certainly opened my eyes to new possibilities. Unfortunately, not all of those possibilities were worth exploring.</p>
+                <p class="mb-6">These days, I mostly watch cooking shows. The worst thing they do is make me hungry.</p>
+            </div>
+            <hr class="border-white/10">
+            <div class="text-slate-400 italic leading-relaxed space-y-6">
+                <p class="mb-6">사람들은 종종 자신의 인생을 바꿔 놓은 이야기를 추천한다. 더 모험적인 사람이 되었다거나, 다른 사람들을 더 잘 이해하게 되었다거나, 진정으로 중요한 것이 무엇인지 깨달았다고 말한다. 나 역시 이야기들 덕분에 인생이 바뀌었다. 다만 꼭 좋은 방향으로 바뀐 것은 아니다.</p>
+                <p class="mb-6">1. 죠스<br>열한 살 때 이 영화를 봤는데, 아직도 기억에 생생하게 남아 있다. 사람들이 자신의 발밑에 무엇이 있는지 전혀 모른 채 평화롭게 수영하는 장면이 하나 있다. 정말 소름이 돋았다.</p>
+                <p class="mb-6">그 후 몇 년 동안은 수영장에서도 마음 편하게 놀지 못했다. 수영장에 상어가 있을 리 없다는 건 알았지만, 항상 가장자리 가까이에 있으려고 했다.</p>
+                <p class="mb-6">2. 오피스<br>처음부터 푹 빠져서 매일 저녁 몇 <b class="highlight">편씩</b> 봤다. 등장인물들에게 정말 공감이 갔는데, 특히 자신의 직장을 싫어하는 사람들에게 그랬다.</p>
+                <p class="mb-6">문제는 나도 내 직장을 코미디 프로그램처럼 생각하기 시작했다는 것이다. <b class="highlight">직원 휴게실</b>에서 농담을 하며 너무 많은 시간을 보내자, 결국 상사가 나에게 할 일이 부족한 거냐고 물었다.</p>
+                <p class="mb-6">나는 6년째 승진하지 못하고 있다.</p>
+                <p class="mb-6">3. <b class="highlight">별을 헤아리며</b><br>초등학교 때 『<b class="highlight">별을 헤아리며</b>』를 읽었다. 제2차 세계대전 당시 유대인 친구를 보호하는 데 힘쓰는 어린 덴마크 소녀의 이야기다.</p>
+                <p class="mb-6">정말 감동적이었고, 평범한 사람들도 얼마나 용감할 수 있는지를 깨닫게 해 줬다.</p>
+                <p class="mb-6">하지만 우정에 대한 기대치도 엄청나게 높아졌다. 몇 년 후, 가장 친한 친구가 새벽 5시에 나를 공항까지 데려다주기를 거절했을 때 나는 몹시 실망했다. 아무래도 그 친구에게도 한계는 있었던 모양이다.</p>
+                <p class="mb-6">4. 록키<br>특히 마음에 와닿았던 것은 록키가 이길 가능성이 거의 없는데도 열심히 훈련하는 모습이었다.</p>
+                <p class="mb-6">영화에 자극을 받아 운동을 시작했다. 비싼 러닝화를 사고, 헬스장에 등록하고, 새벽 4시 30분에 알람을 맞췄다.</p>
+                <p class="mb-6">목요일쯤 되자 너무 지친 나머지 중요한 업무 회의 도중에 잠들고 말았다. 헬스장 회원권은 내 운동 의욕보다 훨씬 오래 유지됐다.</p>
+                <p class="mb-6">5. 트루먼 쇼<br>한 남자의 인생 전체가 몰래 촬영되어 텔레비전 프로그램으로 방송된다는 설정이다.</p>
+                <p class="mb-6">생각보다 훨씬 깊이 있는 영화였고, 계속 머릿속에서 떠나지 않았다.</p>
+                <p class="mb-6">일주일 정도는 일이 이상할 정도로 편리하게 풀릴 때마다 누군가 일부러 꾸며 놓은 일이 아닐까 의심했다. 아내가 깜짝 생일 파티를 준비해 줬을 때는 이런 내 태도를 특히 짜증스러워했다.</p>
+                <p class="mb-6">돌이켜 보면, 이런 이야기들은 분명 새로운 가능성에 눈을 뜨게 해 줬다. 안타깝게도 그 모든 가능성을 굳이 탐구할 필요는 없었다.</p>
+                <p class="mb-6">요즘은 주로 요리 프로그램을 본다. 기껏해야 배가 고파지는 정도니까.</p>
+            </div>
+        </section>
+
+    </div>
+
+<script>
+  function skipAudio(seconds) {
+      const player = document.getElementById('player');
+      if (player.src) {
+          player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + seconds));
+      }
+  }
+
+  function revealCell(el) { if (el.classList.contains('quiz-hidden')) el.classList.add('revealed'); }
+
+  let _quizOriginals = new Map();
+
+  function toggleQuiz() {
+      const btn = document.getElementById('quizBtn');
+      const isQuiz = btn.innerText.includes("Quiz");
+      const targets = document.querySelectorAll('.quiz-target');
+      const cells = document.querySelectorAll('.mystery-cell');
+
+      if (isQuiz) {
+          btn.innerText = "Study Mode 📖";
+          cells.forEach(c => c.classList.add('quiz-hidden'));
+          targets.forEach(t => {
+              const ans = t.dataset.ans; const kor = t.dataset.kor;
+              _quizOriginals.set(t, t.innerHTML);
+              t.innerHTML = `<input type="text" placeholder="${kor}" oninput="checkQuiz(this, '${ans}')" class="quiz-input" data-solved="false" style="width: ${ans.length * 11 + 30}px">`;
+          });
+      } else {
+          btn.innerText = "Quiz Mode 👻";
+          cells.forEach(c => c.classList.remove('quiz-hidden'));
+          targets.forEach(t => {
+              if (_quizOriginals.has(t)) t.innerHTML = _quizOriginals.get(t);
+          });
+          _quizOriginals.clear();
+      }
+  }
+
+  function checkQuiz(i, a) {
+      if (i.value.toLowerCase().trim() === a.toLowerCase().trim()) {
+          i.style.borderColor = "#10b981"; i.dataset.solved = "true";
+          confetti({ particleCount: 15, spread: 25, origin: { y: 0.8 }, colors: ['#14b8a6', '#f59e0b'] });
+          checkAllSolved();
+      } else { i.style.borderColor = (i.value === "") ? "#f59e0b" : "#ef4444"; i.dataset.solved = "false"; }
+  }
+
+  function checkAllSolved() {
+      const inputs = document.querySelectorAll('.quiz-input');
+      if (inputs.length > 0 && Array.from(inputs).every(i => i.dataset.solved === "true")) {
+          var duration = 3 * 1000; var end = Date.now() + duration;
+          (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#14b8a6', '#f59e0b'] });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#14b8a6', '#f59e0b'] });
+              if (Date.now() < end) requestAnimationFrame(frame);
+          }());
+      }
+  }
+
+  document.getElementById('player').src = "1127630.m4a";
+</script>
+
+    <script src="wordbank-utils.js"></script>
+</body>
+</html>
